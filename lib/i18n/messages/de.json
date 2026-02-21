@@ -1,0 +1,123 @@
+{
+  "common": {
+    "home": "Startseite",
+    "about": "Über uns",
+    "programs": "Programme",
+    "frameworks": "Frameworks",
+    "blog": "Blog",
+    "contact": "Kontakt",
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "dashboard": "Dashboard",
+    "profile": "Profil",
+    "language": "Sprache",
+    "loading": "Laden...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "submit": "Absenden",
+    "search": "Suchen",
+    "noResults": "Keine Ergebnisse gefunden",
+    "error": "Ein Fehler ist aufgetreten",
+    "success": "Erfolgreich"
+  },
+  "nav": {
+    "programs": "Programme",
+    "frameworks": "Frameworks",
+    "blog": "Blog",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "portal": "Mein Portal",
+    "admin": "Admin"
+  },
+  "home": {
+    "hero": {
+      "title": "Unternimm Dich",
+      "subtitle": "Coaching-Programme für nachhaltiges Wachstum",
+      "cta": "Programme entdecken"
+    },
+    "programs": {
+      "title": "Unsere Programme",
+      "subtitle": "Von der Vertriebsexzellenz bis zur Führungskompetenz"
+    },
+    "frameworks": {
+      "title": "Kostenfreie Frameworks",
+      "subtitle": "Sofort anwendbare Tools für Ihren Erfolg"
+    },
+    "testimonials": {
+      "title": "Was unsere Kunden sagen"
+    }
+  },
+  "programs": {
+    "overview": "Programmübersicht",
+    "phases": "Phasen",
+    "duration": "Dauer",
+    "format": "Format",
+    "learnMore": "Mehr erfahren",
+    "enroll": "Jetzt anmelden"
+  },
+  "frameworks": {
+    "download": "Kostenfrei herunterladen",
+    "emailRequired": "E-Mail-Adresse für den Download",
+    "downloadNow": "Jetzt herunterladen"
+  },
+  "blog": {
+    "readMore": "Weiterlesen",
+    "categories": "Kategorien",
+    "allPosts": "Alle Beiträge",
+    "publishedOn": "Veröffentlicht am",
+    "author": "Autor"
+  },
+  "portal": {
+    "myPrograms": "Meine Programme",
+    "progress": "Fortschritt",
+    "currentPhase": "Aktuelle Phase",
+    "nextStep": "Nächster Schritt",
+    "completed": "Abgeschlossen",
+    "inProgress": "In Bearbeitung",
+    "locked": "Gesperrt",
+    "markComplete": "Als abgeschlossen markieren",
+    "uploadWorkbook": "Workbook hochladen",
+    "bookSparring": "Sparring buchen",
+    "pendingReview": "Wartet auf Review",
+    "approved": "Genehmigt",
+    "revisionRequested": "Überarbeitung angefordert"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "contacts": "Kontakte",
+    "companies": "Firmen",
+    "enrollments": "Einschreibungen",
+    "sequences": "Sequences",
+    "reviews": "Reviews",
+    "sparrings": "Sparrings",
+    "newSequence": "Neue Sequence",
+    "stats": {
+      "activeEnrollments": "Aktive Einschreibungen",
+      "pendingReviews": "Offene Reviews",
+      "upcomingSparrings": "Anstehende Sparrings",
+      "newLeads": "Neue Leads"
+    }
+  },
+  "contact": {
+    "title": "Kontakt aufnehmen",
+    "name": "Name",
+    "email": "E-Mail",
+    "company": "Unternehmen",
+    "message": "Nachricht",
+    "send": "Nachricht senden",
+    "success": "Vielen Dank! Wir melden uns bei Ihnen."
+  },
+  "footer": {
+    "imprint": "Impressum",
+    "privacy": "Datenschutz",
+    "newsletter": "Newsletter",
+    "newsletterCta": "Bleiben Sie informiert",
+    "subscribe": "Abonnieren",
+    "copyright": "© {year} Eilers & Friends. Alle Rechte vorbehalten."
+  }
+}

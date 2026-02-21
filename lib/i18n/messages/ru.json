@@ -1,0 +1,123 @@
+{
+  "common": {
+    "home": "Главная",
+    "about": "О нас",
+    "programs": "Программы",
+    "frameworks": "Фреймворки",
+    "blog": "Блог",
+    "contact": "Контакт",
+    "login": "Войти",
+    "logout": "Выйти",
+    "dashboard": "Панель управления",
+    "profile": "Профиль",
+    "language": "Язык",
+    "loading": "Загрузка...",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "back": "Назад",
+    "next": "Далее",
+    "previous": "Назад",
+    "submit": "Отправить",
+    "search": "Поиск",
+    "noResults": "Результатов не найдено",
+    "error": "Произошла ошибка",
+    "success": "Успешно"
+  },
+  "nav": {
+    "programs": "Программы",
+    "frameworks": "Фреймворки",
+    "blog": "Блог",
+    "about": "О нас",
+    "contact": "Контакт",
+    "portal": "Мой портал",
+    "admin": "Админ"
+  },
+  "home": {
+    "hero": {
+      "title": "Unternimm Dich",
+      "subtitle": "Коучинг-программы для устойчивого роста",
+      "cta": "Узнать о программах"
+    },
+    "programs": {
+      "title": "Наши программы",
+      "subtitle": "От мастерства продаж до лидерских компетенций"
+    },
+    "frameworks": {
+      "title": "Бесплатные фреймворки",
+      "subtitle": "Инструменты для немедленного применения"
+    },
+    "testimonials": {
+      "title": "Что говорят наши клиенты"
+    }
+  },
+  "programs": {
+    "overview": "Обзор программы",
+    "phases": "Фазы",
+    "duration": "Продолжительность",
+    "format": "Формат",
+    "learnMore": "Подробнее",
+    "enroll": "Записаться"
+  },
+  "frameworks": {
+    "download": "Скачать бесплатно",
+    "emailRequired": "Email для скачивания",
+    "downloadNow": "Скачать сейчас"
+  },
+  "blog": {
+    "readMore": "Читать далее",
+    "categories": "Категории",
+    "allPosts": "Все статьи",
+    "publishedOn": "Опубликовано",
+    "author": "Автор"
+  },
+  "portal": {
+    "myPrograms": "Мои программы",
+    "progress": "Прогресс",
+    "currentPhase": "Текущая фаза",
+    "nextStep": "Следующий шаг",
+    "completed": "Завершено",
+    "inProgress": "В процессе",
+    "locked": "Заблокировано",
+    "markComplete": "Отметить как выполненное",
+    "uploadWorkbook": "Загрузить рабочую тетрадь",
+    "bookSparring": "Забронировать спарринг",
+    "pendingReview": "Ожидает проверки",
+    "approved": "Одобрено",
+    "revisionRequested": "Требуется доработка"
+  },
+  "admin": {
+    "dashboard": "Панель управления",
+    "contacts": "Контакты",
+    "companies": "Компании",
+    "enrollments": "Зачисления",
+    "sequences": "Последовательности",
+    "reviews": "Отзывы",
+    "sparrings": "Спарринги",
+    "newSequence": "Новая последовательность",
+    "stats": {
+      "activeEnrollments": "Активные зачисления",
+      "pendingReviews": "Ожидающие проверки",
+      "upcomingSparrings": "Предстоящие спарринги",
+      "newLeads": "Новые лиды"
+    }
+  },
+  "contact": {
+    "title": "Связаться с нами",
+    "name": "Имя",
+    "email": "Email",
+    "company": "Компания",
+    "message": "Сообщение",
+    "send": "Отправить",
+    "success": "Спасибо! Мы свяжемся с вами."
+  },
+  "footer": {
+    "imprint": "Импрессум",
+    "privacy": "Политика конфиденциальности",
+    "newsletter": "Рассылка",
+    "newsletterCta": "Будьте в курсе",
+    "subscribe": "Подписаться",
+    "copyright": "© {year} Eilers & Friends. Все права защищены."
+  }
+}
