@@ -12,10 +12,3 @@ declare module "next-auth" {
     role: "admin" | "coach" | "participant";
   }
 }
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string;
-    role: "admin" | "coach" | "participant";
-  }
-}
