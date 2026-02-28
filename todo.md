@@ -6,5 +6,10 @@
 - [x] Aljona Keynote Speaker: Gelbe Karte mit Icon, Trennlinie, Themen als 3-Spalten-Grid
 - [x] Aljona Testimonials: Weißer Hintergrund, Sterne-Bewertungen, kein dunkler Hintergrund
 - [x] Aljona CTA: Gelber Hintergrund, 3 gelbe Benefit-Karten mit Icons, schwarzer Button
-- [ ] SalesMade Design 1:1 ans Original anpassen (Layout, Karten, Icons, Farben)
-- [ ] Markus Design 1:1 ans Original anpassen (Layout, Karten, Icons, Farben)
+- [x] SalesMade Design 1:1 ans Original anpassen (Layout, Karten, Icons, Farben) - bereits identisch
+- [x] Markus Design 1:1 ans Original anpassen (Layout, Karten, Icons, Farben)
+- [x] Erneuter detaillierter 1:1 Vergleich /salesmade: Original vs Vercel (alle Sektionen) - bereits identisch
+- [x] Erneuter detaillierter 1:1 Vergleich /markus: Original vs Vercel (alle Sektionen) - bereits identisch
+- [x] Alle verbleibenden Abweichungen in /salesmade korrigieren - keine Abweichungen gefunden
+- [x] Alle verbleibenden Abweichungen in /markus korrigieren - keine Abweichungen gefunden
+- [ ] Datenschutz-Seite 1:1 ans Original anpassen (Inhalt, Struktur, Design)
