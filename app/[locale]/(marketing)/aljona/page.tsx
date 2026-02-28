@@ -343,28 +343,31 @@ export default function Aljona() {
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
             {...staggerContainer}
           >
-            {[1, 2, 3].map((i) => (
-              <motion.div key={i} {...fadeInUp}>
+            {(['liquid', 'leadershe', 'bestseller'] as const).map((key) => (
+              <motion.div key={key} {...fadeInUp}>
                 <Card className="h-full flex flex-col overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-white">
                   <CardContent className="p-8 flex flex-col flex-grow">
                     <div className="mb-6">
-                      <h3 className="text-2xl font-bold mb-2">{t(`aljona.programs.program${i}.title`)}</h3>
-                      <p className="text-muted-foreground">{t(`aljona.programs.program${i}.description`)}</p>
+                      <h3 className="text-2xl font-bold mb-2">{t(`aljona.programs.${key}.title`)}</h3>
+                      <p className="text-muted-foreground mb-2">{t(`aljona.programs.${key}.subtitle`)}</p>
+                      <p className="text-sm text-muted-foreground">{t(`aljona.programs.${key}.description`)}</p>
                     </div>
+                    <p className="text-sm font-semibold mb-3">{t(`aljona.programs.${key}.section_title`)}</p>
                     <ul className="space-y-3 mb-8 text-sm flex-grow">
-                      {t(`aljona.programs.program${i}.features`).split('|').map((feature, index) => (
-                        <li key={index} className="flex items-center gap-3">
+                      {[1, 2, 3, 4, 5, 6].map((num) => (
+                        <li key={num} className="flex items-center gap-3">
                           <CheckCircle className="w-5 h-5 text-yellow-500 shrink-0" />
-                          <span>{feature}</span>
+                          <span>{t(`aljona.programs.${key}.feature${num}`)}</span>
                         </li>
                       ))}
                     </ul>
+                    <p className="text-sm italic text-muted-foreground mb-4">{t(`aljona.programs.${key}.quote`)}</p>
                     <Button 
                       size="lg" 
                       className="w-full bg-yellow-500 hover:bg-yellow-600 text-white mt-auto"
                       onClick={() => window.open('https://calendly.com/markuseilers/kennenlernen', '_blank')}
                     >
-                      {t('aljona.programs.cta')}
+                      {t(`aljona.programs.${key}.cta`)}
                     </Button>
                   </CardContent>
                 </Card>
