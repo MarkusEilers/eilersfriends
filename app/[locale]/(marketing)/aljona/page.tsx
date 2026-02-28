@@ -17,7 +17,9 @@ import {
   Sparkles,
   TrendingUp,
   Calendar,
-  Mic
+  Mic,
+  Brain,
+  Target
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -259,7 +261,7 @@ export default function Aljona() {
         </div>
       </section>
 
-      {/* Solution Section - MOF */}
+      {/* Solution Section - Liquid Leadership Ansatz (from Original) */}
       <section className="py-24 bg-background">
         <div className="container">
           <motion.div 
@@ -267,10 +269,14 @@ export default function Aljona() {
             {...fadeInUp}
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              {t('aljona.solution.headline')}
+              {t('aljona.framework.headline')}{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-400">
+                {t('aljona.framework.headline_highlight')}
+              </span>{" "}
+              {t('aljona.framework.headline_end')}
             </h2>
             <p className="text-xl text-muted-foreground">
-              {t('aljona.solution.subheadline')}
+              {t('aljona.framework.subheadline')}
             </p>
           </motion.div>
 
@@ -291,19 +297,24 @@ export default function Aljona() {
             >
               {[
                 {
-                  icon: BookOpen,
-                  title: t('aljona.solution.item1.title'),
-                  description: t('aljona.solution.item1.description')
+                  icon: Brain,
+                  title: t('aljona.framework.item1.title'),
+                  description: t('aljona.framework.item1.description')
                 },
                 {
-                  icon: Mic,
-                  title: t('aljona.solution.item2.title'),
-                  description: t('aljona.solution.item2.description')
+                  icon: MessageCircle,
+                  title: t('aljona.framework.item2.title'),
+                  description: t('aljona.framework.item2.description')
+                },
+                {
+                  icon: Shield,
+                  title: t('aljona.framework.item3.title'),
+                  description: t('aljona.framework.item3.description')
                 },
                 {
                   icon: Fingerprint,
-                  title: t('aljona.solution.item3.title'),
-                  description: t('aljona.solution.item3.description')
+                  title: t('aljona.framework.item4.title'),
+                  description: t('aljona.framework.item4.description')
                 }
               ].map((item, index) => (
                 <motion.div 
@@ -319,6 +330,22 @@ export default function Aljona() {
                   </div>
                 </motion.div>
               ))}
+
+              {/* Stats from Original */}
+              <div className="grid grid-cols-3 gap-4 pt-6 mt-6 border-t border-border">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-yellow-500">38%</div>
+                  <div className="text-xs text-muted-foreground">mehr Produktivität</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-yellow-500">90%+</div>
+                  <div className="text-xs text-muted-foreground">Team-Retention</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-yellow-500">0</div>
+                  <div className="text-xs text-muted-foreground">Burnout-Fälle</div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -377,7 +404,72 @@ export default function Aljona() {
         </div>
       </section>
 
-      {/* Testimonial Section - BOF */}
+      {/* Keynote Speaker Section - from Original */}
+      <section className="py-24 bg-background">
+        <div className="container">
+          <motion.div 
+            className="max-w-4xl mx-auto"
+            {...fadeInUp}
+          >
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  {t('aljona.speaker.headline')}{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-400">
+                    {t('aljona.speaker.headline_highlight')}
+                  </span>{" "}
+                  {t('aljona.speaker.headline_end')}
+                </h2>
+                <p className="text-lg text-muted-foreground mb-4">
+                  {t('aljona.speaker.subheadline')}
+                </p>
+                <p className="text-sm text-muted-foreground mb-8">
+                  {t('aljona.speaker.credentials')}
+                </p>
+
+                <div className="flex flex-wrap gap-4 mb-8">
+                  <Button 
+                    size="lg" 
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white"
+                    onClick={() => window.open('https://calendly.com/markuseilers/kennenlernen', '_blank')}
+                  >
+                    <Calendar className="w-5 h-5 mr-2" />
+                    {t('aljona.speaker.cta.primary')}
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="border-2"
+                    onClick={() => document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    {t('aljona.speaker.cta.secondary')}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="bg-yellow-50 rounded-2xl p-8">
+                <p className="text-sm font-semibold text-yellow-600 uppercase tracking-wider mb-6">
+                  {t('aljona.speaker.topics_title')}
+                </p>
+                <div className="space-y-4">
+                  {[
+                    t('aljona.speaker.topic1'),
+                    t('aljona.speaker.topic2'),
+                    t('aljona.speaker.topic3'),
+                  ].map((topic, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <Mic className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-foreground font-medium">{topic}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Testimonials Section - 3 Testimonials from Original */}
       <section className="py-24 bg-black text-white">
         <div className="container">
           <motion.div 
@@ -385,53 +477,101 @@ export default function Aljona() {
             {...fadeInUp}
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              {t('aljona.testimonial.headline')}
+              {t('aljona.testimonials.headline')}{" "}
+              <span className="text-yellow-400">{t('aljona.testimonials.headline_highlight')}</span>{" "}
+              {t('aljona.testimonials.headline_end')}
             </h2>
           </motion.div>
 
           <motion.div 
-            className="relative max-w-3xl mx-auto"
-            {...fadeInUp}
+            className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto"
+            {...staggerContainer}
           >
-            <Card className="bg-neutral-900 border-neutral-800 p-8 md:p-12 text-center">
-              <MessageCircle className="w-12 h-12 mx-auto mb-6 text-yellow-400" />
-              <p className="text-xl md:text-2xl italic leading-relaxed text-neutral-300 mb-8">
-                "{t('aljona.testimonial.quote')}"
-              </p>
-              <div className="flex items-center justify-center gap-4">
-                <img 
-                  src="/images/aljona/testimonial-author.png" 
-                  alt={t('aljona.testimonial.author_name')}
-                  className="w-16 h-16 rounded-full border-4 border-yellow-400"
-                />
-                <div>
-                  <p className="font-bold text-lg text-white">{t('aljona.testimonial.author_name')}</p>
-                  <p className="text-neutral-400">{t('aljona.testimonial.author_title')}</p>
-                </div>
-              </div>
-            </Card>
+            {[
+              {
+                quote: t('aljona.testimonial1.quote'),
+                author: t('aljona.testimonial1.author'),
+                role: t('aljona.testimonial1.role'),
+              },
+              {
+                quote: t('aljona.testimonial2.quote'),
+                author: t('aljona.testimonial2.author'),
+                role: t('aljona.testimonial2.role'),
+              },
+              {
+                quote: t('aljona.testimonial3.quote'),
+                author: t('aljona.testimonial3.author'),
+                role: t('aljona.testimonial3.role'),
+              },
+            ].map((item, index) => (
+              <motion.div key={index} {...fadeInUp} transition={{ delay: index * 0.1, duration: 0.6 }}>
+                <Card className="h-full bg-neutral-900 border-neutral-800">
+                  <CardContent className="p-8">
+                    <MessageCircle className="w-8 h-8 mb-4 text-yellow-400" />
+                    <p className="text-lg italic leading-relaxed text-neutral-300 mb-6">
+                      &ldquo;{item.quote}&rdquo;
+                    </p>
+                    <div>
+                      <p className="font-bold text-white">{item.author}</p>
+                      <p className="text-sm text-neutral-400">{item.role}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* CTA Section - BOF */}
+      {/* CTA Section - BOF with Bullets and Trust Items from Original */}
       <section className="py-24 bg-yellow-500">
         <div className="container text-center">
-          <motion.div {...fadeInUp}>
+          <motion.div {...fadeInUp} className="max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               {t('aljona.cta.headline')}
             </h2>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto mb-10">
+            <p className="text-xl text-white/80 mb-10">
               {t('aljona.cta.subheadline')}
             </p>
+
+            {/* Bullet Points */}
+            <div className="flex flex-col items-center gap-4 mb-10">
+              {[
+                t('aljona.cta.benefit1'),
+                t('aljona.cta.benefit2'),
+                t('aljona.cta.benefit3'),
+              ].map((benefit, index) => (
+                <div key={index} className="flex items-center gap-3 text-white/90">
+                  <CheckCircle className="w-5 h-5 text-white flex-shrink-0" />
+                  <span className="text-lg">{benefit}</span>
+                </div>
+              ))}
+            </div>
+
             <Button 
               size="lg" 
-              className="bg-white hover:bg-gray-100 text-yellow-600 px-10 py-7 text-xl"
+              className="bg-white hover:bg-gray-100 text-yellow-600 px-10 py-7 text-xl mb-8"
               onClick={() => window.open('https://calendly.com/markuseilers/kennenlernen', '_blank')}
             >
               <Calendar className="w-6 h-6 mr-3" />
               {t('aljona.cta.button')}
             </Button>
+
+            {/* Trust Items */}
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-white/70">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4" />
+                <span>{t('aljona.cta.trust1')}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                <span>{t('aljona.cta.trust2')}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Target className="w-4 h-4" />
+                <span>{t('aljona.cta.trust3')}</span>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -439,4 +579,3 @@ export default function Aljona() {
     </div>
   );
 }
-

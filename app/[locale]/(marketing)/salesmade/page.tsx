@@ -209,121 +209,55 @@
  <motion.div key={index} {...fadeInUp} transition={{ delay: index * 0.1, duration: 0.6 }}>
  <div className={`h-full rounded-2xl bg-gradient-to-br ${item.bgColor} to-transparent border ${item.borderColor} p-6 md:p-7 transition-all duration-300`}>
  <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70 mb-3">{item.persona}</div>
- <div className={`text-4xl font-bold ${item.color} mb-3`}>{item.number}</div>
- <h3 className="font-semibold mb-2">{item.label}</h3>
- <p className="text-sm text-muted-foreground/80">{item.description}</p>
+ <div className={`text-4xl md:text-5xl font-black ${item.color} mb-2`}>{item.number}</div>
+ <div className="text-sm font-semibold text-foreground mb-2">{item.label}</div>
+ <p className="text-xs text-muted-foreground leading-relaxed">{item.description}</p>
  </div>
  </motion.div>
  ))}
  </div>
  </motion.div>
- </div>
- </section>
 
- {/* Symptoms Section */}
- <section className="section-padding">
- <div className="container">
- <motion.div className="max-w-3xl mx-auto text-center mb-12" {...fadeInUp}>
- <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('sm.symptoms.headline')}</h2>
- <p className="text-lg text-muted-foreground leading-relaxed">{t('sm.symptoms.subheadline')}</p>
- </motion.div>
-
- <motion.div className="max-w-2xl mx-auto" {...fadeInUp}>
- <div className="space-y-4">
- {symptoms.map((symptom, index) => (
- <div key={index} className="flex items-center gap-4 p-4 rounded-lg bg-card border border-border">
- <symptom.icon className="w-6 h-6 text-blue-500" />
- <span className="font-medium">{symptom.text}</span>
+ {/* Rules Changed */}
+ <motion.div className="max-w-4xl mx-auto mb-12" {...fadeInUp}>
+ <div className="rounded-2xl bg-card border border-border p-8 md:p-10">
+ <h3 className="text-xl font-bold mb-4">{t('sm.rules.headline')}</h3>
+ <p className="text-sm text-muted-foreground leading-relaxed mb-6">{t('sm.rules.text')}</p>
+ <div className="grid md:grid-cols-2 gap-6">
+ <div className="flex items-start gap-4">
+ <div className="flex-shrink-0 w-16 text-center">
+ <div className="text-3xl font-black text-blue-500">{t('sm.rules.stat1.number')}</div>
+ <div className="text-[9px] text-muted-foreground/60 uppercase tracking-wider mt-0.5">{t('sm.rules.stat1.source')}</div>
  </div>
- ))}
- </div>
- </motion.div>
- </div>
- </section>
-
- {/* Vision Section */}
- <section className="section-padding bg-secondary/30">
- <div className="container">
- <motion.div className="max-w-4xl mx-auto text-center mb-12" {...fadeInUp}>
- <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('sm.vision.headline')}</h2>
- <p className="text-lg text-muted-foreground leading-relaxed">{t('sm.vision.subheadline')}</p>
- </motion.div>
-
- <motion.div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto" {...fadeInUp}>
- {visionItems.map((item, index) => (
- <div key={index} className="flex items-start gap-4 p-5 rounded-xl bg-card border border-border">
- <item.icon className="w-6 h-6 text-blue-500 mt-1" />
  <div>
- <p className="font-semibold">{item.text}</p>
+ <p className="text-sm font-semibold text-foreground mb-1">{t('sm.rules.stat1.label')}</p>
+ <p className="text-xs text-muted-foreground leading-relaxed">{t('sm.rules.stat1.text')}</p>
  </div>
  </div>
- ))}
- </motion.div>
+ <div className="flex items-start gap-4">
+ <div className="flex-shrink-0 w-16 text-center">
+ <div className="text-3xl font-black text-blue-500">{t('sm.rules.stat2.number')}</div>
+ <div className="text-[9px] text-muted-foreground/60 uppercase tracking-wider mt-0.5">{t('sm.rules.stat2.source')}</div>
  </div>
- </section>
-
- {/* System Section */}
- <section id="das-system" className="section-padding">
- <div className="container">
- <motion.div className="max-w-4xl mx-auto text-center mb-12" {...fadeInUp}>
- <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('sm.system.headline')}</h2>
- <p className="text-lg text-muted-foreground leading-relaxed">{t('sm.system.subheadline')}</p>
- </motion.div>
-
- <div className="grid lg:grid-cols-2 gap-12 items-center">
- <motion.div {...fadeInUp}>
- <h3 className="text-2xl font-bold mb-6">{t('sm.system.measures_headline')}</h3>
- <div className="space-y-5">
- {measures.map((measure, index) => (
- <div key={index} className="flex items-start gap-4">
- <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0 mt-1">
- <measure.icon className="w-5 h-5 text-blue-500" />
+ <div>
+ <p className="text-sm font-semibold text-foreground mb-1">{t('sm.rules.stat2.label')}</p>
+ <p className="text-xs text-muted-foreground leading-relaxed">{t('sm.rules.stat2.text')}</p>
  </div>
- <p className="text-muted-foreground">{measure.text}</p>
  </div>
- ))}
+ </div>
  </div>
  </motion.div>
 
- <motion.div {...fadeInUp} transition={{ delay: 0.2, duration: 0.6 }}>
- <Card className="bg-card border-border shadow-sm">
- <CardContent className="p-8">
- <h3 className="text-xl font-bold mb-6">{t('sm.system.skills_headline')}</h3>
- <div className="flex flex-wrap gap-3 mb-8">
- {skills.map((skill, index) => (
- <div key={index} className="px-3 py-1 rounded-full bg-secondary text-sm font-medium">{skill}</div>
- ))}
- </div>
-
- <div className="grid grid-cols-2 gap-6 text-center">
- {stats.map((stat, index) => (
- <div key={index}>
- <div className="text-3xl font-bold text-blue-500">{stat.number}</div>
- <div className="text-sm text-muted-foreground">{stat.label}</div>
- </div>
- ))}
- </div>
- </CardContent>
- </Card>
- </motion.div>
- </div>
- </div>
- </section>
-
- {/* Results Section */}
- <section className="section-padding bg-secondary/30">
- <div className="container">
- <motion.div className="max-w-4xl mx-auto text-center mb-12" {...fadeInUp}>
- <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('sm.results.headline')}</h2>
- <p className="text-lg text-muted-foreground leading-relaxed">{t('sm.results.subheadline')}</p>
- </motion.div>
-
+ {/* Symptoms */}
  <motion.div className="max-w-4xl mx-auto" {...fadeInUp}>
- <div className="grid md:grid-cols-2 gap-x-8 gap-y-4">
- {results.map((result, index) => (
- <div key={index} className="flex items-center gap-3">
- <CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0" />
- <span className="text-muted-foreground">{result}</span>
+ <h3 className="text-lg font-semibold mb-4 text-center">{t('sm.symptoms.headline')}</h3>
+ <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+ {symptoms.map((symptom, index) => (
+ <div key={index} className="flex flex-col items-center text-center gap-2 p-4 rounded-xl bg-card border border-border hover:border-red-300 dark:hover:border-red-500/30 transition-colors">
+ <div className="w-8 h-8 bg-red-500/10 rounded-lg flex items-center justify-center">
+ <symptom.icon className="w-4 h-4 text-red-400" />
+ </div>
+ <p className="text-xs text-muted-foreground leading-snug">{symptom.text}</p>
  </div>
  ))}
  </div>
@@ -331,48 +265,245 @@
  </div>
  </section>
 
- {/* Tools Section */}
+ {/* Good News + Vision */}
  <section className="section-padding">
  <div className="container">
- <motion.div className="max-w-4xl mx-auto text-center mb-12" {...fadeInUp}>
- <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('sm.tools.headline')}</h2>
- <p className="text-lg text-muted-foreground leading-relaxed">{t('sm.tools.subheadline')}</p>
+ <motion.div className="max-w-4xl mx-auto text-center mb-16" {...fadeInUp}>
+ <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 mb-6">
+ <CheckCircle2 className="w-4 h-4 text-green-500" />
+ <span className="text-sm font-medium text-green-600 dark:text-green-400">{t('sm.goodnews.badge')}</span>
+ </div>
+ <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">{t('sm.goodnews.headline')}</h2>
+ <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+ {t('sm.goodnews.text')} <strong className="text-foreground">{t('sm.goodnews.highlight')}</strong>
+ </p>
  </motion.div>
 
- <motion.div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" {...fadeInUp}>
+ <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+ {visionItems.map((item, index) => (
+ <motion.div key={index} {...fadeInUp} transition={{ delay: index * 0.08, duration: 0.6 }}
+ className="flex items-start gap-4 p-6 rounded-xl bg-blue-500/5 border border-blue-500/10 hover:border-blue-500/20 transition-colors">
+ <item.icon className="w-6 h-6 text-blue-500 flex-shrink-0 mt-0.5" />
+ <p className="text-foreground leading-relaxed">{item.text}</p>
+ </motion.div>
+ ))}
+ </div>
+ </div>
+ </section>
+
+ {/* Das System */}
+ <section id="das-system" className="section-padding bg-secondary/30">
+ <div className="container">
+ <motion.div className="max-w-4xl mx-auto mb-16" {...fadeInUp}>
+ <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-center">{t('sm.system.headline')}</h2>
+ <p className="text-lg md:text-xl text-muted-foreground leading-relaxed text-center mb-4">{t('sm.system.subheadline')}</p>
+ </motion.div>
+
+ {/* Steps */}
+ <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-16">
+ <motion.div {...fadeInUp}>
+ <div className="relative h-full rounded-2xl bg-gradient-to-br from-blue-500/[0.08] via-blue-400/[0.03] to-transparent border border-blue-500/15 p-8 md:p-10 group hover:border-blue-500/30 transition-all duration-300">
+ <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl -mr-10 -mt-10" />
+ <div className="relative">
+ <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 mb-5">
+ <Target className="w-4 h-4 text-blue-500" />
+ <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">{t('sm.system.step1.badge')}</span>
+ </div>
+ <h3 className="text-2xl font-bold mb-3">{t('sm.system.step1.title')}</h3>
+ <p className="text-muted-foreground leading-relaxed mb-6">
+ {t('sm.system.step1.text')} <strong className="text-foreground">{t('sm.system.step1.highlight')}</strong> {t('sm.system.step1.textEnd')}
+ </p>
+ <div className="flex flex-wrap gap-1.5">
+ {skills.map((skill) => (
+ <span key={skill} className="text-[11px] px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium">{skill}</span>
+ ))}
+ <span className="text-[11px] px-2.5 py-1 rounded-md bg-muted text-muted-foreground">{t('sm.system.skills.more')}</span>
+ </div>
+ </div>
+ </div>
+ </motion.div>
+
+ <motion.div {...fadeInUp} transition={{ delay: 0.15, duration: 0.6 }}>
+ <div className="relative h-full rounded-2xl bg-gradient-to-br from-green-500/[0.08] via-emerald-400/[0.03] to-transparent border border-green-500/15 p-8 md:p-10 group hover:border-green-500/30 transition-all duration-300">
+ <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-10 -mt-10" />
+ <div className="relative">
+ <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 mb-5">
+ <Sparkles className="w-4 h-4 text-green-500" />
+ <span className="text-xs font-semibold text-green-600 dark:text-green-400 uppercase tracking-wider">{t('sm.system.step2.badge')}</span>
+ </div>
+ <h3 className="text-2xl font-bold mb-3">{t('sm.system.step2.title')}</h3>
+ <p className="text-muted-foreground leading-relaxed mb-6">
+ {t('sm.system.step2.text')} <strong className="text-foreground">{t('sm.system.step2.highlight')}</strong> {t('sm.system.step2.textEnd')}
+ </p>
+ <div className="grid grid-cols-3 gap-3">
+ {[
+ { label: t('sm.system.step2.ai'), color: 'bg-green-500' },
+ { label: t('sm.system.step2.levels'), color: 'bg-blue-500' },
+ { label: t('sm.system.step2.realtime'), color: 'bg-amber-500' },
+ ].map((item) => (
+ <div key={item.label} className="flex items-center gap-2 text-xs text-muted-foreground">
+ <div className={`w-1.5 h-1.5 rounded-full ${item.color}`} />
+ <span>{item.label}</span>
+ </div>
+ ))}
+ </div>
+ </div>
+ </div>
+ </motion.div>
+ </div>
+
+ {/* Stats */}
+ <motion.div className="max-w-4xl mx-auto mb-12" {...fadeInUp}>
+ <div className="grid grid-cols-4 gap-4">
+ {stats.map((stat, index) => (
+ <div key={index} className="text-center p-4">
+ <div className="text-3xl font-bold mb-0.5 text-blue-500">{stat.number}</div>
+ <div className="text-xs text-muted-foreground">{stat.label}</div>
+ </div>
+ ))}
+ </div>
+ </motion.div>
+
+ {/* Measures */}
+ <motion.div className="max-w-5xl mx-auto mb-16" {...fadeInUp}>
+ <p className="text-sm font-medium text-muted-foreground text-center mb-6 uppercase tracking-wider">{t('sm.system.measures')}</p>
+ <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+ {measures.map((feature, index) => (
+ <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-border/50">
+ <feature.icon className="w-4 h-4 text-blue-500/70 flex-shrink-0" />
+ <span className="text-xs text-muted-foreground leading-snug">{feature.text}</span>
+ </div>
+ ))}
+ </div>
+ </motion.div>
+
+ {/* Results */}
+ <motion.div className="max-w-4xl mx-auto" {...fadeInUp}>
+ <h3 className="text-2xl font-bold mb-8 text-center">{t('sm.results.headline')}</h3>
+ <div className="grid md:grid-cols-2 gap-4">
+ {results.map((result, index) => (
+ <div key={index} className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border">
+ <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+ <p className="text-sm leading-relaxed">{result}</p>
+ </div>
+ ))}
+ </div>
+ </motion.div>
+ </div>
+ </section>
+
+ {/* Tools */}
+ <section className="section-padding">
+ <div className="container">
+ <motion.div className="max-w-4xl mx-auto text-center mb-16" {...fadeInUp}>
+ <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">{t('sm.tools.headline')}</h2>
+ <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">{t('sm.tools.subheadline')}</p>
+ </motion.div>
+
+ <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
  {tools.map((tool, index) => (
- <Card key={index} className="bg-card border-border hover:border-blue-500/50 hover:shadow-lg transition-all duration-300">
+ <motion.div key={index} {...fadeInUp} transition={{ delay: index * 0.06, duration: 0.6 }}>
+ <Card className="h-full border-0 shadow-md hover:shadow-lg transition-all">
  <CardContent className="p-6">
- <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
+ <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
  <tool.icon className="w-6 h-6 text-blue-500" />
  </div>
- <h3 className="text-lg font-semibold mb-2">{tool.title}</h3>
- <p className="text-sm text-muted-foreground">{tool.description}</p>
+ <h3 className="text-lg font-bold mb-2">{tool.title}</h3>
+ <p className="text-sm text-muted-foreground leading-relaxed">{tool.description}</p>
  </CardContent>
  </Card>
- ))}
  </motion.div>
+ ))}
+ </div>
  </div>
  </section>
 
- {/* Platinum Section */}
+ {/* Comparison: Zwei Wege */}
  <section className="section-padding bg-secondary/30">
  <div className="container">
- <motion.div className="max-w-6xl mx-auto" {...fadeInUp}>
- <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl text-white overflow-hidden">
- <div className="grid lg:grid-cols-2 items-center">
- <div className="p-8 md:p-12 order-2 lg:order-1">
- <h2 className="text-3xl md:text-4xl font-bold mb-6">{t('sm.platinum.headline')}</h2>
- <p className="text-lg text-blue-100/80 mb-8 leading-relaxed">{t('sm.platinum.subheadline')}</p>
+ <motion.div className="max-w-4xl mx-auto text-center mb-16" {...fadeInUp}>
+ <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">{t('sm.comparison.headline')}</h2>
+ </motion.div>
 
- <div className="space-y-5 mb-10">
+ <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+ <motion.div {...fadeInUp}>
+ <Card className="h-full border-0 shadow-md">
+ <CardContent className="p-8">
+ <div className="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center mb-6">
+ <Clock className="w-6 h-6 text-red-500" />
+ </div>
+ <h3 className="text-2xl font-bold mb-4">{t('sm.comparison.hard.title')}</h3>
+ <p className="text-muted-foreground leading-relaxed">
+ {t('sm.comparison.hard.text')} <strong className="text-foreground">{t('sm.comparison.hard.highlight')}</strong>{t('sm.comparison.hard.textEnd')}
+ </p>
+ </CardContent>
+ </Card>
+ </motion.div>
+
+ <motion.div {...fadeInUp} transition={{ delay: 0.1, duration: 0.6 }}>
+ <Card className="h-full border-2 border-blue-500/30 shadow-md">
+ <CardContent className="p-8">
+ <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6">
+ <Zap className="w-6 h-6 text-blue-500" />
+ </div>
+ <h3 className="text-2xl font-bold mb-4">{t('sm.comparison.easy.title')}</h3>
+ <p className="text-muted-foreground leading-relaxed">
+ {t('sm.comparison.easy.text')} <strong className="text-foreground">{t('sm.comparison.easy.highlight')}</strong> {t('sm.comparison.easy.textEnd')}
+ </p>
+ </CardContent>
+ </Card>
+ </motion.div>
+ </div>
+ </div>
+ </section>
+
+ {/* Platinum */}
+ <section className="section-padding">
+ <div className="container">
+ <motion.div className="max-w-4xl mx-auto" {...fadeInUp}>
+ <div className="relative rounded-2xl overflow-hidden">
+ <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900" />
+ <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(255,255,255,0.1)_0%,_transparent_60%)]" />
+ 
+ <div className="relative p-8 md:p-12">
+ <div className="flex items-center gap-4 mb-8">
+ <div className="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20">
+ <Award className="w-7 h-7 text-white" />
+ </div>
+ <div>
+ <h2 className="text-2xl md:text-3xl font-bold text-white">{t('sm.platinum.title')}</h2>
+ <div className="inline-flex items-center gap-1.5 mt-1">
+ <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+ <span className="text-sm text-blue-200">{t('sm.platinum.badge')}</span>
+ </div>
+ </div>
+ </div>
+
+ <div className="grid md:grid-cols-2 gap-6">
+ <div className="bg-white/[0.07] backdrop-blur-sm rounded-xl p-6 border border-white/10">
+ <h3 className="font-semibold text-white/90 text-sm uppercase tracking-wider mb-4">{t('sm.platinum.services.headline')}</h3>
+ <div className="space-y-4">
  <div className="flex items-start gap-3">
- <Sparkles className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+ <CheckCircle2 className="w-5 h-5 text-blue-300 flex-shrink-0 mt-0.5" />
+ <p className="text-sm text-blue-100/80 leading-relaxed">{t('sm.platinum.services.item1')}</p>
+ </div>
+ <div className="flex items-start gap-3">
+ <CheckCircle2 className="w-5 h-5 text-blue-300 flex-shrink-0 mt-0.5" />
+ <p className="text-sm text-blue-100/80 leading-relaxed">{t('sm.platinum.services.item2')}</p>
+ </div>
+ </div>
+ </div>
+ <div className="bg-white/[0.07] backdrop-blur-sm rounded-xl p-6 border border-white/10">
+ <h3 className="font-semibold text-white/90 text-sm uppercase tracking-wider mb-4">{t('sm.platinum.benefits.headline')}</h3>
+ <div className="space-y-4">
+ <div className="flex items-start gap-3">
+ <TrendingUp className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
  <p className="text-sm text-blue-100/80 leading-relaxed">{t('sm.platinum.benefits.item1')}</p>
  </div>
  <div className="flex items-start gap-3">
  <TrendingUp className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
  <p className="text-sm text-blue-100/80 leading-relaxed">{t('sm.platinum.benefits.item2')}</p>
+ </div>
  </div>
  </div>
  </div>
@@ -487,4 +618,3 @@
  </div>
  );
  }
- 
