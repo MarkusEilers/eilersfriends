@@ -316,7 +316,8 @@
         "feature6": "36-Monate Erfolgsgarantie",
         "quote": "Garantie: A-Kunde oder Geld zurück",
         "cta": "Mehr erfahren"
-      }
+      },
+      "cta": "Mehr erfahren"
     },
     "speaker": {
       "headline": "Aljona als",
@@ -363,6 +364,28 @@
       "trust1": "Wertvolle Perspektive von anderen Unternehmen",
       "trust2": "100% vertraulich",
       "trust3": "Für Tech-Führungskräfte"
+    },
+    "solution": {
+      "headline": "Dein Weg zur authentischen Führung",
+      "subheadline": "Ein bewährtes Framework für emotionale Intelligenz und wirksame Führung.",
+      "item1": {
+        "title": "Emotionale Klarheit",
+        "description": "Verstehe und nutze deine Emotionen als Führungsinstrument"
+      },
+      "item2": {
+        "title": "Empathische Kommunikation",
+        "description": "Sprich die Sprache deines Teams"
+      },
+      "item3": {
+        "title": "Resiliente Entscheidungen",
+        "description": "Klarheit unter Druck bewahren"
+      }
+    },
+    "testimonial": {
+      "headline": "Was Führungskräfte sagen",
+      "quote": "Alles, was ich erreicht habe, habe ich Dank und mit Aljona erreicht.",
+      "author_name": "Katharina Michrin",
+      "author_title": "Unternehmerin"
     }
   },
   "markus": {
@@ -429,7 +452,8 @@
       }
     },
     "testimonials": {
-      "headline": "Was Veranstalter sagen"
+      "headline": "Was Veranstalter sagen",
+      "subheadline": "Feedback von Event-Managern und Veranstaltern."
     },
     "testimonial1": {
       "text": "Markus hat unser Event mit seiner Keynote bereichert. Die Teilnehmer waren begeistert!",
@@ -453,6 +477,14 @@
       "trust1": "Kostenlose Erstberatung",
       "trust2": "Maßgeschneiderter Content",
       "trust3": "Für B2B-Events"
+    },
+    "credential1": {
+      "title": "TOP 100 Speaker",
+      "description": "Ausgezeichnet als einer der gefragtesten Keynote Speaker im deutschsprachigen Raum"
+    },
+    "credential2": {
+      "title": "Microsoft Cloud Ambassador",
+      "description": "Zertifizierter Experte und Berater für digitale Transformation und Cloud-Technologien"
     }
   },
   "sm": {
@@ -512,7 +544,8 @@
       "item1": "Sinkende Aktivität & Selbstvertrauen",
       "item2": "Kaum Zugang zu Entscheidern",
       "item3": "Niedrige Conversion-Raten",
-      "item4": "Demotivierende Abwärtsspirale"
+      "item4": "Demotivierende Abwärtsspirale",
+      "subheadline": "Erkennen Sie diese Muster in Ihrem Vertriebsteam?"
     },
     "goodnews": {
       "badge": "Die gute Nachricht",
@@ -526,7 +559,9 @@
       "item3": "Kunden, die sich komplett verstanden fühlen",
       "item4": "Schlaues Infotainment auf Augenhöhe, das zu gut informierten Entscheidungen inspiriert",
       "item5": "Angebote, die so unwiderstehlich verpackt sind, dass der Kunde sich bekloppt vorkommt, wenn er nicht zuschlägt",
-      "item6": "Planbare, vorhersehbare Umsätze und höhere Auftragsvolumen"
+      "item6": "Planbare, vorhersehbare Umsätze und höhere Auftragsvolumen",
+      "headline": "Stell Dir vor...",
+      "subheadline": "Die Herausforderung ist lösbar."
     },
     "system": {
       "headline": "Das System für planbaren Erfolg",
@@ -575,11 +610,13 @@
         "bedarfsanalyse": "Bedarfsanalyse",
         "einwandbehandlung": "Einwandbehandlung",
         "closing": "Closing",
-        "empathie": "Empathie",
+        "empathie": "Taktische Empathie",
         "storytelling": "Storytelling",
         "verhandlung": "Verhandlung",
         "more": "+7 weitere"
-      }
+      },
+      "measures_headline": "Begleitende Maßnahmen",
+      "skills_headline": "Die 13 Core Skills"
     },
     "results": {
       "headline": "Was unsere Teilnehmer konkret erreichen",
@@ -588,7 +625,8 @@
       "item3": "Messbare Reduktion der durchschnittlichen Dauer eines Verkaufszyklus um bis zu 38%",
       "item4": "Professionell ausgebildete Seller erzielen 48%–280% höhere Umsätze",
       "item5": "Aufbau einer klaren, bewährten Vertriebsstruktur",
-      "item6": "Deutlich verbesserte Kundenzufriedenheit durch gezielte und empathische Kommunikation"
+      "item6": "Deutlich verbesserte Kundenzufriedenheit durch gezielte und empathische Kommunikation",
+      "subheadline": "Messbare Ergebnisse, die für sich sprechen."
     },
     "tools": {
       "headline": "Werkzeuge statt Theorie",
@@ -657,7 +695,9 @@
         "headline": "Quantifizierte Vorteile",
         "item1": "Zusätzliche Steigerung der individuellen Verkaufs-Performance um bis zu 50%",
         "item2": "Schnelleres Erreichen individueller Vertriebsziele durch intensive 1:1-Begleitung"
-      }
+      },
+      "headline": "Platinum-Extras",
+      "subheadline": "Limitiert auf 30 Seats"
     },
     "roi": {
       "headline": "Wie viel Potenzial bleibt ungenutzt?",
@@ -691,6 +731,41 @@
       "tagline": "Von Unsicherheit zu planbaren Umsätzen.",
       "button": "Jetzt Benchmarking-Gespräch buchen",
       "footnote": "Nur noch wenige Plätze für den Soft-Launch verfügbar."
+    }
+  },
+  "Contact": {
+    "title": "Kontakt",
+    "subtitle": "Lass uns gemeinsam wachsen",
+    "description": "Hast du Fragen zu unseren Programmen oder möchtest du ein unverbindliches Strategie-Gespräch vereinbaren? Wir freuen uns auf deine Nachricht.",
+    "form": {
+      "name": "Name *",
+      "email": "E-Mail *",
+      "company": "Unternehmen",
+      "subject": "Betreff",
+      "message": "Nachricht *",
+      "submit": "Nachricht senden",
+      "sending": "Wird gesendet...",
+      "submitError": "Fehler beim Senden. Bitte versuche es erneut."
+    },
+    "success": {
+      "title": "Nachricht gesendet!",
+      "message": "Vielen Dank für deine Nachricht. Wir melden uns innerhalb von 24 Stunden bei dir.",
+      "another": "Weitere Nachricht senden"
+    },
+    "contact": {
+      "email": "team@eilersfriends.com",
+      "address": "Blütenäcker 55/2, 71332 Waiblingen",
+      "hours": "Mo-Fr: 9:00 - 18:00 Uhr"
+    },
+    "info": {
+      "emailTitle": "E-Mail",
+      "addressTitle": "Standort",
+      "hoursTitle": "Erreichbarkeit"
+    },
+    "strategy": {
+      "title": "Strategie-Gespräch buchen",
+      "description": "30 Minuten, die dein Business verändern können.",
+      "button": "Termin vereinbaren"
     }
   }
 }

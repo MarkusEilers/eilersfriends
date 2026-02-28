@@ -318,7 +318,8 @@
         "feature6": "36-month success guarantee",
         "quote": "Guarantee: A-customer or money back",
         "cta": "Learn More"
-      }
+      },
+      "cta": "Learn more"
     },
     "speaker": {
       "headline": "Book Aljona as",
@@ -364,6 +365,28 @@
       "trust1": "Valuable perspective from other companies",
       "trust2": "100% confidential",
       "trust3": "For tech leaders"
+    },
+    "solution": {
+      "headline": "Your Path to Authentic Leadership",
+      "subheadline": "A proven framework for emotional intelligence and effective leadership.",
+      "item1": {
+        "title": "Emotional Clarity",
+        "description": "Understand and use your emotions as a leadership tool"
+      },
+      "item2": {
+        "title": "Empathetic Communication",
+        "description": "Speak the language of your team"
+      },
+      "item3": {
+        "title": "Resilient Decisions",
+        "description": "Maintain clarity under pressure"
+      }
+    },
+    "testimonial": {
+      "headline": "What Leaders Say",
+      "quote": "Everything I have achieved, I have achieved thanks to and with Aljona.",
+      "author_name": "Katharina Michrin",
+      "author_title": "Entrepreneur"
     }
   },
   "markus": {
@@ -430,7 +453,8 @@
       }
     },
     "testimonials": {
-      "headline": "What Organizers Say"
+      "headline": "What Organizers Say",
+      "subheadline": "Feedback from event managers and organizers."
     },
     "testimonial1": {
       "text": "Markus enriched our event with his keynote. The participants were thrilled!",
@@ -454,6 +478,14 @@
       "trust1": "Free Initial Consultation",
       "trust2": "Tailored Content",
       "trust3": "For B2B Events"
+    },
+    "credential1": {
+      "title": "TOP 100 Speaker",
+      "description": "Recognized as one of the most sought-after keynote speakers in the German-speaking region"
+    },
+    "credential2": {
+      "title": "Microsoft Cloud Ambassador",
+      "description": "Certified expert and consultant for digital transformation and cloud technologies"
     }
   },
   "sm": {
@@ -513,7 +545,8 @@
       "item1": "Declining Activity & Confidence",
       "item2": "Little Access to Decision-Makers",
       "item3": "Low Conversion Rates",
-      "item4": "Demoralizing Downward Spiral"
+      "item4": "Demoralizing Downward Spiral",
+      "subheadline": "Do you recognize these patterns in your sales team?"
     },
     "goodnews": {
       "badge": "The Good News",
@@ -527,7 +560,9 @@
       "item3": "Customers who feel completely understood",
       "item4": "Smart infotainment at eye level that inspires well-informed decisions",
       "item5": "Offers packaged so irresistibly that the customer would feel foolish saying no",
-      "item6": "Predictable, foreseeable revenue and higher deal volumes"
+      "item6": "Predictable, foreseeable revenue and higher deal volumes",
+      "headline": "Imagine...",
+      "subheadline": "The challenge is solvable."
     },
     "system": {
       "headline": "The System for Predictable Success",
@@ -576,11 +611,13 @@
         "bedarfsanalyse": "Needs Analysis",
         "einwandbehandlung": "Objection Handling",
         "closing": "Closing",
-        "empathie": "Empathy",
+        "empathie": "Tactical Empathy",
         "storytelling": "Storytelling",
         "verhandlung": "Negotiation",
         "more": "+7 more"
-      }
+      },
+      "measures_headline": "Accompanying Measures",
+      "skills_headline": "The 13 Core Skills"
     },
     "results": {
       "headline": "What Our Participants Concretely Achieve",
@@ -589,7 +626,8 @@
       "item3": "Measurable reduction in average sales cycle duration by up to 38%",
       "item4": "Professionally trained sellers achieve 48%–280% higher revenues",
       "item5": "Building a clear, proven sales structure",
-      "item6": "Significantly improved customer satisfaction through targeted, empathetic communication"
+      "item6": "Significantly improved customer satisfaction through targeted, empathetic communication",
+      "subheadline": "Measurable results that speak for themselves."
     },
     "tools": {
       "headline": "Tools, Not Theory",
@@ -658,7 +696,9 @@
         "headline": "Quantified Benefits",
         "item1": "Additional increase in individual sales performance by up to 50%",
         "item2": "Faster achievement of individual sales targets through intensive 1:1 support"
-      }
+      },
+      "headline": "Platinum Extras",
+      "subheadline": "Limited to 30 Seats"
     },
     "roi": {
       "headline": "How Much Potential Remains Untapped?",
@@ -692,6 +732,41 @@
       "tagline": "From uncertainty to predictable revenue.",
       "button": "Book Your Benchmarking Call Now",
       "footnote": "Only a few spots left for the soft launch."
+    }
+  },
+  "Contact": {
+    "title": "Contact",
+    "subtitle": "Let's grow together",
+    "description": "Have questions about our programs or want to schedule a free strategy call? We look forward to hearing from you.",
+    "form": {
+      "name": "Name *",
+      "email": "Email *",
+      "company": "Company",
+      "subject": "Subject",
+      "message": "Message *",
+      "submit": "Send Message",
+      "sending": "Sending...",
+      "submitError": "Error sending. Please try again."
+    },
+    "success": {
+      "title": "Message Sent!",
+      "message": "Thank you for your message. We will get back to you within 24 hours.",
+      "another": "Send another message"
+    },
+    "contact": {
+      "email": "team@eilersfriends.com",
+      "address": "Blütenäcker 55/2, 71332 Waiblingen, Germany",
+      "hours": "Mon-Fri: 9:00 AM - 6:00 PM"
+    },
+    "info": {
+      "emailTitle": "Email",
+      "addressTitle": "Location",
+      "hoursTitle": "Availability"
+    },
+    "strategy": {
+      "title": "Book a Strategy Call",
+      "description": "30 minutes that can change your business.",
+      "button": "Schedule Now"
     }
   }
 }
