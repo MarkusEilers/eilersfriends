@@ -12,10 +12,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Sanity Studio route
-  experimental: {
-    // Enable server actions
-  },
 };
 
 export default withNextIntl(nextConfig);

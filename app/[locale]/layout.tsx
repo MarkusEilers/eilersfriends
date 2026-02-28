@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
+
+export const dynamic = 'force-dynamic';
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/lib/i18n/routing";
+import Navigation from "@/components/shared/navigation";
+import Footer from "@/components/shared/footer";
+import CookieBanner from "@/components/shared/cookie-banner";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export const metadata: Metadata = {
   title: {
@@ -30,7 +39,12 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      {children}
+      <Navigation />
+      <main className="min-h-screen">
+        {children}
+      </main>
+      <Footer />
+      <CookieBanner />
     </NextIntlClientProvider>
   );
 }

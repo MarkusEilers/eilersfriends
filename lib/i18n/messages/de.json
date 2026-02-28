@@ -1,123 +1,696 @@
 {
   "common": {
-    "home": "Startseite",
-    "about": "Über uns",
-    "programs": "Programme",
-    "frameworks": "Frameworks",
-    "blog": "Blog",
-    "contact": "Kontakt",
-    "login": "Anmelden",
-    "logout": "Abmelden",
-    "dashboard": "Dashboard",
-    "profile": "Profil",
-    "language": "Sprache",
-    "loading": "Laden...",
-    "save": "Speichern",
-    "cancel": "Abbrechen",
-    "delete": "Löschen",
-    "edit": "Bearbeiten",
-    "back": "Zurück",
-    "next": "Weiter",
-    "previous": "Zurück",
-    "submit": "Absenden",
-    "search": "Suchen",
-    "noResults": "Keine Ergebnisse gefunden",
-    "error": "Ein Fehler ist aufgetreten",
-    "success": "Erfolgreich"
+    "learnMore": "Mehr erfahren"
   },
   "nav": {
-    "programs": "Programme",
-    "frameworks": "Frameworks",
-    "blog": "Blog",
+    "home": "Home",
     "about": "Über uns",
+    "programs": "Programme",
+    "salesmade": "SalesMade",
+    "results": "Ergebnisse",
+    "team": "Team",
+    "resources": "Ressourcen",
     "contact": "Kontakt",
-    "portal": "Mein Portal",
-    "admin": "Admin"
-  },
-  "home": {
-    "hero": {
-      "title": "Unternimm Dich",
-      "subtitle": "Coaching-Programme für nachhaltiges Wachstum",
-      "cta": "Programme entdecken"
-    },
-    "programs": {
-      "title": "Unsere Programme",
-      "subtitle": "Von der Vertriebsexzellenz bis zur Führungskompetenz"
-    },
-    "frameworks": {
-      "title": "Kostenfreie Frameworks",
-      "subtitle": "Sofort anwendbare Tools für Ihren Erfolg"
-    },
-    "testimonials": {
-      "title": "Was unsere Kunden sagen"
-    }
-  },
-  "programs": {
-    "overview": "Programmübersicht",
-    "phases": "Phasen",
-    "duration": "Dauer",
-    "format": "Format",
-    "learnMore": "Mehr erfahren",
-    "enroll": "Jetzt anmelden"
-  },
-  "frameworks": {
-    "download": "Kostenfrei herunterladen",
-    "emailRequired": "E-Mail-Adresse für den Download",
-    "downloadNow": "Jetzt herunterladen"
-  },
-  "blog": {
-    "readMore": "Weiterlesen",
-    "categories": "Kategorien",
-    "allPosts": "Alle Beiträge",
-    "publishedOn": "Veröffentlicht am",
-    "author": "Autor"
-  },
-  "portal": {
-    "myPrograms": "Meine Programme",
-    "progress": "Fortschritt",
-    "currentPhase": "Aktuelle Phase",
-    "nextStep": "Nächster Schritt",
-    "completed": "Abgeschlossen",
-    "inProgress": "In Bearbeitung",
-    "locked": "Gesperrt",
-    "markComplete": "Als abgeschlossen markieren",
-    "uploadWorkbook": "Workbook hochladen",
-    "bookSparring": "Sparring buchen",
-    "pendingReview": "Wartet auf Review",
-    "approved": "Genehmigt",
-    "revisionRequested": "Überarbeitung angefordert"
-  },
-  "admin": {
+    "login": "Anmelden",
     "dashboard": "Dashboard",
-    "contacts": "Kontakte",
-    "companies": "Firmen",
-    "enrollments": "Einschreibungen",
-    "sequences": "Sequences",
-    "reviews": "Reviews",
-    "sparrings": "Sparrings",
-    "newSequence": "Neue Sequence",
-    "stats": {
-      "activeEnrollments": "Aktive Einschreibungen",
-      "pendingReviews": "Offene Reviews",
-      "upcomingSparrings": "Anstehende Sparrings",
-      "newLeads": "Neue Leads"
+    "logout": "Abmelden",
+    "aljona": "Aljona Eilers",
+    "markus": "Markus Eilers",
+    "liquid": "Liquid Leadership",
+    "language": "Sprache"
+  },
+  "hero": {
+    "tagline": "Für ambitionierte Gründer und Gründerinnen",
+    "headline": "Entfessle Dein Winning Team",
+    "subheadline": "für planbares Wachstum",
+    "description": "Du hast Dein Unternehmen mit viel Energie aufgebaut. Deine Energie lässt sich nicht endlos skalieren. Ein funktionierendes System schon.",
+    "cta": {
+      "primary": "Strategie-Gespräch buchen",
+      "secondary": "Mehr erfahren"
+    },
+    "social_proof": "Unternehmen, die uns vertrauen"
+  },
+  "problem": {
+    "headline": "Wachstum hat Nebenwirkungen.",
+    "subheadline": "Und niemand hat Dich davor gewarnt.",
+    "avatar1": {
+      "title": "Das Plateau nach dem Hustle",
+      "description": "Du hast €1-3M mit Energie, Talent und Willenskraft erreicht. Respekt. Aber jetzt merkst Du: Mehr vom Gleichen bringt nicht mehr Ergebnis. Die Strategien, die Dich hierher gebracht haben, sind nicht die, die Dich weiterbringen."
+    },
+    "avatar2": {
+      "title": "Der unsichtbare Preis des Wachstums",
+      "description": "Dein LinkedIn sagt Erfolg. Dein Bauchgefühl sagt: irgendwas stimmt nicht. Du triffst 47 Entscheidungen am Tag, hältst den Laden zusammen — und fragst Dich abends, ob das so weitergehen kann. Spoiler: Muss es nicht."
+    },
+    "avatar3": {
+      "title": "€10M+. Aber das Chaos wächst mit.",
+      "description": "Die Zahlen stimmen. Aber unter der Oberfläche? Zu viele Baustellen, zu wenig Struktur. Deine besten Leute spüren das. Du auch. Irgendwo muss der Hebel sein."
     }
   },
-  "contact": {
-    "title": "Kontakt aufnehmen",
-    "name": "Name",
-    "email": "E-Mail",
-    "company": "Unternehmen",
-    "message": "Nachricht",
-    "send": "Nachricht senden",
-    "success": "Vielen Dank! Wir melden uns bei Ihnen."
+  "framework": {
+    "badge": "Deine Coaches",
+    "headline": "Zwei Disziplinen. Ein Ergebnis.",
+    "subheadline": "500+ Gründer:innen und €50M+ Umsatz haben uns eines gelehrt: Revenue ohne Leadership ist ein Strohfeuer. Leadership ohne Revenue ist ein Hobby.",
+    "markus": {
+      "title": "Revenue Systems",
+      "name": "Markus Eilers",
+      "description": "Systeme, die funktionieren — auch wenn Du nicht da bist",
+      "result": "48% Umsatzwachstum, 2x Conversions"
+    },
+    "aljona": {
+      "title": "Transformational Leadership",
+      "name": "Aljona Eilers",
+      "description": "Führung, die Menschen folgen wollen",
+      "result": "90%+ Team-Retention, nachhaltiges Wachstum"
+    },
+    "together": "Zusammen: Winning Teams"
+  },
+  "results": {
+    "headline": "Was passiert, wenn Du beides hast",
+    "case1": {
+      "company": "B2B SaaS Unternehmen",
+      "metric": "22% → 68%",
+      "label": "Conversion Rate",
+      "quote": "„Wir dachten, wir bräuchten mehr Leads. Wir brauchten ein System. Jetzt schließt unser Team Deals, die ich früher selbst machen musste.“"
+    },
+    "case2": {
+      "company": "Female Founder, Series A",
+      "metric": "85% → 95%",
+      "label": "Team Retention",
+      "quote": "„Ich dachte, ich muss wählen: Erfolg oder Gesundheit. Aljona zeigte mir, dass das eine Lüge ist. Jetzt habe ich beides.“"
+    },
+    "case3": {
+      "company": "Growth Stage Startup",
+      "metric": "€8M → €12M",
+      "label": "Jahresumsatz",
+      "quote": "„Zum ersten Mal fühle ich mich wie ein Leader, nicht wie ein Überarbeiteter. Mein Team folgt mir, weil sie wollen — nicht weil sie müssen.“"
+    }
+  },
+  "beliefs": {
+    "headline": "Was die besten Gründer anders machen",
+    "belief1": {
+      "title": "Umsatz ist kein Zufall",
+      "description": "Planbarer Umsatz entsteht nicht durch Glück, sondern durch ein System. Und gute Systeme kann man bauen — Schritt für Schritt."
+    },
+    "belief2": {
+      "title": "Hustle hat ein Verfallsdatum",
+      "description": "Voller Einsatz bringt Dich bis €5M. Aber darüber hinaus? Da braucht es Strukturen, die auch ohne Dich funktionieren. Ohne Burnout. Ohne Drama."
+    },
+    "belief3": {
+      "title": "Führung kann man lernen",
+      "description": "Gute Führung ist kein Talent, das man hat oder nicht. Sie ist ein Handwerk — wie Verhandeln, wie Verkaufen. Und sie lässt sich trainieren."
+    },
+    "belief4": {
+      "title": "Du bist in guter Gesellschaft",
+      "description": "Über 500 Gründer:innen hatten exakt dieselben Zweifel wie Du. Keiner von ihnen hat es alleine gelöst. Alle haben es gelöst."
+    }
+  },
+  "offers": {
+    "headline": "Finde Deinen Einstieg",
+    "salesmade": {
+      "title": "SalesMade Academy",
+      "tagline": "Der Weg zu planbaren Aufträgen für Dein wachsendes B2B-Unternehmen. Strukturiert in 13 klaren Schritten.",
+      "feature1": "13-Schritte Framework",
+      "feature2": "Wöchentliches Gruppen-Coaching",
+      "feature3": "Private Community",
+      "feature4": "1:1 Sparring Sessions"
+    },
+    "liquid": {
+      "title": "Liquid Leadership",
+      "tagline": "Für Führungskräfte, die spüren, dass ihr Team mehr kann — und wissen wollen, wie sie es entfesseln.",
+      "feature1": "6-monatiges Intensiv-Programm",
+      "feature2": "4x monatliche 1:1 Coaching Sessions",
+      "feature3": "EQ & Kommunikations-Training",
+      "feature4": "Lifetime Alumni-Netzwerk"
+    },
+    "winning": {
+      "title": "Winning Team Programm",
+      "tagline": "Revenue Systems + Transformational Leadership. Wenn Du bereit bist, beides gleichzeitig anzugehen.",
+      "feature1": "SalesMade + LeaderShe komplett",
+      "feature2": "Executive Coaching",
+      "feature3": "Team Workshops",
+      "feature4": "Custom Strategy"
+    },
+    "cta": "Mehr erfahren"
+  },
+  "testimonials": {
+    "headline": "Was Gründer:innen sagen"
+  },
+  "calculator": {
+    "headline": "Was ist dein Wachstumspotenzial?",
+    "subheadline": "Sieh, was mit den richtigen Systemen und Führung möglich ist",
+    "revenue": "Aktueller Jahresumsatz",
+    "conversion": "Aktuelle Conversion Rate",
+    "dealsize": "Durchschnittliche Deal-Größe",
+    "result": {
+      "current": "Aktueller Umsatz",
+      "potential": "Potenzial mit 2x Conversion",
+      "growth": "Mögliches Wachstum"
+    },
+    "cta": "Erfahre, wie du das erreichst"
+  },
+  "guarantee": {
+    "headline": "Wir sind überzeugt von unserem Ansatz",
+    "item1": {
+      "title": "30-Tage Geld-zurück-Garantie",
+      "description": "Wenn du in 30 Tagen keine Ergebnisse siehst, erstatten wir 100% deiner Investition."
+    },
+    "item2": {
+      "title": "90-Tage Transformations-Garantie",
+      "description": "Wir garantieren messbare Ergebnisse in 90 Tagen. Oder wir arbeiten kostenlos weiter."
+    },
+    "item3": {
+      "title": "Laufender Support",
+      "description": "Du bist nicht allein. Wir bieten laufenden Support, Coaching und Community."
+    }
+  },
+  "cta": {
+    "headline": "Lass uns herausfinden, wo Du stehst",
+    "subheadline": "45 Minuten. Kein Pitch. Nur ein ehrliches Gespräch darüber, was bei Dir gerade wirklich los ist.",
+    "button": "Gespräch buchen",
+    "guarantee": "Kostenlos • Kein Verkaufsgespräch • Nur Klarheit"
   },
   "footer": {
-    "imprint": "Impressum",
+    "tagline": "Unleash your Winning Team for Predictable Growth",
+    "programs": "Programme",
+    "coaches": "Coaches",
+    "company": "Unternehmen",
+    "legal": "Rechtliches",
     "privacy": "Datenschutz",
-    "newsletter": "Newsletter",
-    "newsletterCta": "Bleiben Sie informiert",
-    "subscribe": "Abonnieren",
-    "copyright": "© {year} Eilers & Friends. Alle Rechte vorbehalten."
+    "imprint": "Impressum",
+    "cookies": "Cookie-Einstellungen",
+    "terms": "AGB",
+    "copyright": "© 2025 Eilers+Friends. Alle Rechte vorbehalten.",
+    "rights": "Alle Rechte vorbehalten.",
+    "made_with": "Made with ❤️ für Gründer:innen",
+    "salesmade": "SalesMade Academy",
+    "leadershe": "LeaderShe Circle",
+    "liquid_leadership": "Liquid Leadership",
+    "aljona": "Aljona Eilers",
+    "markus": "Markus Eilers",
+    "sparring": "Strategie-Gespräch",
+    "about": "Über uns",
+    "team": "Team",
+    "contact": "Kontakt"
+  },
+  "newsletter": {
+    "badge": "Der Growth & Leadership Unternehmerletter",
+    "headline": "Schließ Dich 6.552 anderen Unternehmer:Innen an für praktische Tipps & Denkanstöße",
+    "description": "Werde ein wichtiger Teil dieser informativen und motivierenden Unternehmer-Community.",
+    "placeholder": {
+      "name": "Name",
+      "email": "E-Mail"
+    },
+    "button": "Anmelden",
+    "privacy": "Ja, ich möchte kostenlose E-Mails von Eilers+Friends bekommen und auf Basis meiner angegebenen Anmeldedaten sowie meines Newsletter-Nutzungsverhaltens auf mich abgestimmte Informationen an die angegebene E-Mail-Adresse erhalten. Ich kann diesen Service in jeder E-Mail wieder abbestellen. Ich habe die Datenschutzbedingungen gelesen und stimme diesen ausdrücklich zu.",
+    "submitting": "Wird gesendet...",
+    "success": {
+      "title": "Willkommen an Bord!",
+      "message": "Vielen Dank für deine Anmeldung. Bitte bestätige deine E-Mail-Adresse."
+    }
+  },
+  "aljona": {
+    "hero": {
+      "tagline": "Leadership für ein WinningTeam",
+      "headline": "Mit Empathie und Selbstführung zum",
+      "headline_highlight": "Leader, dem andere gerne folgen.",
+      "subheadline": "Die Leadership Secrets einer Bolshoi Ballerina und Serial-Entrepreneurin.",
+      "cta": {
+        "primary": "Kostenloses Strategiegespräch",
+        "secondary": "Programme entdecken"
+      },
+      "trust1": "500+ Führungskräfte begleitet",
+      "trust2": "15+ Jahre Erfahrung",
+      "badge": "TEDx Speaker • WSJ Bestseller-Autorin",
+      "testimonial": "\"Alles, was ich erreicht habe, habe ich Dank Aljona erreicht.\"",
+      "testimonial_author": "Katharina M."
+    },
+    "marquee": {
+      "title": "Bekannt aus"
+    },
+    "problem": {
+      "headline": "Du führst ein erfolgreiches Team.",
+      "headline_highlight": "Aber zu welchem Preis?",
+      "subheadline": "76% der Führungskräfte fürchten das Tempo der KI-Adoption. Aber die wahre Herausforderung ist nicht die Technologie — es ist die menschliche Führung.",
+      "item1": {
+        "title": "Burnout-Spirale",
+        "description": "Du arbeitest 60+ Stunden, aber das Team liefert nicht wie erwartet"
+      },
+      "item2": {
+        "title": "Talent-Flucht",
+        "description": "Deine besten Leute gehen — und du weißt nicht warum"
+      },
+      "item3": {
+        "title": "Emotionale Distanz",
+        "description": "Du fühlst dich isoliert, obwohl du von Menschen umgeben bist"
+      },
+      "item4": {
+        "title": "Entscheidungsmüdigkeit",
+        "description": "Jede Entscheidung fühlt sich schwerer an als die letzte"
+      }
+    },
+    "framework": {
+      "headline": "Der",
+      "headline_highlight": "Liquid Leadership",
+      "headline_end": "Ansatz",
+      "subheadline": "Führung, die sich anpasst — ohne sich zu verlieren. Basierend auf Applied Neuroscience und 15+ Jahren Praxiserfahrung.",
+      "item1": {
+        "title": "Emotionale Intelligenz",
+        "description": "Verstehe dich selbst, bevor du andere führst"
+      },
+      "item2": {
+        "title": "Adaptive Kommunikation",
+        "description": "Sprich die Sprache deines Teams"
+      },
+      "item3": {
+        "title": "Resiliente Entscheidungen",
+        "description": "Klarheit unter Druck bewahren"
+      },
+      "item4": {
+        "title": "Authentische Präsenz",
+        "description": "Führe mit deiner wahren Stärke"
+      }
+    },
+    "programs": {
+      "headline": "Wähle Deinen Weg",
+      "subheadline": "Wähle den Weg, der zu Dir passt.",
+      "liquid": {
+        "badge": "⭐ Empfohlen",
+        "title": "Liquid Leadership",
+        "subtitle": "Für Tech-Führungskräfte, die ihr Team auf das nächste Level bringen wollen.",
+        "description": "Ein 6-monatiges Intensiv-Programm, das emotionale Intelligenz mit Applied Neuroscience verbindet.",
+        "section_title": "Was Dich erwartet:",
+        "feature1": "Persönliche Bestandsaufnahme & Zielsetzung",
+        "feature2": "4x monatliche 1:1 Coaching Sessions",
+        "feature3": "EQ & Kommunikations-Training",
+        "feature4": "2-wöchentliche Gruppen-Masterminds",
+        "feature5": "Zugang zu exklusiven Leadership-Resources",
+        "feature6": "Lifetime Alumni-Netzwerk",
+        "quote": "\"Leader, denen ihr Team mit Begeisterung folgt\"",
+        "cta": "Mehr erfahren"
+      },
+      "leadershe": {
+        "title": "LeaderShe Mastermind",
+        "subtitle": "Für Frauen in Führungspositionen in Technologie-Unternehmen.",
+        "description": "Eine exklusive Community für weibliche Tech-Leader, die authentisch führen wollen.",
+        "section_title": "Deine Vorteile:",
+        "feature1": "Monatliche Mastermind-Sessions",
+        "feature2": "Peer Support & Accountability Network",
+        "feature3": "Exklusive Leadership-Resources",
+        "feature4": "Quarterly Retreats & Workshops",
+        "feature5": "1:1 Coaching-Calls bei Bedarf",
+        "feature6": "Zugang zur LeaderShe Community",
+        "quote": "\"Erkenne ungenutztes Potenzial. Führe authentisch.\"",
+        "cta": "Mehr erfahren"
+      },
+      "bestseller": {
+        "badge": "✨ NEU",
+        "title": "Bestseller-Programm",
+        "subtitle": "Ihr persönlicher Bestseller — Die Story, die Entscheider begeistert.",
+        "description": "Werde zum Thought Leader mit Deinem eigenen Buch auf Amazon & Barnes & Noble.",
+        "section_title": "Ihr Weg zum Bestseller:",
+        "feature1": "Deine Hero-Journey als Buch (200+ Seiten)",
+        "feature2": "12+ Monate an überzeugendem Content",
+        "feature3": "Plattform für Premium-Kundengewinnung",
+        "feature4": "Amazon & Barnes & Noble Veröffentlichung",
+        "feature5": "Marketing & Launch-Support",
+        "feature6": "36-Monate Erfolgsgarantie",
+        "quote": "Garantie: A-Kunde oder Geld zurück",
+        "cta": "Mehr erfahren"
+      }
+    },
+    "speaker": {
+      "headline": "Aljona als",
+      "headline_highlight": "Keynote-Sprecherin",
+      "headline_end": "buchen",
+      "subheadline": "Von Bolshoi Ballet zur Tech-Leadership — Eine Story, die bewegt und inspiriert.",
+      "credentials": "TEDx Speaker • WSJ Bestseller-Autorin • Applied Neuroscience Expert",
+      "cta": {
+        "primary": "Verfügbarkeit anfragen",
+        "secondary": "Mehr Infos"
+      },
+      "topics_title": "Beliebte Keynote-Themen:",
+      "topic1": "Geheimnisse für Wirksames Leadership in einer AI Welt",
+      "topic2": "Wenn Dir niemand folgen möchte, bist Du kein Leader",
+      "topic3": "Wirksamer führen mit Emotionaler Intelligenz"
+    },
+    "testimonials": {
+      "headline": "Was",
+      "headline_highlight": "Führungskräfte",
+      "headline_end": "sagen"
+    },
+    "testimonial1": {
+      "quote": "Alles, was ich erreicht habe, habe ich Dank und mit Aljona erreicht.",
+      "author": "Katharina Michrin",
+      "role": "Unternehmerin"
+    },
+    "testimonial2": {
+      "quote": "Aljona half mir zu erkennen, dass ich nicht zwischen Erfolg und Gesundheit wählen muss.",
+      "author": "Tech-Führungskraft",
+      "role": "Scale-up CEO"
+    },
+    "testimonial3": {
+      "quote": "Die Präzision einer Ballerina und die Resilienz einer Unternehmerin — genau das brauchte ich.",
+      "author": "Startup-Gründerin",
+      "role": "Tech Industry"
+    },
+    "cta": {
+      "headline": "Instant Energy Boost for your Team",
+      "subheadline": "In einem kostenlosen 30-Minuten Strategiegespräch analysieren wir gemeinsam:",
+      "benefit1": "Klarheit über Deine größte Führungsherausforderung",
+      "benefit2": "Einen konkreten ersten Schritt zur Lösung",
+      "benefit3": "Ehrliches Feedback zu Deinem Leadership-Stil",
+      "button": "Jetzt Strategiegespräch buchen",
+      "trust1": "Wertvolle Perspektive von anderen Unternehmen",
+      "trust2": "100% vertraulich",
+      "trust3": "Für Tech-Führungskräfte"
+    }
+  },
+  "markus": {
+    "hero": {
+      "badge": "TOP 100 Speaker • Microsoft Cloud Ambassador",
+      "headline": "Smarter Selling – Kunden wirksam überzeugen im KI-Zeitalter",
+      "subheadline": "Gefragter Keynote Speaker für modernes Marketing, authentischen Vertrieb und wirksame Kundenkommunikation.",
+      "cta": {
+        "primary": "Keynote anfragen",
+        "secondary": "Keynote-Themen ansehen"
+      },
+      "proof1": "25+ Jahre Erfahrung",
+      "proof2": "Microsoft Cloud Ambassador",
+      "proof3": "TOP 100 Speaker",
+      "testimonial": "Praxisnah, empathisch und unterhaltsam — Markus begeistert jedes Publikum.",
+      "testimonial_author": "Event-Manager, Tech-Konferenz"
+    },
+    "logos": {
+      "title": "Vertrauen von führenden Unternehmen"
+    },
+    "topics": {
+      "headline": "Keynote-Themen",
+      "subheadline": "Praxisnahe Impulse für Ihr B2B-Event — unterhaltsam, empathisch und mit echtem Mehrwert."
+    },
+    "topic1": {
+      "title": "Zukunft des B2B-Vertriebs",
+      "subtitle": "So kauft und verkauft die Wirtschaft von morgen",
+      "point1": "Wie Organisationen künftig entscheiden — und was das für Ihr Vertriebsteam bedeutet",
+      "point2": "Die 3 Geheimnisse, um Kunden sofort zu begeistern, ohne zu \"pitchen\"",
+      "point3": "Welche Rolle KI, Empathie und Vertrauen im modernen Verkaufsprozess spielen"
+    },
+    "topic2": {
+      "title": "Social Selling & Smart Communication",
+      "subtitle": "Vertrauen & Sichtbarkeit im digitalen Zeitalter",
+      "point1": "Wie Du Vertrauen & Sichtbarkeit aufbaust, auch wenn Dich niemand kennt",
+      "point2": "Warum Social Selling nicht das gleiche ist wie \"Selling on Social\"",
+      "point3": "Was LinkedIn, Content & Kommunikation wirklich leisten können"
+    },
+    "topic3": {
+      "title": "Wachstum mit System",
+      "subtitle": "Der Weg zu mehr Umsatz im Technologieumfeld",
+      "point1": "Die 3 einzigen Hebel für smarteres Wachstum, um Ihr Geschäft nachhaltig zu skalieren",
+      "point2": "Wie Du Deine Bestandskunden zum Schlüssel für Dein Wachstum machst",
+      "point3": "Wie Du mit klaren Botschaften und unwiderstehlichen Angeboten überzeugst"
+    },
+    "credentials": {
+      "headline": "Warum Markus Eilers?",
+      "subheadline": "Über 25 Jahre Erfahrung, die Du spüren wirst.",
+      "item1": {
+        "title": "TOP 100 Speaker",
+        "description": "Ausgezeichnet als einer der gefragtesten Keynote Speaker im deutschsprachigen Raum"
+      },
+      "item2": {
+        "title": "Microsoft Cloud Ambassador",
+        "description": "Zertifizierter Experte und Berater für digitale Transformation und Cloud-Technologien"
+      },
+      "item3": {
+        "title": "25+ Jahre Erfahrung",
+        "description": "Über zwei Jahrzehnte in Marketing, Vertrieb und Unternehmensberatung — von Start-ups bis Konzerne"
+      },
+      "item4": {
+        "title": "Praxisnah & Unterhaltsam",
+        "description": "Keynotes mit hohem Nutzwert, empathischer Ansprache und echten Praxisbeispielen"
+      }
+    },
+    "testimonials": {
+      "headline": "Was Veranstalter sagen"
+    },
+    "testimonial1": {
+      "text": "Markus hat unser Event mit seiner Keynote bereichert. Die Teilnehmer waren begeistert!",
+      "author": "Anna S.",
+      "role": "Event-Managerin, Tech-Konferenz"
+    },
+    "testimonial2": {
+      "text": "Praxisnah, unterhaltsam und inspirierend. Genau das, was wir gesucht haben.",
+      "author": "Michael K.",
+      "role": "Head of Events, Verband"
+    },
+    "testimonial3": {
+      "text": "Die perfekte Mischung aus Fachwissen und Entertainment. Absolute Empfehlung!",
+      "author": "Julia M.",
+      "role": "Marketing Director, Enterprise"
+    },
+    "cta": {
+      "headline": "Markus für Ihr Event buchen",
+      "subheadline": "Begeistere Dein Publikum mit einer Keynote, die inspiriert und echten Mehrwert liefert.",
+      "button": "Verfügbarkeit anfragen",
+      "trust1": "Kostenlose Erstberatung",
+      "trust2": "Maßgeschneiderter Content",
+      "trust3": "Für B2B-Events"
+    }
+  },
+  "sm": {
+    "hero": {
+      "badge": "Soft-Launch 2026 · Nur 30 Plätze",
+      "headline1": "Bridging the",
+      "headline2": "Sales Education Gap.",
+      "subheadline": "Wie wir die besten Verkäufer:Innen noch besser machen und den übrigen 82% eine echte Chance geben, Erwartungen zu erfüllen und ihre Ziele zu erreichen.",
+      "cta": {
+        "primary": "Benchmarking-Gespräch buchen",
+        "secondary": "Wie es funktioniert"
+      },
+      "trust1": "867+ trainierte Verkäufer",
+      "trust2": "Geld-zurück-Garantie",
+      "trust3": "15 Jahre Erfahrung"
+    },
+    "crisis": {
+      "headline": "Die unsichtbare Krise im B2B-Vertrieb",
+      "subheadline": "Weil ohne Wissen und ohne Können, bringt alles Machen wenig.",
+      "stat1": {
+        "persona": "Seller",
+        "number": "82%",
+        "label": "ohne professionelle Ausbildung",
+        "description": "Aufmerksamkeit gewinnen, Gespräche führen, überzeugen, Angebote machen – alles experimenteller Freestyle."
+      },
+      "stat2": {
+        "persona": "Seller",
+        "number": "87%",
+        "label": "fühlen sich nicht bereit",
+        "description": "Sie fühlen sich für ihren Job und die damit verbundenen Erwartungen nicht ausreichend vorbereitet."
+      },
+      "stat3": {
+        "persona": "CEOs",
+        "number": "100%",
+        "label": "wollen sich auf ihr Team verlassen",
+        "description": "Dieser Mangel kostet Unternehmen große Teile ihrer möglichen Umsätze und beschädigt den Unternehmenswert."
+      }
+    },
+    "rules": {
+      "headline": "Die Spielregeln haben sich geändert",
+      "text": "Käufer sind heute besser informiert als je zuvor. Sie recherchieren eigenständig, vergleichen Anbieter und treffen Entscheidungen, bevor ein Verkäufer überhaupt ins Spiel kommt. Wer in diesem Umfeld noch mit klassischem Pitch und Produktpräsentation arbeitet, verliert – nicht weil das Produkt schlecht ist, sondern weil der Zugang zum Kunden fehlt.",
+      "stat1": {
+        "number": "71%",
+        "source": "Gartner",
+        "label": "bevorzugen kein Sales",
+        "text": "der B2B-Käufer wünschen sich ein Kauferlebnis ohne direkten Sales-Kontakt. Deine Verkäufer müssen also echten Mehrwert bieten – oder sie werden überflüssig."
+      },
+      "stat2": {
+        "number": "77%",
+        "source": "Gartner",
+        "label": "entscheiden allein",
+        "text": "der Kunden sprechen nicht mehr mit Anbietern, bevor die Entscheidung fällt. Wer nicht früh genug als Sparringspartner wahrgenommen wird, kommt zu spät."
+      }
+    },
+    "symptoms": {
+      "headline": "Typische Symptome",
+      "item1": "Sinkende Aktivität & Selbstvertrauen",
+      "item2": "Kaum Zugang zu Entscheidern",
+      "item3": "Niedrige Conversion-Raten",
+      "item4": "Demotivierende Abwärtsspirale"
+    },
+    "goodnews": {
+      "badge": "Die gute Nachricht",
+      "headline": "Die Herausforderung ist lösbar.",
+      "text": "Im direkten Vergleich geht es den meisten Wettbewerbern in einem Markt gleich. Unternehmen, die das nachholen, sehen schnell deutlich bessere Ergebnisse in Conversions, im Umfang ihrer Abschlüsse und in der Motivation ihrer Teams. Insgesamt sind",
+      "highlight": "Umsatzsteigerungen um 48% in den ersten 12 Monaten die Regel."
+    },
+    "vision": {
+      "item1": "Ein selbstsicheres, charismatisches und gut trainiertes Sales-Team",
+      "item2": "Die Aufmerksamkeit der richtigen Entscheider gewinnen",
+      "item3": "Kunden, die sich komplett verstanden fühlen",
+      "item4": "Schlaues Infotainment auf Augenhöhe, das zu gut informierten Entscheidungen inspiriert",
+      "item5": "Angebote, die so unwiderstehlich verpackt sind, dass der Kunde sich bekloppt vorkommt, wenn er nicht zuschlägt",
+      "item6": "Planbare, vorhersehbare Umsätze und höhere Auftragsvolumen"
+    },
+    "system": {
+      "headline": "Das System für planbaren Erfolg",
+      "subheadline": "Die SalesMade Academy ist kein Seminar. Es ist ein 12-monatiges Transformationsprogramm, das Deine Verkäufer zu unverzichtbaren Sparringspartnern für Deine Kunden macht.",
+      "step1": {
+        "badge": "Schritt 1",
+        "title": "Simuliertes Kundenszenario",
+        "text": "Jeder Teilnehmer durchläuft ein realistisches Kundenszenario, in dem",
+        "highlight": "13 entscheidende Sales-Skills",
+        "textEnd": "individuell gemessen und bewertet werden."
+      },
+      "step2": {
+        "badge": "Schritt 2",
+        "title": "Individueller Lernpfad",
+        "text": "Basierend auf dem Benchmark entwickeln wir für jeden Seller einen",
+        "highlight": "maßgeschneiderten Entwicklungsplan",
+        "textEnd": "– mit angepassten Szenarien in 5 Schwierigkeitsstufen und Echtzeit-Feedback.",
+        "ai": "AI-gestützt",
+        "levels": "5 Stufen",
+        "realtime": "Echtzeit"
+      },
+      "stat1": {
+        "number": "12",
+        "label": "Monate Begleitung"
+      },
+      "stat2": {
+        "number": "30",
+        "label": "Exklusive Plätze"
+      },
+      "stat3": {
+        "number": "13",
+        "label": "Core Skills"
+      },
+      "stat4": {
+        "number": "10+",
+        "label": "Trainings-Module"
+      },
+      "measures": "Begleitende Maßnahmen",
+      "measure1": "Monatliches Live-Training mit Top Sales-Leadern",
+      "measure2": "Group-Coaching für taktische Problemlösung",
+      "measure3": "Community mit erfahrenen Coaches",
+      "measure4": "AI-Tools, Playbooks & GPT Engines",
+      "measure5": "Zertifikate für erworbene Fähigkeiten",
+      "measure6": "Quartalsweise Re-Assessments",
+      "skills": {
+        "bedarfsanalyse": "Bedarfsanalyse",
+        "einwandbehandlung": "Einwandbehandlung",
+        "closing": "Closing",
+        "empathie": "Empathie",
+        "storytelling": "Storytelling",
+        "verhandlung": "Verhandlung",
+        "more": "+7 weitere"
+      }
+    },
+    "results": {
+      "headline": "Was unsere Teilnehmer konkret erreichen",
+      "item1": "Steigerung der Effizienz und Qualität der Vertriebsgespräche um mindestens 30%",
+      "item2": "Erhöhung der Abschlussquoten in Discovery Calls von durchschnittlich 28% auf bis zu 60%",
+      "item3": "Messbare Reduktion der durchschnittlichen Dauer eines Verkaufszyklus um bis zu 38%",
+      "item4": "Professionell ausgebildete Seller erzielen 48%–280% höhere Umsätze",
+      "item5": "Aufbau einer klaren, bewährten Vertriebsstruktur",
+      "item6": "Deutlich verbesserte Kundenzufriedenheit durch gezielte und empathische Kommunikation"
+    },
+    "tools": {
+      "headline": "Werkzeuge statt Theorie",
+      "subheadline": "Wir statten Ihr Team mit praxiserprobten Frameworks aus, die sofort funktionieren. Klare, sofort anwendbare Werkzeuge von der Gestaltung effektiver Erstgespräche bis zum effektiven Closing.",
+      "tool1": {
+        "title": "Beef Radar",
+        "description": "Vom Merkmal zum Financial Impact. Wichtige Botschaften entwickeln, damit auch der CFO zuhört."
+      },
+      "tool2": {
+        "title": "Elevator Pitch 2.0",
+        "description": "Eine Vision malen statt Features aufzählen. Interesse in 30 Sekunden wecken."
+      },
+      "tool3": {
+        "title": "Lösungsquadrant",
+        "description": "Bedarf, Mehrwerte, Welleneffekte und Financial Impact sauber dekodieren."
+      },
+      "tool4": {
+        "title": "Instant Authority",
+        "description": "Schon im ersten Gespräch als Experte auf Augenhöhe positionieren."
+      },
+      "tool5": {
+        "title": "Taktische Empathie",
+        "description": "Vertrauen aufbauen durch Labeling, Mirroring und limbische Kommunikation."
+      },
+      "tool6": {
+        "title": "Unwiderstehliche Angebote",
+        "description": "Angebote so verpacken, dass der Kunde sich bekloppt vorkommt, wenn er ablehnt."
+      },
+      "tool7": {
+        "title": "Strategische Vorbereitung",
+        "description": "In 8 Schritten auch in wichtigen und schwierigen Gesprächen überzeugen."
+      },
+      "tool8": {
+        "title": "Einwandbehandlung",
+        "description": "Einwände gezielt vorwegnehmen und zu unserem Vorteil nutzen."
+      },
+      "tool9": {
+        "title": "Micro- & Trial-Closing",
+        "description": "Niederlagenlos zur Entscheidung führen. Schritt für Schritt zum Abschluss."
+      }
+    },
+    "comparison": {
+      "headline": "Zwei Wege. Eine Entscheidung.",
+      "hard": {
+        "title": "Der harte Weg",
+        "text": "In der Unsicherheit selbst experimentieren, gelegentlich Erfahrungen mit anderen Unternehmern austauschen und durch ein unangenehmes aber vermutlich unvermeidbares Hire & Fire gehen. Das wird am Ende funktionieren, dauert zwischen",
+        "highlight": "3 und 5 Jahren",
+        "textEnd": ". Kostet ein Vermögen und produziert wachsende Frustration im Team und bei den Eigentümern."
+      },
+      "easy": {
+        "title": "Der einfache Weg",
+        "text": "Einmal vollständig übernehmen, was schon funktioniert und messbare, bessere Ergebnisse liefert.",
+        "highlight": "Umsatzsteigerungen um 48% in den ersten 12 Monaten sind die Regel.",
+        "textEnd": "Damit bezahlen die Maßnahmen sich selbst."
+      }
+    },
+    "platinum": {
+      "title": "Platinum-Extras",
+      "badge": "Limitiert auf 30 Seats",
+      "services": {
+        "headline": "Exklusive Leistungen",
+        "item1": "Monatliche individuelle 1:1 Coaching Sessions (60 Min.) mit unseren führenden SalesMade Coaches",
+        "item2": "Exklusive monatliche VIP-Gruppen-Session zur Vertiefung spezifischer strategischer Themen"
+      },
+      "benefits": {
+        "headline": "Quantifizierte Vorteile",
+        "item1": "Zusätzliche Steigerung der individuellen Verkaufs-Performance um bis zu 50%",
+        "item2": "Schnelleres Erreichen individueller Vertriebsziele durch intensive 1:1-Begleitung"
+      }
+    },
+    "roi": {
+      "headline": "Wie viel Potenzial bleibt ungenutzt?",
+      "subheadline": "Passe die Werte an Deine Situation an.",
+      "salespeople": "Anzahl Verkäufer",
+      "dealvalue": "Durchschnittlicher Deal-Wert",
+      "meetings": "Erstgespräche pro Verkäufer / Monat",
+      "explanation": "Basierend auf einer verbesserten Conversion (28% → 54%), +48% höheren Deal-Werten und mehr Erstgesprächen entgehen Dir aktuell bis zu:",
+      "footnote": "pro Jahr. Basierend auf Branchenkennzahlen und Erfahrungswerten unserer Kunden.",
+      "cta": {
+        "text": "Welche versteckten Potenziale in Deiner Organisation schlummern, finden wir in einem unverbindlichen Erstgespräch gemeinsam heraus.",
+        "button": "Jetzt unverbindliches Erstgespräch sichern"
+      }
+    },
+    "faq": {
+      "headline": "Häufige Fragen",
+      "q1": "Für wen ist die Academy geeignet?",
+      "a1": "Die SalesMade Academy richtet sich an B2B-Vertriebsteams, die systematisch ihre Conversion-Rates verbessern und planbare Umsätze erzielen möchten. Ideal für Unternehmen mit 5-50 Verkäufern, die bereit sind, in professionelle Ausbildung zu investieren.",
+      "q2": "Wie viel Zeit muss mein Team investieren?",
+      "a2": "Das Programm ist auf 12 Monate ausgelegt mit 90 Minuten Live-Training pro Monat, 120 Minuten Group-Coaching und selbstgesteuertem Lernen. Die Inhalte sind praxisnah und direkt im Tagesgeschäft anwendbar.",
+      "q3": "Was passiert, wenn wir keine Ergebnisse sehen?",
+      "a3": "Wir bieten eine 100% Geld-zurück-Garantie. Wenn Du nach 90 Tagen keine messbaren Verbesserungen in Deinen KPIs siehst, erstatten wir die volle Investition zurück. Keine Fragen gestellt.",
+      "q4": "Können wir auch nur einzelne Mitarbeiter schicken?",
+      "a4": "Ja, das ist möglich. Allerdings sind die besten Ergebnisse zu sehen, wenn das gesamte Team gemeinsam trainiert wird. So entsteht eine einheitliche Verkaufssprache und -methodik im gesamten Unternehmen.",
+      "q5": "Was unterscheidet die Academy von klassischen Trainings?",
+      "a5": "6-tägige Classroom-Trainings sind out – und aus ziemlich guten Gründen. Die SalesMade Academy ist eine digitale, AI-powered Plattform mit persönlichem Sparring durch erfahrene Sales-Leader. Wir holen jedes Teammitglied genau da ab, wo es heute steht, und führen es monatlich schrittweise durch die passenden Entwicklungsschritte."
+    },
+    "finalcta": {
+      "headline": "45 Minuten für Deine nächsten 36 Monate.",
+      "text": "Wie überzeugend arbeitet Dein Team im direkten Vergleich? Unser unverbindlicher Benchmark kann Dir wertvolle Einblicke geben. Dein Team durchläuft ein realistisches Kundenszenario, in dem wir 13 entscheidende Sales-Skills beobachten und bewerten. Die richtigen Informationen inspirieren die besten Entscheidungen.",
+      "tagline": "Von Unsicherheit zu planbaren Umsätzen.",
+      "button": "Jetzt Benchmarking-Gespräch buchen",
+      "footnote": "Nur noch wenige Plätze für den Soft-Launch verfügbar."
+    }
   }
 }
