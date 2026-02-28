@@ -80,6 +80,29 @@ export default function Markus() {
     }
   ];
 
+  const credentials = [
+    {
+      icon: <Award className="w-6 h-6 text-blue-600" />,
+      title: t('markus.credentials.item1.title'),
+      description: t('markus.credentials.item1.description')
+    },
+    {
+      icon: <Sparkles className="w-6 h-6 text-blue-600" />,
+      title: t('markus.credentials.item2.title'),
+      description: t('markus.credentials.item2.description')
+    },
+    {
+      icon: <CheckCircle className="w-6 h-6 text-blue-600" />,
+      title: t('markus.credentials.item3.title'),
+      description: t('markus.credentials.item3.description')
+    },
+    {
+      icon: <Mic className="w-6 h-6 text-blue-600" />,
+      title: t('markus.credentials.item4.title'),
+      description: t('markus.credentials.item4.description')
+    }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       {/* Hero Section */}
@@ -172,7 +195,7 @@ export default function Markus() {
                       <Star className="w-5 h-5 fill-yellow-300 text-yellow-300" />
                     </div>
                     <p className="text-lg italic text-center">
-                      "{t('markus.hero.testimonial')}"
+                      &quot;{t('markus.hero.testimonial')}&quot;
                     </p>
                     <p className="text-sm text-white/80 text-center">
                       — {t('markus.hero.testimonial_author')}
@@ -254,7 +277,7 @@ export default function Markus() {
         </div>
       </section>
 
-      {/* Credentials Section */}
+      {/* Credentials Section - 4 items in 2x2 grid with horizontal icon+text layout */}
       <section className="py-24 bg-muted/30">
         <div className="container">
           <motion.div
@@ -273,31 +296,28 @@ export default function Markus() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 text-center">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-              >
-                <Card className="p-8 h-full">
-                  <Sparkles className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold mb-2">{t('markus.credential1.title')}</h3>
-                  <p className="text-muted-foreground">{t('markus.credential1.description')}</p>
-                </Card>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <Card className="p-8 h-full">
-                  <Award className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold mb-2">{t('markus.credential2.title')}</h3>
-                  <p className="text-muted-foreground">{t('markus.credential2.description')}</p>
-                </Card>
-              </motion.div>
+            <div className="grid md:grid-cols-2 gap-6">
+              {credentials.map((cred, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <Card className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/10 flex-shrink-0">
+                        {cred.icon}
+                      </div>
+                      <div>
+                        <h3 className="font-bold mb-1">{cred.title}</h3>
+                        <p className="text-sm text-muted-foreground">{cred.description}</p>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
         </div>
@@ -316,9 +336,6 @@ export default function Markus() {
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               {t('markus.testimonials.headline')}
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              {t('markus.testimonials.subheadline')}
-            </p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -330,12 +347,14 @@ export default function Markus() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                <Card className="p-8 h-full flex flex-col justify-between">
-                  <Quote className="w-8 h-8 text-blue-200 mb-4" />
-                  <p className="text-muted-foreground italic mb-6 flex-grow">"{testimonial.text}"</p>
-                  <div>
-                    <p className="font-bold">{testimonial.author}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                <Card className="p-8 h-full">
+                  <div className="space-y-4">
+                    <Quote className="w-8 h-8 text-blue-600/20" />
+                    <p className="text-lg italic">{testimonial.text}</p>
+                    <div>
+                      <p className="font-bold">{testimonial.author}</p>
+                      <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                    </div>
                   </div>
                 </Card>
               </motion.div>
@@ -344,34 +363,49 @@ export default function Markus() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 bg-muted/30">
+      {/* CTA Section - Blue gradient background with trust items */}
+      <section className="py-24 bg-gradient-to-br from-blue-600 to-cyan-600 text-white">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="max-w-4xl mx-auto text-center"
+            className="max-w-3xl mx-auto text-center"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
               {t('markus.cta.headline')}
             </h2>
-            <p className="text-xl text-muted-foreground mb-8">
+            <p className="text-xl mb-8 text-white/90">
               {t('markus.cta.subheadline')}
             </p>
+            
             <Button 
               size="lg" 
-              className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-10 py-8 text-xl"
+              className="bg-white text-blue-600 hover:bg-white/90 px-8 py-6 text-lg"
               onClick={() => window.open('https://calendly.com/markuseilers/kennenlernen', '_blank')}
             >
-              <Calendar className="w-6 h-6 mr-3" />
+              <Calendar className="w-5 h-5 mr-2" />
               {t('markus.cta.button')}
             </Button>
+
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-white/80">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5" />
+                <span>{t('markus.cta.trust1')}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5" />
+                <span>{t('markus.cta.trust2')}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5" />
+                <span>{t('markus.cta.trust3')}</span>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
     </div>
   );
 }
-
