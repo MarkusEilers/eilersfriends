@@ -1,15 +1,10 @@
-import postgres from "postgres";
-import { drizzle } from "drizzle-orm/postgres-js";
-import * as schema from "./schema";
+import { drizzle } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
+import * as schema from './schema'
 
-const connectionString = process.env.DATABASE_URL!;
+const connectionString = process.env.DATABASE_URL!
 
-// For Supabase pooler (transaction mode), disable prepared statements
-const sql = postgres(connectionString, {
-  ssl: "require",
-  prepare: false,
-});
+// Disable prefetch as it is not supported for "Transaction" pool mode (Vercel Postgres)
+const client = postgres(connectionString, { prepare: false })
 
-export const db = drizzle(sql, { schema });
-
-export type Database = typeof db;
+export const db = drizzle(client, { schema })

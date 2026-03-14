@@ -1,97 +1,76 @@
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import { db } from "@/lib/db";
-import { contacts } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import { z } from "zod";
-
-// Simple hash comparison (replace with bcrypt in production)
-async function verifyPassword(
-  plaintext: string,
-  hash: string
-): Promise<boolean> {
-  // In production, use bcrypt:
-  // const bcrypt = await import('bcryptjs');
-  // return bcrypt.compare(plaintext, hash);
-  const encoder = new TextEncoder();
-  const data = encoder.encode(plaintext);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
-  return hashHex === hash;
-}
-
-export async function hashPassword(plaintext: string): Promise<string> {
-  // In production, use bcrypt:
-  // const bcrypt = await import('bcryptjs');
-  // return bcrypt.hash(plaintext, 12);
-  const encoder = new TextEncoder();
-  const data = encoder.encode(plaintext);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
-}
+import type { NextAuthConfig } from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
+import { z } from 'zod'
+import bcrypt from 'bcryptjs'
+import { db } from '@/lib/db'
+import { users } from '@/lib/db/schema'
+import { eq } from 'drizzle-orm'
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
-});
+  password: z.string().min(8),
+})
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const authConfig: NextAuthConfig = {
+  session: { strategy: 'jwt' },
+  pages: {
+    signIn: '/auth/login',
+    error: '/auth/login',
+  },
+  callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user
+      const isPortal = nextUrl.pathname.includes('/portal') ||
+        nextUrl.pathname.includes('/dashboard') ||
+        nextUrl.pathname.includes('/assessment') ||
+        nextUrl.pathname.includes('/zertifikate')
+      const isAdmin = nextUrl.pathname.includes('/admin')
+
+      if (isPortal || isAdmin) {
+        if (!isLoggedIn) return false
+        if (isAdmin && auth?.user?.role !== 'admin' && auth?.user?.role !== 'coach') return false
+      }
+      return true
+    },
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id
+        token.role = (user as { role?: string }).role
+      }
+      return token
+    },
+    session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string
+        session.user.role = token.role as string
+      }
+      return session
+    },
+  },
   providers: [
     Credentials({
-      name: "Email & Password",
-      credentials: {
-        email: { label: "E-Mail", type: "email" },
-        password: { label: "Passwort", type: "password" },
-      },
       async authorize(credentials) {
-        const parsed = loginSchema.safeParse(credentials);
-        if (!parsed.success) return null;
-
-        const { email, password } = parsed.data;
+        const parsed = loginSchema.safeParse(credentials)
+        if (!parsed.success) return null
 
         const [user] = await db
           .select()
-          .from(contacts)
-          .where(eq(contacts.email, email))
-          .limit(1);
+          .from(users)
+          .where(eq(users.email, parsed.data.email))
+          .limit(1)
 
-        if (!user || !user.passwordHash) return null;
+        if (!user || !user.passwordHash) return null
 
-        const isValid = await verifyPassword(password, user.passwordHash);
-        if (!isValid) return null;
+        const passwordValid = await bcrypt.compare(parsed.data.password, user.passwordHash)
+        if (!passwordValid) return null
 
         return {
           id: user.id,
           email: user.email,
-          name: `${user.firstName} ${user.lastName}`,
+          name: user.fullName,
           role: user.role,
-        };
+        }
       },
     }),
   ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = (user as any).role;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        (session.user as any).role = token.role;
-      }
-      return session;
-    },
-  },
-  pages: {
-    signIn: "/login",
-    error: "/login",
-  },
-  session: {
-    strategy: "jwt",
-  },
-});
+}

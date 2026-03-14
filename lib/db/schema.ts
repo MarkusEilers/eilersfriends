@@ -1,580 +1,333 @@
 import {
   pgTable,
   text,
-  timestamp,
   integer,
-  pgEnum,
+  real,
   boolean,
-  jsonb,
+  timestamp,
+  serial,
   uuid,
-  uniqueIndex,
-} from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+  json,
+  pgEnum,
+  unique,
+} from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
 
-// ============================================================
-// ENUMS
-// ============================================================
+// ─── Enums ────────────────────────────────────────────────────────────────────
 
-export const companyStatusEnum = pgEnum("company_status", [
-  "lead",
-  "customer",
-  "alumni",
-  "inactive",
-]);
+export const userRoleEnum = pgEnum('user_role', ['admin', 'coach', 'participant'])
+export const companySizeEnum = pgEnum('company_size', ['startup', 'scaleup', 'enterprise'])
+export const programTypeEnum = pgEnum('program_type', ['academy', 'coaching', 'training'])
+export const ctaTypeEnum = pgEnum('cta_type', ['apply', 'buy', 'waitlist', 'calendly'])
+export const contentTypeEnum = pgEnum('content_type', ['video', 'text', 'exercise', 'pdf'])
+export const skillDimensionEnum = pgEnum('skill_dimension', ['wissen', 'koennen', 'machen'])
+export const enrollmentStatusEnum = pgEnum('enrollment_status', ['pending', 'active', 'completed', 'cancelled'])
+export const lessonStatusEnum = pgEnum('lesson_status', ['locked', 'available', 'done'])
+export const assessmentTypeEnum = pgEnum('assessment_type', ['initial', 'periodic', 'final'])
+export const assessmentStatusEnum = pgEnum('assessment_status', ['pending', 'in_progress', 'completed'])
+export const answerTypeEnum = pgEnum('answer_type', ['scale_1_5', 'multiple_choice', 'text'])
+export const recommendationReasonEnum = pgEnum('recommendation_reason', ['low_wissen', 'low_koennen', 'low_machen'])
+export const recommendationStatusEnum = pgEnum('recommendation_status', ['pending', 'accepted', 'dismissed'])
+export const hvcoTypeEnum = pgEnum('hvco_type', ['pdf', 'tool', 'video', 'newsletter'])
+export const hvcoDeliveryEnum = pgEnum('hvco_delivery', ['email', 'unlock', 'redirect'])
+export const sessionTypeEnum = pgEnum('session_type', ['sparring', 'group_qa', 'training'])
 
-export const companySizeEnum = pgEnum("company_size", [
-  "startup",
-  "scaleup",
-  "enterprise",
-]);
+// ─── Companies ────────────────────────────────────────────────────────────────
 
-export const contactStageEnum = pgEnum("contact_stage", [
-  "lead",
-  "qualified",
-  "customer",
-  "alumni",
-]);
+export const companies = pgTable('companies', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull(),
+  industry: text('industry'),
+  size: companySizeEnum('size'),
+  contractStart: timestamp('contract_start'),
+  website: text('website'),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
 
-export const contactLanguageEnum = pgEnum("contact_language", [
-  "de",
-  "en",
-  "ru",
-]);
+// ─── Users ────────────────────────────────────────────────────────────────────
 
-export const userRoleEnum = pgEnum("user_role", [
-  "admin",
-  "coach",
-  "participant",
-]);
+export const users = pgTable('users', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  email: text('email').notNull().unique(),
+  fullName: text('full_name').notNull(),
+  passwordHash: text('password_hash'),
+  role: userRoleEnum('role').default('participant').notNull(),
+  companyId: uuid('company_id').references(() => companies.id, { onDelete: 'set null' }),
+  emailVerified: timestamp('email_verified'),
+  avatarUrl: text('avatar_url'),
+  linkedinUrl: text('linkedin_url'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
 
-export const enrollmentStatusEnum = pgEnum("enrollment_status", [
-  "enrolled",
-  "active",
-  "completed",
-  "cancelled",
-]);
+// ─── Programs ─────────────────────────────────────────────────────────────────
 
-export const stepTypeEnum = pgEnum("step_type", [
-  "information",
-  "exercise",
-  "workbook",
-  "sparring",
-]);
+export const programs = pgTable('programs', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  slug: text('slug').notNull().unique(),
+  type: programTypeEnum('type').notNull(),
+  heroHeadline: text('hero_headline').notNull(),
+  tagline: text('tagline'),
+  heroSubtext: text('hero_subtext'),
+  introVideoUrl: text('intro_video_url'),
+  problemStatements: json('problem_statements').$type<string[]>(),
+  statHighlights: json('stat_highlights').$type<{ value: string; label: string; color: string }[]>(),
+  criteriaJson: json('criteria_json').$type<string[]>(),
+  ctaType: ctaTypeEnum('cta_type').default('apply').notNull(),
+  ctaLabel: text('cta_label'),
+  ctaTargetUrl: text('cta_target_url'),
+  spotsTotal: integer('spots_total'),
+  spotsTaken: integer('spots_taken').default(0),
+  isPublished: boolean('is_published').default(false).notNull(),
+  coachId: uuid('coach_id').references(() => users.id, { onDelete: 'set null' }),
+  accentColor: text('accent_color').default('orange'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
 
-export const stepCompletionStatusEnum = pgEnum("step_completion_status", [
-  "locked",
-  "available",
-  "in_progress",
-  "submitted",
-  "completed",
-]);
+// ─── Signature Solution ───────────────────────────────────────────────────────
 
-export const reviewStatusEnum = pgEnum("review_status", [
-  "pending",
-  "approved",
-  "revision_requested",
-]);
+export const signatureSolutions = pgTable('signature_solutions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  programId: uuid('program_id').notNull().references(() => programs.id, { onDelete: 'cascade' }).unique(),
+  badPlaceTitle: text('bad_place_title').notNull(),
+  badPlaceDescription: text('bad_place_description'),
+  happyPlaceTitle: text('happy_place_title').notNull(),
+  happyPlaceDescription: text('happy_place_description'),
+  solutionName: text('solution_name').notNull(),
+  solutionTagline: text('solution_tagline'),
+})
 
-export const sparringStatusEnum = pgEnum("sparring_status", [
-  "bookable",
-  "booked",
-  "completed",
-  "cancelled",
-  "no_show",
-]);
+export const solutionPhases = pgTable('solution_phases', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  solutionId: uuid('solution_id').notNull().references(() => signatureSolutions.id, { onDelete: 'cascade' }),
+  position: integer('position').notNull(),
+  title: text('title').notNull(),
+  subtitle: text('subtitle'),
+  outcome: text('outcome'),
+  colorKey: text('color_key'),
+})
 
-export const sequenceChannelEnum = pgEnum("sequence_channel", [
-  "email",
-  "linkedin",
-  "whatsapp",
-  "multi_channel",
-]);
+export const solutionSteps = pgTable('solution_steps', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  phaseId: uuid('phase_id').notNull().references(() => solutionPhases.id, { onDelete: 'cascade' }),
+  position: integer('position').notNull(),
+  theme: text('theme'),
+  title: text('title').notNull(),
+  microTransformation: text('micro_transformation'),
+  linkedLessonId: uuid('linked_lesson_id'),
+  linkedSkillId: uuid('linked_skill_id'),
+})
 
-export const sequenceStatusEnum = pgEnum("sequence_status", [
-  "draft",
-  "active",
-  "paused",
-  "completed",
-  "archived",
-]);
+// ─── Modules & Lessons ────────────────────────────────────────────────────────
 
-export const sequenceStepTypeEnum = pgEnum("sequence_step_type", [
-  "email",
-  "linkedin_connect",
-  "linkedin_message",
-  "whatsapp",
-  "wait",
-  "condition",
-  "task",
-]);
+export const modules = pgTable('modules', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  programId: uuid('program_id').notNull().references(() => programs.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  position: integer('position').notNull(),
+  dripDelayDays: integer('drip_delay_days').default(0),
+})
 
-export const sequenceEnrollmentStatusEnum = pgEnum(
-  "sequence_enrollment_status",
-  ["active", "paused", "completed", "replied", "bounced", "unsubscribed"]
-);
+export const lessons = pgTable('lessons', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  moduleId: uuid('module_id').notNull().references(() => modules.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  position: integer('position').notNull(),
+  contentType: contentTypeEnum('content_type').default('video').notNull(),
+  videoUrl: text('video_url'),
+  body: text('body'),
+  durationMinutes: integer('duration_minutes'),
+  primarySkillId: uuid('primary_skill_id'),
+  skillDimension: skillDimensionEnum('skill_dimension'),
+})
 
-export const sequenceExecutionStatusEnum = pgEnum(
-  "sequence_execution_status",
-  [
-    "pending",
-    "sent",
-    "delivered",
-    "opened",
-    "clicked",
-    "replied",
-    "bounced",
-    "failed",
-  ]
-);
+// ─── Enrollments ──────────────────────────────────────────────────────────────
 
-// ============================================================
-// CRM TABLES
-// ============================================================
+export const enrollments = pgTable('enrollments', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  programId: uuid('program_id').notNull().references(() => programs.id, { onDelete: 'cascade' }),
+  assignedBy: uuid('assigned_by').references(() => users.id, { onDelete: 'set null' }),
+  status: enrollmentStatusEnum('status').default('pending').notNull(),
+  goal: text('goal'),
+  assessmentIntervalDays: integer('assessment_interval_days').default(30),
+  nextAssessmentAt: timestamp('next_assessment_at'),
+  startedAt: timestamp('started_at'),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
 
-/**
- * Companies - Firmen/Kunden im Ökosystem
- */
-export const companies = pgTable("companies", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: text("name").notNull(),
-  status: companyStatusEnum("status").default("lead").notNull(),
-  size: companySizeEnum("size"),
-  industry: text("industry"),
-  website: text("website"),
-  notes: text("notes"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const lessonProgress = pgTable('lesson_progress', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
+  lessonId: uuid('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
+  status: lessonStatusEnum('status').default('locked').notNull(),
+  completedAt: timestamp('completed_at'),
+}, (table) => [
+  unique().on(table.enrollmentId, table.lessonId),
+])
 
-/**
- * Contacts - Personen, die an einer Company hängen
- */
-export const contacts = pgTable(
-  "contacts",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    firstName: text("first_name").notNull(),
-    lastName: text("last_name").notNull(),
-    email: text("email").notNull(),
-    phone: text("phone"),
-    position: text("position"),
-    companyId: uuid("company_id").references(() => companies.id, {
-      onDelete: "set null",
-    }),
-    stage: contactStageEnum("stage").default("lead").notNull(),
-    language: contactLanguageEnum("language").default("de").notNull(),
-    linkedinUrl: text("linkedin_url"),
-    notes: text("notes"),
-    tags: jsonb("tags").$type<string[]>().default([]),
-    // Auth fields (for portal access)
-    role: userRoleEnum("role").default("participant").notNull(),
-    passwordHash: text("password_hash"),
-    emailVerified: timestamp("email_verified", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .defaultNow()
-      .notNull(),
-  },
-  (table) => [uniqueIndex("contacts_email_idx").on(table.email)]
-);
+// ─── Skills ───────────────────────────────────────────────────────────────────
 
-// ============================================================
-// LMS TABLES
-// ============================================================
+export const skills = pgTable('skills', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  title: text('title').notNull(),
+  slug: text('slug').notNull().unique(),
+  category: text('category'),
+  icon: text('icon'),
+  sortOrder: integer('sort_order').default(0),
+})
 
-/**
- * Enrollments - Contact enrolled in a Program
- * programId references a Sanity document ID
- */
-export const enrollments = pgTable("enrollments", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  contactId: uuid("contact_id")
-    .references(() => contacts.id, { onDelete: "cascade" })
-    .notNull(),
-  companyId: uuid("company_id").references(() => companies.id, {
-    onDelete: "set null",
-  }),
-  programId: text("program_id").notNull(), // Sanity document ID
-  status: enrollmentStatusEnum("status").default("enrolled").notNull(),
-  progressPercent: integer("progress_percent").default(0).notNull(),
-  startedAt: timestamp("started_at", { withTimezone: true }),
-  completedAt: timestamp("completed_at", { withTimezone: true }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const assessmentQuestions = pgTable('assessment_questions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
+  dimension: skillDimensionEnum('dimension').notNull(),
+  questionText: text('question_text').notNull(),
+  answerType: answerTypeEnum('answer_type').default('scale_1_5').notNull(),
+  weight: real('weight').default(1.0),
+})
 
-/**
- * StepCompletions - Tracking which steps a participant has completed
- * stepId and phaseId reference Sanity document IDs
- */
-export const stepCompletions = pgTable("step_completions", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  enrollmentId: uuid("enrollment_id")
-    .references(() => enrollments.id, { onDelete: "cascade" })
-    .notNull(),
-  phaseId: text("phase_id").notNull(), // Sanity document ID
-  stepId: text("step_id").notNull(), // Sanity document ID
-  stepType: stepTypeEnum("step_type").notNull(),
-  status: stepCompletionStatusEnum("status").default("locked").notNull(),
-  startedAt: timestamp("started_at", { withTimezone: true }),
-  completedAt: timestamp("completed_at", { withTimezone: true }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+// ─── Assessments ──────────────────────────────────────────────────────────────
 
-/**
- * WorkbookSubmissions - Uploaded workbooks for review
- */
-export const workbookSubmissions = pgTable("workbook_submissions", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  stepCompletionId: uuid("step_completion_id")
-    .references(() => stepCompletions.id, { onDelete: "cascade" })
-    .notNull(),
-  fileUrl: text("file_url").notNull(), // Vercel Blob URL
-  fileKey: text("file_key").notNull(), // Vercel Blob key
-  fileName: text("file_name").notNull(),
-  mimeType: text("mime_type"),
-  fileSize: integer("file_size"), // bytes
-  reviewStatus: reviewStatusEnum("review_status")
-    .default("pending")
-    .notNull(),
-  reviewedBy: uuid("reviewed_by").references(() => contacts.id),
-  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
-  reviewNotes: text("review_notes"),
-  submittedAt: timestamp("submitted_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const assessments = pgTable('assessments', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
+  type: assessmentTypeEnum('type').notNull(),
+  status: assessmentStatusEnum('status').default('pending').notNull(),
+  dueAt: timestamp('due_at'),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
 
-/**
- * SparringSessions - Booked coaching sessions
- */
-export const sparringSessions = pgTable("sparring_sessions", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  stepCompletionId: uuid("step_completion_id")
-    .references(() => stepCompletions.id, { onDelete: "cascade" })
-    .notNull(),
-  coachId: text("coach_id").notNull(), // Sanity document ID (Coach)
-  status: sparringStatusEnum("status").default("bookable").notNull(),
-  scheduledAt: timestamp("scheduled_at", { withTimezone: true }),
-  completedAt: timestamp("completed_at", { withTimezone: true }),
-  meetingUrl: text("meeting_url"), // Calendly/Zoom link
-  calendlyEventId: text("calendly_event_id"),
-  coachNotes: text("coach_notes"),
-  participantNotes: text("participant_notes"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const assessmentAnswers = pgTable('assessment_answers', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  assessmentId: uuid('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
+  questionId: uuid('question_id').notNull().references(() => assessmentQuestions.id, { onDelete: 'cascade' }),
+  answerValue: text('answer_value').notNull(),
+  scoreRaw: real('score_raw'),
+})
 
-// ============================================================
-// SEQUENCE / OUTREACH TABLES
-// ============================================================
+// ─── Skill Scores (append-only!) ──────────────────────────────────────────────
 
-/**
- * Sequences - Automated outreach campaigns
- */
-export const sequences = pgTable("sequences", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: text("name").notNull(),
-  description: text("description"),
-  channel: sequenceChannelEnum("channel").default("email").notNull(),
-  status: sequenceStatusEnum("status").default("draft").notNull(),
-  totalEnrolled: integer("total_enrolled").default(0).notNull(),
-  totalReplied: integer("total_replied").default(0).notNull(),
-  createdBy: uuid("created_by").references(() => contacts.id),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const skillScores = pgTable('skill_scores', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
+  skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
+  assessmentId: uuid('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
+  wissen: real('wissen').notNull(),
+  koennen: real('koennen').notNull(),
+  machen: real('machen').notNull(),
+  overall: real('overall').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
 
-/**
- * SequenceSteps - Individual steps within a sequence
- */
-export const sequenceSteps = pgTable("sequence_steps", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  sequenceId: uuid("sequence_id")
-    .references(() => sequences.id, { onDelete: "cascade" })
-    .notNull(),
-  order: integer("order").notNull(),
-  stepType: sequenceStepTypeEnum("step_type").notNull(),
-  // Content fields
-  subject: text("subject"), // E-Mail subject
-  body: text("body"), // Message body (supports {{placeholders}})
-  // Wait step
-  waitDays: integer("wait_days"),
-  waitHours: integer("wait_hours"),
-  // Condition step
-  conditionType: text("condition_type"), // e.g., "opened", "clicked", "replied"
-  conditionYesBranch: integer("condition_yes_branch"), // order of next step if true
-  conditionNoBranch: integer("condition_no_branch"), // order of next step if false
-  // Task step
-  taskDescription: text("task_description"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const skillRecommendations = pgTable('skill_recommendations', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
+  skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
+  contentType: text('content_type'),
+  contentId: uuid('content_id'),
+  reason: recommendationReasonEnum('reason').notNull(),
+  status: recommendationStatusEnum('status').default('pending').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
 
-/**
- * SequenceEnrollments - Contact enrolled in a sequence
- */
-export const sequenceEnrollments = pgTable("sequence_enrollments", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  sequenceId: uuid("sequence_id")
-    .references(() => sequences.id, { onDelete: "cascade" })
-    .notNull(),
-  contactId: uuid("contact_id")
-    .references(() => contacts.id, { onDelete: "cascade" })
-    .notNull(),
-  status: sequenceEnrollmentStatusEnum("status").default("active").notNull(),
-  currentStepId: uuid("current_step_id").references(() => sequenceSteps.id),
-  enrolledAt: timestamp("enrolled_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  completedAt: timestamp("completed_at", { withTimezone: true }),
-  pausedAt: timestamp("paused_at", { withTimezone: true }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+// ─── HVCO Resources ───────────────────────────────────────────────────────────
 
-/**
- * SequenceStepExecutions - Execution log per contact per step
- */
-export const sequenceStepExecutions = pgTable("sequence_step_executions", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  enrollmentId: uuid("enrollment_id")
-    .references(() => sequenceEnrollments.id, { onDelete: "cascade" })
-    .notNull(),
-  stepId: uuid("step_id")
-    .references(() => sequenceSteps.id, { onDelete: "cascade" })
-    .notNull(),
-  contactId: uuid("contact_id")
-    .references(() => contacts.id, { onDelete: "cascade" })
-    .notNull(),
-  status: sequenceExecutionStatusEnum("status").default("pending").notNull(),
-  scheduledAt: timestamp("scheduled_at", { withTimezone: true }),
-  executedAt: timestamp("executed_at", { withTimezone: true }),
-  openedAt: timestamp("opened_at", { withTimezone: true }),
-  clickedAt: timestamp("clicked_at", { withTimezone: true }),
-  repliedAt: timestamp("replied_at", { withTimezone: true }),
-  bouncedAt: timestamp("bounced_at", { withTimezone: true }),
-  errorMessage: text("error_message"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const programHvcos = pgTable('program_hvcos', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  programId: uuid('program_id').references(() => programs.id, { onDelete: 'set null' }),
+  type: hvcoTypeEnum('type').notNull(),
+  title: text('title').notNull(),
+  description: text('description'),
+  isFeatured: boolean('is_featured').default(false),
+  gateFields: json('gate_fields').$type<string[]>(),
+  deliveryType: hvcoDeliveryEnum('delivery_type').default('email').notNull(),
+  deliveryTarget: text('delivery_target'),
+  sortOrder: integer('sort_order').default(0),
+  isPublished: boolean('is_published').default(true),
+})
 
-// ============================================================
-// MARKETING TABLES
-// ============================================================
+// ─── Testimonials ─────────────────────────────────────────────────────────────
 
-/**
- * FrameworkDownloads - Tracking downloads (lead capture)
- */
-export const frameworkDownloads = pgTable("framework_downloads", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  frameworkId: text("framework_id").notNull(), // Sanity document ID
-  email: text("email").notNull(),
-  contactId: uuid("contact_id").references(() => contacts.id),
-  downloadedAt: timestamp("downloaded_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const programTestimonials = pgTable('program_testimonials', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  programId: uuid('program_id').references(() => programs.id, { onDelete: 'set null' }),
+  authorName: text('author_name').notNull(),
+  authorRole: text('author_role'),
+  authorCompany: text('author_company'),
+  quote: text('quote').notNull(),
+  avatarUrl: text('avatar_url'),
+  sortOrder: integer('sort_order').default(0),
+})
 
-/**
- * NewsletterSubscribers
- */
-export const newsletterSubscribers = pgTable(
-  "newsletter_subscribers",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    email: text("email").notNull(),
-    firstName: text("first_name"),
-    lastName: text("last_name"),
-    language: contactLanguageEnum("language").default("de").notNull(),
-    isActive: boolean("is_active").default(true).notNull(),
-    subscribedAt: timestamp("subscribed_at", { withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    unsubscribedAt: timestamp("unsubscribed_at", { withTimezone: true }),
-  },
-  (table) => [uniqueIndex("newsletter_email_idx").on(table.email)]
-);
+// ─── Coach Notes ──────────────────────────────────────────────────────────────
 
-/**
- * FormSubmissions - Contact form entries
- */
-export const formSubmissions = pgTable("form_submissions", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
-  company: text("company"),
-  message: text("message").notNull(),
-  contactId: uuid("contact_id").references(() => contacts.id),
-  isRead: boolean("is_read").default(false).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const coachNotes = pgTable('coach_notes', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
+  authorId: uuid('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  body: text('body').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
 
-/**
- * CookieConsents - DSGVO compliance tracking
- */
-export const cookieConsents = pgTable("cookie_consents", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  ipAddress: text("ip_address").notNull(),
-  accepted: boolean("accepted").notNull(),
-  consentedAt: timestamp("consented_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+// ─── Sessions ─────────────────────────────────────────────────────────────────
 
-// ============================================================
-// RELATIONS
-// ============================================================
+export const sessions = pgTable('sessions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  type: sessionTypeEnum('type').notNull(),
+  scheduledAt: timestamp('scheduled_at'),
+  calendlyUrl: text('calendly_url'),
+  coachId: uuid('coach_id').references(() => users.id, { onDelete: 'set null' }),
+  programId: uuid('program_id').references(() => programs.id, { onDelete: 'set null' }),
+  enrollmentId: uuid('enrollment_id').references(() => enrollments.id, { onDelete: 'set null' }),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+// ─── Certificates ─────────────────────────────────────────────────────────────
+
+export const certificates = pgTable('certificates', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
+  issuedAt: timestamp('issued_at').defaultNow().notNull(),
+  pdfUrl: text('pdf_url'),
+  verifyToken: text('verify_token').notNull().unique(),
+})
+
+// ─── Relations ────────────────────────────────────────────────────────────────
+
+export const usersRelations = relations(users, ({ one, many }) => ({
+  company: one(companies, { fields: [users.companyId], references: [companies.id] }),
+  enrollments: many(enrollments),
+  coachPrograms: many(programs),
+}))
 
 export const companiesRelations = relations(companies, ({ many }) => ({
-  contacts: many(contacts),
-  enrollments: many(enrollments),
-}));
+  users: many(users),
+}))
 
-export const contactsRelations = relations(contacts, ({ one, many }) => ({
-  company: one(companies, {
-    fields: [contacts.companyId],
-    references: [companies.id],
-  }),
+export const programsRelations = relations(programs, ({ one, many }) => ({
+  coach: one(users, { fields: [programs.coachId], references: [users.id] }),
+  signatureSolution: one(signatureSolutions),
+  modules: many(modules),
   enrollments: many(enrollments),
-  sequenceEnrollments: many(sequenceEnrollments),
-  frameworkDownloads: many(frameworkDownloads),
-}));
+  hvcos: many(programHvcos),
+  testimonials: many(programTestimonials),
+  sessions: many(sessions),
+}))
 
 export const enrollmentsRelations = relations(enrollments, ({ one, many }) => ({
-  contact: one(contacts, {
-    fields: [enrollments.contactId],
-    references: [contacts.id],
-  }),
-  company: one(companies, {
-    fields: [enrollments.companyId],
-    references: [companies.id],
-  }),
-  stepCompletions: many(stepCompletions),
-}));
-
-export const stepCompletionsRelations = relations(
-  stepCompletions,
-  ({ one, many }) => ({
-    enrollment: one(enrollments, {
-      fields: [stepCompletions.enrollmentId],
-      references: [enrollments.id],
-    }),
-    workbookSubmissions: many(workbookSubmissions),
-    sparringSessions: many(sparringSessions),
-  })
-);
-
-export const workbookSubmissionsRelations = relations(
-  workbookSubmissions,
-  ({ one }) => ({
-    stepCompletion: one(stepCompletions, {
-      fields: [workbookSubmissions.stepCompletionId],
-      references: [stepCompletions.id],
-    }),
-    reviewer: one(contacts, {
-      fields: [workbookSubmissions.reviewedBy],
-      references: [contacts.id],
-    }),
-  })
-);
-
-export const sparringSessionsRelations = relations(
-  sparringSessions,
-  ({ one }) => ({
-    stepCompletion: one(stepCompletions, {
-      fields: [sparringSessions.stepCompletionId],
-      references: [stepCompletions.id],
-    }),
-  })
-);
-
-export const sequencesRelations = relations(sequences, ({ many }) => ({
-  steps: many(sequenceSteps),
-  enrollments: many(sequenceEnrollments),
-}));
-
-export const sequenceStepsRelations = relations(sequenceSteps, ({ one }) => ({
-  sequence: one(sequences, {
-    fields: [sequenceSteps.sequenceId],
-    references: [sequences.id],
-  }),
-}));
-
-export const sequenceEnrollmentsRelations = relations(
-  sequenceEnrollments,
-  ({ one, many }) => ({
-    sequence: one(sequences, {
-      fields: [sequenceEnrollments.sequenceId],
-      references: [sequences.id],
-    }),
-    contact: one(contacts, {
-      fields: [sequenceEnrollments.contactId],
-      references: [contacts.id],
-    }),
-    currentStep: one(sequenceSteps, {
-      fields: [sequenceEnrollments.currentStepId],
-      references: [sequenceSteps.id],
-    }),
-    executions: many(sequenceStepExecutions),
-  })
-);
-
-export const sequenceStepExecutionsRelations = relations(
-  sequenceStepExecutions,
-  ({ one }) => ({
-    enrollment: one(sequenceEnrollments, {
-      fields: [sequenceStepExecutions.enrollmentId],
-      references: [sequenceEnrollments.id],
-    }),
-    step: one(sequenceSteps, {
-      fields: [sequenceStepExecutions.stepId],
-      references: [sequenceSteps.id],
-    }),
-    contact: one(contacts, {
-      fields: [sequenceStepExecutions.contactId],
-      references: [contacts.id],
-    }),
-  })
-);
-
-export const frameworkDownloadsRelations = relations(
-  frameworkDownloads,
-  ({ one }) => ({
-    contact: one(contacts, {
-      fields: [frameworkDownloads.contactId],
-      references: [contacts.id],
-    }),
-  })
-);
+  user: one(users, { fields: [enrollments.userId], references: [users.id] }),
+  program: one(programs, { fields: [enrollments.programId], references: [programs.id] }),
+  lessonProgress: many(lessonProgress),
+  assessments: many(assessments),
+  skillScores: many(skillScores),
+  coachNotes: many(coachNotes),
+  sessions: many(sessions),
+  certificate: one(certificates),
+}))

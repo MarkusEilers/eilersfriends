@@ -1,50 +1,51 @@
-import type { Metadata } from "next";
-
-export const dynamic = 'force-dynamic';
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
-import { notFound } from "next/navigation";
-import { routing } from "@/lib/i18n/routing";
-import Navigation from "@/components/shared/navigation";
-import Footer from "@/components/shared/footer";
-import CookieBanner from "@/components/shared/cookie-banner";
-
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
+import type { Metadata } from 'next'
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages } from 'next-intl/server'
+import { notFound } from 'next/navigation'
+import { routing } from '@/lib/i18n/routing'
+import '@/app/globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: "Eilers & Friends | Unternimm Dich",
-    template: "%s | Eilers & Friends",
+    template: '%s | Eilers+Friends',
+    default: 'Eilers+Friends — Systematisches Wachstum für Gründer',
   },
-  description:
-    "Coaching-Programme für nachhaltiges Wachstum. Von der Vertriebsexzellenz bis zur Führungskompetenz.",
-};
+}
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
+}
 
 export default async function LocaleLayout({
   children,
   params,
 }: {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  children: React.ReactNode
+  params: Promise<{ locale: string }>
 }) {
-  const { locale } = await params;
+  const { locale } = await params
 
-  if (!routing.locales.includes(locale as any)) {
-    notFound();
+  if (!routing.locales.includes(locale as 'de' | 'en' | 'ru' | 'es')) {
+    notFound()
   }
 
-  const messages = await getMessages();
+  const messages = await getMessages()
 
   return (
-    <NextIntlClientProvider messages={messages}>
-      <Navigation />
-      <main className="min-h-screen">
-        {children}
-      </main>
-      <Footer />
-      <CookieBanner />
-    </NextIntlClientProvider>
-  );
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>
+        <NextIntlClientProvider messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
+    </html>
+  )
 }

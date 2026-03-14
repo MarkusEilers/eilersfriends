@@ -1,38 +1,37 @@
-"use client";
+import { HeroSection } from '@/components/sections/HeroSection'
+import { LogoStripSection } from '@/components/sections/LogoStripSection'
+import { ProblemSection } from '@/components/sections/ProblemSection'
+import { BentoGrid } from '@/components/sections/BentoGrid'
+import { SignatureJourney } from '@/components/sections/SignatureJourney'
+import { CoachesSection } from '@/components/sections/CoachesSection'
+import { HVCOSection } from '@/components/sections/HVCOSection'
+import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
+import { CtaBlock } from '@/components/sections/CtaBlock'
+import { NewsletterSection } from '@/components/sections/NewsletterSection'
+import { Topbar } from '@/components/layout/Topbar'
+import { Navbar } from '@/components/layout/Navbar'
+import { Footer } from '@/components/layout/Footer'
+import { CookieBanner } from '@/components/layout/CookieBanner'
 
-import HeroSection from "@/components/sections/hero-section";
-import LogoMarquee from "@/components/sections/logo-marquee";
-import ProblemSection from "@/components/sections/problem-section";
-import FrameworkSection from "@/components/sections/framework-section";
-import SalesMadeSection from "@/components/sections/salesmade-section";
-import BeliefsSection from "@/components/sections/beliefs-section";
-import OffersSection from "@/components/sections/offers-section";
-import TestimonialsSection from "@/components/sections/testimonials-section";
-import GrowthCalculator from "@/components/sections/growth-calculator";
-import NewsletterSection from "@/components/sections/newsletter-section";
-
-export default function Home() {
+export default function HomePage() {
   return (
     <>
-      <div id="hero">
+      <Topbar />
+      <Navbar />
+      <main>
         <HeroSection />
-      </div>
-      <LogoMarquee />
-      <ProblemSection />
-      <div id="team">
-        <FrameworkSection />
-      </div>
-      <SalesMadeSection />
-      <div id="results" />
-      <div id="resources">
-        <BeliefsSection />
-      </div>
-      <div id="programs">
-        <OffersSection />
-      </div>
-      <TestimonialsSection />
-      <GrowthCalculator />
-      <NewsletterSection />
+        <LogoStripSection />
+        <ProblemSection />
+        <BentoGrid />
+        <SignatureJourney />
+        <CoachesSection />
+        <HVCOSection />
+        <TestimonialsSection />
+        <CtaBlock />
+        <NewsletterSection />
+      </main>
+      <Footer />
+      <CookieBanner />
     </>
-  );
+  )
 }

@@ -1,27 +1,14 @@
-import "@/app/globals.css";
+import type { Metadata } from 'next'
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="de" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="font-sans antialiased bg-background text-foreground">
-        {children}
-      </body>
-    </html>
-  );
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Eilers+Friends',
+    default: 'Eilers+Friends — Systematisches Wachstum für Gründer',
+  },
+  description: 'Wir helfen Gründern und Vertriebsteams, aus Wissen echte Fähigkeit zu machen — messbar, reproduzierbar, skalierbar.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://eilersfriends.com'),
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return children
 }
