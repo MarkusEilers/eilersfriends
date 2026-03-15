@@ -23,8 +23,8 @@ npm-debug.log*
 # vercel
 .vercel
 
-# drizzle migrations
-/drizzle/
+# drizzle generated migrations (auto-generated, not the manual SQL)
+# /drizzle/
 
 # typescript
 *.tsbuildinfo
