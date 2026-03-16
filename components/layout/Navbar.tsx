@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Menu, X, Globe } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
@@ -50,10 +51,15 @@ export function Navbar() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="flex-shrink-0 select-none">
-          <span className="text-lg font-bold tracking-tight" style={{ color: '#0D0D0B' }}>
-            Eilers<span style={{ color: '#F05A1A' }}>+</span>Friends
-          </span>
+        <Link href="/" className="flex-shrink-0">
+          <Image
+            src="/ef-logo.png"
+            alt="Eilers+Friends"
+            width={160}
+            height={40}
+            className="h-9 w-auto"
+            priority
+          />
         </Link>
 
         {/* Desktop Nav — pill style */}

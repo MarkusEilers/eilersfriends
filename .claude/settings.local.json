@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git -C \"/Users/markuseilers/EilersJung+Friends Dropbox/Markus Eilers/EilersFriends/Eilers+Friends Website/Relaunch 2026/Code\" log --oneline -10)"
+      "Bash(git -C \"/Users/markuseilers/EilersJung+Friends Dropbox/Markus Eilers/EilersFriends/Eilers+Friends Website/Relaunch 2026/Code\" log --oneline -10)",
+      "mcp__mcp-registry__search_mcp_registry"
     ]
   }
 }
