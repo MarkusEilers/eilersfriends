@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { Linkedin, Instagram, Youtube, Mail } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/lib/i18n/navigation'
@@ -27,13 +26,11 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-[240px_1fr_1fr_1fr]">
           {/* Column 1: Brand */}
           <div>
-            <Image
-              src="/wing-white.png"
-              alt="Eilers+Friends"
-              width={48}
-              height={48}
-              className="mb-4 h-12 w-auto"
-            />
+            <div className="mb-4 select-none">
+              <span className="text-xl font-bold tracking-tight text-white">
+                Eilers<span style={{ color: '#F05A1A' }}>+</span>Friends
+              </span>
+            </div>
             <p className="text-sm text-white/60 leading-relaxed">
               {t('tagline')}
             </p>

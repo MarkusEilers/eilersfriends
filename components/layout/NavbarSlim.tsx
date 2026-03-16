@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { Link } from '@/lib/i18n/navigation'
 
 interface NavbarSlimProps {
@@ -13,15 +12,10 @@ export function NavbarSlim({
   return (
     <header className="w-full bg-white border-b border-gray-100">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex-shrink-0">
-          <Image
-            src="/ef-logo.png"
-            alt="Eilers+Friends"
-            width={140}
-            height={36}
-            className="h-8 w-auto"
-            priority
-          />
+        <Link href="/" className="flex-shrink-0 select-none">
+          <span className="text-lg font-bold tracking-tight" style={{ color: '#0D0D0B' }}>
+            Eilers<span style={{ color: '#F05A1A' }}>+</span>Friends
+          </span>
         </Link>
         <a
           href={ctaHref}

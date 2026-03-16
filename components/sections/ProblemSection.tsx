@@ -14,7 +14,7 @@ export function ProblemSection() {
   ] as const
 
   return (
-    <section className="bg-white px-6 py-20">
+    <section className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow={t('eyebrow')}

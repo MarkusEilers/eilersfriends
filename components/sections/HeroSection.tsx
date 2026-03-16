@@ -9,22 +9,28 @@ export function HeroSection() {
   const t = useTranslations('hero')
 
   return (
-    <section className="overflow-hidden bg-white px-6 pb-16 pt-12 sm:pt-20">
-      <div className="mx-auto max-w-5xl">
+    <section className="relative overflow-hidden px-6 pb-20 pt-14 sm:pt-24" style={{ backgroundColor: '#FAFAF8' }}>
+      {/* Decorative background orbs */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full opacity-[0.12] blur-3xl" style={{ backgroundColor: '#F05A1A' }} />
+        <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full opacity-[0.10] blur-3xl" style={{ backgroundColor: '#1A5FD4' }} />
+      </div>
+
+      <div className="relative mx-auto max-w-5xl">
         {/* Pills */}
         <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-orange-border bg-orange-bg px-3 py-1 text-xs font-semibold text-orange" style={{ color: '#F05A1A', backgroundColor: '#FFF1EB', borderColor: '#FECDBB' }}>
-            <span className="h-1.5 w-1.5 rounded-full bg-orange" style={{ backgroundColor: '#F05A1A' }} />
+          <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold" style={{ color: '#F05A1A', backgroundColor: '#FFF1EB', borderColor: '#FECDBB' }}>
+            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: '#F05A1A' }} />
             {t('pill1')}
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-border bg-blue-bg px-3 py-1 text-xs font-semibold text-blue" style={{ color: '#1A5FD4', backgroundColor: '#EBF1FF', borderColor: '#BBCFF5' }}>
+          <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold" style={{ color: '#1A5FD4', backgroundColor: '#EBF1FF', borderColor: '#BBCFF5' }}>
             <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: '#1A5FD4' }} />
             {t('pill2')}
           </span>
         </div>
 
         {/* H1 */}
-        <h1 className="text-center text-4xl font-bold leading-tight tracking-tight text-ink sm:text-5xl lg:text-6xl" style={{ color: '#0D0D0B' }}>
+        <h1 className="text-center text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-[4rem]" style={{ color: '#0D0D0B' }}>
           {t('headline1')}{' '}
           <span className="font-serif italic" style={{ color: '#F05A1A', fontFamily: 'DM Serif Display, serif' }}>
             {t('headlineAccent')}
@@ -37,7 +43,7 @@ export function HeroSection() {
         </h1>
 
         {/* Subtext */}
-        <p className="mx-auto mt-6 max-w-2xl text-center text-base leading-relaxed text-gray-600 sm:text-lg">
+        <p className="mx-auto mt-6 max-w-2xl text-center text-base leading-relaxed text-gray-500 sm:text-lg">
           {t('subtext')}
         </p>
 
@@ -47,7 +53,7 @@ export function HeroSection() {
             href="https://calendly.com/eilersfriends"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-opacity hover:opacity-90"
+            className="flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90"
             style={{ backgroundColor: '#F05A1A' }}
           >
             <Calendar size={16} />
@@ -55,47 +61,47 @@ export function HeroSection() {
           </a>
           <Link
             href="/programme"
-            className="rounded-full border border-gray-300 bg-white px-7 py-3.5 text-sm font-semibold text-gray-700 transition-colors hover:border-gray-400 hover:bg-gray-50"
+            className="rounded-full border border-gray-200 bg-white px-7 py-3.5 text-sm font-semibold text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50"
           >
             {t('ctaSecondary')} →
           </Link>
         </div>
 
         {/* Stats row */}
-        <div className="mt-14 grid grid-cols-2 divide-x divide-gray-100 border-y border-gray-100 sm:grid-cols-4">
+        <div className="mt-16 grid grid-cols-2 divide-x divide-gray-200 rounded-2xl border border-gray-200 bg-white shadow-sm sm:grid-cols-4">
           {/* Stat 1: Orange */}
-          <div className="flex flex-col items-center gap-1 px-4 py-6">
+          <div className="flex flex-col items-center gap-1 px-4 py-7">
             <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#F05A1A' }}>
               <AnimatedNumber value={867} suffix="+" />
             </span>
-            <span className="text-xs text-gray-500 font-medium">{t('stat1Label')}</span>
+            <span className="text-xs text-gray-400 font-medium">{t('stat1Label')}</span>
           </div>
 
           {/* Stat 2: Blue */}
-          <div className="flex flex-col items-center gap-1 px-4 py-6">
+          <div className="flex flex-col items-center gap-1 px-4 py-7">
             <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#1A5FD4' }}>
               <AnimatedNumber value={48} suffix="%" />
             </span>
-            <span className="text-xs text-gray-500 font-medium">{t('stat2Label')}</span>
+            <span className="text-xs text-gray-400 font-medium">{t('stat2Label')}</span>
           </div>
 
           {/* Stat 3: Red */}
-          <div className="flex flex-col items-center gap-1 px-4 py-6">
+          <div className="flex flex-col items-center gap-1 px-4 py-7">
             <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#D4192B' }}>
               <AnimatedNumber value={90} suffix="%+" />
             </span>
-            <span className="text-xs text-gray-500 font-medium">{t('stat3Label')}</span>
+            <span className="text-xs text-gray-400 font-medium">{t('stat3Label')}</span>
           </div>
 
           {/* Stat 4: Serif */}
-          <div className="flex flex-col items-center gap-1 px-4 py-6">
-            <span className="text-3xl font-bold sm:text-4xl text-ink" style={{ color: '#0D0D0B' }}>
-              <AnimatedNumber value={15} />{' '}
-              <span className="font-serif italic text-4xl sm:text-5xl" style={{ fontFamily: 'DM Serif Display, serif' }}>
-                {t('stat4Unit')}
+          <div className="flex flex-col items-center gap-1 px-4 py-7">
+            <span className="inline-flex items-baseline gap-0.5 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>
+              <AnimatedNumber value={15} />
+              <span className="font-serif italic" style={{ fontFamily: 'DM Serif Display, serif', fontSize: '2.25rem', lineHeight: 1 }}>
+                {' '}{t('stat4Unit')}
               </span>
             </span>
-            <span className="text-xs text-gray-500 font-medium">{t('stat4Label')}</span>
+            <span className="text-xs text-gray-400 font-medium">{t('stat4Label')}</span>
           </div>
         </div>
       </div>
