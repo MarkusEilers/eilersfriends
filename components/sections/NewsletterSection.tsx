@@ -2,24 +2,25 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { Mail, Loader2 } from 'lucide-react'
-import { SectionHeader } from '@/components/blocks/SectionHeader'
+import { Mail, Loader2, CheckCircle } from 'lucide-react'
 
 export function NewsletterSection() {
   const t = useTranslations('newsletter')
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [consent, setConsent] = useState(false)
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!email) return
+    if (!email || !consent) return
 
     setStatus('loading')
     try {
       const res = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, firstName: name.trim() || undefined }),
       })
       setStatus(res.ok ? 'success' : 'error')
     } catch {
@@ -28,46 +29,108 @@ export function NewsletterSection() {
   }
 
   return (
-    <section id="newsletter" className="bg-white px-6 py-20">
-      <div className="mx-auto max-w-2xl text-center">
-        <SectionHeader
-          eyebrow={t('eyebrow')}
-          headline={t('headline')}
-          subtext={t('subtext')}
-          color="purple"
-        />
+    <section id="newsletter" className="px-6 py-20" style={{ backgroundColor: '#F05A1A' }}>
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-12 lg:grid-cols-[1fr_480px] lg:items-center">
 
-        {status === 'success' ? (
-          <div className="mt-8 rounded-2xl bg-green-50 border border-green-200 p-6">
-            <p className="font-semibold text-green-800">Erfolgreich angemeldet! 🎉</p>
-            <p className="mt-1 text-sm text-green-700">Check deine E-Mails für die Bestätigung.</p>
+          {/* Left: Headline */}
+          <div className="text-white">
+            <p className="text-sm font-semibold opacity-70 mb-4 uppercase tracking-widest">
+              {t('category')}
+            </p>
+            <h2 className="text-4xl font-bold leading-tight sm:text-5xl">
+              {t('headline')}
+            </h2>
+            <p className="mt-5 text-base leading-relaxed opacity-80 max-w-md">
+              {t('subtext')}
+            </p>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <div className="relative flex-1">
-              <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t('placeholder')}
-                className="w-full rounded-full border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm outline-none transition-colors focus:border-purple focus:ring-2 focus:ring-purple/20"
-                style={{ '--tw-ring-color': '#6B5CE7' } as React.CSSProperties}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={status === 'loading'}
-              className="flex items-center justify-center gap-2 rounded-full px-7 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-              style={{ backgroundColor: '#6B5CE7' }}
-            >
-              {status === 'loading' ? <Loader2 size={16} className="animate-spin" /> : null}
-              {t('button')}
-            </button>
-          </form>
-        )}
-        <p className="mt-3 text-xs text-gray-400">{t('note')}</p>
+
+          {/* Right: Form card */}
+          <div className="rounded-2xl bg-white p-8 shadow-xl">
+            {status === 'success' ? (
+              <div className="flex flex-col items-center gap-4 py-8 text-center">
+                <CheckCircle size={48} style={{ color: '#F05A1A' }} />
+                <div>
+                  <p className="text-lg font-bold text-gray-900">{t('successTitle')}</p>
+                  <p className="mt-1 text-sm text-gray-500">{t('successNote')}</p>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                {/* Name */}
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder={t('namePlaceholder')}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-orange-400 focus:bg-white"
+                />
+
+                {/* E-Mail */}
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t('emailPlaceholder')}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-orange-400 focus:bg-white"
+                />
+
+                {/* DSGVO Consent */}
+                <label className="flex gap-3 cursor-pointer">
+                  <div className="relative flex-shrink-0 mt-0.5">
+                    <input
+                      type="checkbox"
+                      checked={consent}
+                      onChange={(e) => setConsent(e.target.checked)}
+                      className="sr-only"
+                    />
+                    <div
+                      className="h-5 w-5 rounded border-2 transition-colors flex items-center justify-center"
+                      style={{
+                        borderColor: consent ? '#F05A1A' : '#D1D5DB',
+                        backgroundColor: consent ? '#F05A1A' : 'white',
+                      }}
+                    >
+                      {consent && (
+                        <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 12 12">
+                          <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <span className="text-xs leading-relaxed text-gray-500">
+                    {t('consentText')}
+                  </span>
+                </label>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={!consent || status === 'loading'}
+                  className="flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold text-white transition-opacity disabled:opacity-40"
+                  style={{ backgroundColor: '#F05A1A' }}
+                >
+                  {status === 'loading'
+                    ? <Loader2 size={16} className="animate-spin" />
+                    : <Mail size={16} />
+                  }
+                  {t('button')}
+                </button>
+
+                {/* Confirmation note */}
+                <p className="text-center text-xs text-gray-400">
+                  {t('confirmationNote')}
+                </p>
+
+                {status === 'error' && (
+                  <p className="text-center text-xs text-red-500">{t('errorNote')}</p>
+                )}
+              </form>
+            )}
+          </div>
+        </div>
       </div>
     </section>
   )

@@ -31,6 +31,7 @@ export async function POST(request: Request) {
           first_name: firstName,
           reactivate_existing: false,
           send_welcome_email: true,
+          double_opt_override: 'enabled',
           utm_source: 'website',
         }),
       }

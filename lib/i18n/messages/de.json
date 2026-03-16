@@ -121,12 +121,17 @@
     "note": "Kostenlos & unverbindlich"
   },
   "newsletter": {
-    "eyebrow": "Newsletter",
-    "headline": "6.552 Gründer lesen bereits mit",
-    "subtext": "Jeden Dienstag: praxiserprobte Strategien aus 15 Jahren Vertriebserfahrung.",
-    "placeholder": "Deine E-Mail-Adresse",
-    "button": "Jetzt anmelden",
-    "note": "Kein Spam. Jederzeit kündbar."
+    "category": "Der Growth & Leadership Unternehmerletter",
+    "headline": "Schließ Dich 6.552 anderen Unternehmer:innen an",
+    "subtext": "Jeden Dienstag: praxiserprobte Strategien aus 15 Jahren Vertriebserfahrung — direkt in Dein Postfach.",
+    "namePlaceholder": "Name",
+    "emailPlaceholder": "E-Mail",
+    "button": "Anmelden",
+    "consentText": "Ja, ich möchte kostenlose E-Mails von Eilers+Friends bekommen und auf Basis meiner angegebenen Anmeldedaten sowie meines Newsletter-Nutzungsverhaltens auf mich abgestimmte Informationen an die angegebene E-Mail-Adresse erhalten. Ich kann diesen Service in jeder E-Mail wieder abbestellen. Ich habe die Datenschutzbedingungen gelesen und stimme diesen ausdrücklich zu.",
+    "confirmationNote": "Du erhältst eine Bestätigungs-E-Mail zur Verifizierung deiner Anmeldung.",
+    "successTitle": "Fast geschafft!",
+    "successNote": "Wir haben Dir eine Bestätigungs-E-Mail geschickt. Bitte bestätige Deine Anmeldung.",
+    "errorNote": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
   },
   "footer": {
     "tagline": "Systematisches Wachstum für Gründer:innen.",
