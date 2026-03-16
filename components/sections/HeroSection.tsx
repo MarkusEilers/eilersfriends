@@ -17,15 +17,11 @@ export function HeroSection() {
       </div>
 
       <div className="relative mx-auto max-w-5xl">
-        {/* Pills */}
-        <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold" style={{ color: '#F05A1A', backgroundColor: '#FFF1EB', borderColor: '#FECDBB' }}>
+        {/* Tag */}
+        <div className="mb-8 flex justify-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold" style={{ color: '#F05A1A', backgroundColor: '#FFF1EB', borderColor: '#FECDBB' }}>
             <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: '#F05A1A' }} />
             {t('pill1')}
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold" style={{ color: '#1A5FD4', backgroundColor: '#EBF1FF', borderColor: '#BBCFF5' }}>
-            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: '#1A5FD4' }} />
-            {t('pill2')}
           </span>
         </div>
 
