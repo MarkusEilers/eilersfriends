@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(git -C \"/Users/markuseilers/EilersJung+Friends Dropbox/Markus Eilers/EilersFriends/Eilers+Friends Website/Relaunch 2026/Code\" log --oneline -10)",
-      "mcp__mcp-registry__search_mcp_registry"
+      "mcp__mcp-registry__search_mcp_registry",
+      "Bash(find '/Users/markuseilers/EilersJung+Friends Dropbox/Markus Eilers/EilersFriends/Eilers+Friends Website/Relaunch 2026' -name *.png -o -name *.svg -o -name *.jpg)",
+      "Bash(mkdir -p \"/Users/markuseilers/EilersJung+Friends Dropbox/Markus Eilers/EilersFriends/Eilers+Friends Website/Relaunch 2026/Code/app/[locale]/\\(landing\\)/b2b-offers\")",
+      "Bash(cp \"/Users/markuseilers/EilersJung+Friends Dropbox/Markus Eilers/EilersFriends/Eilers+Friends Website/Relaunch 2026/Code/app/[locale]/\\(landing\\)/b2b-angebote/page.tsx\" \"/Users/markuseilers/EilersJung+Friends Dropbox/Markus Eilers/EilersFriends/Eilers+Friends Website/Relaunch 2026/Code/app/[locale]/\\(landing\\)/b2b-offers/page.tsx\")",
+      "Bash(rm -rf \"/Users/markuseilers/EilersJung+Friends Dropbox/Markus Eilers/EilersFriends/Eilers+Friends Website/Relaunch 2026/Code/app/[locale]/\\(landing\\)/b2b-angebote\")"
     ]
   }
 }

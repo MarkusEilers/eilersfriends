@@ -1,7 +1,7 @@
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { Linkedin, ArrowRight } from 'lucide-react'
 import { Link } from '@/lib/i18n/navigation'
-import { SectionHeader } from '@/components/blocks/SectionHeader'
 
 export function CoachesSection() {
   const t = useTranslations('coaches')
@@ -9,34 +9,65 @@ export function CoachesSection() {
   return (
     <section id="coaches" className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
       <div className="mx-auto max-w-7xl">
-        <SectionHeader
-          eyebrow={t('eyebrow')}
-          headline={t('headline')}
-          color="blue"
-        />
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          {/* Markus Card — blue top border */}
-          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm" style={{ borderTopColor: '#1A5FD4', borderTopWidth: '3px' }}>
-            <div className="flex gap-5 p-7">
-              {/* Photo placeholder with initials */}
-              <div
-                className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white select-none"
-                style={{ background: 'linear-gradient(135deg, #1A5FD4 0%, #0F3FA0 100%)' }}
-              >
-                ME
-              </div>
-              <div className="flex-1">
-                <div className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold" style={{ backgroundColor: '#EBF1FF', color: '#1A5FD4' }}>
-                  {t('markus.stat')}
-                </div>
-                <h3 className="text-lg font-bold" style={{ color: '#0D0D0B' }}>{t('markus.name')}</h3>
-                <p className="text-xs text-gray-500">{t('markus.role')}</p>
+        {/* Header */}
+        <div className="mb-14 text-center">
+          <span
+            className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest mb-4"
+            style={{ backgroundColor: '#FFF1EB', color: '#F05A1A' }}
+          >
+            {t('eyebrow')}
+          </span>
+          <h2 className="text-4xl font-bold sm:text-5xl" style={{ color: '#0D0D0B' }}>
+            {t('headline')}
+          </h2>
+          <p className="mt-4 text-base text-gray-500 max-w-xl mx-auto">
+            {t('subtext')}
+          </p>
+        </div>
+
+        {/* Two coach cards */}
+        <div className="grid gap-8 sm:grid-cols-2">
+
+          {/* Markus — Blue accent */}
+          <div className="relative overflow-hidden rounded-3xl bg-white shadow-sm border border-gray-100">
+            {/* Photo */}
+            <div className="relative h-72 w-full overflow-hidden bg-gray-100">
+              <Image
+                src="/markus-photo.jpg"
+                alt="Markus Eilers"
+                fill
+                className="object-cover object-top"
+                style={{ filter: 'grayscale(100%)' }}
+              />
+              {/* Orange tag overlay */}
+              <div className="absolute bottom-4 left-4">
+                <span
+                  className="inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-md"
+                  style={{ backgroundColor: '#F05A1A' }}
+                >
+                  {t('markus.tag')}
+                </span>
               </div>
             </div>
-            <div className="px-7 pb-7">
-              <p className="text-sm leading-relaxed text-gray-600">{t('markus.bio')}</p>
-              <div className="mt-5 flex items-center gap-3">
+
+            {/* Content */}
+            <div className="p-7">
+              {/* Stat chip */}
+              <div
+                className="mb-3 inline-flex items-center rounded-full px-3 py-1 text-xs font-bold"
+                style={{ backgroundColor: '#EBF1FF', color: '#1A5FD4' }}
+              >
+                {t('markus.stat')}
+              </div>
+              <h3 className="text-xl font-bold" style={{ color: '#0D0D0B' }}>
+                {t('markus.name')}
+              </h3>
+              <p className="text-xs text-gray-400 mb-3">{t('markus.role')}</p>
+              <p className="text-sm leading-relaxed text-gray-600 mb-5">
+                {t('markus.bio')}
+              </p>
+              <div className="flex items-center gap-3">
                 <a
                   href="https://linkedin.com/in/markuseilers"
                   target="_blank"
@@ -57,26 +88,45 @@ export function CoachesSection() {
             </div>
           </div>
 
-          {/* Aljona Card — red top border */}
-          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm" style={{ borderTopColor: '#D4192B', borderTopWidth: '3px' }}>
-            <div className="flex gap-5 p-7">
-              <div
-                className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white select-none"
-                style={{ background: 'linear-gradient(135deg, #D4192B 0%, #9B0F1F 100%)' }}
-              >
-                AE
-              </div>
-              <div className="flex-1">
-                <div className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold" style={{ backgroundColor: '#FFF8E6', color: '#B07C0A' }}>
-                  {t('aljona.stat')}
-                </div>
-                <h3 className="text-lg font-bold" style={{ color: '#0D0D0B' }}>{t('aljona.name')}</h3>
-                <p className="text-xs text-gray-500">{t('aljona.role')}</p>
+          {/* Aljona — Amber accent */}
+          <div className="relative overflow-hidden rounded-3xl bg-white shadow-sm border border-gray-100">
+            {/* Photo */}
+            <div className="relative h-72 w-full overflow-hidden bg-gray-100">
+              <Image
+                src="/aljona-photo.jpg"
+                alt="Aljona Eilers"
+                fill
+                className="object-cover object-top"
+                style={{ filter: 'grayscale(100%)' }}
+              />
+              {/* Orange tag overlay */}
+              <div className="absolute bottom-4 left-4">
+                <span
+                  className="inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-md"
+                  style={{ backgroundColor: '#F05A1A' }}
+                >
+                  {t('aljona.tag')}
+                </span>
               </div>
             </div>
-            <div className="px-7 pb-7">
-              <p className="text-sm leading-relaxed text-gray-600">{t('aljona.bio')}</p>
-              <div className="mt-5 flex items-center gap-3">
+
+            {/* Content */}
+            <div className="p-7">
+              {/* Stat chip */}
+              <div
+                className="mb-3 inline-flex items-center rounded-full px-3 py-1 text-xs font-bold"
+                style={{ backgroundColor: '#FFF8E6', color: '#B07C0A' }}
+              >
+                {t('aljona.stat')}
+              </div>
+              <h3 className="text-xl font-bold" style={{ color: '#0D0D0B' }}>
+                {t('aljona.name')}
+              </h3>
+              <p className="text-xs text-gray-400 mb-3">{t('aljona.role')}</p>
+              <p className="text-sm leading-relaxed text-gray-600 mb-5">
+                {t('aljona.bio')}
+              </p>
+              <div className="flex items-center gap-3">
                 <a
                   href="https://linkedin.com/in/aljonaeilers"
                   target="_blank"
@@ -96,6 +146,7 @@ export function CoachesSection() {
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>

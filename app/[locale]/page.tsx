@@ -2,6 +2,8 @@ import { HeroSection } from '@/components/sections/HeroSection'
 import { LogoStripSection } from '@/components/sections/LogoStripSection'
 import { ProblemSection } from '@/components/sections/ProblemSection'
 import { BentoGrid } from '@/components/sections/BentoGrid'
+import { SalesMadeAcademySection } from '@/components/sections/SalesMadeAcademySection'
+import { ProgrammeSection } from '@/components/sections/ProgrammeSection'
 import { CoachesSection } from '@/components/sections/CoachesSection'
 import { HVCOSection } from '@/components/sections/HVCOSection'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
@@ -22,7 +24,9 @@ export default function HomePage() {
         <LogoStripSection />
         <ProblemSection />
         <BentoGrid />
+        <SalesMadeAcademySection />
         <CoachesSection />
+        <ProgrammeSection />
         <HVCOSection />
         <TestimonialsSection />
         <CtaBlock />

@@ -3,17 +3,57 @@ import { Linkedin, Instagram, Youtube, Mail } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/lib/i18n/navigation'
 
-function SocialButton({ href, icon: Icon, label }: { href: string; icon: React.ElementType; label: string }) {
+function SocialIcon({ href, icon: Icon, label }: { href: string; icon: React.ElementType; label: string }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
+      className="flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+      style={{ backgroundColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)' }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.16)'
+        e.currentTarget.style.color = 'white'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.08)'
+        e.currentTarget.style.color = 'rgba(255,255,255,0.6)'
+      }}
     >
       <Icon size={16} />
     </a>
+  )
+}
+
+function FooterCol({ heading, children }: { heading: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h3 className="mb-5 text-xs font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.35)' }}>
+        {heading}
+      </h3>
+      <ul className="space-y-3">{children}</ul>
+    </div>
+  )
+}
+
+function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+  const isExternal = href.startsWith('http') || href.startsWith('mailto')
+  if (isExternal) {
+    return (
+      <li>
+        <a href={href} className="text-sm transition-colors" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          {children}
+        </a>
+      </li>
+    )
+  }
+  return (
+    <li>
+      <Link href={href as '/'} className="text-sm transition-colors" style={{ color: 'rgba(255,255,255,0.55)' }}>
+        {children}
+      </Link>
+    </li>
   )
 }
 
@@ -21,89 +61,95 @@ export function Footer() {
   const t = useTranslations('footer')
 
   return (
-    <footer style={{ backgroundColor: '#0F1E3A' }} className="text-white">
-      <div className="mx-auto max-w-7xl px-6 pt-16 pb-8">
-        {/* Wing + 4 columns */}
-        <div className="grid gap-10 lg:grid-cols-[240px_1fr_1fr_1fr]">
-          {/* Column 1: Brand */}
-          <div>
+    <footer style={{ backgroundColor: '#0A0D14' }} className="text-white">
+      <div className="mx-auto max-w-7xl px-6 pt-16 pb-6">
+
+        {/* Top: Logo + 4 columns */}
+        <div className="grid gap-10 lg:grid-cols-[220px_1fr_1fr_1fr_1fr]">
+
+          {/* Brand column */}
+          <div className="lg:col-span-1">
             <Image
               src="/wing-white.png"
               alt="Eilers+Friends"
-              width={48}
-              height={48}
-              className="mb-4 h-12 w-auto"
+              width={44}
+              height={44}
+              className="mb-4 h-11 w-auto"
             />
-            <p className="text-sm text-white/60 leading-relaxed">
+            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
               {t('tagline')}
             </p>
-            {/* Aljona Social */}
-            <div className="mt-6">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/40">Aljona</p>
-              <div className="flex gap-2">
-                <SocialButton href="https://linkedin.com/in/aljonaeilers" icon={Linkedin} label="Aljona auf LinkedIn" />
-                <SocialButton href="https://instagram.com/aljonaeilers" icon={Instagram} label="Aljona auf Instagram" />
-                <SocialButton href="https://youtube.com/@aljonaeilers" icon={Youtube} label="Aljona auf YouTube" />
-              </div>
+          </div>
+
+          {/* Programme */}
+          <FooterCol heading={t('programmes')}>
+            <FooterLink href="/salesmade">{t('salesmade')}</FooterLink>
+            <FooterLink href="/aljona#liquid">{t('liquidLeadership')}</FooterLink>
+            <FooterLink href="/b2b-offers">{t('b2bFramework')}</FooterLink>
+          </FooterCol>
+
+          {/* Coaches */}
+          <FooterCol heading={t('coaches')}>
+            <FooterLink href="/markus">{t('markus')}</FooterLink>
+            <FooterLink href="/aljona">{t('aljona')}</FooterLink>
+          </FooterCol>
+
+          {/* Unternehmen */}
+          <FooterCol heading={t('unternehmen')}>
+            <FooterLink href="/ueber-uns">{t('about')}</FooterLink>
+            <FooterLink href="#newsletter">{t('newsletter')}</FooterLink>
+            <FooterLink href="/ressourcen">{t('ressourcen')}</FooterLink>
+          </FooterCol>
+
+          {/* Rechtliches */}
+          <FooterCol heading={t('legal')}>
+            <FooterLink href="/datenschutz">{t('privacy')}</FooterLink>
+            <FooterLink href="/impressum">{t('imprint')}</FooterLink>
+            <FooterLink href="/kontakt">{t('contact')}</FooterLink>
+            <FooterLink href="#cookie-settings">{t('cookieSettings')}</FooterLink>
+          </FooterCol>
+
+        </div>
+
+        {/* Social bar */}
+        <div
+          className="mt-12 flex flex-col items-start justify-between gap-6 border-t pt-8 sm:flex-row sm:items-center"
+          style={{ borderColor: 'rgba(255,255,255,0.08)' }}
+        >
+          {/* Aljona social */}
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.30)' }}>
+              Aljona
+            </span>
+            <div className="flex gap-2">
+              <SocialIcon href="https://linkedin.com/in/aljonaeilers" icon={Linkedin} label="Aljona auf LinkedIn" />
+              <SocialIcon href="https://instagram.com/aljonaeilers" icon={Instagram} label="Aljona auf Instagram" />
+              <SocialIcon href="https://youtube.com/@aljonaeilers" icon={Youtube} label="Aljona auf YouTube" />
             </div>
-            {/* Markus Social */}
-            <div className="mt-4">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/40">Markus</p>
-              <div className="flex gap-2">
-                <SocialButton href="https://linkedin.com/in/markuseilers" icon={Linkedin} label="Markus auf LinkedIn" />
-                <SocialButton href="https://youtube.com/@markuseilers" icon={Youtube} label="Markus auf YouTube" />
-                <SocialButton href="mailto:markus@eilersfriends.com" icon={Mail} label="E-Mail an Markus" />
-              </div>
+          </div>
+
+          {/* Markus social */}
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.30)' }}>
+              Markus
+            </span>
+            <div className="flex gap-2">
+              <SocialIcon href="https://linkedin.com/in/markuseilers" icon={Linkedin} label="Markus auf LinkedIn" />
+              <SocialIcon href="https://youtube.com/@markuseilers" icon={Youtube} label="Markus auf YouTube" />
+              <SocialIcon href="mailto:markus@eilersfriends.com" icon={Mail} label="E-Mail an Markus" />
             </div>
-          </div>
-
-          {/* Column 2: Programme */}
-          <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-white/40">
-              {t('programmes')}
-            </h3>
-            <ul className="space-y-2.5">
-              <li><Link href="/salesmade" className="text-sm text-white/70 hover:text-white transition-colors">{t('salesmade')}</Link></li>
-              <li><Link href="/aljona#liquid" className="text-sm text-white/70 hover:text-white transition-colors">{t('liquidLeadership')}</Link></li>
-            </ul>
-            <h3 className="mb-4 mt-8 text-sm font-bold uppercase tracking-widest text-white/40">
-              {t('coaches')}
-            </h3>
-            <ul className="space-y-2.5">
-              <li><Link href="/markus" className="text-sm text-white/70 hover:text-white transition-colors">{t('markus')}</Link></li>
-              <li><Link href="/aljona" className="text-sm text-white/70 hover:text-white transition-colors">{t('aljona')}</Link></li>
-            </ul>
-          </div>
-
-          {/* Column 3: Resources */}
-          <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-white/40">
-              {t('resources')}
-            </h3>
-            <ul className="space-y-2.5">
-              <li><Link href="/ressourcen" className="text-sm text-white/70 hover:text-white transition-colors">{t('frameworks')}</Link></li>
-              <li><a href="#newsletter" className="text-sm text-white/70 hover:text-white transition-colors">{t('newsletter')}</a></li>
-            </ul>
-          </div>
-
-          {/* Column 4: Legal */}
-          <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-white/40">
-              {t('legal')}
-            </h3>
-            <ul className="space-y-2.5">
-              <li><Link href="/datenschutz" className="text-sm text-white/70 hover:text-white transition-colors">{t('privacy')}</Link></li>
-              <li><Link href="/impressum" className="text-sm text-white/70 hover:text-white transition-colors">{t('imprint')}</Link></li>
-              <li><Link href="/kontakt" className="text-sm text-white/70 hover:text-white transition-colors">{t('contact')}</Link></li>
-            </ul>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
+        {/* Copyright bar */}
+        <div
+          className="mt-6 flex flex-col items-center justify-between gap-2 border-t pt-6 text-xs sm:flex-row"
+          style={{ borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }}
+        >
           <span>{t('copyright')}</span>
           <span>{t('madeWith')}</span>
         </div>
+
       </div>
     </footer>
   )
