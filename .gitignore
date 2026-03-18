@@ -20,6 +20,9 @@ npm-debug.log*
 .env
 .env*.local
 
+# local secrets (Dropbox-synced, NOT for git)
+.claude-secrets.local
+
 # vercel
 .vercel
 
