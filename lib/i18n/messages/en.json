@@ -11,13 +11,11 @@
     "link": "Learn more"
   },
   "hero": {
-    "pill1": "For ambitious founders & leaders",
-    "headline1": "Unleash Your",
-    "headlineAccent": "Winning Team",
-    "headline2": "for predictable",
-    "headlineBlue": "Growth",
-    "subtext": "We help founders and sales teams turn knowledge into real capability — measurable, reproducible, scalable.",
-    "ctaPrimary": "Free Strategy Call",
+    "pill1": "For ambitious founders and leaders",
+    "headline1": "Unleash Your Winning Team",
+    "headline2": "for predictable growth",
+    "subtext": "Founders work with us to further professionalize customer-facing teams for predictable growth.",
+    "ctaPrimary": "Book a Strategy Call",
     "ctaSecondary": "View Programs",
     "stat1Value": "867+",
     "stat1Label": "Participants",
