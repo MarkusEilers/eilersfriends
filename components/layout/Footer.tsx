@@ -74,7 +74,7 @@ export function Footer() {
               alt="Eilers+Friends"
               width={44}
               height={44}
-              className="mb-4 h-11 w-auto"
+              className="mb-4 h-12 w-auto"
             />
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
               {t('tagline')}

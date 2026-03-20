@@ -33,12 +33,6 @@ export function ProgrammeSection() {
             {/* Decorative circle */}
             <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full opacity-20" style={{ backgroundColor: '#F05A1A' }} />
             <div className="relative flex-1">
-              <span
-                className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide mb-4"
-                style={{ backgroundColor: '#F05A1A', color: 'white' }}
-              >
-                {t('card1Tag')}
-              </span>
               <h3 className="text-xl font-bold mb-3" style={{ color: '#0D0D0B' }}>
                 {t('card1Title')}
               </h3>
@@ -62,12 +56,6 @@ export function ProgrammeSection() {
           >
             <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full opacity-20" style={{ backgroundColor: '#D4192B' }} />
             <div className="relative flex-1">
-              <span
-                className="inline-block rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wide mb-4"
-                style={{ color: '#D4192B', borderColor: '#F5BBBC', backgroundColor: 'white' }}
-              >
-                {t('card2Tag')}
-              </span>
               <h3 className="text-xl font-bold mb-3" style={{ color: '#0D0D0B' }}>
                 {t('card2Title')}
               </h3>
@@ -91,12 +79,6 @@ export function ProgrammeSection() {
           >
             <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full opacity-20" style={{ backgroundColor: '#1A5FD4' }} />
             <div className="relative flex-1">
-              <span
-                className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide mb-4"
-                style={{ backgroundColor: '#1A5FD4', color: 'white' }}
-              >
-                {t('card3Tag')}
-              </span>
               <h3 className="text-xl font-bold mb-3" style={{ color: '#0D0D0B' }}>
                 {t('card3Title')}
               </h3>

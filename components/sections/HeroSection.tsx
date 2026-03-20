@@ -1,8 +1,6 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { Calendar } from 'lucide-react'
-import { Link } from '@/lib/i18n/navigation'
 import { AnimatedNumber } from '@/components/blocks/AnimatedNumber'
 
 export function HeroSection() {
@@ -27,15 +25,9 @@ export function HeroSection() {
 
         {/* H1 */}
         <h1 className="text-center text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-[4rem]" style={{ color: '#0D0D0B' }}>
-          {t('headline1')}{' '}
-          <span className="font-serif italic" style={{ color: '#F05A1A', fontFamily: 'DM Serif Display, serif' }}>
-            {t('headlineAccent')}
-          </span>
+          {t('headline1')}
           <br />
-          {t('headline2')}{' '}
-          <span style={{ color: '#1A5FD4' }}>
-            {t('headlineBlue')}
-          </span>
+          <span style={{ color: '#F05A1A' }}>{t('headline2')}</span>
         </h1>
 
         {/* Subtext */}
@@ -43,24 +35,17 @@ export function HeroSection() {
           {t('subtext')}
         </p>
 
-        {/* CTAs */}
-        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        {/* CTA */}
+        <div className="mt-8 flex justify-center">
           <a
             href="https://calendly.com/eilersfriends"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#F05A1A' }}
+            className="rounded-full px-8 py-4 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90"
+            style={{ backgroundColor: '#0A0D14' }}
           >
-            <Calendar size={16} />
-            {t('ctaPrimary')}
+            {t('ctaPrimary')} →
           </a>
-          <Link
-            href="/programme"
-            className="rounded-full border border-gray-200 bg-white px-7 py-3.5 text-sm font-semibold text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50"
-          >
-            {t('ctaSecondary')} →
-          </Link>
         </div>
 
         {/* Stats row */}

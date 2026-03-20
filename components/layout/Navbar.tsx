@@ -42,7 +42,7 @@ export function Navbar() {
             alt="Eilers+Friends"
             width={160}
             height={40}
-            className="h-9 w-auto"
+            className="h-[54px] w-auto"
             priority
           />
         </Link>
