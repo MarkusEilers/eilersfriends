@@ -121,7 +121,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                 {preview ? (
                   <div className="rounded-xl border border-gray-200 bg-gray-50 overflow-hidden">
                     <div className="border-b border-gray-200 bg-white px-4 py-2 text-xs text-gray-500">
-                      Vorschau ({{firstName}} = &quot;Maria&quot;, {{confirmUrl}} = &quot;https://...&quot;)
+                      Vorschau ({'{{firstName}}'} = &quot;Maria&quot;, {'{{confirmUrl}}'} = &quot;https://...&quot;)
                     </div>
                     <iframe
                       srcDoc={form.bodyHtml
