@@ -71,7 +71,7 @@ export async function POST(request: Request) {
 
         if (res.ok) {
           const beehiivData = await res.json()
-          const beehiivId = beehiivData?.data?.id
+          const beehiivId = beehiivData?.data?.id as string | undefined
 
           // Update DB with Beehiiv ID
           if (beehiivId) {
