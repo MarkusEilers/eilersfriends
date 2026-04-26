@@ -31,6 +31,7 @@ export const recommendationStatusEnum = pgEnum('recommendation_status', ['pendin
 export const hvcoTypeEnum = pgEnum('hvco_type', ['pdf', 'tool', 'video', 'newsletter'])
 export const hvcoDeliveryEnum = pgEnum('hvco_delivery', ['email', 'unlock', 'redirect'])
 export const sessionTypeEnum = pgEnum('session_type', ['sparring', 'group_qa', 'training'])
+export const newsletterStatusEnum = pgEnum('newsletter_status', ['pending', 'active', 'unsubscribed', 'bounced'])
 
 // ─── Companies ────────────────────────────────────────────────────────────────
 
@@ -177,7 +178,8 @@ export const skills = pgTable('skills', {
   title: text('title').notNull(),
   slug: text('slug').notNull().unique(),
   category: text('category'),
-  icon: text('icon'),
+  description: text('description'),
+  dimension: skillDimensionEnum('dimension'),
   sortOrder: integer('sort_order').default(0),
 })
 
@@ -185,57 +187,55 @@ export const assessmentQuestions = pgTable('assessment_questions', {
   id: uuid('id').defaultRandom().primaryKey(),
   skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
   dimension: skillDimensionEnum('dimension').notNull(),
-  questionText: text('question_text').notNull(),
+  body: text('body').notNull(),
   answerType: answerTypeEnum('answer_type').default('scale_1_5').notNull(),
-  weight: real('weight').default(1.0),
+  choicesJson: json('choices_json').$type<string[]>(),
+  sortOrder: integer('sort_order').default(0),
 })
-
-// ─── Assessments ──────────────────────────────────────────────────────────────
 
 export const assessments = pgTable('assessments', {
   id: uuid('id').defaultRandom().primaryKey(),
   enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
   type: assessmentTypeEnum('type').notNull(),
   status: assessmentStatusEnum('status').default('pending').notNull(),
-  dueAt: timestamp('due_at'),
-  completedAt: timestamp('completed_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  completedAt: timestamp('completed_at'),
 })
 
 export const assessmentAnswers = pgTable('assessment_answers', {
   id: uuid('id').defaultRandom().primaryKey(),
   assessmentId: uuid('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
   questionId: uuid('question_id').notNull().references(() => assessmentQuestions.id, { onDelete: 'cascade' }),
-  answerValue: text('answer_value').notNull(),
-  scoreRaw: real('score_raw'),
-})
+  scaleValue: integer('scale_value'),
+  choiceValue: text('choice_value'),
+  textValue: text('text_value'),
+}, (table) => [
+  unique().on(table.assessmentId, table.questionId),
+])
 
-// ─── Skill Scores (append-only!) ──────────────────────────────────────────────
+// ─── Skill Scores ─────────────────────────────────────────────────────────────
 
 export const skillScores = pgTable('skill_scores', {
   id: uuid('id').defaultRandom().primaryKey(),
   enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
   skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
-  assessmentId: uuid('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
   wissen: real('wissen').notNull(),
   koennen: real('koennen').notNull(),
   machen: real('machen').notNull(),
   overall: real('overall').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  recordedAt: timestamp('recorded_at').defaultNow().notNull(),
 })
 
 export const skillRecommendations = pgTable('skill_recommendations', {
   id: uuid('id').defaultRandom().primaryKey(),
   enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
   skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
-  contentType: text('content_type'),
-  contentId: uuid('content_id'),
   reason: recommendationReasonEnum('reason').notNull(),
   status: recommendationStatusEnum('status').default('pending').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-// ─── HVCO Resources ───────────────────────────────────────────────────────────
+// ─── HVCOs ────────────────────────────────────────────────────────────────────
 
 export const programHvcos = pgTable('program_hvcos', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -243,10 +243,8 @@ export const programHvcos = pgTable('program_hvcos', {
   type: hvcoTypeEnum('type').notNull(),
   title: text('title').notNull(),
   description: text('description'),
-  isFeatured: boolean('is_featured').default(false),
-  gateFields: json('gate_fields').$type<string[]>(),
-  deliveryType: hvcoDeliveryEnum('delivery_type').default('email').notNull(),
-  deliveryTarget: text('delivery_target'),
+  fileUrl: text('file_url'),
+  delivery: hvcoDeliveryEnum('delivery').default('email').notNull(),
   sortOrder: integer('sort_order').default(0),
   isPublished: boolean('is_published').default(true),
 })
@@ -297,6 +295,23 @@ export const certificates = pgTable('certificates', {
   issuedAt: timestamp('issued_at').defaultNow().notNull(),
   pdfUrl: text('pdf_url'),
   verifyToken: text('verify_token').notNull().unique(),
+})
+
+// ─── Newsletter Subscribers ───────────────────────────────────────────────────
+
+export const newsletterSubscribers = pgTable('newsletter_subscribers', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  email: text('email').notNull().unique(),
+  firstName: text('first_name'),
+  source: text('source').default('website'), // 'website', 'salesmade', 'markus', 'aljona', etc.
+  status: newsletterStatusEnum('status').default('pending').notNull(),
+  lists: json('lists').$type<string[]>().default([]), // e.g. ['general', 'salesmade']
+  consentGiven: boolean('consent_given').default(false).notNull(),
+  consentAt: timestamp('consent_at'),
+  beehiivId: text('beehiiv_id'),
+  beehiivSyncedAt: timestamp('beehiiv_synced_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
 // ─── Relations ────────────────────────────────────────────────────────────────
