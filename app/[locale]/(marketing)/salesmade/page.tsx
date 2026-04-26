@@ -403,8 +403,19 @@ export default function SalesMadePage() {
               Markus Eilers
             </h2>
             <p className="mt-2 text-sm font-semibold uppercase tracking-widest text-gray-400">
-              Revenue Systems · B2B-Vertrieb · Keynote Speaker
+              Revenue Systems · B2B-Vertrieb
             </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              {['TEDx Speaker', 'TOP 100 Trainer', 'TOP 100 Speaker', 'Keynote Speaker'].map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border px-3 py-1 text-xs font-semibold"
+                  style={{ color: accent, borderColor: '#BBCFF5', backgroundColor: '#EBF1FF' }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
           <div className="grid gap-10 md:grid-cols-[280px_1fr] md:items-start">
             <div className="mx-auto md:mx-0">

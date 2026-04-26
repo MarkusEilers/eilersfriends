@@ -349,14 +349,14 @@ export const landingPages = pgTable('landing_pages', {
   metaDescription: text('meta_description'),
   ogImageUrl: text('og_image_url'),
   status: landingPageStatusEnum('status').default('draft').notNull(),
-  // Welche Email-Liste soll hier beføllt werden?
+  // Welche Email-Liste soll hier befüllt werden?
   emailList: text('email_list'),                  // z.B. 'salesmade', 'liquid-leadership'
   emailSequenceId: uuid('email_sequence_id'),     // Welche Sequenz soll triggern?
   // Tracking & Analytics
   utmSource: text('utm_source'),
   locale: text('locale').default('de').notNull(),
   // Design-Overrides
-  accentColor: text('accent_color'),              // z.B. '#1A5FD4' før SalesMade
+  accentColor: text('accent_color'),              // z.B. '#1A5FD4' für SalesMade
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
