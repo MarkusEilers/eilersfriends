@@ -9,15 +9,19 @@ export function SalesMadeRoiCalculator({ accent }: { accent: string }) {
   const [dealValue, setDealValue] = useState(15000)
   const [meetings, setMeetings] = useState(12)
 
+  // Floor: SalesMade lifts low-activity sellers up to 10 first-meetings/month
+  const ACTIVITY_FLOOR = 10
+  const upgradedMeetings = Math.max(meetings, ACTIVITY_FLOOR)
+  const isLifted = meetings < ACTIVITY_FLOOR
+
   const result = useMemo(() => {
-    // Conversion lift: 28 % → 54 % → +26 pp absolute
-    // Plus +48 % deal value
-    const meetingsPerYear = meetings * 12 * salespeople
-    const baselineRevenue = meetingsPerYear * 0.28 * dealValue
-    const upgradedRevenue = meetingsPerYear * 0.54 * dealValue * 1.48
+    // Baseline: current state — Conversion 28 %, current meeting volume
+    // Upgraded: Conversion 54 %, +48 % deal value, lifted meeting floor
+    const baselineRevenue = meetings * 12 * salespeople * 0.28 * dealValue
+    const upgradedRevenue = upgradedMeetings * 12 * salespeople * 0.54 * dealValue * 1.48
     const delta = Math.max(0, upgradedRevenue - baselineRevenue)
     return Math.round(delta)
-  }, [salespeople, dealValue, meetings])
+  }, [salespeople, dealValue, meetings, upgradedMeetings])
 
   const formatted = new Intl.NumberFormat('de-DE', {
     style: 'currency',
@@ -55,15 +59,27 @@ export function SalesMadeRoiCalculator({ accent }: { accent: string }) {
               }).format(n)
             }
           />
-          <Field
-            label="Erstgespräche pro Verkäufer / Monat"
-            value={meetings}
-            min={1}
-            max={40}
-            step={1}
-            onChange={setMeetings}
-            accent={accent}
-          />
+          <div>
+            <Field
+              label="Erstgespräche pro Verkäufer / Monat"
+              value={meetings}
+              min={1}
+              max={40}
+              step={1}
+              onChange={setMeetings}
+              accent={accent}
+            />
+            {isLifted && (
+              <p className="mt-2 text-xs leading-relaxed text-gray-500">
+                <span className="font-semibold" style={{ color: accent }}>
+                  + Activity-Lift:
+                </span>{' '}
+                Liegt dein Team unter {ACTIVITY_FLOOR} Erstgesprächen/Monat,
+                bringen wir es im Programm auf dieses Niveau. Die Berechnung
+                rechnet daher mit {ACTIVITY_FLOOR} statt {meetings}.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Result */}
@@ -76,8 +92,9 @@ export function SalesMadeRoiCalculator({ accent }: { accent: string }) {
           </div>
           <div className="mt-1 text-xs text-gray-500">pro Jahr</div>
           <p className="mt-4 text-xs leading-relaxed text-gray-600">
-            Basierend auf einer verbesserten Conversion (28 % → 54 %), +48 % höheren
-            Deal-Werten und Branchenkennzahlen unserer Kunden.
+            Basierend auf verbesserter Conversion (28 % → 54 %), +48 % höheren
+            Deal-Werten und mindestens 10 Erstgesprächen pro Verkäufer/Monat —
+            Branchenkennzahlen unserer Kunden.
           </p>
           <Link
             href="/kontakt"
