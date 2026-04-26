@@ -85,8 +85,9 @@ export default function KontaktPage() {
                     <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Standort</p>
                     <p className="text-sm" style={{ color: '#0D0D0B' }}>
                       Eilers+Friends, uphill ventures GmbH<br />
-                      c/o Markus Eilers<br />
-                      Hamburg, Deutschland
+                      Blütenäcker 55/2<br />
+                      71332 Waiblingen<br />
+                      Deutschland
                     </p>
                   </div>
                 </div>

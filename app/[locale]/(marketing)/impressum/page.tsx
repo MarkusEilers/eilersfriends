@@ -18,8 +18,9 @@ export default function ImpressumPage() {
               <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>Angaben gemäß § 5 TMG</h2>
               <p>
                 Eilers+Friends, uphill ventures GmbH<br />
-                c/o Markus Eilers<br />
-                Hamburg, Deutschland
+                Blütenäcker 55/2<br />
+                71332 Waiblingen<br />
+                Deutschland
               </p>
               <p className="mt-4">
                 Vertreten durch die Geschäftsführer:innen Markus Eilers und Aljona Eilers.

@@ -29,8 +29,9 @@ export default function DatenschutzPage() {
               <p>
                 Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:<br /><br />
                 Eilers+Friends, uphill ventures GmbH<br />
-                c/o Markus Eilers<br />
-                Hamburg, Deutschland<br />
+                Blütenäcker 55/2<br />
+                71332 Waiblingen<br />
+                Deutschland<br />
                 E-Mail: <a href="mailto:team@eilersfriends.com" className="underline" style={{ color: '#F05A1A' }}>team@eilersfriends.com</a>
               </p>
             </div>
