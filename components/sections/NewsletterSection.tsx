@@ -1,45 +1,29 @@
-'use client'
+import { getTranslations, getLocale } from 'next-intl/server'
+import { getDisplayedSubscriberCount } from '@/lib/db/queries/subscriber-count'
+import { NewsletterForm } from './NewsletterForm'
 
-import { useState } from 'react'
-import { useTranslations } from 'next-intl'
-import { Mail, Loader2, CheckCircle } from 'lucide-react'
+export async function NewsletterSection() {
+  const t = await getTranslations('newsletter')
+  const locale = await getLocale()
+  const total = await getDisplayedSubscriberCount()
 
-export function NewsletterSection() {
-  const t = useTranslations('newsletter')
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [consent, setConsent] = useState(false)
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!email || !consent) return
-
-    setStatus('loading')
-    try {
-      const res = await fetch('/api/newsletter/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, firstName: name.trim() || undefined }),
-      })
-      setStatus(res.ok ? 'success' : 'error')
-    } catch {
-      setStatus('error')
-    }
-  }
+  // Locale-aware thousand separator
+  const formatter = new Intl.NumberFormat(
+    locale === 'en' ? 'en-US' : locale === 'ru' ? 'ru-RU' : 'de-DE'
+  )
+  const formattedCount = formatter.format(total)
 
   return (
     <section id="newsletter" className="px-6 py-20" style={{ backgroundColor: '#F05A1A' }}>
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-[1fr_480px] lg:items-center">
-
           {/* Left: Headline */}
           <div className="text-white">
             <p className="text-sm font-semibold opacity-70 mb-4 uppercase tracking-widest">
               {t('category')}
             </p>
             <h2 className="text-4xl font-bold leading-tight sm:text-5xl">
-              {t('headline')}
+              {t('headline', { count: formattedCount })}
             </h2>
             <p className="mt-5 text-base leading-relaxed opacity-80 max-w-md">
               {t('subtext')}
@@ -48,87 +32,7 @@ export function NewsletterSection() {
 
           {/* Right: Form card */}
           <div className="rounded-2xl bg-white p-8 shadow-xl">
-            {status === 'success' ? (
-              <div className="flex flex-col items-center gap-4 py-8 text-center">
-                <CheckCircle size={48} style={{ color: '#F05A1A' }} />
-                <div>
-                  <p className="text-lg font-bold text-gray-900">{t('successTitle')}</p>
-                  <p className="mt-1 text-sm text-gray-500">{t('successNote')}</p>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                {/* Name */}
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={t('namePlaceholder')}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-orange-400 focus:bg-white"
-                />
-
-                {/* E-Mail */}
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('emailPlaceholder')}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-orange-400 focus:bg-white"
-                />
-
-                {/* DSGVO Consent */}
-                <label className="flex gap-3 cursor-pointer">
-                  <div className="relative flex-shrink-0 mt-0.5">
-                    <input
-                      type="checkbox"
-                      checked={consent}
-                      onChange={(e) => setConsent(e.target.checked)}
-                      className="sr-only"
-                    />
-                    <div
-                      className="h-5 w-5 rounded border-2 transition-colors flex items-center justify-center"
-                      style={{
-                        borderColor: consent ? '#F05A1A' : '#D1D5DB',
-                        backgroundColor: consent ? '#F05A1A' : 'white',
-                      }}
-                    >
-                      {consent && (
-                        <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 12 12">
-                          <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      )}
-                    </div>
-                  </div>
-                  <span className="text-xs leading-relaxed text-gray-500">
-                    {t('consentText')}
-                  </span>
-                </label>
-
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={!consent || status === 'loading'}
-                  className="flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold text-white transition-opacity disabled:opacity-40"
-                  style={{ backgroundColor: '#F05A1A' }}
-                >
-                  {status === 'loading'
-                    ? <Loader2 size={16} className="animate-spin" />
-                    : <Mail size={16} />
-                  }
-                  {t('button')}
-                </button>
-
-                {/* Confirmation note */}
-                <p className="text-center text-xs text-gray-400">
-                  {t('confirmationNote')}
-                </p>
-
-                {status === 'error' && (
-                  <p className="text-center text-xs text-red-500">{t('errorNote')}</p>
-                )}
-              </form>
-            )}
+            <NewsletterForm />
           </div>
         </div>
       </div>

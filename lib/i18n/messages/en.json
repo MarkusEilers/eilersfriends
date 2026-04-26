@@ -163,7 +163,7 @@
   },
   "newsletter": {
     "category": "The Growth & Leadership Letter",
-    "headline": "Join 6,552 other founders",
+    "headline": "Join {count} other founders",
     "subtext": "Every Tuesday: battle-tested strategies from 15 years of sales experience — straight to your inbox.",
     "namePlaceholder": "Name",
     "emailPlaceholder": "Email",

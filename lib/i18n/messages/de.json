@@ -163,7 +163,7 @@
   },
   "newsletter": {
     "category": "Der Growth & Leadership Unternehmerletter",
-    "headline": "Schließ Dich 6.552 anderen Unternehmer:innen an",
+    "headline": "Schließ Dich {count} anderen Unternehmer:innen an",
     "subtext": "Jeden Dienstag: praxiserprobte Strategien aus 15 Jahren Vertriebserfahrung — direkt in Dein Postfach.",
     "namePlaceholder": "Name",
     "emailPlaceholder": "E-Mail",
