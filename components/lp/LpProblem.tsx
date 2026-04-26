@@ -1,4 +1,4 @@
-export function LpProblem({ content }: { content: Record<string, unknown> }) {
+export function LpProblem({ content }: { content: Record<string, any> }) {
   const items = (content.items as string[]) ?? []
 
   return (

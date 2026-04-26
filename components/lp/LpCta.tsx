@@ -1,4 +1,4 @@
-export function LpCta({ content, accent }: { content: Record<string, unknown>; accent: string }) {
+export function LpCta({ content, accent }: { content: Record<string, any>; accent: string }) {
   return (
     <section className="px-6 py-20 bg-white">
       <div className="mx-auto max-w-2xl text-center">

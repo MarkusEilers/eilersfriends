@@ -1,4 +1,4 @@
-export function LpGeneric({ content }: { content: Record<string, unknown> }) {
+export function LpGeneric({ content }: { content: Record<string, any> }) {
   return (
     <section className="px-6 py-12 bg-white">
       <div className="mx-auto max-w-3xl">

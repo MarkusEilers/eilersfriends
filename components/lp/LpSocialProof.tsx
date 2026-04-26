@@ -1,4 +1,4 @@
-export function LpSocialProof({ content }: { content: Record<string, unknown> }) {
+export function LpSocialProof({ content }: { content: Record<string, any> }) {
   return (
     <section className="border-y border-gray-100 bg-white px-6 py-10">
       <div className="mx-auto max-w-4xl text-center">

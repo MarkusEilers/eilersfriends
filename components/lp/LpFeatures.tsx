@@ -3,7 +3,7 @@ interface Item { icon?: string; title: string; text?: string }
 export function LpFeatures({
   content, accent, type,
 }: {
-  content: Record<string, unknown>
+  content: Record<string, any>
   accent: string
   type: string
 }) {

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 
 interface LpHeroProps {
-  content: Record<string, unknown>
+  content: Record<string, any>
   accent: string
   emailList: string
 }

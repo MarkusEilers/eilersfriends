@@ -20,7 +20,7 @@ const coaches = {
   },
 }
 
-export function LpCoachBio({ content }: { content: Record<string, unknown> }) {
+export function LpCoachBio({ content }: { content: Record<string, any> }) {
   const coachKey = (content.coach as 'markus' | 'aljona') ?? 'markus'
   const coach = coaches[coachKey] ?? coaches.markus
 

@@ -5,7 +5,7 @@ import { ChevronDown } from 'lucide-react'
 
 interface FaqItem { question: string; answer: string }
 
-export function LpFaq({ content }: { content: Record<string, unknown> }) {
+export function LpFaq({ content }: { content: Record<string, any> }) {
   const items = (content.items as FaqItem[]) ?? []
   const [open, setOpen] = useState<number | null>(null)
 

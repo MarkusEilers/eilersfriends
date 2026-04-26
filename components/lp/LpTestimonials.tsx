@@ -1,6 +1,6 @@
 interface Testimonial { name: string; role: string; text: string; avatar?: string; rating?: number }
 
-export function LpTestimonials({ content }: { content: Record<string, unknown> }) {
+export function LpTestimonials({ content }: { content: Record<string, any> }) {
   const items = (content.items as Testimonial[]) ?? []
 
   return (

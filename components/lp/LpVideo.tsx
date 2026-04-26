@@ -1,4 +1,4 @@
-export function LpVideo({ content }: { content: Record<string, unknown> }) {
+export function LpVideo({ content }: { content: Record<string, any> }) {
   const embedUrl = content.embedUrl as string
   if (!embedUrl) return null
 
