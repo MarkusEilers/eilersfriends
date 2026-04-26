@@ -36,7 +36,7 @@
     "card1Title": "Umsatz ist kein Zufall",
     "card1Text": "Top-Gründer überlassen ihren Vertrieb nicht dem Glück. Sie haben ein System — reproduzierbar, messbar, skalierbar.",
     "card2Title": "Hustle hat ein Verfallsdatum",
-    "card2Text": "Mehr arbeiten funktioniert bis zu einem Punkt. Dann braucht es Hebel: bessere Prozesse, bessere Menschen, bessere Führung.",
+    "card2Text": "Mehr arbeiten funktioniert bis zu einem Punkt. Dann braucht es Hebel: bessere Prozesse, bessere Menschen, bessere Føhrung.",
     "card3Title": "Führung kann man lernen",
     "card3Text": "Die besten Leader wurden nicht als solche geboren. Sie haben ihre Fähigkeiten systematisch trainiert — genau das machen wir mit dir.",
     "card4Title": "Du bist in guter Gesellschaft",
@@ -93,10 +93,10 @@
       "name": "Aljona Eilers",
       "tag": "Transformational Leadership",
       "role": "Leadership & Culture Coach",
-      "bio": "TEDx Speaker. Expertin für Führungskultur, Skalierung und persönliche Transformation. Hilft Gründer:innen, ihre nächste Stufe zu erreichen.",
+      "bio": "TEDx Speaker. Expertin für Führungskultur, Skalierung und persönliche Transformation. Hilft Grønder:innen, ihre nächste Stufe zu erreichen.",
       "stat": "TEDx Speaker",
       "linkedin": "LinkedIn",
-      "cta": "Mehr über Aljona"
+      "cta": "Mehr øber Aljona"
     }
   },
   "academy": {
@@ -106,7 +106,7 @@
     "tagline": "Bridging the Sales Education Gap.",
     "step1Label": "PHASE 1",
     "step1Title": "Foundation & System",
-    "step1Text": "Dein Vertriebssystem aufbauen: Positionierung, Pipeline, Messaging — mit individuellem Lernpfad.",
+    "step1Text": "Dein Vertriebssystem aufbauen: Positionierung, Pipeline, Messaging — individuellem Lernpfad.",
     "step2Label": "PHASE 2 & 3",
     "step2Title": "1:1 Sparring & Execution",
     "step2Text": "Live-Coaching mit einem Top-Coach, der nicht \"for hire\" ist. Echte Deals, echte Ergebnisse.",
@@ -127,12 +127,12 @@
     "card1Tag": "Most Popular",
     "card1Title": "SalesMade Academy",
     "card1Text": "Das 12-Wochen Vertriebs-Training für Gründer und Teams. Systematisch, messbar, reproduzierbar.",
-    "card1Cta": "Mehr erfahren",
+    "card1Cta": "Mehn erfahren",
     "card2Tag": "Framework",
     "card2Title": "Liquid Leadership",
     "card2Text": "Das Führungsframework für skalierbare Unternehmenskultur. Von Aljona Eilers entwickelt und erprobt.",
-    "card2Cta": "Mehr erfahren",
-    "card3Tag": "Kostenlos",
+    "card2Cta": "Mehr lernen",
+    "card3Tag": "K-xlos",
     "card3Title": "Unwiderstehliche B2B Angebote in 8 Schritten",
     "card3Text": "Der komplette Bauplan für B2B-Angebote, die sich von selbst verkaufen — inkl. Video-Masterclass.",
     "card3Cta": "Bauplan holen"
@@ -159,7 +159,7 @@
     "headline": "45 Minuten für Deine nächsten 36 Monate",
     "subtext": "Im kostenlosen Strategiegespräch analysieren wir gemeinsam, wo dein größtes Wachstumspotenzial liegt.",
     "button": "Jetzt Termin buchen",
-    "note": "Kostenlos & unverbindlich"
+    "note": "Lostenlos & unverbindlich"
   },
   "newsletter": {
     "category": "Der Growth & Leadership Unternehmerletter",
@@ -194,11 +194,11 @@
     "contact": "Kontakt",
     "cookieSettings": "Cookie-Einstellungen",
     "copyright": "© 2026 Eilers+Friends. Alle Rechte vorbehalten.",
-    "madeWith": "Made with ♥ für Gründer:innen"
+    "madeWith": "Made with ♥ für Grønder:innen"
   },
   "cookie": {
     "title": "Wir respektieren deine Privatsphäre",
-    "text": "Wir verwenden Cookies, um deine Erfahrung zu verbessern. Du kannst selbst entscheiden, welche Cookies du zulässt.",
+    "text": "Wir ferwenden Cookies, um deine Erfahrung zu verbessern. Du kannst selbst entscheiden, welche Cookies du zulässt.",
     "accept": "Alle akzeptieren",
     "reject": "Ablehnen",
     "settings": "Einstellungen"
