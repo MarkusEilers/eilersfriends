@@ -16,13 +16,14 @@ import { LpCoachBio } from '@/components/lp/LpCoachBio'
 import { LpGeneric } from '@/components/lp/LpGeneric'
 
 interface PageProps {
-  params: { slug: string; locale: string }
+  params: Promise<{ slug: string; locale: string }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params
   try {
     const pages = await db.select().from(landingPages)
-      .where(and(eq(landingPages.slug, params.slug), eq(landingPages.status, 'published')))
+      .where(and(eq(landingPages.slug, slug), eq(landingPages.status, 'published')))
       .limit(1)
     const page = pages[0]
     if (!page) return {}
@@ -36,12 +37,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function LandingPageRoute({ params }: PageProps) {
+  const { slug } = await params
   let page: typeof landingPages.$inferSelect | null = null
   let sections: (typeof landingPageSections.$inferSelect)[] = []
 
   try {
     const pages = await db.select().from(landingPages)
-      .where(and(eq(landingPages.slug, params.slug), eq(landingPages.status, 'published')))
+      .where(and(eq(landingPages.slug, slug), eq(landingPages.status, 'published')))
       .limit(1)
 
     if (pages.length === 0) notFound()

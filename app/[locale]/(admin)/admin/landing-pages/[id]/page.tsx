@@ -5,10 +5,11 @@ import { eq, asc } from 'drizzle-orm'
 import { LandingPageEditorClient } from '@/components/admin/LandingPageEditorClient'
 
 interface PageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default async function LandingPageEditorPage({ params }: PageProps) {
+  const { id } = await params
   let page: typeof landingPages.$inferSelect | null = null
   let sections: (typeof landingPageSections.$inferSelect)[] = []
 
@@ -16,7 +17,7 @@ export default async function LandingPageEditorPage({ params }: PageProps) {
     const pages = await db
       .select()
       .from(landingPages)
-      .where(eq(landingPages.id, params.id))
+      .where(eq(landingPages.id, id))
       .limit(1)
 
     if (pages.length === 0) notFound()
@@ -25,7 +26,7 @@ export default async function LandingPageEditorPage({ params }: PageProps) {
     sections = await db
       .select()
       .from(landingPageSections)
-      .where(eq(landingPageSections.landingPageId, params.id))
+      .where(eq(landingPageSections.landingPageId, id))
       .orderBy(asc(landingPageSections.order))
   } catch (_) {
     notFound()
