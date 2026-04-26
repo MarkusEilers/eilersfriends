@@ -18,7 +18,7 @@ export function Topbar() {
     >
       <span>{t('message')}</span>
       <Link
-        href="/programme"
+        href="/#programme"
         className="underline underline-offset-2 opacity-90 hover:opacity-100 transition-opacity"
       >
         {t('link')} →

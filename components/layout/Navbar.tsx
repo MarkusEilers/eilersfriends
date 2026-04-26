@@ -13,7 +13,7 @@ const LOCALES = [
 ]
 
 const NAV_LINKS = [
-  { key: 'programmes', href: '/programme' },
+  { key: 'programmes', href: '/#programme' },
   { key: 'coaches', href: '/#coaches' },
   { key: 'frameworks', href: '/#frameworks' },
   { key: 'results', href: '/#ergebnisse' },

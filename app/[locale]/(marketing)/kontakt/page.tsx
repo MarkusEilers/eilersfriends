@@ -1,14 +1,16 @@
 import type { Metadata } from 'next'
-import { Mail, Linkedin, Instagram, Youtube, Calendar } from 'lucide-react'
+import { Mail, MapPin, Clock, Linkedin, Youtube, Instagram, Calendar } from 'lucide-react'
+import { ContactForm } from './ContactForm'
 
 export const metadata: Metadata = {
   title: 'Kontakt — Eilers+Friends',
-  description: 'Schreib uns oder buche direkt ein kostenloses Strategiegespräch.',
+  description:
+    'Hast du Fragen zu unseren Programmen oder möchtest du ein unverbindliches Strategie-Gespräch vereinbaren? Wir freuen uns auf deine Nachricht.',
 }
 
 export default function KontaktPage() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
+    <main className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
 
       {/* Hero */}
       <section className="px-6 py-20" style={{ backgroundColor: '#FFF1EB' }}>
@@ -20,149 +22,107 @@ export default function KontaktPage() {
             Kontakt
           </span>
           <h1 className="text-4xl font-bold sm:text-5xl mb-4" style={{ color: '#0D0D0B' }}>
-            Lass uns sprechen
+            Lass uns gemeinsam wachsen
           </h1>
           <p className="text-lg text-gray-600">
-            Du hast Fragen zu unseren Programmen, möchtest ein Strategiegespräch buchen
-            oder einfach hallo sagen? Wir freuen uns auf Deine Nachricht.
+            Hast du Fragen zu unseren Programmen oder möchtest du ein
+            unverbindliches Strategie-Gespräch vereinbaren? Wir freuen uns auf
+            deine Nachricht.
           </p>
         </div>
       </section>
 
-      {/* Content */}
-      <section className="px-6 py-20">
-        <div className="mx-auto max-w-5xl grid gap-10 lg:grid-cols-2">
+      {/* Form + Side Info */}
+      <section className="px-6 py-16">
+        <div className="mx-auto max-w-6xl grid gap-10 lg:grid-cols-[1fr_360px]">
 
-          {/* Left: Booking CTA */}
-          <div>
-            <h2 className="text-2xl font-bold mb-6" style={{ color: '#0D0D0B' }}>
-              Kostenloses Strategiegespräch
-            </h2>
-            <p className="text-base text-gray-600 mb-8">
-              In 45 Minuten schauen wir gemeinsam, wo Dein größtes Wachstumspotenzial liegt —
-              und welches Programm am besten zu Dir passt. Kostenlos & unverbindlich.
-            </p>
+          {/* Form */}
+          <div className="rounded-3xl bg-white p-8 border border-gray-100 shadow-sm">
+            <ContactForm />
+          </div>
 
-            <a
-              href="https://calendly.com/eilersfriends"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 rounded-2xl px-8 py-5 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90 mb-10"
+          {/* Side panel */}
+          <aside className="space-y-6">
+
+            {/* Strategie-Gespräch */}
+            <div
+              className="rounded-3xl p-6 text-white"
               style={{ backgroundColor: '#F05A1A' }}
             >
-              <Calendar size={18} />
-              Jetzt Termin buchen
-            </a>
-
-            {/* Coaches */}
-            <div className="space-y-8">
-
-              <div>
-                <h3 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>Markus Eilers</h3>
-                <p className="text-sm text-gray-500 mb-3">Revenue Systems · B2B-Vertrieb</p>
-                <div className="flex flex-wrap gap-2">
-                  <a
-                    href="mailto:markus@eilersfriends.com"
-                    className="flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-blue-50"
-                    style={{ color: '#1A5FD4', borderColor: '#BBCFF5' }}
-                  >
-                    <Mail size={13} /> markus@eilersfriends.com
-                  </a>
-                  <a
-                    href="https://linkedin.com/in/markuseilers"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-blue-50"
-                    style={{ color: '#1A5FD4', borderColor: '#BBCFF5' }}
-                  >
-                    <Linkedin size={13} /> LinkedIn
-                  </a>
-                  <a
-                    href="https://youtube.com/@markuseilers"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-red-50"
-                    style={{ color: '#D4192B', borderColor: '#F5BBBC' }}
-                  >
-                    <Youtube size={13} /> YouTube
-                  </a>
-                </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl mb-4" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
+                <Calendar size={20} />
               </div>
-
-              <div>
-                <h3 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>Aljona Eilers</h3>
-                <p className="text-sm text-gray-500 mb-3">Transformational Leadership · Liquid Leadership</p>
-                <div className="flex flex-wrap gap-2">
-                  <a
-                    href="https://www.linkedin.com/in/aljona-eilers-812b65194/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-red-50"
-                    style={{ color: '#D4192B', borderColor: '#F5BBBC' }}
-                  >
-                    <Linkedin size={13} /> LinkedIn
-                  </a>
-                  <a
-                    href="https://www.instagram.com/aljona_eilers"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-red-50"
-                    style={{ color: '#D4192B', borderColor: '#F5BBBC' }}
-                  >
-                    <Instagram size={13} /> Instagram
-                  </a>
-                  <a
-                    href="https://www.youtube.com/@leadershe.by.aljona.eilers"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-red-50"
-                    style={{ color: '#D4192B', borderColor: '#F5BBBC' }}
-                  >
-                    <Youtube size={13} /> YouTube
-                  </a>
-                </div>
-              </div>
-
+              <h3 className="text-lg font-bold">Strategie-Gespräch buchen</h3>
+              <p className="mt-2 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                30 Minuten, die dein Business verändern können.
+              </p>
+              <a
+                href="https://calendly.com/eilersfriends"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold transition-opacity hover:opacity-90"
+                style={{ color: '#F05A1A' }}
+              >
+                Termin vereinbaren
+              </a>
             </div>
-          </div>
 
-          {/* Right: Company info */}
-          <div>
-            <h2 className="text-2xl font-bold mb-6" style={{ color: '#0D0D0B' }}>
-              Unternehmensdaten
-            </h2>
-            <div
-              className="rounded-3xl p-8 space-y-5"
-              style={{ backgroundColor: 'white', border: '1px solid #E5E7EB' }}
-            >
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Unternehmen</p>
-                <p className="text-sm text-gray-700">Eilers+Friends, uphill ventures GmbH</p>
+            {/* Info cards */}
+            <div className="rounded-3xl bg-white p-6 border border-gray-100">
+              <div className="space-y-5">
+                <div className="flex gap-4">
+                  <Mail size={18} style={{ color: '#F05A1A' }} className="mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">E-Mail</p>
+                    <a href="mailto:team@eilersfriends.com" className="text-sm" style={{ color: '#0D0D0B' }}>
+                      team@eilersfriends.com
+                    </a>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <MapPin size={18} style={{ color: '#F05A1A' }} className="mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Standort</p>
+                    <p className="text-sm" style={{ color: '#0D0D0B' }}>
+                      Eilers+Friends, uphill ventures GmbH<br />
+                      c/o Markus Eilers<br />
+                      Hamburg, Deutschland
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <Clock size={18} style={{ color: '#F05A1A' }} className="mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Erreichbarkeit</p>
+                    <p className="text-sm" style={{ color: '#0D0D0B' }}>Mo–Fr: 9:00 – 18:00 Uhr</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Anschrift</p>
-                <p className="text-sm text-gray-700">
-                  Eilers+Friends, uphill ventures GmbH<br />
-                  c/o Markus Eilers<br />
-                  Hamburg, Deutschland
-                </p>
-              </div>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">E-Mail</p>
-                <a href="mailto:team@eilersfriends.com" className="text-sm" style={{ color: '#F05A1A' }}>
-                  team@eilersfriends.com
+            </div>
+
+            {/* Social */}
+            <div className="rounded-3xl bg-white p-6 border border-gray-100">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Social</p>
+              <div className="flex flex-wrap gap-2">
+                <a href="https://linkedin.com/in/markuseilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-blue-50" style={{ color: '#1A5FD4', borderColor: '#BBCFF5' }}>
+                  <Linkedin size={12} /> Markus
+                </a>
+                <a href="https://youtube.com/@markuseilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#D4192B', borderColor: '#F5BBBC' }}>
+                  <Youtube size={12} /> Markus
+                </a>
+                <a href="https://www.linkedin.com/in/aljona-eilers-812b65194/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#D4192B', borderColor: '#F5BBBC' }}>
+                  <Linkedin size={12} /> Aljona
+                </a>
+                <a href="https://www.instagram.com/aljona_eilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#D4192B', borderColor: '#F5BBBC' }}>
+                  <Instagram size={12} /> Aljona
                 </a>
               </div>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Website</p>
-                <p className="text-sm text-gray-700">eilersfriends.com</p>
-              </div>
             </div>
-          </div>
 
+          </aside>
         </div>
       </section>
 
-    </div>
+    </main>
   )
 }
