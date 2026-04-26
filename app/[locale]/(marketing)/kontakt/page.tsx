@@ -137,12 +137,12 @@ export default function KontaktPage() {
             >
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Unternehmen</p>
-                <p className="text-sm text-gray-700">Eilers+Friends GmbH</p>
+                <p className="text-sm text-gray-700">Eilers+Friends, uphill ventures GmbH</p>
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Anschrift</p>
                 <p className="text-sm text-gray-700">
-                  Eilers+Friends GmbH<br />
+                  Eilers+Friends, uphill ventures GmbH<br />
                   c/o Markus Eilers<br />
                   Hamburg, Deutschland
                 </p>

@@ -17,7 +17,7 @@ export default function ImpressumPage() {
             <div>
               <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>Angaben gemäß § 5 TMG</h2>
               <p>
-                Eilers+Friends GmbH<br />
+                Eilers+Friends, uphill ventures GmbH<br />
                 vertreten durch die Geschäftsführer Markus Eilers und Aljona Eilers<br />
                 Hamburg, Deutschland
               </p>

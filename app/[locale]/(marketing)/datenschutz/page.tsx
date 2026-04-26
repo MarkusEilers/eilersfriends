@@ -28,7 +28,7 @@ export default function DatenschutzPage() {
               <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>2. Verantwortliche Stelle</h2>
               <p>
                 Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:<br /><br />
-                Eilers+Friends GmbH<br />
+                Eilers+Friends, uphill ventures GmbH<br />
                 Markus Eilers<br />
                 Hamburg, Deutschland<br />
                 E-Mail: <a href="mailto:team@eilersfriends.com" className="underline" style={{ color: '#F05A1A' }}>team@eilersfriends.com</a>
