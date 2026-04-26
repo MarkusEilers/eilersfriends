@@ -7,7 +7,7 @@
     "cta": "Book a Call"
   },
   "topbar": {
-    "message": "Soft-Launch is live â Secure your early bird spot now",
+    "message": "Soft-Launch is live — Secure your early bird spot now",
     "link": "Learn more"
   },
   "hero": {
@@ -34,13 +34,13 @@
     "eyebrow": "What sets us apart",
     "headline": "What the best founders\ndo differently",
     "card1Title": "Revenue is not an accident",
-    "card1Text": "Top founders don't leave their sales to chance. They have a system â reproducible, measurable, scalable.",
+    "card1Text": "Top founders don't leave their sales to chance. They have a system — reproducible, measurable, scalable.",
     "card2Title": "Hustle has an expiry date",
     "card2Text": "Working harder works to a point. Then you need leverage: better processes, better people, better leadership.",
     "card3Title": "Leadership can be learned",
-    "card3Text": "The best leaders weren't born that way. They systematically trained their skills â that's exactly what we do with you.",
+    "card3Text": "The best leaders weren't born that way. They systematically trained their skills — that's exactly what we do with you.",
     "card4Title": "You're in good company",
-    "card4Text": "867+ founders and executives have already worked with us. Your challenge isn't unique â your solution will be."
+    "card4Text": "867+ founders and executives have already worked with us. Your challenge isn't unique — your solution will be."
   },
   "bento": {
     "eyebrow": "Our Offerings",
@@ -68,7 +68,7 @@
   },
   "journey": {
     "eyebrow": "The Method",
-    "headline": "From where you are â to where you want to be",
+    "headline": "From where you are — to where you want to be",
     "badPlace": "Where you are now",
     "happyPlace": "Where you will be",
     "phase1": "Discovery",
@@ -79,7 +79,7 @@
   "coaches": {
     "eyebrow": "Your Coaches",
     "headline": "Two Disciplines. One Outcome.",
-    "subtext": "500+ founders coached, â¬50M+ revenue built. We bring Revenue Systems and Transformational Leadership together.",
+    "subtext": "500+ founders coached, €50M+ revenue built. We bring Revenue Systems and Transformational Leadership together.",
     "markus": {
       "name": "Markus Eilers",
       "tag": "Revenue Systems",
@@ -100,7 +100,7 @@
     }
   },
   "academy": {
-    "pill": "Soft-Launch 2026 Â· Only 30 Spots",
+    "pill": "Soft-Launch 2026 · Only 30 Spots",
     "eyebrow": "SalesMade Academy",
     "headline": "The systematic sales training for founders and teams",
     "tagline": "Bridging the Sales Education Gap.",
@@ -134,20 +134,20 @@
     "card2Cta": "Learn more",
     "card3Tag": "Free",
     "card3Title": "Irresistible B2B Offers in 8 Simple Steps",
-    "card3Text": "The complete blueprint for B2B offers that sell themselves â including video masterclass.",
+    "card3Text": "The complete blueprint for B2B offers that sell themselves — including video masterclass.",
     "card3Cta": "Get Blueprint"
   },
   "hvco": {
     "eyebrow": "Free Resources",
-    "headline": "Start now â for free",
+    "headline": "Start now — for free",
     "resource1Title": "Sales System Guide",
     "resource1Text": "The complete PDF guide: How to build a reproducible sales system in 90 days.",
     "resource1Cta": "Download Guide",
     "resource2Title": "Self-Assessment Tool",
-    "resource2Text": "Find out where your sales really stand â in 5 minutes.",
+    "resource2Text": "Find out where your sales really stand — in 5 minutes.",
     "resource2Cta": "Start Assessment",
     "resource3Title": "Video Masterclass",
-    "resource3Text": "The 3 biggest mistakes in B2B sales â and how to avoid them immediately.",
+    "resource3Text": "The 3 biggest mistakes in B2B sales — and how to avoid them immediately.",
     "resource3Cta": "Watch Video"
   },
   "testimonials": {
@@ -164,7 +164,7 @@
   "newsletter": {
     "category": "The Growth & Leadership Letter",
     "headline": "Join 6,552 other founders",
-    "subtext": "Every Tuesday: battle-tested strategies from 15 years of sales experience â straight to your inbox.",
+    "subtext": "Every Tuesday: battle-tested strategies from 15 years of sales experience — straight to your inbox.",
     "namePlaceholder": "Name",
     "emailPlaceholder": "Email",
     "button": "Subscribe",
@@ -193,8 +193,8 @@
     "imprint": "Imprint",
     "contact": "Contact",
     "cookieSettings": "Cookie Settings",
-    "copyright": "Â© 2026 Eilers+Friends. All rights reserved.",
-    "madeWith": "Made with â¥ for founders"
+    "copyright": "© 2026 Eilers+Friends. All rights reserved.",
+    "madeWith": "Made with ♥ for founders"
   },
   "cookie": {
     "title": "We respect your privacy",
