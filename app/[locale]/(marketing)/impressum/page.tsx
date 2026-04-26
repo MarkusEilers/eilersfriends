@@ -51,7 +51,8 @@ export default function ImpressumPage() {
               <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
               <p>
                 Markus Eilers<br />
-                Hamburg, Deutschland
+                Blütenäcker 55/2<br />
+                71332 Waiblingen
               </p>
             </div>
 
