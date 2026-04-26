@@ -18,8 +18,15 @@ export default function ImpressumPage() {
               <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>Angaben gemäß § 5 TMG</h2>
               <p>
                 Eilers+Friends, uphill ventures GmbH<br />
-                vertreten durch die Geschäftsführer Markus Eilers und Aljona Eilers<br />
+                c/o Markus Eilers<br />
                 Hamburg, Deutschland
+              </p>
+              <p className="mt-4">
+                Vertreten durch die Geschäftsführer:innen Markus Eilers und Aljona Eilers.
+              </p>
+              <p className="mt-4 text-xs text-gray-500">
+                Eilers+Friends, SalesMade &amp; LeaderShe sind Marken der
+                uphill ventures GmbH.
               </p>
             </div>
 
