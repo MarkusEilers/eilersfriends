@@ -4,18 +4,18 @@
     "coaches": "Coaches",
     "frameworks": "Frameworks",
     "results": "Ergebnisse",
-    "cta": "GesprÃ¤ch buchen"
+    "cta": "Gespräch buchen"
   },
   "topbar": {
-    "message": "Soft-Launch lÃ¤uft â Jetzt FrÃ¼hbucher-Platz sichern",
+    "message": "Soft-Launch läuft — Jetzt Frühbucher-Platz sichern",
     "link": "Mehr erfahren"
   },
   "hero": {
-    "pill1": "FÃ¼r ambitionierte GrÃ¼nder und GrÃ¼nderinnen",
+    "pill1": "Für ambitionierte Gründer und Gründerinnen",
     "headline1": "Entfessle Dein Winning Team",
-    "headline2": "fÃ¼r planbares Wachstum",
-    "subtext": "GrÃ¼nder arbeiten mit uns, um kundennahe Teams weiter zu professionalisieren fÃ¼r planbares Wachstum.",
-    "ctaPrimary": "Strategie-GesprÃ¤ch buchen",
+    "headline2": "für planbares Wachstum",
+    "subtext": "Gründer arbeiten mit uns, um kundennahe Teams weiter zu professionalisieren für planbares Wachstum.",
+    "ctaPrimary": "Strategie-Gespräch buchen",
     "ctaSecondary": "Programme ansehen",
     "stat1Value": "867+",
     "stat1Label": "Teilnehmer",
@@ -32,43 +32,43 @@
   },
   "problem": {
     "eyebrow": "Was uns unterscheidet",
-    "headline": "Was die besten\nGrÃ¼nder anders machen",
+    "headline": "Was die besten\nGründer anders machen",
     "card1Title": "Umsatz ist kein Zufall",
-    "card1Text": "Top-GrÃ¼nder Ã¼berlassen ihren Vertrieb nicht dem GlÃ¼ck. Sie haben ein System â reproduzierbar, messbar, skalierbar.",
+    "card1Text": "Top-Gründer überlassen ihren Vertrieb nicht dem Glück. Sie haben ein System — reproduzierbar, messbar, skalierbar.",
     "card2Title": "Hustle hat ein Verfallsdatum",
-    "card2Text": "Mehr arbeiten funktioniert bis zu einem Punkt. Dann braucht es Hebel: bessere Prozesse, bessere Menschen, bessere FÃ¼hrung.",
-    "card3Title": "FÃ¼hrung kann man lernen",
-    "card3Text": "Die besten Leader wurden nicht als solche geboren. Sie haben ihre FÃ¤higkeiten systematisch trainiert â genau das machen wir mit dir.",
+    "card2Text": "Mehr arbeiten funktioniert bis zu einem Punkt. Dann braucht es Hebel: bessere Prozesse, bessere Menschen, bessere Führung.",
+    "card3Title": "Führung kann man lernen",
+    "card3Text": "Die besten Leader wurden nicht als solche geboren. Sie haben ihre Fähigkeiten systematisch trainiert — genau das machen wir mit dir.",
     "card4Title": "Du bist in guter Gesellschaft",
-    "card4Text": "867+ GrÃ¼nder:innen und FÃ¼hrungskrÃ¤fte haben bereits mit uns gearbeitet. Deine Herausforderung ist nicht einzigartig â die LÃ¶sung wird es sein."
+    "card4Text": "867+ Gründer:innen und Führungskräfte haben bereits mit uns gearbeitet. Deine Herausforderung ist nicht einzigartig — die Lösung wird es sein."
   },
   "bento": {
     "eyebrow": "Unsere Angebote",
-    "headline": "Ein Ãkosystem fÃ¼r echtes Wachstum",
+    "headline": "Ein Ökosystem für echtes Wachstum",
     "salesmade": {
       "eyebrow": "Academy",
       "title": "SalesMade Academy",
-      "text": "Das systematische Vertriebs-Trainingsprogramm fÃ¼r GrÃ¼nder und Teams"
+      "text": "Das systematische Vertriebs-Trainingsprogramm für Gründer und Teams"
     },
     "markus": {
       "eyebrow": "Coaching",
       "title": "1:1 mit Markus",
-      "text": "Strategisches Sparring auf AugenhÃ¶he"
+      "text": "Strategisches Sparring auf Augenhöhe"
     },
     "aljona": {
       "eyebrow": "Coaching",
       "title": "1:1 mit Aljona",
-      "text": "Liquid Leadership fÃ¼r die nÃ¤chste Wachstumsstufe"
+      "text": "Liquid Leadership für die nächste Wachstumsstufe"
     },
     "liquid": {
       "eyebrow": "Framework",
       "title": "Liquid Leadership",
-      "text": "Das FÃ¼hrungsframework fÃ¼r skalierbare Unternehmenskultur"
+      "text": "Das Führungsframework für skalierbare Unternehmenskultur"
     }
   },
   "journey": {
     "eyebrow": "Die Methode",
-    "headline": "Von wo du bist â zu wo du sein willst",
+    "headline": "Von wo du bist — zu wo du sein willst",
     "badPlace": "Wo du gerade bist",
     "happyPlace": "Wo du sein wirst",
     "phase1": "Discovery",
@@ -79,30 +79,30 @@
   "coaches": {
     "eyebrow": "Deine Coaches",
     "headline": "Zwei Disziplinen. Ein Ergebnis.",
-    "subtext": "500+ GrÃ¼nder:innen begleitet, â¬50M+ Umsatz aufgebaut. Wir bringen Revenue Systems und Transformational Leadership zusammen.",
+    "subtext": "500+ Gründer:innen begleitet, €50M+ Umsatz aufgebaut. Wir bringen Revenue Systems und Transformational Leadership zusammen.",
     "markus": {
       "name": "Markus Eilers",
       "tag": "Revenue Systems",
       "role": "Vertriebs- & Business-Coach",
-      "bio": "15+ Jahre B2B-Vertrieb. Hat Ã¼ber 500 GrÃ¼nder und FÃ¼hrungskrÃ¤fte dabei begleitet, reproduzierbaren Umsatz systematisch aufzubauen.",
+      "bio": "15+ Jahre B2B-Vertrieb. Hat über 500 Gründer und Führungskräfte dabei begleitet, reproduzierbaren Umsatz systematisch aufzubauen.",
       "stat": "500+ Klienten",
       "linkedin": "LinkedIn",
-      "cta": "Mehr Ã¼ber Markus"
+      "cta": "Mehr über Markus"
     },
     "aljona": {
       "name": "Aljona Eilers",
       "tag": "Transformational Leadership",
       "role": "Leadership & Culture Coach",
-      "bio": "TEDx Speaker. Expertin fÃ¼r FÃ¼hrungskultur, Skalierung und persÃ¶nliche Transformation. Hilft GrÃ¼nder:innen, ihre nÃ¤chste Stufe zu erreichen.",
+      "bio": "TEDx Speaker. Expertin für Führungskultur, Skalierung und persönliche Transformation. Hilft Gründer:innen, ihre nächste Stufe zu erreichen.",
       "stat": "TEDx Speaker",
       "linkedin": "LinkedIn",
-      "cta": "Mehr Ã¼ber Aljona"
+      "cta": "Mehr über Aljona"
     }
   },
   "academy": {
-    "pill": "Soft-Launch 2026 Â· Nur 30 PlÃ¤tze",
+    "pill": "Soft-Launch 2026 · Nur 30 Plätze",
     "eyebrow": "SalesMade Academy",
-    "headline": "Das systematische Vertriebs-Training fÃ¼r GrÃ¼nder und Teams",
+    "headline": "Das systematische Vertriebs-Training für Gründer und Teams",
     "tagline": "Bridging the Sales Education Gap.",
     "step1Label": "PHASE 1",
     "step1Title": "Foundation & System",
@@ -113,7 +113,7 @@
     "stat1Value": "12",
     "stat1Label": "Monate",
     "stat2Value": "30",
-    "stat2Label": "PlÃ¤tze",
+    "stat2Label": "Plätze",
     "stat3Value": "3",
     "stat3Label": "Phasen",
     "trust1": "1:1 Sparring",
@@ -126,28 +126,28 @@
     "headline": "Finde Deinen Einstieg",
     "card1Tag": "Most Popular",
     "card1Title": "SalesMade Academy",
-    "card1Text": "Das 12-Wochen Vertriebs-Training fÃ¼r GrÃ¼nder und Teams. Systematisch, messbar, reproduzierbar.",
+    "card1Text": "Das 12-Wochen Vertriebs-Training für Gründer und Teams. Systematisch, messbar, reproduzierbar.",
     "card1Cta": "Mehr erfahren",
     "card2Tag": "Framework",
     "card2Title": "Liquid Leadership",
-    "card2Text": "Das FÃ¼hrungsframework fÃ¼r skalierbare Unternehmenskultur. Von Aljona Eilers entwickelt und erprobt.",
+    "card2Text": "Das Führungsframework für skalierbare Unternehmenskultur. Von Aljona Eilers entwickelt und erprobt.",
     "card2Cta": "Mehr erfahren",
     "card3Tag": "Kostenlos",
     "card3Title": "Unwiderstehliche B2B Angebote in 8 Schritten",
-    "card3Text": "Der komplette Bauplan fÃ¼r B2B-Angebote, die sich von selbst verkaufen â inkl. Video-Masterclass.",
+    "card3Text": "Der komplette Bauplan für B2B-Angebote, die sich von selbst verkaufen — inkl. Video-Masterclass.",
     "card3Cta": "Bauplan holen"
   },
   "hvco": {
     "eyebrow": "Kostenlose Ressourcen",
-    "headline": "Starte jetzt â kostenlos",
+    "headline": "Starte jetzt — kostenlos",
     "resource1Title": "Vertriebssystem Guide",
     "resource1Text": "Der komplette PDF-Guide: Wie du in 90 Tagen ein reproduzierbares Vertriebssystem aufbaust.",
     "resource1Cta": "Guide laden",
     "resource2Title": "Self-Assessment Tool",
-    "resource2Text": "Finde heraus, wo dein Vertrieb wirklich steht â in 5 Minuten.",
+    "resource2Text": "Finde heraus, wo dein Vertrieb wirklich steht — in 5 Minuten.",
     "resource2Cta": "Assessment starten",
     "resource3Title": "Video-Masterclass",
-    "resource3Text": "Die 3 grÃ¶Ãten Fehler im B2B-Vertrieb â und wie du sie sofort vermeidest.",
+    "resource3Text": "Die 3 größten Fehler im B2B-Vertrieb — und wie du sie sofort vermeidest.",
     "resource3Cta": "Video ansehen"
   },
   "testimonials": {
@@ -155,27 +155,27 @@
     "headline": "Was unsere Klienten sagen"
   },
   "cta": {
-    "eyebrow": "Bereit fÃ¼r den nÃ¤chsten Schritt?",
-    "headline": "45 Minuten fÃ¼r Deine nÃ¤chsten 36 Monate",
-    "subtext": "Im kostenlosen StrategiegesprÃ¤ch analysieren wir gemeinsam, wo dein grÃ¶Ãtes Wachstumspotenzial liegt.",
+    "eyebrow": "Bereit für den nächsten Schritt?",
+    "headline": "45 Minuten für Deine nächsten 36 Monate",
+    "subtext": "Im kostenlosen Strategiegespräch analysieren wir gemeinsam, wo dein größtes Wachstumspotenzial liegt.",
     "button": "Jetzt Termin buchen",
     "note": "Kostenlos & unverbindlich"
   },
   "newsletter": {
     "category": "Der Growth & Leadership Unternehmerletter",
-    "headline": "SchlieÃ Dich 6.552 anderen Unternehmer:innen an",
-    "subtext": "Jeden Dienstag: praxiserprobte Strategien aus 15 Jahren Vertriebserfahrung â direkt in Dein Postfach.",
+    "headline": "Schließ Dich 6.552 anderen Unternehmer:innen an",
+    "subtext": "Jeden Dienstag: praxiserprobte Strategien aus 15 Jahren Vertriebserfahrung — direkt in Dein Postfach.",
     "namePlaceholder": "Name",
     "emailPlaceholder": "E-Mail",
     "button": "Anmelden",
-    "consentText": "Ja, ich mÃ¶chte kostenlose E-Mails von Eilers+Friends bekommen und auf Basis meiner angegebenen Anmeldedaten sowie meines Newsletter-Nutzungsverhaltens auf mich abgestimmte Informationen an die angegebene E-Mail-Adresse erhalten. Ich kann diesen Service in jeder E-Mail wieder abbestellen. Ich habe die Datenschutzbedingungen gelesen und stimme diesen ausdrÃ¼cklich zu.",
-    "confirmationNote": "Du erhÃ¤ltst eine BestÃ¤tigungs-E-Mail zur Verifizierung deiner Anmeldung.",
+    "consentText": "Ja, ich möchte kostenlose E-Mails von Eilers+Friends bekommen und auf Basis meiner angegebenen Anmeldedaten sowie meines Newsletter-Nutzungsverhaltens auf mich abgestimmte Informationen an die angegebene E-Mail-Adresse erhalten. Ich kann diesen Service in jeder E-Mail wieder abbestellen. Ich habe die Datenschutzbedingungen gelesen und stimme diesen ausdrücklich zu.",
+    "confirmationNote": "Du erhältst eine Bestätigungs-E-Mail zur Verifizierung deiner Anmeldung.",
     "successTitle": "Fast geschafft!",
-    "successNote": "Wir haben Dir eine BestÃ¤tigungs-E-Mail geschickt. Bitte bestÃ¤tige Deine Anmeldung.",
+    "successNote": "Wir haben Dir eine Bestätigungs-E-Mail geschickt. Bitte bestätige Deine Anmeldung.",
     "errorNote": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
   },
   "footer": {
-    "tagline": "Systematisches Wachstum fÃ¼r GrÃ¼nder:innen.",
+    "tagline": "Systematisches Wachstum für Gründer:innen.",
     "programmes": "Programme",
     "salesmade": "SalesMade Academy",
     "liquidLeadership": "Liquid Leadership",
@@ -184,7 +184,7 @@
     "markus": "Markus Eilers",
     "aljona": "Aljona Eilers",
     "unternehmen": "Unternehmen",
-    "about": "Ãber uns",
+    "about": "Über uns",
     "blog": "Blog",
     "newsletter": "Newsletter",
     "ressourcen": "Ressourcen",
@@ -193,20 +193,20 @@
     "imprint": "Impressum",
     "contact": "Kontakt",
     "cookieSettings": "Cookie-Einstellungen",
-    "copyright": "Â© 2026 Eilers+Friends. Alle Rechte vorbehalten.",
-    "madeWith": "Made with â¥ fÃ¼r GrÃ¼nder:innen"
+    "copyright": "© 2026 Eilers+Friends. Alle Rechte vorbehalten.",
+    "madeWith": "Made with ♥ für Gründer:innen"
   },
   "cookie": {
-    "title": "Wir respektieren deine PrivatsphÃ¤re",
-    "text": "Wir verwenden Cookies, um deine Erfahrung zu verbessern. Du kannst selbst entscheiden, welche Cookies du zulÃ¤sst.",
+    "title": "Wir respektieren deine Privatsphäre",
+    "text": "Wir verwenden Cookies, um deine Erfahrung zu verbessern. Du kannst selbst entscheiden, welche Cookies du zulässt.",
     "accept": "Alle akzeptieren",
     "reject": "Ablehnen",
     "settings": "Einstellungen"
   },
   "auth": {
     "login": "Anmelden",
-    "loginTitle": "Willkommen zurÃ¼ck",
-    "loginSubtext": "Melde dich an, um dein Lernportal zu Ã¶ffnen.",
+    "loginTitle": "Willkommen zurück",
+    "loginSubtext": "Melde dich an, um dein Lernportal zu öffnen.",
     "email": "E-Mail",
     "password": "Passwort",
     "submit": "Anmelden",
