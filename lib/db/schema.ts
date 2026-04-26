@@ -28,6 +28,8 @@ export const assessmentStatusEnum = pgEnum('assessment_status', ['pending', 'in_
 export const answerTypeEnum = pgEnum('answer_type', ['scale_1_5', 'multiple_choice', 'text'])
 export const recommendationReasonEnum = pgEnum('recommendation_reason', ['high_poorest_skill', 'low_improvement', 'program_prereq', 'manual'])
 export const hvcoTypeEnum = pgEnum('hvco_type', ['pdf', 'tool', 'video', 'newsletter'])
+export const hvcoDeliveryEnum = pgEnum('hvco_delivery', ['email', 'unlock', 'redirect'])
+export const sessionTypeEnum = pgEnum('session_type', ['sparring', 'group_qa', 'training'])
 export const newsletterStatusEnum = pgEnum('newsletter_status', ['pending', 'active', 'unsubscribed', 'bounced'])
 export const emailTemplateTypeEnum = pgEnum('email_template_type', [
   'doi_confirmation',   // Double Opt-In Bestätigung
@@ -322,13 +324,6 @@ export const newsletterSubscribers = pgTable('newsletter_subscribers', {
 
 // ─── Email Templates ──────────────────────────────────────────────────────────
 
-export const emailTemplateTypeEnum = pgEnum('email_template_type', [
-  'doi_confirmation',   // Double Opt-In Bestätigung
-  'doi_welcome',        // Welcome nach DOI-Bestätigung
-  'sequence_step',      // Für Email-Sequenz-Schritte
-  'transactional',      // Einzelne Transaktions-Mails
-])
-
 export const emailTemplates = pgTable('email_templates', {
   id: uuid('id').defaultRandom().primaryKey(),
   type: emailTemplateTypeEnum('type').notNull(),
@@ -346,25 +341,6 @@ export const emailTemplates = pgTable('email_templates', {
 })
 
 // ─── Landing Pages ────────────────────────────────────────────────────────────
-
-export const landingPageStatusEnum = pgEnum('landing_page_status', ['draft', 'published', 'archived'])
-
-export const landingPageSectionTypeEnum = pgEnum('landing_page_section_type', [
-  'hero',           // Headline + Subtext + CTA / Email-Form
-  'video',          // VSL oder Erklär-Video
-  'social_proof',   // Logos, Zahlen, "Wie bekannt aus"
-  'problem',        // Problem-Agitation
-  'solution',       // Lösung / Was du bekommst
-  'features',       // Feature-Liste mit Icons
-  'how_it_works',   // Schritt-før-Schritt
-  'testimonials',   // Kunden-Stimmen
-  'offer',          // Angebot / Preis-Box
-  'faq',            // FAQ Accordion
-  'email_capture',  // Standalone Email-Formular / Lead-Magnet
-  'cta',            // Finaler Call-to-Action
-  'coach_bio',      // Coach-Vorstellung
-  'spacer',         // Abstandhalter
-])
 
 export const landingPages = pgTable('landing_pages', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -397,14 +373,6 @@ export const landingPageSections = pgTable('landing_page_sections', {
 })
 
 // ─── Email Sequenzen ────────────────────────────────────────────────────────────
-
-export const emailSequenceTriggerEnum = pgEnum('email_sequence_trigger', [
-  'newsletter_signup',       // Nach Newsletter-Anmeldung
-  'doi_confirmed',           // Nach DOI-Bestätigung
-  'landing_page_signup',     // Nach Landing-Page-Formular
-  'program_enrollment',      // Nach Programm-Buchung
-  'manual',                  // Manuell ausgelöst
-])
 
 export const emailSequences = pgTable('email_sequences', {
   id: uuid('id').defaultRandom().primaryKey(),

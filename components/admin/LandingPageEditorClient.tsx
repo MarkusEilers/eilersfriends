@@ -472,7 +472,7 @@ function SectionContentEditor({
         <div className="space-y-4">
           <div><label className={labelCls}>Headline</label><input className={inputCls} value={(content.headline as string) ?? ''} onChange={(e) => set('headline', e.target.value)} placeholder="Sichere dir deinen Platz" /></div>
           <div><label className={labelCls}>Subtext</label><textarea className={inputCls} rows={2} value={(content.subtext as string) ?? ''} onChange={(e) => set('subtext', e.target.value)} /></div>
-          <div><label className={labelCls}>Button-Text</label><input className={inputCls} value={(content.buttonLabel as string) ?? ''} onChange={(e) => set('buttonLabel', e.target.value)} placeholder="Kostenlos anmelden ih’" /></div>
+          <div><label className={labelCls}>Button-Text</label><input className={inputCls} value={(content.buttonLabel as string) ?? ''} onChange={(e) => set('buttonLabel', e.target.value)} placeholder="Kostenlos anmelden ih'" /></div>
           <div><label className={labelCls}>Datenschutz-Hinweis</label><input className={inputCls} value={(content.privacyNote as string) ?? ''} onChange={(e) => set('privacyNote', e.target.value)} placeholder="Kein Spam. Jederzeit abmeldbar." /></div>
         </div>
       )

@@ -230,7 +230,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                     <div>
                       <label className="mb-1.5 block text-xs font-semibold text-gray-700">
                         HTML-Body{' '}
-                        <span className="font-normal text-gray-400">({{'{{'}}firstName{'}}'}} etc. werden ersetzt)</span>
+                        <span className="font-normal text-gray-400">({'{{firstName}}'} etc. werden ersetzt)</span>
                       </label>
                       <textarea
                         name="bodyHtml"
