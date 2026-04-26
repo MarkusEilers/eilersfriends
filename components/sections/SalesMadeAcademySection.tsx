@@ -8,7 +8,7 @@ export function SalesMadeAcademySection() {
   return (
     <section className="px-6 py-20 bg-white">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
 
           {/* Left: Content */}
           <div>
@@ -121,9 +121,9 @@ export function SalesMadeAcademySection() {
             >
               <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full opacity-20" style={{ backgroundColor: '#1A5FD4' }} />
               <p className="relative text-sm font-medium leading-relaxed text-white/70">
-                &ldquo;Nach 12 Wochen SalesMade Academy hatte unser Team eine Closing-Rate von 67% — das Doppelte von vorher.&rdquo;
+                &ldquo;Nach 12 Monaten SalesMade Academy hatte unser Team eine Closing-Rate von 67% â das Doppelte von vorher.&rdquo;
               </p>
-              <p className="relative mt-4 text-xs font-semibold text-white/50">— Teilnehmer, SalesMade Academy 2025</p>
+              <p className="relative mt-4 text-xs font-semibold text-white/50">â Teilnehmer, SalesMade Academy 2025</p>
             </div>
           </div>
 
