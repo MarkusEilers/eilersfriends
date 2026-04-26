@@ -171,15 +171,14 @@ export const lessonProgress = pgTable('lesson_progress', {
   unique().on(table.enrollmentId, table.lessonId),
 ])
 
-// ─── Skills ───────────────────────────────────────────────────────────────────
+// ─── Skills ─────────────────────────────────────────────────────────────────
 
 export const skills = pgTable('skills', {
   id: uuid('id').defaultRandom().primaryKey(),
   title: text('title').notNull(),
   slug: text('slug').notNull().unique(),
   category: text('category'),
-  description: text('description'),
-  dimension: skillDimensionEnum('dimension'),
+  icon: text('icon'),
   sortOrder: integer('sort_order').default(0),
 })
 
@@ -187,55 +186,57 @@ export const assessmentQuestions = pgTable('assessment_questions', {
   id: uuid('id').defaultRandom().primaryKey(),
   skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
   dimension: skillDimensionEnum('dimension').notNull(),
-  body: text('body').notNull(),
+  questionText: text('question_text').notNull(),
   answerType: answerTypeEnum('answer_type').default('scale_1_5').notNull(),
-  choicesJson: json('choices_json').$type<string[]>(),
-  sortOrder: integer('sort_order').default(0),
+  weight: real('weight').default(1.0),
 })
+
+// ─── Assessments ──────────────────────────────────────────────────────────────
 
 export const assessments = pgTable('assessments', {
   id: uuid('id').defaultRandom().primaryKey(),
   enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
   type: assessmentTypeEnum('type').notNull(),
   status: assessmentStatusEnum('status').default('pending').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  dueAt: timestamp('due_at'),
   completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
 export const assessmentAnswers = pgTable('assessment_answers', {
   id: uuid('id').defaultRandom().primaryKey(),
   assessmentId: uuid('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
   questionId: uuid('question_id').notNull().references(() => assessmentQuestions.id, { onDelete: 'cascade' }),
-  scaleValue: integer('scale_value'),
-  choiceValue: text('choice_value'),
-  textValue: text('text_value'),
-}, (table) => [
-  unique().on(table.assessmentId, table.questionId),
-])
+  answerValue: text('answer_value').notNull(),
+  scoreRaw: real('score_raw'),
+})
 
-// ─── Skill Scores ─────────────────────────────────────────────────────────────
+// ─── Skill Scores (append-only!) ──────────────────────────────────────────────
 
 export const skillScores = pgTable('skill_scores', {
   id: uuid('id').defaultRandom().primaryKey(),
   enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
   skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
+  assessmentId: uuid('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
   wissen: real('wissen').notNull(),
   koennen: real('koennen').notNull(),
   machen: real('machen').notNull(),
   overall: real('overall').notNull(),
-  recordedAt: timestamp('recorded_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
 export const skillRecommendations = pgTable('skill_recommendations', {
   id: uuid('id').defaultRandom().primaryKey(),
   enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
   skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
+  contentType: text('content_type'),
+  contentId: uuid('content_id'),
   reason: recommendationReasonEnum('reason').notNull(),
   status: recommendationStatusEnum('status').default('pending').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-// ─── HVCOs ────────────────────────────────────────────────────────────────────
+// ─── HVCO Resources ───────────────────────────────────────────────────────────
 
 export const programHvcos = pgTable('program_hvcos', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -243,8 +244,10 @@ export const programHvcos = pgTable('program_hvcos', {
   type: hvcoTypeEnum('type').notNull(),
   title: text('title').notNull(),
   description: text('description'),
-  fileUrl: text('file_url'),
-  delivery: hvcoDeliveryEnum('delivery').default('email').notNull(),
+  isFeatured: boolean('is_featured').default(false),
+  gateFields: json('gate_fields').$type<string[]>(),
+  deliveryType: hvcoDeliveryEnum('delivery_type').default('email').notNull(),
+  deliveryTarget: text('delivery_target'),
   sortOrder: integer('sort_order').default(0),
   isPublished: boolean('is_published').default(true),
 })
