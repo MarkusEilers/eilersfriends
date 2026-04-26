@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import { Linkedin, Instagram, Youtube, Mail } from 'lucide-react'
 import { useTranslations } from 'next-intl'
