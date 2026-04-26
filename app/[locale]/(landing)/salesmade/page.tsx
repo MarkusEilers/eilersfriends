@@ -297,16 +297,108 @@ export default function SalesMadePage() {
         </div>
       </section>
 
-      {/* ─── PRICING ─────────────────────────────────────────────────── */}
+      {/* ─── COACH ───────────────────────────────────────────────────── */}
+      <section className="px-6 py-20 bg-white">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: accent }}>
+              Dein Coach
+            </span>
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>
+              Markus Eilers
+            </h2>
+            <p className="mt-2 text-sm font-semibold uppercase tracking-widest text-gray-400">
+              Revenue Systems · B2B-Vertrieb · Keynote Speaker
+            </p>
+          </div>
+
+          <div className="grid gap-10 md:grid-cols-[280px_1fr] md:items-start">
+            {/* Photo */}
+            <div className="mx-auto md:mx-0">
+              <div
+                className="overflow-hidden rounded-3xl"
+                style={{ width: 280, height: 360, backgroundColor: '#EBF1FF' }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/markus-photo.jpg"
+                  alt="Markus Eilers"
+                  className="h-full w-full object-cover"
+                  style={{ filter: 'grayscale(100%)' }}
+                />
+              </div>
+            </div>
+
+            {/* Bio + Quote */}
+            <div>
+              <div className="space-y-4 text-sm leading-relaxed text-gray-700">
+                <p>
+                  Markus baut seit über zwei Jahrzehnten Vertriebsorganisationen
+                  auf — von Start-ups bis Konzerne. Sein Schwerpunkt: wie B2B-Teams
+                  im KI-Zeitalter Kund:innen wirksam überzeugen, ohne ins
+                  Pitching-Klischee zu verfallen.
+                </p>
+                <p>
+                  Aus 500+ begleiteten Gründer:innen und €50M+ aktiviertem Umsatz
+                  ist die SalesMade-Methodik entstanden — das System, das hinter
+                  dieser Academy steht. Dazu kommt seine Erfahrung als gefragter
+                  Keynote-Speaker für modernen Vertrieb, KI im Verkauf und
+                  Kundenkommunikation auf Augenhöhe.
+                </p>
+              </div>
+
+              <blockquote
+                className="mt-8 rounded-2xl border-l-4 px-6 py-5 italic text-gray-700"
+                style={{ borderColor: accent, backgroundColor: '#EBF1FF' }}
+              >
+                „Die meisten Sales-Teams improvisieren. Die besten haben ein
+                System — und ein gemeinsames Vokabular dafür. Genau das bauen wir
+                in der Academy."
+                <footer className="mt-3 text-xs font-semibold uppercase tracking-widest not-italic" style={{ color: accent }}>
+                  — Markus Eilers
+                </footer>
+              </blockquote>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href="https://www.linkedin.com/in/markuseilers"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-gray-50"
+                  style={{ color: accent, borderColor: '#BBCFF5' }}
+                >
+                  LinkedIn
+                </a>
+                <a
+                  href="https://youtube.com/@markuseilers"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-gray-50"
+                  style={{ color: '#D4192B', borderColor: '#F5BBBC' }}
+                >
+                  YouTube
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+            {/* ─── PRICING ─────────────────────────────────────────────────── */}
       <section id="pricing" className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
         <div className="mx-auto max-w-5xl">
           <div className="text-center">
             <span className="text-xs font-bold uppercase tracking-widest" style={{ color: accent }}>
-              Investiere in dein Vertriebssystem
+              Soft-Launch · Limitierte Plätze
             </span>
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>
-              Zwei Zugänge, ein Ergebnis
+              Bewirb Dich auf einen Platz
             </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base text-gray-600">
+              Wir starten klein und arbeiten persönlich. Erzähl uns von Deinem Team —
+              wir entscheiden gemeinsam, ob die Academy oder Premium der richtige
+              Einstieg ist.
+            </p>
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-2">
 
@@ -314,9 +406,9 @@ export default function SalesMadePage() {
             <div className="rounded-3xl border border-gray-200 bg-white p-8">
               <div className="text-xs font-bold uppercase tracking-widest text-gray-400">Standard</div>
               <h3 className="mt-2 text-2xl font-bold" style={{ color: '#0D0D0B' }}>SalesMade Academy</h3>
-              <div className="mt-4 flex items-baseline gap-2">
-                <span className="text-4xl font-bold" style={{ color: '#0D0D0B' }}>€1.997</span>
-                <span className="text-sm text-gray-400">pro Seller / Jahr · netto</span>
+              <div className="mt-4 flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1 w-fit">
+                <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: '#F05A1A' }} />
+                <span className="text-xs font-semibold uppercase tracking-widest text-gray-500">Soft-Launch · Limitierte Plätze</span>
               </div>
               <p className="mt-4 text-sm text-gray-600">
                 Das vollständige 12-Monate-Programm für dein Sales-Team. Live-Training,
@@ -342,7 +434,7 @@ export default function SalesMadePage() {
                 className="mt-8 block w-full rounded-full border-2 px-6 py-3 text-center text-sm font-semibold transition-colors"
                 style={{ color: accent, borderColor: accent }}
               >
-                Academy für dein Team buchen
+                Jetzt bewerben
               </Link>
             </div>
 
@@ -358,9 +450,9 @@ export default function SalesMadePage() {
                 + 1:1 Sparring
               </div>
               <h3 className="mt-2 text-2xl font-bold">SalesMade Premium</h3>
-              <div className="mt-4 flex items-baseline gap-2">
-                <span className="text-4xl font-bold">€5.485</span>
-                <span className="text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>pro Seller / Jahr · netto</span>
+              <div className="mt-4 flex items-center gap-2 rounded-full border border-white/30 px-3 py-1 w-fit">
+                <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.85)' }}>Premium-Tier · Bewerbung erforderlich</span>
               </div>
               <p className="mt-4 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
                 Academy + monatliche 60-Min-1:1-Sparringsessions mit einem
@@ -386,13 +478,14 @@ export default function SalesMadePage() {
                 className="mt-8 block w-full rounded-full bg-white px-6 py-3 text-center text-sm font-semibold transition-opacity hover:opacity-90"
                 style={{ color: accent }}
               >
-                Premium-Tier reservieren
+                Jetzt bewerben
               </Link>
             </div>
 
           </div>
           <p className="mt-8 text-center text-xs text-gray-500">
-            Pro Seller / Jahr, netto. Team-Konditionen ab 5 Verkäufer:innen auf Anfrage.
+            Konditionen werden im Bewerbungsgespräch transparent gemacht und auf
+            Team-Größe (5–50 Seller) abgestimmt.
           </p>
         </div>
       </section>
