@@ -27,7 +27,7 @@ export function TestimonialsSection() {
   const t = useTranslations('testimonials')
 
   return (
-    <section className="bg-gray-50 px-6 py-20">
+    <section id="ergebnisse" className="bg-gray-50 px-6 py-20">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow={t('eyebrow')}

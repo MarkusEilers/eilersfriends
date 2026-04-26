@@ -99,7 +99,7 @@ export function Footer() {
           {/* Unternehmen */}
           <FooterCol heading={t('unternehmen')}>
             <FooterLink href="/ueber-uns">{t('about')}</FooterLink>
-            <FooterLink href="#newsletter">{t('newsletter')}</FooterLink>
+            <FooterLink href="/#newsletter">{t('newsletter')}</FooterLink>
             <FooterLink href="/ressourcen">{t('ressourcen')}</FooterLink>
           </FooterCol>
 

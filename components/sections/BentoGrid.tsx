@@ -7,7 +7,7 @@ export function BentoGrid() {
   const t = useTranslations('bento')
 
   return (
-    <section className="bg-white px-6 py-20">
+    <section id="frameworks" className="bg-white px-6 py-20">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow={t('eyebrow')}

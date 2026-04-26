@@ -85,7 +85,7 @@ export default function AcademyPage() {
               Jetzt bewerben <ArrowRight size={15} />
             </a>
             <a
-              href="#curriculum"
+              href="/academy#curriculum"
               className="inline-flex items-center gap-2 rounded-full border px-8 py-4 text-sm font-semibold transition-colors hover:bg-white"
               style={{ color: '#1A5FD4', borderColor: '#BBCFF5' }}
             >

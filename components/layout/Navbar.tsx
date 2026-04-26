@@ -14,9 +14,9 @@ const LOCALES = [
 
 const NAV_LINKS = [
   { key: 'programmes', href: '/programme' },
-  { key: 'coaches', href: '#coaches' },
-  { key: 'frameworks', href: '#frameworks' },
-  { key: 'results', href: '#ergebnisse' },
+  { key: 'coaches', href: '/#coaches' },
+  { key: 'frameworks', href: '/#frameworks' },
+  { key: 'results', href: '/#ergebnisse' },
 ] as const
 
 export function Navbar() {
