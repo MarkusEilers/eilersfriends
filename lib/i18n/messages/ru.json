@@ -1,168 +1,216 @@
 {
   "nav": {
-    "programmes": "Programme",
-    "coaches": "Coaches",
-    "frameworks": "Frameworks",
-    "results": "Ergebnisse",
-    "cta": "Gespräch buchen"
+    "programmes": "Программы",
+    "coaches": "Коучи",
+    "frameworks": "Фреймворки",
+    "results": "Результаты",
+    "cta": "Записаться на звонок"
   },
   "topbar": {
-    "message": "Soft-Launch läuft — Jetzt Frühbucher-Platz sichern",
-    "link": "Mehr erfahren"
+    "message": "Soft-Launch 2026 — Забронируйте место по ранней цене",
+    "link": "Подробнее"
   },
   "hero": {
-    "pill1": "Bewährt in 15+ Branchen",
-    "pill2": "Für Gründer:innen & Führungskräfte",
-    "headline1": "Verkauf ist keine",
-    "headlineAccent": "Kunst",
-    "headline2": "sondern",
-    "headlineBlue": "Können",
-    "subtext": "Wir helfen Gründern und Vertriebsteams, aus Wissen echte Fähigkeit zu machen — messbar, reproduzierbar, skalierbar.",
-    "ctaPrimary": "Kostenloses Gespräch",
-    "ctaSecondary": "Programme ansehen",
+    "pill1": "Для амбициозных основателей",
+    "headline1": "Раскройте потенциал вашей команды",
+    "headline2": "для стабильного роста",
+    "subtext": "Основатели работают с нами, чтобы профессионализировать клиентоориентированные команды и обеспечить прогнозируемый рост.",
+    "ctaPrimary": "Записаться на стратегический звонок",
+    "ctaSecondary": "Смотреть программы",
     "stat1Value": "867+",
-    "stat1Label": "Teilnehmer",
+    "stat1Label": "Участников",
     "stat2Value": "48%",
-    "stat2Label": "Mehr Umsatz",
+    "stat2Label": "Рост выручки",
     "stat3Value": "90%+",
-    "stat3Label": "Weiterempfehlung",
+    "stat3Label": "Рекомендуют нас",
     "stat4Value": "15",
-    "stat4Unit": "J.",
-    "stat4Label": "Erfahrung"
+    "stat4Unit": "лет",
+    "stat4Label": "Опыта"
   },
   "logos": {
-    "title": "Vertraut von Teams bei"
+    "title": "Нам доверяют команды"
   },
   "problem": {
-    "eyebrow": "Das Problem",
-    "headline": "Warum Wissen allein nicht reicht",
-    "card1Title": "Das Plateau-Problem",
-    "card1Text": "Ihr Team weiß, was zu tun ist — aber die Zahlen stagnieren. Mehr Wissen bringt keinen Durchbruch mehr.",
-    "card2Title": "Wissen ≠ Können ≠ Machen",
-    "card2Text": "Der Abstand zwischen dem, was man gelernt hat, und dem, was man tatsächlich tut, ist der teuerste Abstand im Unternehmen.",
-    "card3Title": "Chaos statt System",
-    "card3Text": "Kein klarer Prozess, keine Reproduzierbarkeit — jeder macht irgendwie Vertrieb, aber niemand macht ihn systematisch."
+    "eyebrow": "В чём наше отличие",
+    "headline": "Что лучшие основатели\nделают иначе",
+    "card1Title": "Выручка — не случайность",
+    "card1Text": "Лучшие основатели не оставляют продажи на волю случая. У них есть система — воспроизводимая, измеримая, масштабируемая.",
+    "card2Title": "Упорный труд имеет предел",
+    "card2Text": "Работать усерднее помогает до определённого момента. Потом нужны рычаги: лучшие процессы, люди и лидерство.",
+    "card3Title": "Лидерству можно научиться",
+    "card3Text": "Лучшие лидеры не рождаются таковыми. Они систематически развивают свои навыки — именно это мы делаем вместе с вами.",
+    "card4Title": "Вы в хорошей компании",
+    "card4Text": "Более 867 основателей и руководителей уже работали с нами. Ваша задача не уникальна — уникальным будет решение."
   },
   "bento": {
-    "eyebrow": "Unsere Angebote",
-    "headline": "Ein Ökosystem für echtes Wachstum",
+    "eyebrow": "Наши предложения",
+    "headline": "Экосистема для настоящего роста",
     "salesmade": {
-      "eyebrow": "Academy",
+      "eyebrow": "Академия",
       "title": "SalesMade Academy",
-      "text": "Das systematische Vertriebs-Trainingsprogramm für Gründer und Teams"
+      "text": "Системная программа тренинга по продажам для основателей и команд"
     },
     "markus": {
-      "eyebrow": "Coaching",
-      "title": "1:1 mit Markus",
-      "text": "Strategisches Sparring auf Augenhöhe"
+      "eyebrow": "Коучинг",
+      "title": "1:1 с Маркусом",
+      "text": "Стратегический спарринг на равных"
     },
     "aljona": {
-      "eyebrow": "Coaching",
-      "title": "1:1 mit Aljona",
-      "text": "Liquid Leadership für die nächste Wachstumsstufe"
+      "eyebrow": "Коучинг",
+      "title": "1:1 с Альёной",
+      "text": "Liquid Leadership для следующего уровня роста"
     },
     "liquid": {
-      "eyebrow": "Framework",
+      "eyebrow": "Фреймворк",
       "title": "Liquid Leadership",
-      "text": "Das Führungsframework für skalierbare Unternehmenskultur"
+      "text": "Фреймворк лидерства для масштабируемой корпоративной культуры"
     }
   },
   "journey": {
-    "eyebrow": "Die Methode",
-    "headline": "Von wo du bist — zu wo du sein willst",
-    "badPlace": "Wo du gerade bist",
-    "happyPlace": "Wo du sein wirst",
+    "eyebrow": "Метод",
+    "headline": "Из того, где вы есть — туда, где хотите быть",
+    "badPlace": "Где вы сейчас",
+    "happyPlace": "Где вы будете",
     "phase1": "Discovery",
     "phase2": "Foundation",
     "phase3": "Execution",
     "phase4": "Mastery"
   },
   "coaches": {
-    "eyebrow": "Deine Coaches",
-    "headline": "Zwei Perspektiven. Eine Mission.",
+    "eyebrow": "Ваши коучи",
+    "headline": "Две дисциплины. Один результат.",
+    "subtext": "Более 500 основателей, более €50 млн выручки. Мы объединяем Revenue Systems и Transformational Leadership.",
     "markus": {
-      "name": "Markus Eilers",
-      "role": "Vertriebs- & Business-Coach",
-      "bio": "15+ Jahre Erfahrung im B2B-Vertrieb. Hat über 867 Gründer und Führungskräfte dabei geholfen, ihre Verkaufszahlen systematisch zu steigern.",
-      "stat": "867+ Klienten",
+      "name": "Маркус Айлерс",
+      "tag": "Revenue Systems",
+      "role": "Коуч по продажам и бизнесу",
+      "bio": "15+ лет в B2B-продажах. Помог более 500 основателям и руководителям выстроить воспроизводимые системы роста.",
+      "stat": "500+ клиентов",
       "linkedin": "LinkedIn",
-      "cta": "Mehr über Markus"
+      "cta": "Подробнее о Маркусе"
     },
     "aljona": {
-      "name": "Aljona Eilers",
-      "role": "Leadership & Culture Coach",
-      "bio": "TEDx Speaker. Expertin für Führungskultur und Organisation. Hilft Unternehmen, skalierbare Strukturen aufzubauen.",
-      "stat": "48% Umsatzsteigerung",
+      "name": "Альёна Айлерс",
+      "tag": "Transformational Leadership",
+      "role": "Коуч по лидерству и культуре",
+      "bio": "Спикер TEDx. Эксперт в области культуры лидерства, масштабирования и личной трансформации.",
+      "stat": "Спикер TEDx",
       "linkedin": "LinkedIn",
-      "cta": "Mehr über Aljona"
+      "cta": "Подробнее об Альёне"
     }
   },
+  "academy": {
+    "pill": "Soft-Launch 2026 · Только 30 мест",
+    "eyebrow": "SalesMade Academy",
+    "headline": "Системный тренинг по продажам для основателей и команд",
+    "tagline": "Bridging the Sales Education Gap.",
+    "step1Label": "ФАЗА 1",
+    "step1Title": "Foundation & System",
+    "step1Text": "Выстроить систему продаж: позиционирование, воронка, сообщения — с индивидуальным планом обучения.",
+    "step2Label": "ФАЗЫ 2 & 3",
+    "step2Title": "1:1 Спарринг & Execution",
+    "step2Text": "Живой коучинг с топ-коучем не в аренду. Реальные сделки, реальные результаты.",
+    "stat1Value": "12",
+    "stat1Label": "Месяцев",
+    "stat2Value": "30",
+    "stat2Label": "Мест",
+    "stat3Value": "3",
+    "stat3Label": "Фазы",
+    "trust1": "1:1 Спарринг",
+    "trust2": "Индивидуальный план",
+    "trust3": "B2B-фокус",
+    "cta": "Подать заявку"
+  },
+  "programme": {
+    "eyebrow": "Программы",
+    "headline": "Найдите свою точку входа",
+    "card1Tag": "Популярное",
+    "card1Title": "SalesMade Academy",
+    "card1Text": "12-недельный тренинг по продажам для основателей и команд. Системно, измеримо, воспроизводимо.",
+    "card1Cta": "Подробнее",
+    "card2Tag": "Фреймворк",
+    "card2Title": "Liquid Leadership",
+    "card2Text": "Фреймворк лидерства для масштабируемой корпоративной культуры. Разработан и проверен Альёной Айлерс.",
+    "card2Cta": "Подробнее",
+    "card3Tag": "Бесплатно",
+    "card3Title": "Неотразимые B2B-предложения за 8 шагов",
+    "card3Text": "Полный план создания B2B-предложений, которые продают себя сами — включая видеомастеркласс.",
+    "card3Cta": "Получить план"
+  },
   "hvco": {
-    "eyebrow": "Kostenlose Ressourcen",
-    "headline": "Starte jetzt — kostenlos",
-    "resource1Title": "Vertriebssystem Guide",
-    "resource1Text": "Der komplette PDF-Guide: Wie du in 90 Tagen ein reproduzierbares Vertriebssystem aufbaust.",
-    "resource1Cta": "Guide laden",
-    "resource2Title": "Self-Assessment Tool",
-    "resource2Text": "Finde heraus, wo dein Vertrieb wirklich steht — in 5 Minuten.",
-    "resource2Cta": "Assessment starten",
-    "resource3Title": "Video-Masterclass",
-    "resource3Text": "Die 3 größten Fehler im B2B-Vertrieb — und wie du sie sofort vermeidest.",
-    "resource3Cta": "Video ansehen"
+    "eyebrow": "Бесплатные ресурсы",
+    "headline": "Начните сейчас — бесплатно",
+    "resource1Title": "Гид по системе продаж",
+    "resource1Text": "Полный PDF-гид: как выстроить воспроизводимую систему продаж за 90 дней.",
+    "resource1Cta": "Скачать гид",
+    "resource2Title": "Инструмент самооценки",
+    "resource2Text": "Узнайте, где реально находятся ваши продажи — за 5 минут.",
+    "resource2Cta": "Начать оценку",
+    "resource3Title": "Видеомастеркласс",
+    "resource3Text": "3 главные ошибки в B2B-продажах — и как их немедленно устранить.",
+    "resource3Cta": "Смотреть видео"
   },
   "testimonials": {
-    "eyebrow": "Stimmen",
-    "headline": "Was unsere Klienten sagen"
+    "eyebrow": "Отзывы",
+    "headline": "Что говорят наши клиенты"
   },
   "cta": {
-    "eyebrow": "Bereit für den nächsten Schritt?",
-    "headline": "45 Minuten für Deine nächsten 36 Monate",
-    "subtext": "Im kostenlosen Strategiegespräch analysieren wir gemeinsam, wo dein größtes Wachstumspotenzial liegt.",
-    "button": "Jetzt Termin buchen",
-    "note": "Kostenlos & unverbindlich"
+    "eyebrow": "Готовы к следующему шагу?",
+    "headline": "45 минут для ваших следующих 36 месяцев",
+    "subtext": "На бесплатном стратегическом звонке мы вместе определим, где скрыт ваш главный потенциал роста.",
+    "button": "Записаться на звонок",
+    "note": "Бесплатно и без обязательств"
   },
   "newsletter": {
-    "eyebrow": "Newsletter",
-    "headline": "6.552 Gründer lesen bereits mit",
-    "subtext": "Jeden Dienstag: praxiserprobte Strategien aus 15 Jahren Vertriebserfahrung.",
-    "placeholder": "Deine E-Mail-Adresse",
-    "button": "Jetzt anmelden",
-    "note": "Kein Spam. Jederzeit kündbar."
+    "category": "Письмо о росте и лидерстве для предпринимателей",
+    "headline": "Присоединитесь к 6 552 предпринимателям",
+    "subtext": "Каждый вторник: проверенные стратегии из 15 лет опыта в продажах — прямо в ваш почтовый ящик.",
+    "namePlaceholder": "Имя",
+    "emailPlaceholder": "Email",
+    "button": "Подписаться",
+    "consentText": "Да, я хочу получать бесплатные письма от Eilers+Friends.",
+    "confirmationNote": "Вы получите письмо с подтверждением для верификации подписки.",
+    "successTitle": "Почти готово!",
+    "successNote": "Мы отправили вам письмо с подтверждением. Пожалуйста, подтвердите подписку.",
+    "errorNote": "Что-то пошло не так. Пожалуйста, попробуйте снова."
   },
   "footer": {
-    "tagline": "Systematisches Wachstum für Gründer:innen.",
-    "programmes": "Programme",
+    "tagline": "Системный рост для основателей.",
+    "programmes": "Программы",
     "salesmade": "SalesMade Academy",
     "liquidLeadership": "Liquid Leadership",
-    "coaches": "Coaches",
-    "markus": "Markus Eilers",
-    "aljona": "Aljona Eilers",
-    "resources": "Ressourcen",
-    "frameworks": "Frameworks",
-    "blog": "Blog",
-    "newsletter": "Newsletter",
-    "legal": "Rechtliches",
-    "privacy": "Datenschutz",
-    "imprint": "Impressum",
-    "contact": "Kontakt",
-    "copyright": "© 2026 Eilers+Friends. Alle Rechte vorbehalten.",
-    "madeWith": "Made with ♥ für Gründer:innen"
+    "b2bFramework": "B2B-фреймворк предложений",
+    "coaches": "Коучи",
+    "markus": "Маркус Айлерс",
+    "aljona": "Альёна Айлерс",
+    "unternehmen": "Компания",
+    "about": "О нас",
+    "blog": "Блог",
+    "newsletter": "Рассылка",
+    "ressourcen": "Ресурсы",
+    "legal": "Правовая информация",
+    "privacy": "Политика конфиденциальности",
+    "imprint": "Импринт",
+    "contact": "Контакт",
+    "cookieSettings": "Настройки cookies",
+    "copyright": "© 2026 Eilers+Friends. Все права защищены.",
+    "madeWith": "Сделано с ♥ для основателей"
   },
   "cookie": {
-    "title": "Wir respektieren deine Privatsphäre",
-    "text": "Wir verwenden Cookies, um deine Erfahrung zu verbessern. Du kannst selbst entscheiden, welche Cookies du zulässt.",
-    "accept": "Alle akzeptieren",
-    "reject": "Ablehnen",
-    "settings": "Einstellungen"
+    "title": "Мы уважаем вашу конфиденциальность",
+    "text": "Мы используем cookies для улучшения вашего опыта. Вы сами решаете, какие cookies разрешить.",
+    "accept": "Принять все",
+    "reject": "Отклонить",
+    "settings": "Настройки"
   },
   "auth": {
-    "login": "Anmelden",
-    "loginTitle": "Willkommen zurück",
-    "loginSubtext": "Melde dich an, um dein Lernportal zu öffnen.",
-    "email": "E-Mail",
-    "password": "Passwort",
-    "submit": "Anmelden",
-    "error": "E-Mail oder Passwort falsch.",
-    "forgotPassword": "Passwort vergessen?"
+    "login": "Войти",
+    "loginTitle": "С возвращением",
+    "loginSubtext": "Войдите, чтобы открыть ваш учебный портал.",
+    "email": "Email",
+    "password": "Пароль",
+    "submit": "Войти",
+    "error": "Неверный email или пароль.",
+    "forgotPassword": "Забыли пароль?"
   }
 }
