@@ -67,7 +67,7 @@ export const authConfig: NextAuthConfig = {
         return {
           id: user.id,
           email: user.email,
-          name: user.fullName,
+          name: user.name,
           role: user.role,
         }
       },
