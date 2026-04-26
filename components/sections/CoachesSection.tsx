@@ -32,12 +32,12 @@ export function CoachesSection() {
           {/* Markus — Blue accent */}
           <div className="relative overflow-hidden rounded-3xl bg-white shadow-sm border border-gray-100">
             {/* Photo */}
-            <div className="relative h-72 w-full overflow-hidden bg-gray-100">
+            <div className="relative w-full overflow-hidden bg-gray-100" style={{ aspectRatio: '3/4' }}>
               <Image
                 src="/markus-photo.jpg"
                 alt="Markus Eilers"
                 fill
-                className="object-cover object-top"
+                className="object-cover object-center"
                 style={{ filter: 'grayscale(100%)' }}
               />
               {/* Orange tag overlay */}
@@ -91,12 +91,12 @@ export function CoachesSection() {
           {/* Aljona — Amber accent */}
           <div className="relative overflow-hidden rounded-3xl bg-white shadow-sm border border-gray-100">
             {/* Photo */}
-            <div className="relative h-72 w-full overflow-hidden bg-gray-100">
+            <div className="relative w-full overflow-hidden bg-gray-100" style={{ aspectRatio: '3/4' }}>
               <Image
                 src="/aljona-photo.jpg"
                 alt="Aljona Eilers"
                 fill
-                className="object-cover object-top"
+                className="object-cover object-center"
                 style={{ filter: 'grayscale(100%)' }}
               />
               {/* Orange tag overlay */}
