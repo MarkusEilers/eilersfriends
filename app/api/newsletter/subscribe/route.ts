@@ -77,7 +77,10 @@ export async function POST(request: Request) {
       }
     } catch (dbErr) {
       console.error('DB error:', dbErr)
-      return NextResponse.json({ error: 'Database error' }, { status: 500 })
+      return NextResponse.json(
+        { error: 'Database error', detail: String(dbErr) },
+        { status: 500 },
+      )
     }
 
     // ── 2. DOI-Email via Resend senden ────────────────────────────────────────
