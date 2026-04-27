@@ -19,6 +19,7 @@ import { LpBonusDeliverables } from '@/components/lp/LpBonusDeliverables'
 import { LpFitCheck } from '@/components/lp/LpFitCheck'
 import { LpPricingCard } from '@/components/lp/LpPricingCard'
 import { LpRiskReversal } from '@/components/lp/LpRiskReversal'
+import { LpTweetWall } from '@/components/lp/LpTweetWall'
 import { LpGeneric } from '@/components/lp/LpGeneric'
 
 interface PageProps {
@@ -96,6 +97,8 @@ export default async function LandingPageRoute({ params }: PageProps) {
             return <LpRiskReversal key={section.id} content={content} accent={accent} />
           case 'testimonials':
             return <LpTestimonials key={section.id} content={content} />
+          case 'tweet_wall':
+            return <LpTweetWall key={section.id} content={content} accent={accent} />
           case 'faq':
             return <LpFaq key={section.id} content={content} />
           case 'email_capture':

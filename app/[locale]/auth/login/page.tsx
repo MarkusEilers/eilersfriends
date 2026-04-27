@@ -29,7 +29,20 @@ export default function LoginPage() {
     setLoading(false)
     if (result?.error) {
       setError(t('error'))
-    } else {
+      return
+    }
+
+    // Role-based redirect: admins + coaches → backend, participants → portal
+    try {
+      const sessionRes = await fetch('/api/auth/session')
+      const session = await sessionRes.json()
+      const role: string | undefined = session?.user?.role
+      if (role === 'admin' || role === 'coach') {
+        router.push('/admin')
+      } else {
+        router.push('/dashboard')
+      }
+    } catch {
       router.push('/dashboard')
     }
   }

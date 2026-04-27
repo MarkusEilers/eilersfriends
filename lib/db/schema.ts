@@ -51,6 +51,7 @@ export const landingPageSectionTypeEnum = pgEnum('landing_page_section_type', [
   'bonus_deliverables',  // 'More than just theory' — Bonus-Materialien (NEW)
   'fit_check',           // 'Good fit / Not good fit' 2-Spalten (NEW)
   'testimonials',        // Kunden-Stimmen
+  'tweet_wall',          // Social-Proof-Wand mit kurzen Quotes / Tweets (NEW)
   'offer',               // Angebot / Preis-Box
   'pricing_card',        // Single-Tier-Pricing mit Deliverables-Liste (NEW)
   'risk_reversal',       // 'Why I'm not offering refunds' / Garantie-Erklärung (NEW)
