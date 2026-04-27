@@ -5,11 +5,42 @@ import { db } from '@/lib/db'
 import { newsletterSubscribers, emailTemplates } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { sendEmail, renderTemplate } from '@/lib/email/resend'
+import { sql } from 'drizzle-orm'
 import {
   getDefaultDoiHtml,
   getDefaultDoiText,
   DEFAULT_DOI_SUBJECT,
 } from '@/lib/email/doi-template'
+
+/**
+ * Ensures every column the route reads/writes actually exists in the live
+ * newsletter_subscribers table. Idempotent — IF NOT EXISTS guards mean it
+ * compiles down to a no-op once columns are present. Cheap to call on every
+ * request (single round-trip per missing column at worst, none after first
+ * successful sync).
+ */
+let _schemaEnsured = false
+async function ensureSubscriberSchema() {
+  if (_schemaEnsured) return
+  const stmts = [
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "first_name" TEXT;\`,
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "source" TEXT;\`,
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "lists" JSONB;\`,
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "consent_given" BOOLEAN NOT NULL DEFAULT false;\`,
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "consent_at" TIMESTAMP;\`,
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_token" TEXT;\`,
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_sent_at" TIMESTAMP;\`,
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_confirmed_at" TIMESTAMP;\`,
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "beehiiv_id" TEXT;\`,
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "beehiiv_synced_at" TIMESTAMP;\`,
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "created_at" TIMESTAMP NOT NULL DEFAULT NOW();\`,
+    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "updated_at" TIMESTAMP NOT NULL DEFAULT NOW();\`,
+  ]
+  for (const stmt of stmts) {
+    try { await db.execute(sql.raw(stmt)) } catch (_) { /* ignore */ }
+  }
+  _schemaEnsured = true
+}
 
 const schema = z.object({
   email: z.string().email(),
@@ -21,6 +52,7 @@ const schema = z.object({
 
 export async function POST(request: Request) {
   try {
+    await ensureSubscriberSchema()
     const body = await request.json()
     const { email, firstName, source, locale, consentGiven } = schema.parse(body)
 
