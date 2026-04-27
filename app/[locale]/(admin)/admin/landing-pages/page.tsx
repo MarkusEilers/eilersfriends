@@ -9,10 +9,19 @@ import { redirect } from 'next/navigation'
 
 async function createFromWelshAction() {
   'use server'
-  // Generate a fresh slug so multiple creates don't collide
   const slug = `programm-${Date.now().toString(36)}`
   const page = await createLandingPageFromTemplate({
     templateKey: 'program-welsh',
+    slug,
+  })
+  redirect(`/admin/landing-pages/${page.id}`)
+}
+
+async function createFromNewsletterAction() {
+  'use server'
+  const slug = `newsletter-${Date.now().toString(36)}`
+  const page = await createLandingPageFromTemplate({
+    templateKey: 'newsletter-welsh',
     slug,
   })
   redirect(`/admin/landing-pages/${page.id}`)
@@ -37,7 +46,7 @@ export default async function LandingPagesPage() {
             Erstelle Seiten für jedes Framework und Programm. Email-Adressen werden automatisch gesammelt.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <form action={createFromWelshAction}>
             <button
               type="submit"
@@ -47,6 +56,17 @@ export default async function LandingPagesPage() {
             >
               <Sparkles size={16} />
               Aus Programm-Template
+            </button>
+          </form>
+          <form action={createFromNewsletterAction}>
+            <button
+              type="submit"
+              className="flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-gray-50"
+              style={{ color: '#F05A1A', borderColor: '#FECDBB', backgroundColor: '#FFF1EB' }}
+              title={lpTemplates['newsletter-welsh'].description}
+            >
+              <Sparkles size={16} />
+              Aus Newsletter-Template
             </button>
           </form>
           <form action={createLandingPage}>

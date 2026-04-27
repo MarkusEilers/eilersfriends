@@ -348,3 +348,140 @@ export const programWelshTemplate: LpTemplate = {
 export const lpTemplates: Record<string, LpTemplate> = {
   [programWelshTemplate.key]: programWelshTemplate,
 }
+
+/**
+ * Newsletter-Subscribe-Template (Welsh-Style)
+ * Modelliert nach justinwelsh.me/subscribe — schlanke 5-Sektion-Page,
+ * fokussiert auf Email-Capture, mit heavy Social-Proof (Tweet-Wall).
+ */
+export const newsletterWelshTemplate: LpTemplate = {
+  key: 'newsletter-welsh',
+  name: 'Newsletter-Subscribe (Welsh-Style)',
+  description:
+    'Modelliert nach Justin Welshs Saturday-Solopreneur-Subscribe-Page. 5 Sektionen, fokussiert auf Email-Capture, Tweet-Wall als Social-Proof-Wand.',
+  accentColor: '#F05A1A',
+  defaultTitle: '[Newsletter-Name]',
+  defaultSlug: 'newsletter-subscribe',
+  defaultMetaDescription:
+    'Abonniere [Newsletter-Name] und bekomme [Frequenz] [Format] zu [Thema] direkt in dein Postfach.',
+  sections: [
+    // 1. HERO — Headline + immediate email form + trust line
+    {
+      type: 'hero',
+      content: {
+        headline:
+          'Eine [Frequenz]-Mail, die dich [Outcome] verstehen lässt.',
+        subheadline:
+          'Abonniere von [N]+ Leser:innen, die ihre Woche mit einem [Min]-Minuten-Essay zu [Thema] starten.',
+        showEmailForm: true,
+        ctaLabel: 'Jetzt abonnieren',
+        finePrint:
+          'Kein Spam. Kein Verkauf deiner Daten. Abmeldung mit einem Klick.',
+      },
+    },
+
+    // 2. FEATURED TESTIMONIALS — 2-3 prominent quotes from notable people
+    {
+      type: 'testimonials',
+      content: {
+        eyebrow: 'Was Leser sagen',
+        items: [
+          {
+            quote:
+              '[Konkretes, prominent platziertes Zitat einer bekannten Person.]',
+            name: '[Vor- + Nachname]',
+            role: '[Position] @ [Firma]',
+          },
+          {
+            quote:
+              '[Zweites Zitat — anderer Aspekt, z.B. praktischer Nutzen.]',
+            name: '[Name]',
+            role: '[Rolle]',
+          },
+        ],
+      },
+    },
+
+    // 3. TWEET WALL — Social proof carousel (NEW)
+    {
+      type: 'tweet_wall',
+      content: {
+        eyebrow: 'Aus der Community',
+        headline: 'Was Leser im Netz teilen',
+        subheadline:
+          'Echte Reaktionen aus LinkedIn, X & Co — keine Cherry-Picking-Reviews.',
+        tweets: [
+          {
+            handle: '@nutzername1',
+            name: 'Vorname Nachname',
+            body: '[Kurzer Tweet, der den Newsletter empfiehlt — 1-3 Sätze, gerne mit Aufzählung.]',
+            date: 'X. Monat YYYY',
+          },
+          {
+            handle: '@nutzername2',
+            name: 'Vorname Nachname',
+            body: '[Zweiter Tweet — anderer Tonfall, anderes Argument.]',
+            date: 'X. Monat YYYY',
+          },
+          {
+            handle: '@nutzername3',
+            name: 'Vorname Nachname',
+            body: '[Dritter Tweet]',
+            date: 'X. Monat YYYY',
+          },
+          {
+            handle: '@nutzername4',
+            name: 'Vorname Nachname',
+            body: '[Vierter Tweet]',
+            date: 'X. Monat YYYY',
+          },
+          {
+            handle: '@nutzername5',
+            name: 'Vorname Nachname',
+            body: '[Fünfter Tweet]',
+            date: 'X. Monat YYYY',
+          },
+          {
+            handle: '@nutzername6',
+            name: 'Vorname Nachname',
+            body: '[Sechster Tweet]',
+            date: 'X. Monat YYYY',
+          },
+        ],
+      },
+    },
+
+    // 4. PROMISE / WHY SUBSCRIBE — what you'll get
+    {
+      type: 'solution',
+      content: {
+        eyebrow: 'Worum es geht',
+        headline:
+          '[Ein-Satz-Versprechen, das auf Freedom / Outcome zielt.]',
+        subheadline:
+          '[Optional: 1-2 Sätze, die das Versprechen vertiefen.]',
+        items: [
+          {
+            title: '[Vorteil 1]',
+            description: '[Konkret + spezifisch — kein Marketing-Schwafel.]',
+          },
+          { title: '[Vorteil 2]', description: '[Beschreibung]' },
+          { title: '[Vorteil 3]', description: '[Beschreibung]' },
+        ],
+      },
+    },
+
+    // 5. EMAIL CAPTURE — final form (already exists as standalone block)
+    {
+      type: 'email_capture',
+      content: {
+        headline: 'Abonniere und leg los.',
+        subtext:
+          'Schließ dich [N]+ Leser:innen an, die ihre Woche mit einem [Min]-Minuten-Essay zu [Thema] starten. Ich werde nie spammen oder deine Daten verkaufen. Punkt.',
+      },
+    },
+  ],
+}
+
+// Register the new template
+lpTemplates[newsletterWelshTemplate.key] = newsletterWelshTemplate

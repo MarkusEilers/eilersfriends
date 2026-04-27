@@ -16,6 +16,7 @@ const NEW_SECTION_TYPES = [
   'fit_check',
   'pricing_card',
   'risk_reversal',
+  'tweet_wall',
 ] as const
 
 /**
