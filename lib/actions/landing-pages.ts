@@ -5,7 +5,33 @@ import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { landingPages, landingPageSections } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
+import { lpTemplates, type LpTemplate } from '@/lib/templates/program-welsh'
+
+/** New enum values introduced for Welsh-style program templates. */
+const NEW_SECTION_TYPES = [
+  'origin_story',
+  'curriculum',
+  'bonus_deliverables',
+  'fit_check',
+  'pricing_card',
+  'risk_reversal',
+] as const
+
+/**
+ * Idempotently adds new values to the landing_page_section_type enum
+ * if they don't exist yet. Safe to call repeatedly. Postgres 12+ supports
+ * ADD VALUE IF NOT EXISTS without a transaction block.
+ */
+async function ensureSectionEnumValues() {
+  for (const value of NEW_SECTION_TYPES) {
+    await db.execute(
+      sql.raw(
+        `ALTER TYPE "landing_page_section_type" ADD VALUE IF NOT EXISTS '${value}';`,
+      ),
+    )
+  }
+}
 
 async function requireAdmin() {
   const session = await auth()
@@ -121,4 +147,58 @@ export async function reorderSections(sections: { id: string; order: number }[])
 export async function toggleSectionVisibility(id: string, isVisible: boolean) {
   await requireAdmin()
   await db.update(landingPageSections).set({ isVisible, updatedAt: new Date() }).where(eq(landingPageSections.id, id))
+}
+
+/**
+ * Erzeugt eine neue Landing Page aus einem Template-Bauplan.
+ * Slug wird zwingend gebraucht (muss eindeutig sein).
+ */
+export async function createLandingPageFromTemplate({
+  templateKey,
+  slug,
+  title,
+  metaDescription,
+  accentColor,
+  locale = 'de',
+}: {
+  templateKey: string
+  slug: string
+  title?: string
+  metaDescription?: string
+  accentColor?: string
+  locale?: string
+}) {
+  const template: LpTemplate | undefined = lpTemplates[templateKey]
+  if (!template) {
+    throw new Error(`Template "${templateKey}" not found`)
+  }
+
+  // 0. Ensure enum knows about new section types (idempotent)
+  await ensureSectionEnumValues()
+
+  // 1. Insert landing page
+  const [page] = await db
+    .insert(landingPages)
+    .values({
+      slug,
+      title: title ?? template.defaultTitle,
+      metaDescription: metaDescription ?? template.defaultMetaDescription,
+      status: 'draft',
+      locale,
+      accentColor: accentColor ?? template.accentColor,
+    })
+    .returning()
+
+  // 2. Insert sections in template order
+  await db.insert(landingPageSections).values(
+    template.sections.map((s, i) => ({
+      landingPageId: page.id,
+      type: s.type,
+      order: i * 10, // gaps for later inserts
+      isVisible: true,
+      content: s.content,
+    })),
+  )
+
+  return page
 }

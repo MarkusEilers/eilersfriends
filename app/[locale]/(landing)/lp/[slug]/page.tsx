@@ -13,6 +13,12 @@ import { LpFaq } from '@/components/lp/LpFaq'
 import { LpEmailCapture } from '@/components/lp/LpEmailCapture'
 import { LpCta } from '@/components/lp/LpCta'
 import { LpCoachBio } from '@/components/lp/LpCoachBio'
+import { LpOriginStory } from '@/components/lp/LpOriginStory'
+import { LpCurriculum } from '@/components/lp/LpCurriculum'
+import { LpBonusDeliverables } from '@/components/lp/LpBonusDeliverables'
+import { LpFitCheck } from '@/components/lp/LpFitCheck'
+import { LpPricingCard } from '@/components/lp/LpPricingCard'
+import { LpRiskReversal } from '@/components/lp/LpRiskReversal'
 import { LpGeneric } from '@/components/lp/LpGeneric'
 
 interface PageProps {
@@ -76,6 +82,18 @@ export default async function LandingPageRoute({ params }: PageProps) {
           case 'how_it_works':
           case 'offer':
             return <LpFeatures key={section.id} content={content} accent={accent} type={section.type} />
+          case 'origin_story':
+            return <LpOriginStory key={section.id} content={content} accent={accent} />
+          case 'curriculum':
+            return <LpCurriculum key={section.id} content={content} accent={accent} />
+          case 'bonus_deliverables':
+            return <LpBonusDeliverables key={section.id} content={content} accent={accent} />
+          case 'fit_check':
+            return <LpFitCheck key={section.id} content={content} accent={accent} />
+          case 'pricing_card':
+            return <LpPricingCard key={section.id} content={content} accent={accent} />
+          case 'risk_reversal':
+            return <LpRiskReversal key={section.id} content={content} accent={accent} />
           case 'testimonials':
             return <LpTestimonials key={section.id} content={content} />
           case 'faq':

@@ -2,8 +2,21 @@ import { db } from '@/lib/db'
 import { landingPages } from '@/lib/db/schema'
 import { desc } from 'drizzle-orm'
 import Link from 'next/link'
-import { Plus, ExternalLink, Globe, FileText, Archive } from 'lucide-react'
-import { createLandingPage } from '@/lib/actions/landing-pages'
+import { Plus, ExternalLink, Globe, FileText, Archive, Sparkles } from 'lucide-react'
+import { createLandingPage, createLandingPageFromTemplate } from '@/lib/actions/landing-pages'
+import { lpTemplates } from '@/lib/templates/program-welsh'
+import { redirect } from 'next/navigation'
+
+async function createFromWelshAction() {
+  'use server'
+  // Generate a fresh slug so multiple creates don't collide
+  const slug = `programm-${Date.now().toString(36)}`
+  const page = await createLandingPageFromTemplate({
+    templateKey: 'program-welsh',
+    slug,
+  })
+  redirect(`/admin/landing-pages/${page.id}`)
+}
 
 export default async function LandingPagesPage() {
   let pages: (typeof landingPages.$inferSelect)[] = []
@@ -24,16 +37,29 @@ export default async function LandingPagesPage() {
             Erstelle Seiten für jedes Framework und Programm. Email-Adressen werden automatisch gesammelt.
           </p>
         </div>
-        <form action={createLandingPage}>
-          <button
-            type="submit"
-            className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: '#F05A1A' }}
-          >
-            <Plus size={16} />
-            Neue Landing Page
-          </button>
-        </form>
+        <div className="flex items-center gap-2">
+          <form action={createFromWelshAction}>
+            <button
+              type="submit"
+              className="flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-gray-50"
+              style={{ color: '#1A5FD4', borderColor: '#BBCFF5', backgroundColor: '#EBF1FF' }}
+              title={lpTemplates['program-welsh'].description}
+            >
+              <Sparkles size={16} />
+              Aus Programm-Template
+            </button>
+          </form>
+          <form action={createLandingPage}>
+            <button
+              type="submit"
+              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: '#F05A1A' }}
+            >
+              <Plus size={16} />
+              Leere Seite
+            </button>
+          </form>
+        </div>
       </div>
 
       {pages.length === 0 ? (

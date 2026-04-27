@@ -39,20 +39,26 @@ export const emailTemplateTypeEnum = pgEnum('email_template_type', [
 ])
 export const landingPageStatusEnum = pgEnum('landing_page_status', ['draft', 'published', 'archived'])
 export const landingPageSectionTypeEnum = pgEnum('landing_page_section_type', [
-  'hero',           // Headline + Subtext + CTA / Email-Form
-  'video',          // VSL oder Erklär-Video
-  'social_proof',   // Logos, Zahlen, "Wie bekannt aus"
-  'problem',        // Problem-Agitation
-  'solution',        // Lösung / Was du bekommst
-  'features',        // Feature-Liste mit Icons
-  'how_it_works',    // Schritt-für-Schritt
-  'testimonials',    // Kunden-Stimmen
-  'offer',            // Angebot / Preis-Box
-  'faq',              // FAQ Accordion
-  'email_capture',  // Standalone Email-Formular / Lead-Magnet
-  'cta',              // Finaler Call-to-Action
-  'coach_bio',        // Coach-Vorstellung
-  'spacer',           // Abstandhalter
+  'hero',                // Headline + Subtext + CTA / Email-Form
+  'video',               // VSL oder Erklär-Video
+  'social_proof',        // Logos, Zahlen, "Wie bekannt aus"
+  'problem',             // Problem-Agitation
+  'origin_story',        // Long-form Narrative (Welsh: 'Once upon a time...')
+  'solution',            // Lösung / Was du bekommst
+  'features',            // Feature-Liste mit Icons
+  'how_it_works',        // Schritt-für-Schritt
+  'curriculum',          // Kapitel-/Modul-Liste mit Beschreibungen (NEW)
+  'bonus_deliverables',  // 'More than just theory' — Bonus-Materialien (NEW)
+  'fit_check',           // 'Good fit / Not good fit' 2-Spalten (NEW)
+  'testimonials',        // Kunden-Stimmen
+  'offer',               // Angebot / Preis-Box
+  'pricing_card',        // Single-Tier-Pricing mit Deliverables-Liste (NEW)
+  'risk_reversal',       // 'Why I'm not offering refunds' / Garantie-Erklärung (NEW)
+  'faq',                 // FAQ Accordion
+  'email_capture',       // Standalone Email-Formular / Lead-Magnet
+  'cta',                 // Finaler Call-to-Action
+  'coach_bio',           // Coach/Instructor-Vorstellung
+  'spacer',              // Abstandhalter
 ])
 export const emailSequenceTriggerEnum = pgEnum('email_sequence_trigger', [
   'newsletter_signup',       // Nach Newsletter-Aneldung
