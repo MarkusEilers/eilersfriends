@@ -23,6 +23,7 @@ export type SectionTypeKey =
   | 'bonus_deliverables'
   | 'fit_check'
   | 'testimonials'
+  | 'tweet_wall'
   | 'offer'
   | 'pricing_card'
   | 'risk_reversal'
