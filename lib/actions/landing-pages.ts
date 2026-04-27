@@ -63,24 +63,24 @@ export async function createLandingPage() {
 // ── Meta-Daten aktualisieren ──────────────────────────────────────────────────
 export async function updateLandingPageMeta(input: {
   id: string
-  title: string
-  slug: string
-  metaDescription: string
-  emailList: string
-  accentColor: string
-  locale: string
+  title?: string
+  slug?: string
+  metaDescription?: string | null
+  emailList?: string | null
+  accentColor?: string | null
+  locale?: string
 }) {
   await requireAdmin()
 
   await db.update(landingPages).set({
-    title: input.title,
-    slug: input.slug.replace(/^\/lp\//, '').replace(/^\//, ''),
-    metaDescription: input.metaDescription || null,
-    emailList: input.emailList || null,
-    accentColor: input.accentColor || null,
-    locale: input.locale,
-    updatedAt: new Date(),
-  }).where(eq(landingPages.id, input.id))
+      ...(input.title !== undefined ? { title: input.title } : {}),
+      ...(input.slug !== undefined ? { slug: input.slug } : {}),
+      ...(input.metaDescription !== undefined ? { metaDescription: input.metaDescription } : {}),
+      ...(input.emailList !== undefined ? { emailList: input.emailList } : {}),
+      ...(input.accentColor !== undefined ? { accentColor: input.accentColor } : {}),
+      ...(input.locale !== undefined ? { locale: input.locale } : {}),
+      updatedAt: new Date(),
+    }).where(eq(landingPages.id, input.id))
 
   revalidatePath('/admin/landing-pages')
   revalidatePath(`/admin/landing-pages/${input.id}`)
