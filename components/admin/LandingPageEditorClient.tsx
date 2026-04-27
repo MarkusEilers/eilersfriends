@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useMemo } from 'react'
 import Link from 'next/link'
 import {
-  ArrowLeft, Eye, Plus, GripVertical, Trash2, ChevronDown, ChevronUp,
-  Save, Globe, FileText, Archive, Loader2, ExternalLink,
+  ArrowLeft, Plus, GripVertical, Trash2, Eye, EyeOff,
+  Save, ExternalLink, Loader2, Sparkles, MessageSquare, X,
+  Globe, FileText, Archive,
 } from 'lucide-react'
 import {
   updateLandingPageMeta,
@@ -14,6 +15,8 @@ import {
   toggleSectionVisibility,
   publishLandingPage,
 } from '@/lib/actions/landing-pages'
+import { LpRender, type SimpleSection } from '@/components/lp/LpRender'
+import { AiChatPanel } from './AiChatPanel'
 
 type LandingPage = {
   id: string
@@ -26,520 +29,416 @@ type LandingPage = {
   locale: string
 }
 
-type Section = {
+type EditorSection = {
   id: string
   type: string
   order: number
   isVisible: boolean
   content: Record<string, unknown>
+  /** local marker — not yet saved to DB */
+  dirty?: boolean
+  /** local marker — JSON parse error */
+  parseError?: string
 }
 
 const SECTION_TYPES = [
-  { value: 'hero', label: '🚀 Hero', desc: 'Headline + Subtext + CTA oder Email-Form' },
-  { value: 'video', label: '🎥 Video', desc: 'VSL oder Erklär-Video (YouTube/Vimeo)' },
-  { value: 'social_proof', label: '⭐ Social Proof', desc: 'Logos, Zahlen, Medien-Erwähnungen' },
-  { value: 'problem', label: '⚡ Problem', desc: 'Schmerz-Punkte und Herausforderungen' },
-  { value: 'solution', label: '✅ Lösung', desc: 'Was du bekommst / Transformations-Versprechen' },
-  { value: 'features', label: '📋 Features', desc: 'Bullet-Liste mit Icons und Texten' },
-  { value: 'how_it_works', label: '🔢 So funktioniert es', desc: 'Schritt-für-Schritt Prozess' },
-  { value: 'testimonials', label: '💬 Testimonials', desc: 'Kunden-Stimmen mit Name und Bild' },
-  { value: 'offer', label: '💎 Angebot', desc: 'Was ist enthalten + Preis + CTA' },
-  { value: 'faq', label: '❓ FAQ', desc: 'Häufige Fragen und Antworten' },
-  { value: 'email_capture', label: '📧 Email-Formular', desc: 'Standalone Lead-Magnet / Opt-In' },
-  { value: 'cta', label: '🎯 Call to Action', desc: 'Finaler Aufruf zum Handeln' },
-  { value: 'coach_bio', label: '👤 Coach-Vorstellung', desc: 'Markus oder Aljona Profil' },
+  { value: 'hero', label: '🚀 Hero' },
+  { value: 'video', label: '🎥 Video' },
+  { value: 'social_proof', label: '⭐ Social Proof' },
+  { value: 'problem', label: '⚡ Problem' },
+  { value: 'origin_story', label: '📖 Origin Story' },
+  { value: 'solution', label: '✅ Lösung' },
+  { value: 'features', label: '📋 Features' },
+  { value: 'how_it_works', label: '🔢 So funktioniert es' },
+  { value: 'curriculum', label: '📚 Curriculum' },
+  { value: 'bonus_deliverables', label: '🎁 Bonus' },
+  { value: 'fit_check', label: '✓✗ Fit Check' },
+  { value: 'testimonials', label: '💬 Testimonials' },
+  { value: 'tweet_wall', label: '🐦 Tweet-Wall' },
+  { value: 'offer', label: '💎 Angebot' },
+  { value: 'pricing_card', label: '💰 Pricing-Card' },
+  { value: 'risk_reversal', label: '🛡️ Garantie' },
+  { value: 'faq', label: '❓ FAQ' },
+  { value: 'email_capture', label: '📧 Email-Capture' },
+  { value: 'cta', label: '🎯 CTA' },
+  { value: 'coach_bio', label: '👤 Coach-Bio' },
+  { value: 'spacer', label: '⎯ Spacer' },
 ]
 
-interface LandingPageEditorClientProps {
+interface Props {
   page: LandingPage
-  sections: Section[]
+  sections: EditorSection[]
 }
 
-export function LandingPageEditorClient({ page: initialPage, sections: initialSections }: LandingPageEditorClientProps) {
+export function LandingPageEditorClient({ page: initialPage, sections: initialSections }: Props) {
   const [page, setPage] = useState(initialPage)
-  const [sections, setSections] = useState(initialSections)
-  const [editingSection, setEditingSection] = useState<string | null>(null)
-  const [showAddSection, setShowAddSection] = useState(false)
+  const [sections, setSections] = useState<EditorSection[]>(initialSections)
+  const [selectedId, setSelectedId] = useState<string | null>(initialSections[0]?.id ?? null)
+  const [showChat, setShowChat] = useState(false)
   const [isPending, startTransition] = useTransition()
-  const [saved, setSaved] = useState(false)
 
-  // ── Meta speichern ────────────────────────────────────────────────────────
-  function saveMeta() {
+  const selected = sections.find((s) => s.id === selectedId)
+
+  // ─── handlers ──────────────────────────────────────────────────────────
+  function patchSection(id: string, patch: Partial<EditorSection>) {
+    setSections((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, ...patch, dirty: true } : s)),
+    )
+  }
+
+  function applyContentJson(id: string, jsonStr: string) {
+    try {
+      const parsed = JSON.parse(jsonStr)
+      patchSection(id, { content: parsed, parseError: undefined })
+    } catch (e) {
+      // mark error but don't break preview
+      setSections((prev) =>
+        prev.map((s) =>
+          s.id === id ? { ...s, parseError: (e as Error).message } : s,
+        ),
+      )
+    }
+  }
+
+  async function saveSection(s: EditorSection) {
     startTransition(async () => {
-      await updateLandingPageMeta({
-        id: page.id,
-        title: page.title,
-        slug: page.slug,
-        metaDescription: page.metaDescription ?? '',
-        emailList: page.emailList ?? '',
-        accentColor: page.accentColor ?? '',
-        locale: page.locale,
-      })
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2000)
+      try {
+        await upsertSection({
+          id: s.id,
+          landingPageId: page.id,
+          type: s.type,
+          order: s.order,
+          isVisible: s.isVisible,
+          content: s.content,
+        })
+        patchSection(s.id, { dirty: false })
+      } catch (e) {
+        console.error(e)
+      }
     })
   }
 
-  // ── Sektion hinzufügen ────────────────────────────────────────────────────
-  function addSection(type: string) {
+  async function saveAll() {
+    const dirty = sections.filter((s) => s.dirty)
+    for (const s of dirty) await saveSection(s)
+  }
+
+  async function addSection(type: string) {
+    const newId = crypto.randomUUID()
+    const newOrder =
+      sections.length > 0 ? Math.max(...sections.map((s) => s.order)) + 10 : 0
+    const fresh: EditorSection = {
+      id: newId,
+      type,
+      order: newOrder,
+      isVisible: true,
+      content: {},
+      dirty: true,
+    }
+    setSections((prev) => [...prev, fresh])
+    setSelectedId(newId)
+  }
+
+  async function removeSection(id: string) {
+    if (!confirm('Sektion wirklich löschen?')) return
+    setSections((prev) => prev.filter((s) => s.id !== id))
+    if (selectedId === id) setSelectedId(null)
     startTransition(async () => {
-      const newSection = await upsertSection({
-        landingPageId: page.id,
-        type,
-        order: sections.length,
-        isVisible: true,
-        content: getDefaultContent(type),
-      })
-      setSections((s) => [...s, newSection])
-      setShowAddSection(false)
-      setEditingSection(newSection.id)
+      try { await deleteSection(id) } catch {}
     })
   }
 
-  // ── Sektion speichern ─────────────────────────────────────────────────────
-  function saveSection(id: string, content: Record<string, unknown>) {
+  async function toggleVisibility(s: EditorSection) {
+    patchSection(s.id, { isVisible: !s.isVisible })
     startTransition(async () => {
-      const section = sections.find((s) => s.id === id)
-      if (!section) return
-      await upsertSection({ ...section, content, landingPageId: page.id })
-      setSections((s) => s.map((sec) => sec.id === id ? { ...sec, content } : sec))
-      setEditingSection(null)
+      try { await toggleSectionVisibility(s.id, !s.isVisible) } catch {}
     })
   }
 
-  // ── Sektion löschen ───────────────────────────────────────────────────────
-  function removeSection(id: string) {
-    if (!confirm('Sektion löschen?')) return
-    startTransition(async () => {
-      await deleteSection(id)
-      setSections((s) => s.filter((sec) => sec.id !== id))
-    })
-  }
-
-  // ── Sichtbarkeit toggle ───────────────────────────────────────────────────
-  function toggleVisibility(id: string) {
-    startTransition(async () => {
-      const section = sections.find((s) => s.id === id)
-      if (!section) return
-      await toggleSectionVisibility(id, !section.isVisible)
-      setSections((s) => s.map((sec) => sec.id === id ? { ...sec, isVisible: !sec.isVisible } : sec))
-    })
-  }
-
-  // ── Reihenfolge ───────────────────────────────────────────────────────────
-  function moveSection(id: string, dir: 'up' | 'down') {
+  async function moveSection(id: string, direction: 'up' | 'down') {
     const idx = sections.findIndex((s) => s.id === id)
-    if (dir === 'up' && idx === 0) return
-    if (dir === 'down' && idx === sections.length - 1) return
-    const newSections = [...sections]
-    const swapIdx = dir === 'up' ? idx - 1 : idx + 1
-    ;[newSections[idx], newSections[swapIdx]] = [newSections[swapIdx], newSections[idx]]
-    const reordered = newSections.map((s, i) => ({ ...s, order: i }))
-    setSections(reordered)
+    if (idx < 0) return
+    const swap = direction === 'up' ? idx - 1 : idx + 1
+    if (swap < 0 || swap >= sections.length) return
+    const next = [...sections]
+    ;[next[idx], next[swap]] = [next[swap], next[idx]]
+    // reassign orders 0,10,20…
+    next.forEach((s, i) => (s.order = i * 10))
+    setSections(next)
     startTransition(async () => {
-      await reorderSections(reordered.map((s) => ({ id: s.id, order: s.order })))
+      try {
+        await reorderSections(next.map((s, i) => ({ id: s.id, order: i * 10 })))
+      } catch {}
     })
   }
 
-  // ── Publish ───────────────────────────────────────────────────────────────
-  function handlePublish() {
-    startTransition(async () => {
-      const newStatus = page.status === 'published' ? 'draft' : 'published'
-      await publishLandingPage(page.id, newStatus)
-      setPage((p) => ({ ...p, status: newStatus }))
-    })
+  // ─── AI integration ────────────────────────────────────────────────────
+  function applyAiPatchToSelected(content: Record<string, unknown>) {
+    if (!selected) return
+    patchSection(selected.id, { content })
   }
+
+  function replaceAllSections(newSections: { type: string; content: Record<string, unknown> }[]) {
+    const built: EditorSection[] = newSections.map((s, i) => ({
+      id: crypto.randomUUID(),
+      type: s.type,
+      order: i * 10,
+      isVisible: true,
+      content: s.content,
+      dirty: true,
+    }))
+    setSections(built)
+    setSelectedId(built[0]?.id ?? null)
+  }
+
+  const renderSections: SimpleSection[] = useMemo(
+    () =>
+      sections.map((s) => ({
+        id: s.id,
+        type: s.type,
+        isVisible: s.isVisible,
+        content: s.content,
+      })),
+    [sections],
+  )
+
+  const accent = page.accentColor ?? '#F05A1A'
+  const dirtyCount = sections.filter((s) => s.dirty).length
 
   return (
-    <div>
-      {/* Topbar */}
-      <div className="mb-6 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Link href="/admin/landing-pages" className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900">
-            <ArrowLeft size={14} /> Zurück
+    <div className="-m-6 -mt-0 lg:-m-8 lg:-mt-0 grid grid-cols-12 gap-0 min-h-[calc(100vh-3rem)]">
+
+      {/* ─── LEFT: Section list + meta ─────────────────────────────────── */}
+      <aside className="col-span-3 border-r border-gray-200 bg-white overflow-y-auto max-h-[calc(100vh-3rem)]">
+        <div className="p-4 border-b border-gray-100">
+          <Link
+            href="/admin/landing-pages"
+            className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 mb-3"
+          >
+            <ArrowLeft size={12} /> Zurück
           </Link>
-          <span className="text-gray-300">/</span>
-          <span className="text-sm font-medium text-gray-900">{page.title}</span>
-          <StatusBadge status={page.status} />
-        </div>
-        <div className="flex items-center gap-2">
-          <a
-            href={`/lp/${page.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 rounded-full border border-gray-200 px-4 py-2 text-xs font-medium text-gray-600 hover:border-gray-400"
-          >
-            <ExternalLink size={12} /> Vorschau
-          </a>
-          <button
-            onClick={handlePublish}
-            disabled={isPending}
-            className="flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors"
-            style={{
-              backgroundColor: page.status === 'published' ? '#f9fafb' : '#F05A1A',
-              color: page.status === 'published' ? '#374151' : '#fff',
-              borderColor: page.status === 'published' ? '#e5e7eb' : '#F05A1A',
-            }}
-          >
-            {page.status === 'published' ? (
-              <><FileText size={12} /> Zurück zu Entwurf</>
-            ) : (
-              <><Globe size={12} /> Veröffentlichen</>
-            )}
-          </button>
-        </div>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-        {/* ── Linke Spalte: Meta-Daten ─────────────────────────────────────── */}
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="mb-4 text-sm font-semibold text-gray-900">Seiten-Einstellungen</p>
-
-            <div className="space-y-4">
-              <Field label="Titel" value={page.title} onChange={(v) => setPage((p) => ({ ...p, title: v }))} />
-              <Field label="Slug (URL)" value={page.slug} onChange={(v) => setPage((p) => ({ ...p, slug: v }))}
-                prefix="/lp/" mono />
-              <Field label="Meta-Beschreibung" value={page.metaDescription ?? ''} textarea
-                onChange={(v) => setPage((p) => ({ ...p, metaDescription: v }))} />
-              <div>
-                <label className="mb-1.5 block text-xs font-semibold text-gray-700">Sprache</label>
-                <select
-                  value={page.locale}
-                  onChange={(e) => setPage((p) => ({ ...p, locale: e.target.value }))}
-                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
-                >
-                  <option value="de">Deutsch</option>
-                  <option value="en">Englisch</option>
-                  <option value="ru">Russisch</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="mb-4 text-sm font-semibold text-gray-900">Email & Sequenz</p>
-            <div className="space-y-4">
-              <Field
-                label="Email-Liste"
-                value={page.emailList ?? ''}
-                placeholder="z.B. salesmade, liquid-leadership"
-                onChange={(v) => setPage((p) => ({ ...p, emailList: v }))}
-              />
-              <Field
-                label="Akzentfarbe"
-                value={page.accentColor ?? '#F05A1A'}
-                placeholder="#F05A1A"
-                onChange={(v) => setPage((p) => ({ ...p, accentColor: v }))}
-              />
-            </div>
-          </div>
-
-          <button
-            onClick={saveMeta}
-            disabled={isPending}
-            className="flex w-full items-center justify-center gap-2 rounded-full py-2.5 text-sm font-semibold text-white shadow-sm disabled:opacity-50"
-            style={{ backgroundColor: '#0A0D14' }}
-          >
-            {isPending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
-            {saved ? 'Gespeichert ✓' : 'Einstellungen speichern'}
-          </button>
-        </div>
-
-        {/* ── Rechte Spalte: Sektionen ──────────────────────────────────────── */}
-        <div>
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-900">Sektionen ({sections.length})</p>
-            <button
-              onClick={() => setShowAddSection(true)}
-              className="flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold text-white"
-              style={{ backgroundColor: '#F05A1A' }}
+          <input
+            type="text"
+            value={page.title}
+            onChange={(e) => setPage({ ...page, title: e.target.value })}
+            onBlur={() => updateLandingPageMeta({ id: page.id, title: page.title })}
+            className="w-full text-base font-bold border-0 outline-none focus:ring-0"
+            style={{ color: '#0D0D0B' }}
+          />
+          <input
+            type="text"
+            value={page.slug}
+            onChange={(e) => setPage({ ...page, slug: e.target.value })}
+            onBlur={() => updateLandingPageMeta({ id: page.id, slug: page.slug })}
+            className="w-full text-xs text-gray-400 font-mono border-0 outline-none focus:ring-0 mt-1"
+          />
+          <div className="mt-3 flex items-center gap-2">
+            <input
+              type="color"
+              value={page.accentColor ?? '#F05A1A'}
+              onChange={(e) => setPage({ ...page, accentColor: e.target.value })}
+              onBlur={() =>
+                updateLandingPageMeta({ id: page.id, accentColor: page.accentColor ?? undefined })
+              }
+              className="h-7 w-10 rounded cursor-pointer border border-gray-200"
+            />
+            <select
+              value={page.status}
+              onChange={(e) => {
+                const v = e.target.value as 'draft' | 'published' | 'archived'
+                setPage({ ...page, status: v })
+                publishLandingPage(page.id, v)
+              }}
+              className="flex-1 rounded-full border border-gray-200 bg-white px-3 py-1 text-xs"
             >
-              <Plus size={14} /> Sektion hinzufügen
-            </button>
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="archived">Archived</option>
+            </select>
           </div>
-
-          {/* Sektionen-Liste */}
-          <div className="space-y-3">
-            {sections.length === 0 && (
-              <div className="rounded-2xl border-2 border-dashed border-gray-200 p-10 text-center">
-                <p className="text-sm text-gray-400">Noch keine Sektionen. Füge deine erste hinzu!</p>
-              </div>
-            )}
-
-            {sections.map((section, idx) => (
-              <SectionCard
-                key={section.id}
-                section={section}
-                idx={idx}
-                total={sections.length}
-                isEditing={editingSection === section.id}
-                onEdit={() => setEditingSection(editingSection === section.id ? null : section.id)}
-                onSave={(content) => saveSection(section.id, content)}
-                onDelete={() => removeSection(section.id)}
-                onMoveUp={() => moveSection(section.id, 'up')}
-                onMoveDown={() => moveSection(section.id, 'down')}
-                onToggleVisibility={() => toggleVisibility(section.id)}
-              />
-            ))}
-          </div>
-
-          {/* Sektion hinzufügen Modal */}
-          {showAddSection && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-              <div className="fixed inset-0 bg-black/50" onClick={() => setShowAddSection(false)} />
-              <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
-                <h3 className="mb-4 text-lg font-bold text-gray-900">Sektion hinzufügen</h3>
-                <div className="grid grid-cols-2 gap-2 max-h-96 overflow-y-auto pr-1">
-                  {SECTION_TYPES.map((type) => (
-                    <button
-                      key={type.value}
-                      onClick={() => addSection(type.value)}
-                      disabled={isPending}
-                      className="rounded-xl border border-gray-200 p-3 text-left hover:border-orange-300 hover:bg-orange-50 transition-colors disabled:opacity-50"
-                    >
-                      <p className="text-sm font-semibold text-gray-900">{type.label}</p>
-                      <p className="mt-0.5 text-xs text-gray-500">{type.desc}</p>
-                    </button>
-                  ))}
-                </div>
-                <button onClick={() => setShowAddSection(false)} className="mt-4 w-full rounded-full border border-gray-200 py-2 text-sm text-gray-600 hover:border-gray-400">
-                  Abbrechen
-                </button>
-              </div>
-            </div>
+          {page.status === 'published' && (
+            <a
+              href={`/lp/${page.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center gap-1 text-xs text-blue-600 hover:underline"
+            >
+              <ExternalLink size={11} /> /lp/{page.slug}
+            </a>
           )}
         </div>
-      </div>
-    </div>
-  )
-}
 
-// ── Hilfs-Komponenten ─────────────────────────────────────────────────────────
-
-function Field({
-  label, value, onChange, placeholder, prefix, mono, textarea,
-}: {
-  label: string
-  value: string
-  onChange: (v: string) => void
-  placeholder?: string
-  prefix?: string
-  mono?: boolean
-  textarea?: boolean
-}) {
-  const cls = `w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-400 focus:outline-none ${mono ? 'font-mono' : ''}`
-  return (
-    <div>
-      <label className="mb-1.5 block text-xs font-semibold text-gray-700">{label}</label>
-      {prefix && <span className="text-xs text-gray-400">{prefix}</span>}
-      {textarea ? (
-        <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={3} className={cls} placeholder={placeholder} />
-      ) : (
-        <input value={value} onChange={(e) => onChange(e.target.value)} className={cls} placeholder={placeholder} />
-      )}
-    </div>
-  )
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    published: 'bg-green-50 text-green-700',
-    draft: 'bg-orange-50 text-orange-700',
-    archived: 'bg-gray-100 text-gray-600',
-  }
-  const labels: Record<string, string> = { published: 'Live', draft: 'Entwurf', archived: 'Archiviert' }
-  return (
-    <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${map[status] ?? ''}`}>
-      {labels[status] ?? status}
-    </span>
-  )
-}
-
-function SectionCard({
-  section, idx, total, isEditing, onEdit, onSave, onDelete, onMoveUp, onMoveDown, onToggleVisibility,
-}: {
-  section: Section
-  idx: number
-  total: number
-  isEditing: boolean
-  onEdit: () => void
-  onSave: (content: Record<string, unknown>) => void
-  onDelete: () => void
-  onMoveUp: () => void
-  onMoveDown: () => void
-  onToggleVisibility: () => void
-}) {
-  const typeInfo = SECTION_TYPES.find((t) => t.value === section.type)
-  const [localContent, setLocalContent] = useState(section.content)
-
-  return (
-    <div className={`rounded-2xl border bg-white shadow-sm transition-all ${section.isVisible ? 'border-gray-200' : 'border-dashed border-gray-200 opacity-60'}`}>
-      {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3">
-        <GripVertical size={16} className="text-gray-300 shrink-0" />
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-900">{typeInfo?.label ?? section.type}</p>
-          <p className="text-xs text-gray-400">{typeInfo?.desc}</p>
-        </div>
-        <div className="flex items-center gap-1 shrink-0">
-          <button onClick={onMoveUp} disabled={idx === 0} className="p-1.5 text-gray-400 hover:text-gray-900 disabled:opacity-30">
-            <ChevronUp size={14} />
-          </button>
-          <button onClick={onMoveDown} disabled={idx === total - 1} className="p-1.5 text-gray-400 hover:text-gray-900 disabled:opacity-30">
-            <ChevronDown size={14} />
-          </button>
-          <button onClick={onToggleVisibility} className="p-1.5 text-gray-400 hover:text-gray-900">
-            <Eye size={14} />
-          </button>
-          <button onClick={onDelete} className="p-1.5 text-red-300 hover:text-red-600">
-            <Trash2 size={14} />
-          </button>
-          <button
-            onClick={onEdit}
-            className="ml-1 rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600 hover:border-gray-400"
-          >
-            {isEditing ? 'Schließen' : 'Bearbeiten'}
-          </button>
-        </div>
-      </div>
-
-      {/* Inline-Editor */}
-      {isEditing && (
-        <div className="border-t border-gray-100 px-4 pb-4 pt-4">
-          <SectionContentEditor
-            type={section.type}
-            content={localContent}
-            onChange={setLocalContent}
-          />
-          <div className="mt-4 flex justify-end">
-            <button
-              onClick={() => onSave(localContent)}
-              className="rounded-full px-5 py-2 text-sm font-semibold text-white"
-              style={{ backgroundColor: '#F05A1A' }}
-            >
-              Speichern
-            </button>
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500">
+              Sektionen ({sections.length})
+            </h3>
           </div>
+          <ul className="space-y-1">
+            {sections.map((s, i) => {
+              const isSel = s.id === selectedId
+              const meta = SECTION_TYPES.find((t) => t.value === s.type)
+              return (
+                <li key={s.id}>
+                  <div
+                    className={`group flex items-center gap-2 rounded-lg px-2 py-1.5 cursor-pointer transition-colors ${
+                      isSel ? 'bg-orange-50 ring-1 ring-orange-200' : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => setSelectedId(s.id)}
+                  >
+                    <span className="text-xs text-gray-400 font-mono w-6">{String(i + 1).padStart(2, '0')}</span>
+                    <span className={`flex-1 text-sm truncate ${s.isVisible ? '' : 'opacity-50 line-through'}`}>
+                      {meta?.label ?? s.type}
+                    </span>
+                    {s.dirty && <span className="h-1.5 w-1.5 rounded-full bg-orange-500" title="Ungespeicherte Änderungen" />}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleVisibility(s) }}
+                      className="opacity-0 group-hover:opacity-100 p-0.5 text-gray-400 hover:text-gray-700"
+                      title={s.isVisible ? 'Ausblenden' : 'Einblenden'}
+                    >
+                      {s.isVisible ? <Eye size={12} /> : <EyeOff size={12} />}
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); moveSection(s.id, 'up') }}
+                      className="opacity-0 group-hover:opacity-100 p-0.5 text-gray-400 hover:text-gray-700"
+                      disabled={i === 0}
+                    >▲</button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); moveSection(s.id, 'down') }}
+                      className="opacity-0 group-hover:opacity-100 p-0.5 text-gray-400 hover:text-gray-700"
+                      disabled={i === sections.length - 1}
+                    >▼</button>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+
+          <details className="mt-4">
+            <summary className="cursor-pointer text-xs font-semibold text-gray-500 hover:text-gray-700 inline-flex items-center gap-1">
+              <Plus size={12} /> Sektion hinzufügen
+            </summary>
+            <div className="mt-2 grid grid-cols-2 gap-1">
+              {SECTION_TYPES.map((t) => (
+                <button
+                  key={t.value}
+                  onClick={() => addSection(t.value)}
+                  className="text-left text-xs rounded-md border border-gray-200 bg-white px-2 py-1.5 hover:bg-gray-50"
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </details>
         </div>
-      )}
-    </div>
-  )
-}
+      </aside>
 
-// ── Sektion-Content-Editor (typ-abhängig) ─────────────────────────────────────
-function SectionContentEditor({
-  type, content, onChange,
-}: {
-  type: string
-  content: Record<string, unknown>
-  onChange: (c: Record<string, unknown>) => void
-}) {
-  function set(key: string, value: unknown) {
-    onChange({ ...content, [key]: value })
-  }
-
-  const inputCls = 'w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-400 focus:outline-none'
-  const labelCls = 'mb-1.5 block text-xs font-semibold text-gray-700'
-
-  switch (type) {
-    case 'hero':
-      return (
-        <div className="space-y-4">
-          <div><label className={labelCls}>Headline</label><input className={inputCls} value={(content.headline as string) ?? ''} onChange={(e) => set('headline', e.target.value)} placeholder="Dein Winning Team für planbares Wachstum" /></div>
-          <div><label className={labelCls}>Subheadline</label><textarea className={inputCls} rows={2} value={(content.subheadline as string) ?? ''} onChange={(e) => set('subheadline', e.target.value)} /></div>
-          <div className="grid grid-cols-2 gap-4">
-            <div><label className={labelCls}>CTA-Text</label><input className={inputCls} value={(content.ctaLabel as string) ?? ''} onChange={(e) => set('ctaLabel', e.target.value)} placeholder="Jetzt anmelden" /></div>
-            <div><label className={labelCls}>CTA-Link</label><input className={inputCls} value={(content.ctaHref as string) ?? ''} onChange={(e) => set('ctaHref', e.target.value)} placeholder="#email-form" /></div>
-          </div>
-          <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-            <input type="checkbox" checked={!!(content.showEmailForm)} onChange={(e) => set('showEmailForm', e.target.checked)} />
-            Email-Formular direkt im Hero anzeigen
-          </label>
-        </div>
-      )
-
-    case 'video':
-      return (
-        <div className="space-y-4">
-          <div><label className={labelCls}>Video-URL (YouTube/Vimeo Embed)</label><input className={inputCls} value={(content.embedUrl as string) ?? ''} onChange={(e) => set('embedUrl', e.target.value)} placeholder="https://www.youtube.com/embed/..." /></div>
-          <div><label className={labelCls}>Headline über Video (optional)</label><input className={inputCls} value={(content.headline as string) ?? ''} onChange={(e) => set('headline', e.target.value)} /></div>
-        </div>
-      )
-
-    case 'email_capture':
-      return (
-        <div className="space-y-4">
-          <div><label className={labelCls}>Headline</label><input className={inputCls} value={(content.headline as string) ?? ''} onChange={(e) => set('headline', e.target.value)} placeholder="Sichere dir deinen Platz" /></div>
-          <div><label className={labelCls}>Subtext</label><textarea className={inputCls} rows={2} value={(content.subtext as string) ?? ''} onChange={(e) => set('subtext', e.target.value)} /></div>
-          <div><label className={labelCls}>Button-Text</label><input className={inputCls} value={(content.buttonLabel as string) ?? ''} onChange={(e) => set('buttonLabel', e.target.value)} placeholder="Kostenlos anmelden ih'" /></div>
-          <div><label className={labelCls}>Datenschutz-Hinweis</label><input className={inputCls} value={(content.privacyNote as string) ?? ''} onChange={(e) => set('privacyNote', e.target.value)} placeholder="Kein Spam. Jederzeit abmeldbar." /></div>
-        </div>
-      )
-
-    case 'testimonials': {
-      const items = (content.items as Array<{ name: string; role: string; text: string }>) ?? []
-      return (
-        <div className="space-y-4">
-          <div><label className={labelCls}>Überschrift</label><input className={inputCls} value={(content.headline as string) ?? ''} onChange={(e) => set('headline', e.target.value)} /></div>
-          {items.map((item, i) => (
-            <div key={i} className="rounded-xl border border-gray-200 p-4 space-y-2">
-              <div className="grid grid-cols-2 gap-3">
-                <div><label className={labelCls}>Name</label><input className={inputCls} value={item.name} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], name: e.target.value }; set('items', n) }} /></div>
-                <div><label className={labelCls}>Rolle / Firma</label><input className={inputCls} value={item.role} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], role: e.target.value }; set('items', n) }} /></div>
+      {/* ─── MIDDLE: Field editor for selected section ─────────────────── */}
+      <section className="col-span-4 border-r border-gray-200 bg-gray-50 overflow-y-auto max-h-[calc(100vh-3rem)]">
+        <div className="p-5">
+          {!selected ? (
+            <div className="text-center text-sm text-gray-500 py-20">
+              <p>Wähle eine Sektion links aus.</p>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between mb-4">
+                <select
+                  value={selected.type}
+                  onChange={(e) => patchSection(selected.id, { type: e.target.value })}
+                  className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs"
+                >
+                  {SECTION_TYPES.map((t) => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
+                </select>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => removeSection(selected.id)}
+                    className="rounded-full p-1.5 text-red-600 hover:bg-red-50"
+                    title="Löschen"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                  <button
+                    onClick={() => saveSection(selected)}
+                    disabled={!selected.dirty || isPending}
+                    className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold text-white shadow-sm disabled:opacity-40"
+                    style={{ backgroundColor: accent }}
+                  >
+                    {isPending ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />}
+                    Speichern
+                  </button>
+                </div>
               </div>
-              <div><label className={labelCls}>Aussage</label><textarea className={inputCls} rows={2} value={item.text} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; set('items', n) }} /></div>
-              <button onClick={() => { const n = items.filter((_, j) => j !== i); set('items', n) }} className="text-xs text-red-500 hover:text-red-700">Entfernen</button>
-            </div>
-          ))}
-          <button onClick={() => set('items', [...items, { name: '', role: '', text: '' }])} className="text-xs font-semibold text-orange-600 hover:text-orange-800">+ Testimonial hinzufügen</button>
-        </div>
-      )
-    }
 
-    case 'faq': {
-      const items = (content.items as Array<{ question: string; answer: string }>) ?? []
-      return (
-        <div className="space-y-4">
-          <div><label className={labelCls}>Überschrift</label><input className={inputCls} value={(content.headline as string) ?? ''} onChange={(e) => set('headline', e.target.value)} /></div>
-          {items.map((item, i) => (
-            <div key={i} className="rounded-xl border border-gray-200 p-4 space-y-2">
-              <div><label className={labelCls}>Frage</label><input className={inputCls} value={item.question} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], question: e.target.value }; set('items', n) }} /></div>
-              <div><label className={labelCls}>Antwort</label><textarea className={inputCls} rows={3} value={item.answer} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], answer: e.target.value }; set('items', n) }} /></div>
-              <button onClick={() => { const n = items.filter((_, j) => j !== i); set('items', n) }} className="text-xs text-red-500">Entfernen</button>
-            </div>
-          ))}
-          <button onClick={() => set('items', [...items, { question: '', answer: '' }])} className="text-xs font-semibold text-orange-600 hover:text-orange-800">+ Frage hinzufügen</button>
+              <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-1 block">
+                Inhalt (JSON)
+              </label>
+              <textarea
+                value={JSON.stringify(selected.content, null, 2)}
+                onChange={(e) => applyContentJson(selected.id, e.target.value)}
+                rows={28}
+                spellCheck={false}
+                className={`w-full rounded-xl border bg-white px-3 py-2 text-xs font-mono outline-none focus:ring-1 ${
+                  selected.parseError
+                    ? 'border-red-300 focus:ring-red-300'
+                    : 'border-gray-200 focus:ring-orange-300'
+                }`}
+              />
+              {selected.parseError && (
+                <p className="mt-2 text-xs text-red-600">JSON-Fehler: {selected.parseError}</p>
+              )}
+              <p className="mt-3 text-xs text-gray-400 leading-relaxed">
+                Tipp: Nutze den AI-Chat unten rechts für Vorschläge — markiere diese Sektion und sag z.B.
+                „Schreibe 6 Tweet-Wall-Items im Welsh-Stil zum Thema X".
+              </p>
+            </>
+          )}
         </div>
-      )
-    }
+      </section>
 
-    default:
-      return (
-        <div className="space-y-3">
-          <div><label className={labelCls}>Überschrift</label><input className={inputCls} value={(content.headline as string) ?? ''} onChange={(e) => set('headline', e.target.value)} /></div>
-          <div><label className={labelCls}>Text / Inhalt</label><textarea className={inputCls} rows={4} value={(content.body as string) ?? ''} onChange={(e) => set('body', e.target.value)} /></div>
+      {/* ─── RIGHT: Live Preview ───────────────────────────────────────── */}
+      <section className="col-span-5 bg-white overflow-y-auto max-h-[calc(100vh-3rem)] border-l border-gray-200">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white/90 backdrop-blur px-4 py-2 text-xs">
+          <span className="font-semibold text-gray-500">LIVE PREVIEW</span>
+          <div className="flex items-center gap-2">
+            {dirtyCount > 0 && (
+              <button
+                onClick={saveAll}
+                className="rounded-full px-3 py-1 text-xs font-semibold text-white"
+                style={{ backgroundColor: accent }}
+              >
+                {dirtyCount} ungespeichert · Alle speichern
+              </button>
+            )}
+          </div>
         </div>
-      )
-  }
-}
+        <div className="origin-top">
+          <LpRender sections={renderSections} accent={accent} emailList={page.emailList ?? 'general'} />
+        </div>
+      </section>
 
-// ── Default-Inhalte für neue Sektionen ────────────────────────────────────────
-function getDefaultContent(type: string): Record<string, unknown> {
-  const defaults: Record<string, Record<string, unknown>> = {
-    hero: { headline: '', subheadline: '', ctaLabel: 'Jetzt starten →', ctaHref: '#', showEmailForm: true },
-    video: { embedUrl: '', headline: '' },
-    social_proof: { headline: 'Wie bekannt aus', logos: [] },
-    problem: { headline: 'Erkennst du dich wieder?', items: [] },
-    solution: { headline: 'Die Lösung', body: '' },
-    features: { headline: 'Was du bekommst', items: [] },
-    how_it_works: { headline: 'So funktioniert es', steps: [] },
-    testimonials: { headline: 'Was unsere Klienten sagen', items: [] },
-    offer: { headline: 'Was ist enthalten', price: '', ctaLabel: 'Jetzt buchen', items: [] },
-    faq: { headline: 'Häufige Fragen', items: [] },
-    email_capture: { headline: 'Sichere dir deinen Platz', subtext: '', buttonLabel: 'Kostenlos anmelden →', privacyNote: 'Kein Spam. Jederzeit abmeldbar.' },
-    cta: { headline: 'Bereit für den nächsten Schritt?', ctaLabel: 'Jetzt starten', ctaHref: '#' },
-    coach_bio: { coach: 'markus' },
-  }
-  return defaults[type] ?? { headline: '', body: '' }
+      {/* ─── AI Chat (floating panel) ─────────────────────────────────── */}
+      <button
+        onClick={() => setShowChat(true)}
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full px-4 py-3 text-sm font-semibold text-white shadow-xl hover:opacity-90"
+        style={{ backgroundColor: accent }}
+      >
+        <Sparkles size={16} /> AI-Assistent
+      </button>
+
+      {showChat && (
+        <AiChatPanel
+          accent={accent}
+          page={page}
+          sections={sections.map(s => ({ id: s.id, type: s.type, content: s.content }))}
+          selectedSectionId={selectedId}
+          onApplySection={applyAiPatchToSelected}
+          onReplaceAll={replaceAllSections}
+          onClose={() => setShowChat(false)}
+        />
+      )}
+    </div>
+  )
 }
