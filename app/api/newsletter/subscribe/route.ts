@@ -23,18 +23,18 @@ let _schemaEnsured = false
 async function ensureSubscriberSchema() {
   if (_schemaEnsured) return
   const stmts = [
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "first_name" TEXT;\`,
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "source" TEXT;\`,
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "lists" JSONB;\`,
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "consent_given" BOOLEAN NOT NULL DEFAULT false;\`,
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "consent_at" TIMESTAMP;\`,
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_token" TEXT;\`,
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_sent_at" TIMESTAMP;\`,
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_confirmed_at" TIMESTAMP;\`,
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "beehiiv_id" TEXT;\`,
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "beehiiv_synced_at" TIMESTAMP;\`,
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "created_at" TIMESTAMP NOT NULL DEFAULT NOW();\`,
-    \`ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "updated_at" TIMESTAMP NOT NULL DEFAULT NOW();\`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "first_name" TEXT;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "source" TEXT;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "lists" JSONB;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "consent_given" BOOLEAN NOT NULL DEFAULT false;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "consent_at" TIMESTAMP;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_token" TEXT;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_sent_at" TIMESTAMP;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_confirmed_at" TIMESTAMP;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "beehiiv_id" TEXT;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "beehiiv_synced_at" TIMESTAMP;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "created_at" TIMESTAMP NOT NULL DEFAULT NOW();`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "updated_at" TIMESTAMP NOT NULL DEFAULT NOW();`,
   ]
   for (const stmt of stmts) {
     try { await db.execute(sql.raw(stmt)) } catch (_) { /* ignore */ }
