@@ -76,11 +76,8 @@ export function Footer() {
               alt="Eilers+Friends"
               width={44}
               height={44}
-              className="mb-4 h-12 w-auto"
+              className="h-12 w-auto"
             />
-            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
-              {t('tagline')}
-            </p>
           </div>
 
           {/* Programme */}
@@ -145,10 +142,13 @@ export function Footer() {
 
         {/* Copyright bar */}
         <div
-          className="mt-6 flex flex-col items-center justify-between gap-2 border-t pt-6 text-xs sm:flex-row"
+          className="mt-6 flex flex-col items-center justify-between gap-3 border-t pt-6 text-xs sm:flex-row"
           style={{ borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }}
         >
           <span>{t('copyright')}</span>
+          <span className="italic text-center" style={{ color: 'rgba(255,255,255,0.40)' }}>
+            {t('tagline')}
+          </span>
           <span>{t('madeWith')}</span>
         </div>
 
