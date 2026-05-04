@@ -11,6 +11,7 @@ import {
   FileText,
   Settings,
   ChevronRight,
+  BookOpen,
 } from 'lucide-react'
 
 const navItems = [
@@ -28,6 +29,11 @@ const navItems = [
     label: 'Landing Pages',
     href: '/admin/landing-pages',
     icon: LayoutTemplate,
+  },
+  {
+    label: 'Frameworks',
+    href: '/admin/frameworks',
+    icon: BookOpen,
   },
   {
     label: 'Email-Sequenzen',
