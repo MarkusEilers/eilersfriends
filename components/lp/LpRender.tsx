@@ -15,6 +15,8 @@ import { LpFitCheck } from './LpFitCheck'
 import { LpPricingCard } from './LpPricingCard'
 import { LpRiskReversal } from './LpRiskReversal'
 import { LpTweetWall } from './LpTweetWall'
+import { LpFrameworkSteps } from './LpFrameworkSteps'
+import { LpLeadMagnet } from './LpLeadMagnet'
 import { LpGeneric } from './LpGeneric'
 
 export interface SimpleSection {
@@ -65,6 +67,10 @@ export function LpRender({
               return <LpTestimonials key={s.id} content={content} />
             case 'tweet_wall':
               return <LpTweetWall key={s.id} content={content} accent={accent} />
+            case 'framework_steps':
+              return <LpFrameworkSteps key={s.id} content={content} accent={accent} />
+            case 'lead_magnet':
+              return <LpLeadMagnet key={s.id} content={content} accent={accent} emailList={emailList} />
             case 'pricing_card':
               return <LpPricingCard key={s.id} content={content} accent={accent} />
             case 'risk_reversal':

@@ -27,6 +27,16 @@ async function createFromNewsletterAction() {
   redirect(`/admin/landing-pages/${page.id}`)
 }
 
+async function createFromFrameworkAction() {
+  'use server'
+  const slug = `framework-${Date.now().toString(36)}`
+  const page = await createLandingPageFromTemplate({
+    templateKey: 'framework-leadmagnet',
+    slug,
+  })
+  redirect(`/admin/landing-pages/${page.id}`)
+}
+
 export default async function LandingPagesPage() {
   let pages: (typeof landingPages.$inferSelect)[] = []
   try {
@@ -67,6 +77,17 @@ export default async function LandingPagesPage() {
             >
               <Sparkles size={16} />
               Aus Newsletter-Template
+            </button>
+          </form>
+          <form action={createFromFrameworkAction}>
+            <button
+              type="submit"
+              className="flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-gray-50"
+              style={{ color: '#157A45', borderColor: '#A7E9C4', backgroundColor: '#EDFAF3' }}
+              title={lpTemplates['framework-leadmagnet'].description}
+            >
+              <Sparkles size={16} />
+              Aus Framework-Template
             </button>
           </form>
           <form action={createLandingPage}>

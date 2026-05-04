@@ -17,6 +17,8 @@ const NEW_SECTION_TYPES = [
   'pricing_card',
   'risk_reversal',
   'tweet_wall',
+  'framework_steps',
+  'lead_magnet',
 ] as const
 
 /**
@@ -32,6 +34,12 @@ async function ensureSectionEnumValues() {
       ),
     )
   }
+  // Also ensure templateKey column on landing_pages exists
+  await db.execute(
+    sql.raw(
+      `ALTER TABLE "landing_pages" ADD COLUMN IF NOT EXISTS "template_key" TEXT;`,
+    ),
+  )
 }
 
 async function requireAdmin() {
@@ -187,6 +195,7 @@ export async function createLandingPageFromTemplate({
       status: 'draft',
       locale,
       accentColor: accentColor ?? template.accentColor,
+      templateKey: template.key,
     })
     .returning()
 

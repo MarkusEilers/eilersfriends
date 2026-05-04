@@ -24,6 +24,8 @@ export type SectionTypeKey =
   | 'fit_check'
   | 'testimonials'
   | 'tweet_wall'
+  | 'framework_steps'
+  | 'lead_magnet'
   | 'offer'
   | 'pricing_card'
   | 'risk_reversal'
@@ -486,3 +488,191 @@ export const newsletterWelshTemplate: LpTemplate = {
 
 // Register the new template
 lpTemplates[newsletterWelshTemplate.key] = newsletterWelshTemplate
+
+/**
+ * Framework / HVCO Lead-Magnet Template
+ * Für jede einzelne Methode/Tool/Bauplan (z.B. Beef Radar, Elevator Pitch 2.0).
+ * Email-gated: Inhalt sichtbar als Teaser, Download/Workbook nach Email-Capture.
+ * Triple-purpose: 1) Sales-Frameworks  2) Mental Models  3) Mini-Kurse / Schritt-für-Schritt-Baupläne.
+ */
+export const frameworkLeadMagnetTemplate: LpTemplate = {
+  key: 'framework-leadmagnet',
+  name: 'Framework / HVCO (Lead-Magnet)',
+  description:
+    'Wiederverwendbare Struktur für jedes Framework: Hero mit Promise, Problem-Frame, Schritte, Lead-Magnet (Email-Capture für PDF-Download), Über-den-Autor, FAQ.',
+  accentColor: '#1A5FD4',
+  defaultTitle: '[Framework-Name]',
+  defaultSlug: 'neues-framework',
+  defaultMetaDescription:
+    '[Framework-Name] — der praxiserprobte Bauplan für [konkretes Outcome]. Kostenlos als PDF herunterladen.',
+  sections: [
+
+    // 1. HERO — Promise + Direct Lead-Magnet Capture
+    {
+      type: 'hero',
+      content: {
+        eyebrow: 'KOSTENLOS · HOL DIR DEN BAUPLAN',
+        headline: '[Framework-Name]: Der [N]-Schritte-Bauplan für [Outcome].',
+        subheadline:
+          'Kein Theorie-Wirrwarr. Kein Marketing-Geschwurbel. Ein klares Framework, das du in [Zeitrahmen] anwenden kannst — getestet mit [N]+ B2B-Teams.',
+        ctaLabel: 'Zum Bauplan',
+        ctaHref: '#download',
+        showEmailForm: false,
+      },
+    },
+
+    // 2. SOCIAL PROOF — wer nutzt es schon
+    {
+      type: 'social_proof',
+      content: {
+        eyebrow: 'Im Einsatz bei',
+        headline: 'Genutzt von [N]+ Founder:innen und Sales-Teams',
+        items: [
+          {
+            quote: '[Konkreter ROI-Satz: vorher X, nachher Y, in Z Wochen.]',
+            name: '[Name]',
+            role: '[Rolle] @ [Firma]',
+          },
+          {
+            quote: '[Zweites Zitat — anderer Aspekt der Wirkung.]',
+            name: '[Name]',
+            role: '[Rolle]',
+          },
+        ],
+      },
+    },
+
+    // 3. PROBLEM — was das Framework löst
+    {
+      type: 'problem',
+      content: {
+        eyebrow: 'Warum dieses Framework',
+        headline: '[Konkrete Pain-Frage in Du-Form?]',
+        items: [
+          { title: '[Symptom 1]', description: '[Wie es sich im Alltag zeigt.]' },
+          { title: '[Symptom 2]', description: '[Konkrete Konsequenz.]' },
+          { title: '[Symptom 3]', description: '[Was es kostet.]' },
+        ],
+      },
+    },
+
+    // 4. FRAMEWORK STEPS — der Bauplan
+    {
+      type: 'framework_steps',
+      content: {
+        eyebrow: 'Der Bauplan',
+        headline: 'Das [Framework-Name]-Framework in [N] Schritten',
+        subheadline:
+          'Jeder Schritt ist konkret + sofort umsetzbar. Beispiele aus echten B2B-Cases.',
+        steps: [
+          {
+            title: '[Schritt 1: Aktion]',
+            description: '[Was du tust und warum es zuerst kommt.]',
+            example: '[Konkretes Beispiel — z.B. Email-Subject, Pitch-Satz, Frage etc.]',
+            tip: '[Was 90% falsch machen.]',
+          },
+          {
+            title: '[Schritt 2: Aktion]',
+            description: '[Beschreibung]',
+            example: '[Beispiel]',
+          },
+          {
+            title: '[Schritt 3: Aktion]',
+            description: '[Beschreibung]',
+            example: '[Beispiel]',
+          },
+          {
+            title: '[Schritt 4: Aktion]',
+            description: '[Beschreibung]',
+            tip: '[Warnung oder Insider-Tipp.]',
+          },
+          {
+            title: '[Schritt 5: Aktion]',
+            description: '[Beschreibung]',
+            example: '[Beispiel]',
+          },
+        ],
+      },
+    },
+
+    // 5. LEAD MAGNET — Email-Capture für PDF
+    {
+      type: 'lead_magnet',
+      content: {
+        eyebrow: 'Hol dir den vollständigen Bauplan',
+        headline: '[Framework-Name] · PDF + Workbook',
+        subheadline:
+          'Trag deine Email ein und bekomm den Bauplan als PDF mit Workbook + Beispielen direkt in deine Inbox.',
+        format: 'PDF',
+        size: '~1.2 MB',
+        benefits: [
+          '[N]-seitiges PDF mit allen Schritten ausführlich erklärt',
+          'Workbook mit Übungen und Vorlagen zum Ausfüllen',
+          'Reale B2B-Beispiele aus [Branche]',
+          'Bonus: [Z.B. Email-Skripte / Pitch-Deck-Template / Audit-Checkliste]',
+        ],
+        ctaLabel: 'Jetzt kostenlos holen',
+        privacyNote:
+          'Kein Spam. Du bekommst den Bauplan + 1× pro Woche unseren Newsletter mit Updates. Abmeldung mit einem Klick.',
+      },
+    },
+
+    // 6. AUTHOR / COACH BIO — wer dahinter steht
+    {
+      type: 'coach_bio',
+      content: {
+        eyebrow: 'Wer das aufgeschrieben hat',
+        name: 'Markus Eilers',
+        role: 'Revenue Systems · B2B-Vertrieb · TEDx Speaker',
+        photoUrl: '/markus-photo.jpg',
+        bio:
+          'Markus baut seit 25+ Jahren B2B-Vertriebsorganisationen — von Start-ups bis Konzerne. Aus 500+ begleiteten Gründer:innen und €50M+ aktiviertem Umsatz ist die SalesMade-Methodik entstanden. Dieses Framework ist ein extrahierter Baustein daraus.',
+        socials: {
+          linkedin: 'https://linkedin.com/in/markuseilers',
+          youtube: 'https://youtube.com/@markuseilers',
+        },
+      },
+    },
+
+    // 7. FAQ
+    {
+      type: 'faq',
+      content: {
+        headline: 'Häufige Fragen',
+        items: [
+          {
+            q: 'Ist dieses Framework wirklich kostenlos?',
+            a: 'Ja, 100 %. Im Austausch für deine Email bekommst du den Bauplan + unseren wöchentlichen Newsletter. Abmeldung jederzeit mit einem Klick.',
+          },
+          {
+            q: 'Für wen ist [Framework-Name] geeignet?',
+            a: '[Konkrete Zielgruppe — Rolle, Firmen-Größe, Reife-Grad.]',
+          },
+          {
+            q: 'Wie lange dauert die Umsetzung?',
+            a: '[Konkrete Zeitschätzung — in Stunden/Tagen/Wochen.]',
+          },
+          {
+            q: 'Was unterscheidet dieses Framework von anderen Methoden?',
+            a: '[Differenzierung — was ist hier anders/besser/spezifischer?]',
+          },
+        ],
+      },
+    },
+
+    // 8. FINAL CTA — second chance to convert
+    {
+      type: 'cta',
+      content: {
+        headline: 'Bereit für den Bauplan?',
+        body:
+          '[Kurzer letzter Push — z.B. "Spar dir die Trial-and-Error-Phase. Setz das Framework in der nächsten Discovery-Woche ein."]',
+        ctaLabel: 'Jetzt holen',
+        ctaHref: '#download',
+      },
+    },
+  ],
+}
+
+// Register
+lpTemplates[frameworkLeadMagnetTemplate.key] = frameworkLeadMagnetTemplate

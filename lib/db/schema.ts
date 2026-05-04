@@ -52,6 +52,8 @@ export const landingPageSectionTypeEnum = pgEnum('landing_page_section_type', [
   'fit_check',           // 'Good fit / Not good fit' 2-Spalten (NEW)
   'testimonials',        // Kunden-Stimmen
   'tweet_wall',          // Social-Proof-Wand mit kurzen Quotes / Tweets (NEW)
+  'framework_steps',     // Numerierte Schritte mit Beispielen, Tipps, Bonus-Hinweisen (NEW)
+  'lead_magnet',         // Email-Gated Download (PDF/Video) mit Promise + Benefits (NEW)
   'offer',               // Angebot / Preis-Box
   'pricing_card',        // Single-Tier-Pricing mit Deliverables-Liste (NEW)
   'risk_reversal',       // 'Why I'm not offering refunds' / Garantie-Erklärung (NEW)
@@ -364,6 +366,7 @@ export const landingPages = pgTable('landing_pages', {
   locale: text('locale').default('de').notNull(),
   // Design-Overrides
   accentColor: text('accent_color'),              // z.B. '#1A5FD4' für SalesMade
+  templateKey: text('template_key'),              // z.B. 'program-welsh', 'newsletter-welsh', 'framework-leadmagnet'
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
