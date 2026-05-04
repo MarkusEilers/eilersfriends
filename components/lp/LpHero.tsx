@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
 
 interface LpHeroProps {
   content: Record<string, any>
@@ -33,9 +34,7 @@ export function LpHero({ content, accent, emailList }: LpHeroProps) {
   return (
     <section className="relative overflow-hidden px-6 py-20 sm:py-28" style={{ backgroundColor: '#FAFAF8' }}>
       {/* Orb */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <div className="absolute -top-40 right-0 h-[500px] w-[500px] rounded-full opacity-10 blur-3xl" style={{ backgroundColor: accent }} />
-      </div>
+      <KaroPatternCorner color={accent} opacity={0.08} corner="top-right" />
 
       <div className="relative mx-auto max-w-3xl text-center">
         <h1 className="text-4xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-6xl" style={{ color: '#0D0D0B' }}>

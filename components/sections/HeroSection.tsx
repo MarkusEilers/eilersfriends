@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import { AnimatedNumber } from '@/components/blocks/AnimatedNumber'
+import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
 
 export function HeroSection() {
   const t = useTranslations('hero')
@@ -9,10 +10,8 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden px-6 pb-20 pt-14 sm:pt-24" style={{ backgroundColor: '#FAFAF8' }}>
       {/* Decorative background orbs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full opacity-[0.12] blur-3xl" style={{ backgroundColor: '#F05A1A' }} />
-        <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full opacity-[0.10] blur-3xl" style={{ backgroundColor: '#1A5FD4' }} />
-      </div>
+      <KaroPatternCorner color="#F05A1A" opacity={0.08} corner="top-right" />
+      <KaroPatternCorner color="#1A5FD4" opacity={0.06} corner="bottom-left" />
 
       <div className="relative mx-auto max-w-5xl">
         {/* Tag */}

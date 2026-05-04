@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl'
 import { ArrowRight } from 'lucide-react'
 import { Link } from '@/lib/i18n/navigation'
+import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
 
 export function ProgrammeSection() {
   const t = useTranslations('programme')
@@ -31,7 +32,7 @@ export function ProgrammeSection() {
             style={{ backgroundColor: '#FFF1EB', border: '1.5px solid #FECDBB' }}
           >
             {/* Decorative circle */}
-            <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full opacity-20" style={{ backgroundColor: '#F05A1A' }} />
+            <KaroPatternCorner color="#F05A1A" opacity={0.10} corner="top-right" size={20} />
             <div className="relative flex-1">
               <h3 className="text-xl font-bold mb-3" style={{ color: '#0D0D0B' }}>
                 {t('card1Title')}
@@ -54,7 +55,7 @@ export function ProgrammeSection() {
             className="relative flex flex-col rounded-3xl p-7 overflow-hidden"
             style={{ backgroundColor: '#FFEBEC', border: '1.5px solid #F5BBBC' }}
           >
-            <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full opacity-20" style={{ backgroundColor: '#D4192B' }} />
+            <KaroPatternCorner color="#D4192B" opacity={0.10} corner="top-right" size={20} />
             <div className="relative flex-1">
               <h3 className="text-xl font-bold mb-3" style={{ color: '#0D0D0B' }}>
                 {t('card2Title')}
@@ -77,7 +78,7 @@ export function ProgrammeSection() {
             className="relative flex flex-col rounded-3xl p-7 overflow-hidden"
             style={{ backgroundColor: '#EBF1FF', border: '1.5px solid #BBCFF5' }}
           >
-            <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full opacity-20" style={{ backgroundColor: '#1A5FD4' }} />
+            <KaroPatternCorner color="#1A5FD4" opacity={0.10} corner="top-right" size={20} />
             <div className="relative flex-1">
               <h3 className="text-xl font-bold mb-3" style={{ color: '#0D0D0B' }}>
                 {t('card3Title')}

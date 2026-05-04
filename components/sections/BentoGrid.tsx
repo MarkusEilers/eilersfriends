@@ -2,6 +2,7 @@ import { ArrowRight, TrendingUp, Users, Layers } from 'lucide-react'
 import { Link } from '@/lib/i18n/navigation'
 import { SectionHeader } from '@/components/blocks/SectionHeader'
 import { useTranslations } from 'next-intl'
+import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
 
 export function BentoGrid() {
   const t = useTranslations('bento')
@@ -22,7 +23,7 @@ export function BentoGrid() {
             style={{ backgroundColor: '#FFF1EB', border: '1.5px solid #FECDBB' }}
           >
             {/* Decorative circle */}
-            <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full opacity-20" style={{ backgroundColor: '#F05A1A' }} />
+            <KaroPatternCorner color="#F05A1A" opacity={0.10} corner="top-right" size={20} />
 
             <div className="relative">
               <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wide" style={{ color: '#F05A1A', borderColor: '#FECDBB', backgroundColor: 'white' }}>

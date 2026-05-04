@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl'
 import { ArrowRight, CheckCircle } from 'lucide-react'
 import { Link } from '@/lib/i18n/navigation'
+import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
 
 export function SalesMadeAcademySection() {
   const t = useTranslations('academy')
@@ -119,7 +120,7 @@ export function SalesMadeAcademySection() {
               className="relative overflow-hidden rounded-3xl p-8"
               style={{ backgroundColor: '#0F1E3A' }}
             >
-              <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full opacity-20" style={{ backgroundColor: '#1A5FD4' }} />
+              <KaroPatternCorner color="#1A5FD4" opacity={0.10} corner="top-right" size={20} />
               <p className="relative text-sm font-medium leading-relaxed text-white/70">
                 &ldquo;Nach 12 Monaten SalesMade Academy hatte unser Team eine Closing-Rate von 67% — das Doppelte von vorher.&rdquo;
               </p>

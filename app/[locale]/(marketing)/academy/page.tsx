@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { ArrowRight, CheckCircle, Users, BookOpen, Zap, Award } from 'lucide-react'
+import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
 
 export const metadata: Metadata = {
   title: 'SalesMade Academy — Systematisches Vertriebs-Training für Gründer',
@@ -43,7 +44,7 @@ export default function AcademyPage() {
 
       {/* ─── HERO ─────────────────────────────────────────────── */}
       <section className="relative overflow-hidden px-6 py-20" style={{ backgroundColor: '#EBF1FF' }}>
-        <div className="pointer-events-none absolute -top-32 -right-32 h-[500px] w-[500px] rounded-full opacity-10 blur-3xl" style={{ backgroundColor: '#1A5FD4' }} />
+        <KaroPatternCorner color="#1A5FD4" opacity={0.08} corner="top-right" />
 
         <div className="relative mx-auto max-w-4xl text-center">
           <span
@@ -191,7 +192,7 @@ export default function AcademyPage() {
             className="relative overflow-hidden rounded-3xl p-8"
             style={{ backgroundColor: '#0F1E3A' }}
           >
-            <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full opacity-20" style={{ backgroundColor: '#1A5FD4' }} />
+            <KaroPatternCorner color="#1A5FD4" opacity={0.10} corner="top-right" size={20} />
             <p className="relative text-base font-medium leading-relaxed text-white/80 italic mb-6">
               &ldquo;Nach 12 Wochen SalesMade Academy hatte unser Team eine Closing-Rate von 67 % —
               das Doppelte von vorher. Und vor allem: ein System, das skaliert.&rdquo;
