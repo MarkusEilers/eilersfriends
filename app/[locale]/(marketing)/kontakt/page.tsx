@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Mail, MapPin, Clock, Linkedin, Youtube, Instagram, Calendar } from 'lucide-react'
 import { ContactForm } from './ContactForm'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Kontakt — Eilers+Friends',
@@ -8,7 +9,14 @@ export const metadata: Metadata = {
     'Hast du Fragen zu unseren Programmen oder möchtest du ein unverbindliches Strategie-Gespräch vereinbaren? Wir freuen uns auf deine Nachricht.',
 }
 
-export default function KontaktPage() {
+interface PageProps {
+  params: Promise<{ locale: string }>
+}
+
+export default async function KontaktPage({ params }: PageProps) {
+  const { locale } = await params
+  if (locale !== 'de') redirect('/de/kontakt')
+
   return (
     <main className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
 

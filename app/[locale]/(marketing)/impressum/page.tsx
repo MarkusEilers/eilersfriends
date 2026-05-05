@@ -1,10 +1,18 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Impressum — Eilers+Friends',
 }
 
-export default function ImpressumPage() {
+interface PageProps {
+  params: Promise<{ locale: string }>
+}
+
+export default async function ImpressumPage({ params }: PageProps) {
+  const { locale } = await params
+  if (locale !== 'de') redirect('/de/impressum')
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
       <section className="px-6 py-20">

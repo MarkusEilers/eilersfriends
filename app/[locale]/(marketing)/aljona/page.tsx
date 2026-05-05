@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
+import { redirect } from 'next/navigation'
   Calendar, ArrowRight, Heart, MessageCircle, Shield, Sparkles,
   Mic, Award, AlertTriangle, Check, Star,
 } from 'lucide-react'
@@ -103,7 +104,14 @@ const CTA_BENEFITS = [
   'Ehrliches Feedback zu Deinem Leadership-Stil',
 ]
 
-export default function AljonaPage() {
+interface PageProps {
+  params: Promise<{ locale: string }>
+}
+
+export default async function AljonaPage({ params }: PageProps) {
+  const { locale } = await params
+  if (locale !== 'de') redirect('/de/aljona')
+
   const accent = '#D4192B'
   const burgundy = '#7A1019'
 

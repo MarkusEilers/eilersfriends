@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { ArrowRight, CheckCircle, Users, BookOpen, Zap, Award } from 'lucide-react'
 import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'SalesMade Academy — Systematisches Vertriebs-Training für Gründer',
@@ -38,7 +39,14 @@ const STATS = [
   { value: '867+', label: 'Alumni seit 2019' },
 ]
 
-export default function AcademyPage() {
+interface PageProps {
+  params: Promise<{ locale: string }>
+}
+
+export default async function AcademyPage({ params }: PageProps) {
+  const { locale } = await params
+  if (locale !== 'de') redirect('/de/academy')
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
 

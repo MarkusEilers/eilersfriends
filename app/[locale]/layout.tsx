@@ -5,11 +5,35 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/lib/i18n/routing'
 import '@/app/globals.css'
 
-export const metadata: Metadata = {
-  title: {
-    template: '%s | Eilers+Friends',
+const TITLE_BY_LOCALE: Record<string, { default: string; description: string }> = {
+  de: {
     default: 'Eilers+Friends — Systematisches Wachstum für Gründer',
+    description: 'Business Coaching für B2B-Unternehmer. Revenue Systems & Leadership Training für planbares Wachstum. Von 500+ Gründer:innen empfohlen.',
   },
+  en: {
+    default: 'Eilers+Friends — Systematic growth for founders',
+    description: 'Business coaching for B2B founders. Revenue Systems & Leadership Training for predictable growth. Trusted by 500+ founders.',
+  },
+  ru: {
+    default: 'Eilers+Friends — Системный рост для основателей',
+    description: 'Бизнес-коучинг для B2B-основателей. Revenue Systems и Leadership Training для прогнозируемого роста.',
+  },
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const meta = TITLE_BY_LOCALE[locale] ?? TITLE_BY_LOCALE.de
+  return {
+    title: {
+      template: '%s | Eilers+Friends',
+      default: meta.default,
+    },
+    description: meta.description,
+  }
 }
 
 export function generateStaticParams() {

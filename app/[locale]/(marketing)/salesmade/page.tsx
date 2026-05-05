@@ -5,6 +5,7 @@ import {
   TrendingUp, Users, Target, Sparkles, Award, BookOpen,
 } from 'lucide-react'
 import { SalesMadeRoiCalculator } from './RoiCalculator'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'SalesMade Academy — Vom experimentellen Freestyle zum planbaren Umsatzsystem',
@@ -125,7 +126,14 @@ const FAQ = [
   },
 ]
 
-export default function SalesMadePage() {
+interface PageProps {
+  params: Promise<{ locale: string }>
+}
+
+export default async function SalesMadePage({ params }: PageProps) {
+  const { locale } = await params
+  if (locale !== 'de') redirect('/de/salesmade')
+
   const accent = '#1A5FD4'
   const navy = '#0F1E3A'
 

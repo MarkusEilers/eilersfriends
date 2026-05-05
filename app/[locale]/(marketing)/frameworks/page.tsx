@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { landingPages } from '@/lib/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
 import { ArrowRight, BookOpen } from 'lucide-react'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Frameworks — Eilers+Friends',
@@ -11,7 +12,14 @@ export const metadata: Metadata = {
     'Praxiserprobte Frameworks für B2B-Vertrieb, Leadership und Wachstum. Kostenlos als PDF.',
 }
 
-export default async function FrameworksIndex() {
+interface PageProps {
+  params: Promise<{ locale: string }>
+}
+
+export default async function FrameworksIndex({ params }: PageProps) {
+  const { locale } = await params
+  if (locale !== 'de') redirect('/de/frameworks')
+
   let frameworks: (typeof landingPages.$inferSelect)[] = []
   try {
     frameworks = await db

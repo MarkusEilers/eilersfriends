@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Calendar, ArrowRight, Mic, Award, Target, Lightbulb } from 'lucide-react'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Markus Eilers — Smarter Selling im KI-Zeitalter',
@@ -79,7 +80,14 @@ const TESTIMONIALS = [
   },
 ]
 
-export default function MarkusPage() {
+interface PageProps {
+  params: Promise<{ locale: string }>
+}
+
+export default async function MarkusPage({ params }: PageProps) {
+  const { locale } = await params
+  if (locale !== 'de') redirect('/de/markus')
+
   const accent = '#1A5FD4'
   const navy = '#0F1E3A'
 

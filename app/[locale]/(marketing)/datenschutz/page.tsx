@@ -1,10 +1,18 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Datenschutzerklärung — Eilers+Friends',
 }
 
-export default function DatenschutzPage() {
+interface PageProps {
+  params: Promise<{ locale: string }>
+}
+
+export default async function DatenschutzPage({ params }: PageProps) {
+  const { locale } = await params
+  if (locale !== 'de') redirect('/de/datenschutz')
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
       <section className="px-6 py-20">
