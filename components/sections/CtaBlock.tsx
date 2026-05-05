@@ -1,43 +1,44 @@
 import { useTranslations } from 'next-intl'
-import { Calendar } from 'lucide-react'
+import { Users, ArrowRight } from 'lucide-react'
 
 export function CtaBlock() {
   const t = useTranslations('cta')
 
   return (
-    <section
-      className="relative overflow-hidden px-6 py-20 bg-grid-texture"
-      style={{ backgroundColor: '#0F1E3A' }}
-    >
-      <div className="relative mx-auto max-w-3xl text-center">
-        {/* Eyebrow */}
-        <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest" style={{ backgroundColor: '#F05A1A20', color: '#F05A1A', border: '1px solid #F05A1A40' }}>
-          {t('eyebrow')}
-        </span>
+    <section className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
+      <div className="mx-auto max-w-6xl">
+        <div
+          className="relative overflow-hidden rounded-3xl px-8 py-14 sm:px-16 sm:py-20 text-center"
+          style={{
+            background: 'linear-gradient(135deg, #F05A1A 0%, #FF8B4D 100%)',
+            color: 'white',
+          }}
+        >
+          {/* Eyebrow with icon */}
+          <div className="inline-flex items-center gap-2 mb-6">
+            <Users size={20} />
+            <span className="text-sm font-bold uppercase tracking-widest">
+              {t('eyebrow')}
+            </span>
+          </div>
 
-        {/* Headline */}
-        <h2 className="mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-          {t('headline')}
-        </h2>
+          {/* Headline */}
+          <h2 className="text-2xl font-bold leading-snug sm:text-3xl lg:text-4xl mx-auto max-w-3xl">
+            {t('headline')}
+          </h2>
 
-        {/* Subtext */}
-        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white/60">
-          {t('subtext')}
-        </p>
-
-        {/* CTA Button */}
-        <div className="mt-8 flex flex-col items-center gap-2">
-          <a
-            href="https://calendly.com/eilersfriends"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 rounded-full px-8 py-4 text-base font-bold text-white shadow-lg transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#F05A1A' }}
-          >
-            <Calendar size={18} />
-            {t('button')}
-          </a>
-          <span className="text-xs text-white/40">{t('note')}</span>
+          {/* CTA Button */}
+          <div className="mt-10">
+            <a
+              href="https://calendly.com/eilersfriends"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold transition-opacity hover:opacity-90"
+              style={{ color: '#F05A1A' }}
+            >
+              {t('button')} <ArrowRight size={14} />
+            </a>
+          </div>
         </div>
       </div>
     </section>

@@ -4,7 +4,17 @@
     "coaches": "Коучи",
     "frameworks": "Фреймворки",
     "results": "Результаты",
-    "cta": "Записаться на звонок"
+    "cta": "Записаться на звонок",
+    "home": "Главная",
+    "team": "Команда",
+    "resources": "Ресурсы",
+    "aljona": "Aljona Eilers",
+    "markus": "Markus Eilers",
+    "salesmadeFramework": "SalesMade Framework",
+    "liquidLeadership": "Liquid Leadership",
+    "contact": "Контакт",
+    "languagePicker": "Выбрать язык",
+    "bookCta": "Записаться на консультацию"
   },
   "topbar": {
     "message": "Soft-Launch 2026 — Забронируйте место по ранней цене",

@@ -1,7 +1,36 @@
 import { useTranslations } from 'next-intl'
-import { ArrowRight } from 'lucide-react'
+import { Check, ArrowRight, TrendingUp, Sparkles, Users } from 'lucide-react'
 import { Link } from '@/lib/i18n/navigation'
-import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
+
+const PROGRAMS = [
+  {
+    key: 'card1',
+    icon: TrendingUp,
+    accent: '#F05A1A',
+    accentBg: '#FFF1EB',
+    href: '/salesmade',
+    popular: true,
+    features: ['card1F1', 'card1F2', 'card1F3', 'card1F4'],
+  },
+  {
+    key: 'card2',
+    icon: Sparkles,
+    accent: '#D4192B',
+    accentBg: '#FFEBEC',
+    href: '/aljona#liquid',
+    popular: false,
+    features: ['card2F1', 'card2F2', 'card2F3', 'card2F4'],
+  },
+  {
+    key: 'card3',
+    icon: Users,
+    accent: '#1A5FD4',
+    accentBg: '#EBF1FF',
+    href: '/kontakt',
+    popular: false,
+    features: ['card3F1', 'card3F2', 'card3F3', 'card3F4'],
+  },
+] as const
 
 export function ProgrammeSection() {
   const t = useTranslations('programme')
@@ -23,79 +52,73 @@ export function ProgrammeSection() {
           </h2>
         </div>
 
-        {/* 3-column cards */}
-        <div className="grid gap-6 sm:grid-cols-3">
+        {/* 3 cards */}
+        <div className="grid gap-6 md:grid-cols-3">
+          {PROGRAMS.map((p) => {
+            const Icon = p.icon
+            const isPopular = p.popular
+            return (
+              <div
+                key={p.key}
+                className="relative flex flex-col rounded-3xl bg-white p-7"
+                style={{
+                  border: isPopular ? `2px solid ${p.accent}` : '1px solid #E5E7EB',
+                  boxShadow: isPopular ? `0 12px 32px -16px ${p.accent}40` : undefined,
+                }}
+              >
+                {/* Popular badge */}
+                {isPopular && (
+                  <span
+                    className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest text-white"
+                    style={{ backgroundColor: p.accent }}
+                  >
+                    {t('card1Badge')}
+                  </span>
+                )}
 
-          {/* Card 1: SalesMade Academy — Orange (Most Popular) */}
-          <div
-            className="relative flex flex-col rounded-3xl p-7 overflow-hidden"
-            style={{ backgroundColor: '#FFF1EB', border: '1.5px solid #FECDBB' }}
-          >
-            {/* Decorative circle */}
-            <KaroPatternCorner color="#F05A1A" opacity={0.10} corner="top-right" size={20} />
-            <div className="relative flex-1">
-              <h3 className="text-xl font-bold mb-3" style={{ color: '#0D0D0B' }}>
-                {t('card1Title')}
-              </h3>
-              <p className="text-sm leading-relaxed text-gray-600">
-                {t('card1Text')}
-              </p>
-            </div>
-            <Link
-              href="/salesmade"
-              className="relative mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white self-start transition-opacity hover:opacity-90"
-              style={{ backgroundColor: '#F05A1A' }}
-            >
-              {t('card1Cta')} <ArrowRight size={14} />
-            </Link>
-          </div>
+                {/* Icon tile */}
+                <div
+                  className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl"
+                  style={{ backgroundColor: p.accentBg }}
+                >
+                  <Icon size={20} style={{ color: p.accent }} />
+                </div>
 
-          {/* Card 2: Liquid Leadership — Red */}
-          <div
-            className="relative flex flex-col rounded-3xl p-7 overflow-hidden"
-            style={{ backgroundColor: '#FFEBEC', border: '1.5px solid #F5BBBC' }}
-          >
-            <KaroPatternCorner color="#D4192B" opacity={0.10} corner="top-right" size={20} />
-            <div className="relative flex-1">
-              <h3 className="text-xl font-bold mb-3" style={{ color: '#0D0D0B' }}>
-                {t('card2Title')}
-              </h3>
-              <p className="text-sm leading-relaxed text-gray-600">
-                {t('card2Text')}
-              </p>
-            </div>
-            <Link
-              href="/aljona#liquid"
-              className="relative mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 self-start"
-              style={{ backgroundColor: '#D4192B', color: 'white' }}
-            >
-              {t('card2Cta')} <ArrowRight size={14} />
-            </Link>
-          </div>
+                {/* Title */}
+                <h3 className="text-xl font-bold mb-3" style={{ color: '#0D0D0B' }}>
+                  {t(`${p.key}Title`)}
+                </h3>
 
-          {/* Card 3: B2B Framework HVCO — Blue */}
-          <div
-            className="relative flex flex-col rounded-3xl p-7 overflow-hidden"
-            style={{ backgroundColor: '#EBF1FF', border: '1.5px solid #BBCFF5' }}
-          >
-            <KaroPatternCorner color="#1A5FD4" opacity={0.10} corner="top-right" size={20} />
-            <div className="relative flex-1">
-              <h3 className="text-xl font-bold mb-3" style={{ color: '#0D0D0B' }}>
-                {t('card3Title')}
-              </h3>
-              <p className="text-sm leading-relaxed text-gray-600">
-                {t('card3Text')}
-              </p>
-            </div>
-            <Link
-              href="/b2b-offers"
-              className="relative mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white self-start transition-opacity hover:opacity-90"
-              style={{ backgroundColor: '#1A5FD4' }}
-            >
-              {t('card3Cta')} <ArrowRight size={14} />
-            </Link>
-          </div>
+                {/* Description */}
+                <p className="text-sm leading-relaxed text-gray-600 mb-6 flex-1">
+                  {t(`${p.key}Text`)}
+                </p>
 
+                {/* Feature list */}
+                <ul className="space-y-2.5 mb-8">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-start gap-3 text-sm text-gray-700">
+                      <Check size={16} className="mt-0.5 flex-shrink-0" style={{ color: p.accent }} />
+                      <span>{t(f)}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA */}
+                <Link
+                  href={p.href as '/'}
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors"
+                  style={
+                    isPopular
+                      ? { backgroundColor: '#0F1E3A', color: 'white' }
+                      : { color: p.accent, border: `1.5px solid ${p.accent}40`, backgroundColor: 'white' }
+                  }
+                >
+                  {t(`${p.key}Cta`)} <ArrowRight size={14} />
+                </Link>
+              </div>
+            )
+          })}
         </div>
       </div>
     </section>
