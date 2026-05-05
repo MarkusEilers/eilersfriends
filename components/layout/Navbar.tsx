@@ -1,14 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { Menu, X, Globe, ChevronRight, ArrowRight } from 'lucide-react'
+import { Menu, X, ChevronRight, ChevronDown, ArrowRight } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 
 const LOCALES = [
   { code: 'de', label: 'DE', flag: '🇩🇪' },
   { code: 'en', label: 'EN', flag: '🇬🇧' },
+  { code: 'ru', label: 'RU', flag: '🇷🇺' },
 ] as const
 
 // Top-level desktop nav items
@@ -53,6 +54,8 @@ export function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [langOpen, setLangOpen] = useState(false)
+  const langRef = useRef<HTMLDivElement>(null)
 
   // Close mobile menu on route change + lock body scroll while open
   useEffect(() => {
@@ -65,6 +68,18 @@ export function Navbar() {
       return () => { document.body.style.overflow = '' }
     }
   }, [mobileOpen])
+
+  // Close language dropdown on outside click
+  useEffect(() => {
+    if (!langOpen) return
+    function handleClick(e: MouseEvent) {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [langOpen])
 
   function switchLocale(code: string) {
     router.replace(pathname, { locale: code })
@@ -104,22 +119,52 @@ export function Navbar() {
           {/* Right side: language + CTA */}
           <div className="flex items-center gap-3">
 
-            {/* Language switcher (desktop) */}
-            <div className="hidden lg:flex items-center gap-1 text-xs">
-              <Globe size={14} className="text-gray-400" />
-              {LOCALES.map((l, i) => (
-                <button
-                  key={l.code}
-                  onClick={() => switchLocale(l.code)}
-                  className={`font-semibold transition-colors ${
-                    locale === l.code ? '' : 'text-gray-400 hover:text-gray-700'
-                  }`}
-                  style={locale === l.code ? { color: '#F05A1A' } : undefined}
+            {/* Language switcher (desktop) — flag + chevron, opens dropdown */}
+            <div ref={langRef} className="hidden lg:block relative">
+              <button
+                onClick={() => setLangOpen((v) => !v)}
+                className="flex items-center gap-1.5 rounded-full px-2 py-1.5 text-sm transition-colors hover:bg-gray-50"
+                aria-label="Sprache wechseln"
+                aria-expanded={langOpen}
+              >
+                <span className="text-base leading-none">
+                  {LOCALES.find((l) => l.code === locale)?.flag ?? '🌐'}
+                </span>
+                <ChevronDown
+                  size={14}
+                  className={`text-gray-400 transition-transform ${langOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+              {langOpen && (
+                <div
+                  className="absolute right-0 top-full mt-2 w-44 rounded-2xl bg-white p-2 shadow-lg"
+                  style={{ border: '1px solid #E5E7EB' }}
                 >
-                  {l.label}
-                  {i < LOCALES.length - 1 && <span className="mx-1 text-gray-200">·</span>}
-                </button>
-              ))}
+                  {LOCALES.map((l) => {
+                    const active = locale === l.code
+                    return (
+                      <button
+                        key={l.code}
+                        onClick={() => {
+                          switchLocale(l.code)
+                          setLangOpen(false)
+                        }}
+                        className="flex w-full items-center gap-3 rounded-full px-3 py-2 text-sm transition-colors"
+                        style={
+                          active
+                            ? { backgroundColor: '#FFF1EB', color: '#F05A1A', fontWeight: 600 }
+                            : { color: '#1F2937' }
+                        }
+                      >
+                        <span className="text-base leading-none">{l.flag}</span>
+                        <span>
+                          {l.code === 'de' ? 'Deutsch' : l.code === 'en' ? 'English' : 'Русский'}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
             </div>
 
             {/* CTA button (desktop) */}
