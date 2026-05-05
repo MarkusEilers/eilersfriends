@@ -17,16 +17,19 @@ export function BentoGrid() {
         />
 
         <div className="mt-12 grid gap-4 lg:grid-cols-2">
-          {/* Left: SalesMade — hero card */}
+          {/* Left: SalesMade — hero card (blue, Karo-Paper background) */}
           <div
             className="relative overflow-hidden rounded-3xl p-8 flex flex-col justify-between min-h-[360px]"
-            style={{ backgroundColor: '#FFF1EB', border: '1.5px solid #FECDBB' }}
+            style={{
+              backgroundColor: '#EBF1FF',
+              border: '1.5px solid #BBCFF5',
+              backgroundImage:
+                'linear-gradient(rgba(26,95,212,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(26,95,212,0.06) 1px, transparent 1px)',
+              backgroundSize: '24px 24px',
+            }}
           >
-            {/* Decorative circle */}
-            <KaroPatternCorner color="#F05A1A" opacity={0.10} corner="top-right" size={20} />
-
             <div className="relative">
-              <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wide" style={{ color: '#F05A1A', borderColor: '#FECDBB', backgroundColor: 'white' }}>
+              <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wide" style={{ color: '#1A5FD4', borderColor: '#BBCFF5', backgroundColor: 'white' }}>
                 Academy
               </span>
               <h3 className="mt-5 text-2xl font-bold leading-tight" style={{ color: '#0D0D0B' }}>
@@ -39,7 +42,7 @@ export function BentoGrid() {
               {/* Feature badges */}
               <div className="mt-5 flex flex-wrap gap-2">
                 {['12 Wochen', 'Messbar', 'B2B-Fokus'].map((f) => (
-                  <span key={f} className="rounded-full px-3 py-1 text-xs font-semibold" style={{ backgroundColor: '#FECDBB', color: '#7A2D0A' }}>
+                  <span key={f} className="rounded-full px-3 py-1 text-xs font-semibold" style={{ backgroundColor: '#BBCFF5', color: '#0F1E3A' }}>
                     {f}
                   </span>
                 ))}
@@ -49,7 +52,7 @@ export function BentoGrid() {
             <Link
               href="/salesmade"
               className="relative mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white self-start transition-opacity hover:opacity-90"
-              style={{ backgroundColor: '#F05A1A' }}
+              style={{ backgroundColor: '#1A5FD4' }}
             >
               Mehr erfahren <ArrowRight size={14} />
             </Link>
