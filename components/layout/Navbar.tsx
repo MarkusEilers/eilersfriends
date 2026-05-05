@@ -80,9 +80,9 @@ export function Navbar() {
             <Image
               src="/ef-logo.png"
               alt="Eilers+Friends"
-              width={140}
-              height={36}
-              className="h-9 w-auto"
+              width={180}
+              height={46}
+              className="h-12 w-auto"
               priority
             />
           </Link>
@@ -93,8 +93,8 @@ export function Navbar() {
               <Link
                 key={link.key}
                 href={link.href as '/'}
-                className="text-sm font-semibold transition-colors hover:text-orange-600"
-                style={{ color: '#0D0D0B' }}
+                className="text-sm font-normal transition-colors hover:text-orange-600"
+                style={{ color: '#1F2937' }}
               >
                 {t(link.key)}
               </Link>
@@ -158,7 +158,7 @@ export function Navbar() {
           {/* Drawer */}
           <div className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-              <Image src="/ef-logo.png" alt="" width={120} height={32} className="h-8 w-auto" />
+              <Image src="/ef-logo.png" alt="" width={150} height={40} className="h-10 w-auto" />
               <button
                 onClick={() => setMobileOpen(false)}
                 className="p-2 -mr-2 text-gray-700"
@@ -177,7 +177,7 @@ export function Navbar() {
                       <li key={item.key}>
                         <Link
                           href={item.href as '/'}
-                          className="flex items-center justify-between py-3.5 text-base font-semibold transition-colors hover:text-orange-600"
+                          className="flex items-center justify-between py-3.5 text-base font-medium transition-colors hover:text-orange-600"
                           style={{ color: '#0D0D0B' }}
                         >
                           <span>{t(item.key)}</span>
@@ -196,7 +196,7 @@ export function Navbar() {
                           <li key={sub.key}>
                             <Link
                               href={sub.href as '/'}
-                              className="flex items-center justify-between py-2.5 pl-1 text-base font-semibold transition-colors hover:text-orange-600"
+                              className="flex items-center justify-between py-2.5 pl-1 text-base font-medium transition-colors hover:text-orange-600"
                               style={{ color: '#0D0D0B' }}
                             >
                               <span>{t(sub.key)}</span>
