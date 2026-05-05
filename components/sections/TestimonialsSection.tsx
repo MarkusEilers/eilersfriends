@@ -5,20 +5,20 @@ import { TestimonialCard } from '@/components/blocks/TestimonialCard'
 const TESTIMONIALS = [
   {
     authorName: 'Dirk Battermann',
-    authorRole: 'Geschäftsführer',
-    authorCompany: 'Battermann & Partner',
+    authorRole: 'Head Of Sales',
+    authorCompany: 'smapOne AG',
     quote: 'Markus hat uns geholfen, unseren Vertriebsprozess von Grund auf zu systematisieren. Die Ergebnisse haben unsere Erwartungen weit übertroffen.',
   },
   {
     authorName: 'Michael Strohäcker',
     authorRole: 'Founder & CEO',
-    authorCompany: 'ScaleUp GmbH',
+    authorCompany: 'pakadoo GmbH',
     quote: 'Nach nur 3 Monaten hatten wir einen klaren, reproduzierbaren Verkaufsprozess. 48% mehr Umsatz ist das Ergebnis.',
   },
   {
     authorName: 'Cornelius Zinow',
-    authorRole: 'Vertriebsleiter',
-    authorCompany: 'Zinow Technologies',
+    authorRole: 'Founder',
+    authorCompany: 'OSC',
     quote: 'Die Kombination aus SalesMade Academy und 1:1-Coaching war genau das, was wir gebraucht haben. Wissen + Können + Machen — das funktioniert.',
   },
 ]
