@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
-import { redirect } from 'next/navigation'
   Calendar, ArrowRight, Heart, MessageCircle, Shield, Sparkles,
   Mic, Award, AlertTriangle, Check, Star,
 } from 'lucide-react'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Aljona Eilers — Leadership für ein Winning Team',
