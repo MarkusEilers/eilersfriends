@@ -6,47 +6,64 @@ import {
   ArrowRight, Bot, Sparkles, Wand2, Radar, MessageSquareText,
   GitBranch, Lightbulb, Target, FileText, BookOpen, Zap,
 } from 'lucide-react'
+import { FrameworkArt } from '@/components/blocks/FrameworkArt'
 
 /**
- * Per-slug visual mapping. Each framework gets its own icon, so the row
- * visually breaks the "wall of identical book icons".
- * Falls back to BookOpen for unknown slugs.
+ * Per-slug visual config: icon, AI-Agent label, optional tagline,
+ * and Bento-grid `colSpan` (out of 6 cols on desktop).
+ *
+ * The two FEATURED frameworks ('instant-influence' and 'b2b-angebote') get
+ * 4-col cards (2/3 of the row); the rest are 2-col (1/3 of the row).
  */
 const SLUG_VISUALS: Record<
   string,
-  { icon: typeof BookOpen; agentLabel: string; tagline?: string }
+  { icon: typeof BookOpen; agentLabel: string; tagline?: string; colSpan: number; featured?: boolean }
 > = {
-  'hailiom': {
-    icon: Wand2,
-    agentLabel: '4 GPT Engines',
-    tagline: 'Voice · Idea · Atomization · Drafting',
-  },
-  'b2b-angebote': {
-    icon: Target,
-    agentLabel: 'PDF + Video',
-  },
+  // ── Featured ──────────────────────────────────────────────
   'instant-influence': {
     icon: MessageSquareText,
     agentLabel: 'Discovery-Call AI',
     tagline: 'Generator + Notes-AI',
+    colSpan: 4,
+    featured: true,
+  },
+  'b2b-angebote': {
+    icon: Target,
+    agentLabel: 'PDF + Video',
+    tagline: '8-Schritte-Bauplan',
+    colSpan: 4,
+    featured: true,
+  },
+  // ── Normal ────────────────────────────────────────────────
+  'hailiom': {
+    icon: Wand2,
+    agentLabel: '4 GPT Engines',
+    tagline: 'Voice · Idea · Atomization · Drafting',
+    colSpan: 2,
   },
   'beef-radar': {
     icon: Radar,
     agentLabel: 'Worksheet',
+    colSpan: 2,
   },
   'core-messages': {
     icon: Lightbulb,
     agentLabel: '18-Min AI-Worksheet',
+    colSpan: 2,
   },
   'strategic-preparation': {
     icon: GitBranch,
     agentLabel: 'Pre-Meeting Checklist',
+    colSpan: 2,
   },
   'recommendation-pitch': {
     icon: FileText,
     agentLabel: 'Skript-Vorlage',
+    colSpan: 2,
   },
 }
+
+const FEATURED_ORDER = ['instant-influence', 'b2b-angebote']
 
 export async function HVCOSection() {
   let frameworks: (typeof landingPages.$inferSelect)[] = []
@@ -61,10 +78,19 @@ export async function HVCOSection() {
         ),
       )
       .orderBy(desc(landingPages.updatedAt))
-      .limit(6)
   } catch (_) {}
 
   if (frameworks.length === 0) return null
+
+  // Sort: featured first (in defined order), then rest by updatedAt
+  const sorted = [...frameworks].sort((a, b) => {
+    const ai = FEATURED_ORDER.indexOf(a.slug)
+    const bi = FEATURED_ORDER.indexOf(b.slug)
+    if (ai !== -1 && bi !== -1) return ai - bi
+    if (ai !== -1) return -1
+    if (bi !== -1) return 1
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  }).slice(0, 7)
 
   return (
     <section className="bg-white px-6 py-20">
@@ -91,66 +117,87 @@ export async function HVCOSection() {
           </p>
         </div>
 
-        {/* Cards */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {frameworks.map((f, i) => {
+        {/* Bento grid: 2 cols mobile / 4 cols tablet / 6 cols desktop */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+          {sorted.map((f) => {
             const accent = f.accentColor ?? '#1A5FD4'
-            const accentBg = accent === '#D4192B' ? '#FFEBEC' : '#EBF1FF'
             const visual = SLUG_VISUALS[f.slug] ?? {
-              icon: BookOpen,
-              agentLabel: 'Bauplan',
+              icon: BookOpen, agentLabel: 'Bauplan', colSpan: 2,
             }
             const Icon = visual.icon
+
+            // Map colSpan to Tailwind classes
+            const spanClass =
+              visual.colSpan === 4 ? 'col-span-2 sm:col-span-4 lg:col-span-4'
+              : 'col-span-2 lg:col-span-2'
+
+            const minH = visual.featured ? 'min-h-[320px] sm:min-h-[360px]' : 'min-h-[260px]'
 
             return (
               <Link
                 key={f.id}
                 href={`/frameworks/${f.slug}`}
-                className="group relative flex flex-col rounded-2xl bg-white p-6 transition-all hover:-translate-y-0.5"
+                className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white p-6 transition-all hover:-translate-y-0.5 ${spanClass} ${minH}`}
                 style={{
                   border: '1px solid #E5E7EB',
                   boxShadow: '0 1px 2px rgba(15,30,58,0.04)',
                 }}
               >
-                {/* Top row: icon + AI-Agent badge */}
-                <div className="flex items-start justify-between mb-5">
-                  <div
-                    className="flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-105"
-                    style={{ backgroundColor: accentBg, color: accent }}
-                  >
-                    <Icon size={20} />
+                {/* Background SVG art */}
+                <FrameworkArt slug={f.slug} accent={accent} />
+
+                {/* Subtle gradient overlay so text stays legible */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.55) 60%, rgba(255,255,255,0.10) 100%)',
+                  }}
+                />
+
+                {/* Content */}
+                <div className="relative flex flex-col h-full">
+                  <div className="flex items-start justify-between mb-5">
+                    <div
+                      className="flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-105"
+                      style={{ backgroundColor: 'white', color: accent, border: `1px solid ${accent}30` }}
+                    >
+                      <Icon size={20} />
+                    </div>
+                    <span
+                      className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
+                      style={{ backgroundColor: '#0F1E3A', color: '#93B8F5' }}
+                    >
+                      <Sparkles size={9} /> {visual.agentLabel}
+                    </span>
                   </div>
-                  <span
-                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
-                    style={{ backgroundColor: '#0F1E3A', color: '#93B8F5' }}
+
+                  <h3
+                    className={`font-bold leading-snug ${visual.featured ? 'text-2xl' : 'text-lg'}`}
+                    style={{ color: '#0D0D0B' }}
                   >
-                    <Sparkles size={9} /> {visual.agentLabel}
-                  </span>
-                </div>
+                    {f.title}
+                  </h3>
 
-                {/* Title */}
-                <h3 className="text-lg font-bold leading-snug" style={{ color: '#0D0D0B' }}>
-                  {f.title}
-                </h3>
+                  {visual.tagline && (
+                    <p className="mt-1 text-xs font-semibold" style={{ color: accent }}>
+                      {visual.tagline}
+                    </p>
+                  )}
 
-                {/* Tagline (optional, e.g. tool components) */}
-                {visual.tagline && (
-                  <p className="mt-1 text-xs font-medium" style={{ color: accent }}>
-                    {visual.tagline}
-                  </p>
-                )}
+                  {f.metaDescription && (
+                    <p className={`mt-3 text-sm leading-relaxed text-gray-700 flex-1 ${visual.featured ? 'line-clamp-4' : 'line-clamp-3'}`}>
+                      {f.metaDescription}
+                    </p>
+                  )}
 
-                {/* Description */}
-                {f.metaDescription && (
-                  <p className="mt-3 text-sm leading-relaxed text-gray-600 line-clamp-3 flex-1">
-                    {f.metaDescription}
-                  </p>
-                )}
-
-                {/* CTA */}
-                <div className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: accent }}>
-                  Pack's an
-                  <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                  <div
+                    className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold"
+                    style={{ color: accent }}
+                  >
+                    Pack's an
+                    <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                  </div>
                 </div>
 
                 {/* Subtle accent line on hover */}
@@ -164,7 +211,7 @@ export async function HVCOSection() {
         </div>
 
         {/* Footer */}
-        {frameworks.length >= 6 ? (
+        {frameworks.length >= 7 ? (
           <div className="mt-12 text-center">
             <Link
               href="/frameworks"
