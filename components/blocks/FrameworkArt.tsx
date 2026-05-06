@@ -3,7 +3,30 @@
  * No external assets — pure SVG gradients + geometric shapes.
  * Positioned absolute inside a relative parent.
  */
-export function FrameworkArt({ slug, accent }: { slug: string; accent: string }) {
+export function FrameworkArt({
+  slug,
+  accent,
+  imageUrl,
+}: {
+  slug: string
+  accent: string
+  imageUrl?: string | null
+}) {
+  // If a generated image is available, prefer it over the SVG illustration
+  if (imageUrl) {
+    return (
+      <div
+        className="absolute inset-0"
+        aria-hidden="true"
+        style={{
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+    )
+  }
+
   switch (slug) {
     case 'instant-influence':
     case 'instant-authority':

@@ -11,6 +11,8 @@ import {
   publishLandingPage,
 } from '@/lib/actions/landing-pages'
 import { seedB2BOffersAsFramework, seedAllFrameworks } from '@/lib/actions/seed-frameworks'
+import { FrameworkImageGenerator } from '@/components/admin/FrameworkImageGenerator'
+import { FRAMEWORK_PROMPTS } from '@/lib/data/framework-prompts'
 
 async function createFrameworkAction() {
   'use server'
@@ -198,6 +200,13 @@ function Group({
               {p.metaDescription && (
                 <p className="text-sm text-gray-600 line-clamp-2 mb-4">{p.metaDescription}</p>
               )}
+              <div className="pt-2 mb-3">
+                <FrameworkImageGenerator
+                  slug={p.slug}
+                  defaultPrompt={FRAMEWORK_PROMPTS[p.slug] ?? 'Cinematic widescreen, deep blue tone, atmospheric, photorealistic, no text, no faces, 16:9'}
+                  hasImage={!!p.ogImageUrl}
+                />
+              </div>
               <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-gray-50">
                 <div className="flex gap-1.5">
                   <Link

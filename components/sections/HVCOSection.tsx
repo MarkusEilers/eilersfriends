@@ -160,7 +160,7 @@ export async function HVCOSection() {
                 }}
               >
                 {/* Background SVG art */}
-                <FrameworkArt slug={f.slug} accent={accent} />
+                <FrameworkArt slug={f.slug} accent={accent} imageUrl={f.ogImageUrl ?? undefined} />
 
                 {/* Subtle gradient overlay so text stays legible */}
                 <div
@@ -180,12 +180,22 @@ export async function HVCOSection() {
                     >
                       <Icon size={20} />
                     </div>
-                    <span
-                      className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
-                      style={{ backgroundColor: '#0F1E3A', color: '#93B8F5' }}
-                    >
-                      <Sparkles size={9} /> {visual.agentLabel}
-                    </span>
+                    <div className="flex flex-col items-end gap-1.5">
+                      {visual.featured && (
+                        <span
+                          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-white"
+                          style={{ backgroundColor: accent }}
+                        >
+                          ★ Beliebt
+                        </span>
+                      )}
+                      <span
+                        className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
+                        style={{ backgroundColor: '#0F1E3A', color: '#93B8F5' }}
+                      >
+                        <Sparkles size={9} /> {visual.agentLabel}
+                      </span>
+                    </div>
                   </div>
 
                   <h3

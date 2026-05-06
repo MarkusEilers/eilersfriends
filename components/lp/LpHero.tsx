@@ -32,16 +32,34 @@ export function LpHero({ content, accent, emailList }: LpHeroProps) {
   const showForm = !!(content.showEmailForm)
 
   return (
-    <section className="relative overflow-hidden px-6 py-20 sm:py-28" style={{ backgroundColor: '#FAFAF8' }}>
-      {/* Orb */}
-      <KaroPatternCorner color={accent} opacity={0.08} corner="top-right" />
+    <section
+      className="relative overflow-hidden px-6 py-20 sm:py-28"
+      style={
+        content.backgroundImage
+          ? {
+              backgroundImage: `linear-gradient(135deg, rgba(15,30,58,0.85) 0%, rgba(15,30,58,0.55) 60%, rgba(15,30,58,0.25) 100%), url(${content.backgroundImage as string})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }
+          : { backgroundColor: '#FAFAF8' }
+      }
+    >
+      {!content.backgroundImage && (
+        <KaroPatternCorner color={accent} opacity={0.08} corner="top-right" />
+      )}
 
       <div className="relative mx-auto max-w-3xl text-center">
-        <h1 className="text-4xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-6xl" style={{ color: '#0D0D0B' }}>
+        <h1
+          className="text-4xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-6xl"
+          style={{ color: content.backgroundImage ? 'white' : '#0D0D0B' }}
+        >
           {(content.headline as string) || 'Headline eintragen'}
         </h1>
         {content.subheadline && (
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-500">
+          <p
+            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed"
+            style={{ color: content.backgroundImage ? 'rgba(255,255,255,0.85)' : '#6B7280' }}
+          >
             {content.subheadline as string}
           </p>
         )}
