@@ -9,7 +9,6 @@ import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 const LOCALES = [
   { code: 'de', label: 'DE', flag: '🇩🇪' },
   { code: 'en', label: 'EN', flag: '🇬🇧' },
-  { code: 'ru', label: 'RU', flag: '🇷🇺' },
 ] as const
 
 // Top-level desktop nav items
