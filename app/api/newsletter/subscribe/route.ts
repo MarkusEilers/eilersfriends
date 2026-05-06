@@ -48,13 +48,14 @@ const schema = z.object({
   source: z.string().optional().default('website'),
   locale: z.string().optional().default('de'),
   consentGiven: z.boolean().optional().default(true),
+  question: z.string().max(2000).optional(),
 })
 
 export async function POST(request: Request) {
   try {
     await ensureSubscriberSchema()
     const body = await request.json()
-    const { email, firstName, source, locale, consentGiven } = schema.parse(body)
+    const { email, firstName, source, locale, consentGiven, question } = schema.parse(body)
 
     // ── 1. Save / upsert into our DB ──────────────────────────────────────────
     let subscriberId: string | null = null
@@ -82,7 +83,7 @@ export async function POST(request: Request) {
             firstName: firstName ?? null,
             source,
             status: 'pending',
-            lists: ['general'],
+            lists: question ? [source ?? 'general', `q:${question.slice(0, 1500)}`] : [source ?? 'general'],
             consentGiven,
             consentAt: consentGiven ? new Date() : null,
             doiToken,
