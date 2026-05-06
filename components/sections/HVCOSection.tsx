@@ -93,26 +93,42 @@ export async function HVCOSection() {
   }).slice(0, 7)
 
   return (
-    <section className="bg-white px-6 py-20">
-      <div className="mx-auto max-w-7xl">
+    <section className="relative overflow-hidden px-6 py-24" style={{ backgroundColor: '#0A1A2E' }}>
+      {/* Subtle Karo-Pattern for cinematic texture */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        aria-hidden="true"
+        style={{
+          backgroundImage:
+            'linear-gradient(#93B8F5 1px, transparent 1px), linear-gradient(90deg, #93B8F5 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+          maskImage: 'radial-gradient(ellipse 70% 70% at 50% 50%, black 50%, transparent 100%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 70% 70% at 50% 50%, black 50%, transparent 100%)',
+        }}
+      />
+      {/* Top + bottom gradient fades to anchor against neighboring sections */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24" style={{ background: 'linear-gradient(180deg, #0F1E3A 0%, transparent 100%)' }} aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16" style={{ background: 'linear-gradient(0deg, #0F1E3A 0%, transparent 100%)' }} aria-hidden="true" />
+
+      <div className="relative mx-auto max-w-7xl">
 
         {/* Header */}
         <div className="text-center mb-14">
           <span
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest mb-5"
-            style={{ backgroundColor: '#0F1E3A', color: '#93B8F5' }}
+            style={{ backgroundColor: 'rgba(147,184,245,0.15)', color: '#93B8F5', border: '1px solid rgba(147,184,245,0.30)' }}
           >
             <Bot size={12} />
             Pretrained AI-Agenten · Gratis
           </span>
-          <h2 className="text-4xl font-bold leading-tight sm:text-5xl" style={{ color: '#0D0D0B' }}>
+          <h2 className="text-4xl font-bold leading-tight sm:text-5xl text-white">
             Klau dir unsere Frameworks.<br />
-            <span style={{ color: '#1A5FD4' }}>Inklusive AI-Agenten.</span>
+            <span style={{ color: '#7AABF7' }}>Inklusive AI-Agenten.</span>
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-gray-600">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.70)' }}>
             Du brauchst nicht 47 Custom-GPTs basteln. Wir haben sie schon trainiert.
             Jedes Framework kommt mit Bauplan{' '}
-            <span className="font-semibold" style={{ color: '#0D0D0B' }}>+ den AI-Agenten</span>,
+            <span className="font-semibold text-white">+ den AI-Agenten</span>,
             die wir dafür gebaut haben. Email rein — Zugang raus.
           </p>
         </div>
@@ -215,15 +231,15 @@ export async function HVCOSection() {
           <div className="mt-12 text-center">
             <Link
               href="/frameworks"
-              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-              style={{ backgroundColor: '#0F1E3A' }}
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-90"
+              style={{ backgroundColor: 'white', color: '#0F1E3A' }}
             >
               <Zap size={14} />
               Alle Frameworks ansehen
             </Link>
           </div>
         ) : (
-          <p className="mt-10 text-center text-xs text-gray-400">
+          <p className="mt-10 text-center text-xs" style={{ color: 'rgba(255,255,255,0.40)' }}>
             Mehr Frameworks rollen wöchentlich aus. Mit jedem ein neuer AI-Agent.
           </p>
         )}
