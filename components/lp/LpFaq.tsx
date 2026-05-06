@@ -3,10 +3,12 @@
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 
-interface FaqItem { question: string; answer: string }
-
 export function LpFaq({ content }: { content: Record<string, any> }) {
-  const items = (content.items as FaqItem[]) ?? []
+  const rawItems = (content.items as any[]) ?? []
+  const items = rawItems.map((it) => ({
+    question: String(it.question ?? it.q ?? ''),
+    answer: String(it.answer ?? it.a ?? ''),
+  })).filter((it) => it.question)
   const [open, setOpen] = useState<number | null>(null)
 
   return (
@@ -32,7 +34,7 @@ export function LpFaq({ content }: { content: Record<string, any> }) {
               </button>
               {open === i && (
                 <div className="border-t border-gray-100 px-5 pb-4 pt-3">
-                  <p className="text-sm leading-relaxed text-gray-600">{item.answer}</p>
+                  <p className="text-sm leading-relaxed text-gray-600 whitespace-pre-line">{item.answer}</p>
                 </div>
               )}
             </div>
