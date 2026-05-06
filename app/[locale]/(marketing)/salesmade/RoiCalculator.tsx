@@ -8,20 +8,31 @@ export function SalesMadeRoiCalculator({ accent }: { accent: string }) {
   const [salespeople, setSalespeople] = useState(8)
   const [dealValue, setDealValue] = useState(15000)
   const [meetings, setMeetings] = useState(12)
+  const [conversion, setConversion] = useState(28) // % — Discovery-to-Close
 
   // Floor: SalesMade lifts low-activity sellers up to 10 first-meetings/month
   const ACTIVITY_FLOOR = 10
   const upgradedMeetings = Math.max(meetings, ACTIVITY_FLOOR)
   const isLifted = meetings < ACTIVITY_FLOOR
 
+  // Conversion lift: +26 percentage points, capped at 72 %.
+  // Above 72 % we don't model further isolated improvement (diminishing returns).
+  const CONVERSION_CAP = 72
+  const CONVERSION_LIFT_PP = 26
+  const isAtCap = conversion >= CONVERSION_CAP
+  const upgradedConversion = isAtCap
+    ? conversion
+    : Math.min(conversion + CONVERSION_LIFT_PP, CONVERSION_CAP)
+
   const result = useMemo(() => {
-    // Baseline: current state — Conversion 28 %, current meeting volume
-    // Upgraded: Conversion 54 %, +48 % deal value, lifted meeting floor
-    const baselineRevenue = meetings * 12 * salespeople * 0.28 * dealValue
-    const upgradedRevenue = upgradedMeetings * 12 * salespeople * 0.54 * dealValue * 1.48
+    // Baseline: current state — user's conversion %, current meeting volume
+    // Upgraded: capped/lifted conversion + 48 % deal value + lifted meeting floor
+    const baselineRevenue = meetings * 12 * salespeople * (conversion / 100) * dealValue
+    const upgradedRevenue =
+      upgradedMeetings * 12 * salespeople * (upgradedConversion / 100) * dealValue * 1.48
     const delta = Math.max(0, upgradedRevenue - baselineRevenue)
     return Math.round(delta)
-  }, [salespeople, dealValue, meetings, upgradedMeetings])
+  }, [salespeople, dealValue, meetings, upgradedMeetings, conversion, upgradedConversion])
 
   const formatted = new Intl.NumberFormat('de-DE', {
     style: 'currency',
@@ -80,6 +91,40 @@ export function SalesMadeRoiCalculator({ accent }: { accent: string }) {
               </p>
             )}
           </div>
+          <div>
+            <Field
+              label="Aktuelle Conversion (Discovery → Close)"
+              value={conversion}
+              min={5}
+              max={75}
+              step={1}
+              onChange={setConversion}
+              accent={accent}
+              format={(n) => `${n} %`}
+            />
+            <p className="mt-2 text-xs leading-relaxed text-gray-500">
+              {isAtCap ? (
+                <>
+                  <span className="font-semibold" style={{ color: accent }}>
+                    Über dem Skill-Cap:
+                  </span>{' '}
+                  Ab {CONVERSION_CAP} % ist die Conversion isoliert
+                  schwer weiter zu steigern. Die Berechnung modelliert für
+                  diesen Slider keinen zusätzlichen Conversion-Lift —
+                  Wachstum kommt dann nur aus Aktivität, Deal-Wert + Pipeline.
+                </>
+              ) : (
+                <>
+                  <span className="font-semibold" style={{ color: accent }}>
+                    + Skill-Lift:
+                  </span>{' '}
+                  Im Programm rechnen wir mit +{CONVERSION_LIFT_PP} pp
+                  (gekappt bei {CONVERSION_CAP} %). Berechnung verwendet
+                  daher {upgradedConversion} % statt {conversion} %.
+                </>
+              )}
+            </p>
+          </div>
         </div>
 
         {/* Result */}
@@ -92,9 +137,12 @@ export function SalesMadeRoiCalculator({ accent }: { accent: string }) {
           </div>
           <div className="mt-1 text-xs text-gray-500">pro Jahr</div>
           <p className="mt-4 text-xs leading-relaxed text-gray-600">
-            Basierend auf verbesserter Conversion (28 % → 54 %), +48 % höheren
-            Deal-Werten und mindestens 10 Erstgesprächen pro Verkäufer/Monat —
-            Branchenkennzahlen unserer Kunden.
+            Basierend auf{' '}
+            {isAtCap
+              ? <>unveränderter Conversion ({conversion}&#x202F;% — bereits über Skill-Cap)</>
+              : <>verbesserter Conversion ({conversion}&#x202F;% → {upgradedConversion}&#x202F;%)</>}
+            , +48&#x202F;% höheren Deal-Werten und mindestens {ACTIVITY_FLOOR}&#x202F;
+            Erstgesprächen pro Verkäufer/Monat — Branchenkennzahlen unserer Kunden.
           </p>
           <Link
             href="/kontakt"
