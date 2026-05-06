@@ -25,9 +25,9 @@ export default function HomePage() {
         <ProblemSection />
         <BentoGrid />
         <SalesMadeAcademySection />
+        <HVCOSection />
         <CoachesSection />
         <ProgrammeSection />
-        <HVCOSection />
         <TestimonialsSection />
         <CtaBlock />
         <NewsletterSection />

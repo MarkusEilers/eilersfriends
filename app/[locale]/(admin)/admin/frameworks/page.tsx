@@ -10,7 +10,7 @@ import {
   createLandingPageFromTemplate,
   publishLandingPage,
 } from '@/lib/actions/landing-pages'
-import { seedB2BOffersAsFramework } from '@/lib/actions/seed-frameworks'
+import { seedB2BOffersAsFramework, seedAllFrameworks } from '@/lib/actions/seed-frameworks'
 
 async function createFrameworkAction() {
   'use server'
@@ -26,6 +26,12 @@ async function seedB2BAction() {
   'use server'
   const result = await seedB2BOffersAsFramework()
   redirect(`/admin/landing-pages/${result.id}`)
+}
+
+async function seedAllAction() {
+  'use server'
+  await seedAllFrameworks()
+  redirect('/admin/frameworks')
 }
 
 async function setStatusAction(formData: FormData) {
@@ -67,16 +73,29 @@ export default async function AdminFrameworksPage() {
             Lead-Magnet-Pages für jede Methode / jedes Tool. Im Index unter <a href="/frameworks" className="underline">/frameworks</a> sichtbar.
           </p>
         </div>
-        <form action={createFrameworkAction}>
-          <button
-            type="submit"
-            className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: '#1A5FD4' }}
-          >
-            <Plus size={16} />
-            Neues Framework
-          </button>
-        </form>
+        <div className="flex items-center gap-2">
+          <form action={seedAllAction}>
+            <button
+              type="submit"
+              className="flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-gray-50"
+              style={{ color: '#1A5FD4', borderColor: '#BBCFF5' }}
+              title="Legt alle 7 vorbereiteten Frameworks als Drafts in der DB an"
+            >
+              <Plus size={14} />
+              Alle 7 Drafts seeden
+            </button>
+          </form>
+          <form action={createFrameworkAction}>
+            <button
+              type="submit"
+              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: '#1A5FD4' }}
+            >
+              <Plus size={16} />
+              Neues Framework
+            </button>
+          </form>
+        </div>
       </div>
 
       {/* Stats */}
