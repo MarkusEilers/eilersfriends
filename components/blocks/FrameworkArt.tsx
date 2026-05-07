@@ -12,27 +12,9 @@ export function FrameworkArt({
   accent: string
   imageUrl?: string | null
 }) {
-  // Priority: ogImageUrl from DB (admin-regenerated) > /public/frameworks/[slug].jpg
-  // (committed bootstrap images) > SVG illustration fallback below.
-  const STATIC_SLUGS = new Set([
-    'instant-influence', 'instant-authority', 'b2b-angebote', 'hailiom',
-    'beef-radar', 'core-messages', 'strategic-preparation', 'recommendation-pitch',
-  ])
-  const effectiveUrl = imageUrl ?? (STATIC_SLUGS.has(slug) ? `/frameworks/${slug}.jpg` : null)
-
-  if (effectiveUrl) {
-    return (
-      <div
-        className="absolute inset-0"
-        aria-hidden="true"
-        style={{
-          backgroundImage: `url(${effectiveUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      />
-    )
-  }
+  // Bitmap backgrounds disabled — using subtle blue gradient via card style instead.
+  // SVG illustrations below render at low opacity as a textural accent.
+  void imageUrl
 
   switch (slug) {
     case 'instant-influence':

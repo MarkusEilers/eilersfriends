@@ -149,49 +149,60 @@ export async function HVCOSection() {
 
             const minH = visual.featured ? 'min-h-[320px] sm:min-h-[360px]' : 'min-h-[260px]'
 
+            // Two-tier blue theming: dark navy for featured, soft sky-blue for the rest.
+            const cardBg = visual.featured
+              ? 'linear-gradient(135deg, #0E2A4F 0%, #173A6B 50%, #1F4A86 100%)'
+              : 'linear-gradient(135deg, #EAF2FB 0%, #DCE8F7 60%, #C9DBF0 100%)'
+            const cardBorder = visual.featured ? '1px solid rgba(255,255,255,0.10)' : '1px solid #DCE8F7'
+            const titleColor = visual.featured ? '#FFFFFF' : '#0D0D0B'
+            const bodyColor = visual.featured ? 'rgba(255,255,255,0.78)' : '#374151'
+            const svgArtOpacity = visual.featured ? 0.18 : 0.35
+
             return (
               <Link
                 key={f.id}
                 href={`/frameworks/${f.slug}`}
-                className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white p-6 transition-all hover:-translate-y-0.5 ${spanClass} ${minH}`}
+                className={`group relative flex flex-col overflow-hidden rounded-2xl p-6 transition-all hover:-translate-y-0.5 ${spanClass} ${minH}`}
                 style={{
-                  border: '1px solid #E5E7EB',
-                  boxShadow: '0 1px 2px rgba(15,30,58,0.04)',
+                  background: cardBg,
+                  border: cardBorder,
+                  boxShadow: visual.featured ? '0 8px 30px rgba(15,30,58,0.18)' : '0 1px 2px rgba(15,30,58,0.04)',
                 }}
               >
-                {/* Background SVG art */}
-                <FrameworkArt slug={f.slug} accent={accent} imageUrl={f.ogImageUrl ?? undefined} />
-
-                {/* Subtle gradient overlay so text stays legible */}
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background:
-                      'linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.55) 60%, rgba(255,255,255,0.10) 100%)',
-                  }}
-                />
+                {/* Background SVG art (low-opacity textural accent) */}
+                <div className="absolute inset-0 pointer-events-none" style={{ opacity: svgArtOpacity }}>
+                  <FrameworkArt slug={f.slug} accent={visual.featured ? '#FFFFFF' : accent} imageUrl={null} />
+                </div>
 
                 {/* Content */}
                 <div className="relative flex flex-col h-full">
                   <div className="flex items-start justify-between mb-5">
                     <div
                       className="flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-105"
-                      style={{ backgroundColor: 'white', color: accent, border: `1px solid ${accent}30` }}
+                      style={{
+                        backgroundColor: visual.featured ? 'rgba(255,255,255,0.12)' : 'white',
+                        color: visual.featured ? '#FFFFFF' : accent,
+                        border: visual.featured ? '1px solid rgba(255,255,255,0.20)' : `1px solid ${accent}30`,
+                      }}
                     >
                       <Icon size={20} />
                     </div>
                     <div className="flex flex-col items-end gap-1.5">
                       {visual.featured && (
                         <span
-                          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-white"
-                          style={{ backgroundColor: accent }}
+                          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
+                          style={{ backgroundColor: '#FFFFFF', color: accent }}
                         >
                           ★ Beliebt
                         </span>
                       )}
                       <span
                         className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
-                        style={{ backgroundColor: '#0F1E3A', color: '#93B8F5' }}
+                        style={{
+                          backgroundColor: visual.featured ? 'rgba(255,255,255,0.14)' : '#0F1E3A',
+                          color: visual.featured ? '#FFFFFF' : '#93B8F5',
+                          border: visual.featured ? '1px solid rgba(255,255,255,0.18)' : 'none',
+                        }}
                       >
                         <Sparkles size={9} /> {visual.agentLabel}
                       </span>
@@ -200,7 +211,7 @@ export async function HVCOSection() {
 
                   <h3
                     className={`font-bold leading-snug ${visual.featured ? 'text-2xl' : 'text-lg'}`}
-                    style={{ color: '#0D0D0B' }}
+                    style={{ color: titleColor }}
                   >
                     {f.title}
                   </h3>
@@ -212,14 +223,17 @@ export async function HVCOSection() {
                   )}
 
                   {f.metaDescription && (
-                    <p className={`mt-3 text-sm leading-relaxed text-gray-700 flex-1 ${visual.featured ? 'line-clamp-4' : 'line-clamp-3'}`}>
+                    <p
+                      className={`mt-3 text-sm leading-relaxed flex-1 ${visual.featured ? 'line-clamp-4' : 'line-clamp-3'}`}
+                      style={{ color: bodyColor }}
+                    >
                       {f.metaDescription}
                     </p>
                   )}
 
                   <div
                     className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold"
-                    style={{ color: accent }}
+                    style={{ color: visual.featured ? '#FFFFFF' : accent }}
                   >
                     Pack's an
                     <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
