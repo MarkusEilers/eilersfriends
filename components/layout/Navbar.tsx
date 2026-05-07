@@ -94,9 +94,9 @@ export function Navbar() {
             <Image
               src="/ef-logo.png"
               alt="Eilers+Friends"
-              width={180}
-              height={46}
-              className="h-12 w-auto"
+              width={200}
+              height={56}
+              className="h-14 md:h-16 w-auto object-contain"
               priority
             />
           </Link>
@@ -202,7 +202,7 @@ export function Navbar() {
           {/* Drawer */}
           <div className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-              <Image src="/ef-logo.png" alt="" width={150} height={40} className="h-10 w-auto" />
+              <Image src="/ef-logo.png" alt="" width={180} height={48} className="h-12 w-auto object-contain" />
               <button
                 onClick={() => setMobileOpen(false)}
                 className="p-2 -mr-2 text-gray-700"

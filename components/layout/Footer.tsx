@@ -74,9 +74,9 @@ export function Footer() {
             <Image
               src="/wing-white.png"
               alt="Eilers+Friends"
-              width={44}
-              height={44}
-              className="h-12 w-auto"
+              width={64}
+              height={64}
+              className="h-16 w-auto"
             />
           </div>
 
