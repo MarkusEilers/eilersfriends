@@ -6,7 +6,6 @@ import {
   ArrowRight, Bot, Sparkles, Wand2, Radar, MessageSquareText,
   GitBranch, Lightbulb, Target, FileText, BookOpen, Zap,
 } from 'lucide-react'
-import { FrameworkArt } from '@/components/blocks/FrameworkArt'
 
 /**
  * Per-slug visual config: icon, AI-Agent label, optional tagline,
@@ -156,7 +155,6 @@ export async function HVCOSection() {
             const cardBorder = visual.featured ? '1px solid rgba(255,255,255,0.10)' : '1px solid #DCE8F7'
             const titleColor = visual.featured ? '#FFFFFF' : '#0D0D0B'
             const bodyColor = visual.featured ? 'rgba(255,255,255,0.78)' : '#374151'
-            const svgArtOpacity = visual.featured ? 0.18 : 0.35
 
             return (
               <Link
@@ -169,10 +167,6 @@ export async function HVCOSection() {
                   boxShadow: visual.featured ? '0 8px 30px rgba(15,30,58,0.18)' : '0 1px 2px rgba(15,30,58,0.04)',
                 }}
               >
-                {/* Background SVG art (low-opacity textural accent) */}
-                <div className="absolute inset-0 pointer-events-none" style={{ opacity: svgArtOpacity }}>
-                  <FrameworkArt slug={f.slug} accent={visual.featured ? '#FFFFFF' : accent} imageUrl={null} />
-                </div>
 
                 {/* Content */}
                 <div className="relative flex flex-col h-full">
