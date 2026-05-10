@@ -18,8 +18,26 @@ export async function POST(request: Request) {
     const body = await request.json()
     const parsed = ContactSchema.safeParse(body)
     if (!parsed.success) {
+      const first = parsed.error.errors[0]
+      const field = first?.path?.[0]
+      const FIELD_LABEL: Record<string, string> = {
+        name: 'Name',
+        email: 'E-Mail',
+        company: 'Unternehmen',
+        subject: 'Betreff',
+        message: 'Nachricht',
+      }
+      const label = typeof field === 'string' ? FIELD_LABEL[field] ?? field : 'Feld'
+      let detail = first?.message ?? 'ungültig'
+      if (first?.code === 'too_small' && first.type === 'string') {
+        detail = `mindestens ${first.minimum} Zeichen erforderlich`
+      } else if (first?.code === 'too_big' && first.type === 'string') {
+        detail = `maximal ${first.maximum} Zeichen erlaubt`
+      } else if (first?.code === 'invalid_string' && first.validation === 'email') {
+        detail = 'bitte eine gültige E-Mail-Adresse'
+      }
       return NextResponse.json(
-        { error: 'Bitte alle Pflichtfelder korrekt ausfüllen.' },
+        { error: `${label}: ${detail}.` },
         { status: 400 },
       )
     }

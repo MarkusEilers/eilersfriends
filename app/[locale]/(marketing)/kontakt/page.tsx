@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Mail, MapPin, Clock, Linkedin, Youtube, Instagram, Calendar } from 'lucide-react'
 import { ContactForm } from './ContactForm'
+import { getSetting } from '@/lib/db/queries/settings'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
@@ -16,6 +17,11 @@ interface PageProps {
 export default async function KontaktPage({ params }: PageProps) {
   const { locale } = await params
   if (locale !== 'de') redirect('/de/kontakt')
+
+  const [calendlyMarkus, calendlyAljona] = await Promise.all([
+    getSetting('calendly.markus'),
+    getSetting('calendly.aljona'),
+  ])
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
@@ -52,26 +58,55 @@ export default async function KontaktPage({ params }: PageProps) {
           {/* Side panel */}
           <aside className="space-y-6">
 
-            {/* Strategie-Gespräch */}
+            {/* Strategie-Gespräch · Markus */}
             <div
               className="rounded-3xl p-6 text-white"
               style={{ backgroundColor: '#F05A1A' }}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl mb-4" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
-                <Calendar size={20} />
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
+                  <Calendar size={18} />
+                </div>
+                <div className="text-[10px] uppercase tracking-[0.25em] font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>Sales · Revenue</div>
               </div>
-              <h3 className="text-lg font-bold">Strategie-Gespräch buchen</h3>
-              <p className="mt-2 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
-                30 Minuten, die dein Business verändern können.
+              <h3 className="text-lg font-bold">30 Min mit Markus</h3>
+              <p className="mt-1.5 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                Strategisches Sparring zu Vertriebssystem, AI-Hebeln und planbarem Wachstum.
               </p>
               <a
-                href="https://calendly.com/eilersfriends"
+                href={calendlyMarkus}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold transition-opacity hover:opacity-90"
                 style={{ color: '#F05A1A' }}
               >
-                Termin vereinbaren
+                Termin mit Markus
+              </a>
+            </div>
+
+            {/* Strategie-Gespräch · Aljona */}
+            <div
+              className="rounded-3xl p-6 text-white"
+              style={{ backgroundColor: '#D4192B' }}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
+                  <Calendar size={18} />
+                </div>
+                <div className="text-[10px] uppercase tracking-[0.25em] font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>Liquid Leadership</div>
+              </div>
+              <h3 className="text-lg font-bold">30 Min mit Aljona</h3>
+              <p className="mt-1.5 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                Sparring zu Führung, Kultur und der nächsten Wachstumsstufe als Unternehmer:in.
+              </p>
+              <a
+                href={calendlyAljona}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold transition-opacity hover:opacity-90"
+                style={{ color: '#D4192B' }}
+              >
+                Termin mit Aljona
               </a>
             </div>
 

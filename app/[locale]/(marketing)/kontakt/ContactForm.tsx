@@ -81,9 +81,14 @@ export function ContactForm() {
           value={form.message}
           onChange={handleChange}
           required
+          minLength={10}
           rows={6}
+          placeholder="Was beschäftigt dich? Worum soll es gehen?"
           className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-orange-400 focus:bg-white resize-y"
         />
+        <p className="mt-1.5 text-[11px] text-gray-400">
+          Mindestens 10 Zeichen. Aktuell: {form.message.length}.
+        </p>
       </div>
 
       {errorMsg && (

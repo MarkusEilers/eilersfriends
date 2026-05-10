@@ -452,3 +452,10 @@ export const enrollmentsRelations = relations(enrollments, ({ one, many }) => ({
   sessions: many(sessions),
   certificate: one(certificates),
 }))
+
+// ─── Site Settings (key-value, admin-editable) ────────────────────────────────
+export const siteSettings = pgTable('site_settings', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
