@@ -17,21 +17,25 @@ const STATS = [
 
 const SOLUTIONS = [
   {
+    slug: 'residential',
     title: 'Residential',
     tagline: 'Family Suites',
     body: 'Für Eigentümer:innen hochpräsenter Liegenschaften. Nahtlos in Architektur und Smart-Home integriert. Reaktionszeit unter 14 Sekunden.',
   },
   {
+    slug: 'corporate',
     title: 'Corporate',
     tagline: 'Executive Vaults',
     body: 'Geschützte Räume für Vorstandsetagen und Krisenstäbe. Standardausstattung umfasst gefilterte Atemluft für 96 Stunden und gesicherte Kommunikation.',
   },
   {
+    slug: 'government',
     title: 'Government',
     tagline: 'Continuity Rooms',
     body: 'Für Ministerien, Botschaften und kritische Infrastruktur. Mehrlagige Authentifizierung. EMP- und ABC-resistent. Zertifiziert nach NATO STANAG 4569.',
   },
   {
+    slug: 'maritime',
     title: 'Maritime & Mobile',
     tagline: 'On-Vessel Citadels',
     body: 'Modular installierbar in Yachten, Privatflugzeugen und Spezialfahrzeugen. Baumustergeprüft gemäß SOLAS Ch. XI-2 und ISPS-Code.',
@@ -119,10 +123,30 @@ export default function StachelbehrPage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden" style={{ backgroundColor: '#15181D' }}>
+        {/* Photo backdrop */}
         <div
           className="absolute inset-0"
           aria-hidden="true"
-          style={{ backgroundImage: 'linear-gradient(135deg, #2D4F6B 0%, transparent 65%)', opacity: 0.30 }}
+          style={{
+            backgroundImage: 'url(/stachelbehr/hero-bg.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.55,
+          }}
+        />
+        {/* Tonal lift to lock anthracite/brass mood and keep text legible */}
+        <div
+          className="absolute inset-0"
+          aria-hidden="true"
+          style={{
+            background:
+              'linear-gradient(90deg, rgba(21,24,29,0.92) 0%, rgba(21,24,29,0.65) 45%, rgba(21,24,29,0.30) 100%)',
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          aria-hidden="true"
+          style={{ backgroundImage: 'linear-gradient(135deg, #2D4F6B 0%, transparent 65%)', opacity: 0.20 }}
         />
         <div
           className="absolute inset-0"
@@ -207,9 +231,20 @@ export default function StachelbehrPage() {
             {SOLUTIONS.map((c) => (
               <div
                 key={c.title}
-                className="rounded-sm p-7"
+                className="rounded-sm overflow-hidden"
                 style={{ backgroundColor: '#212630', border: '1px solid rgba(255,255,255,0.06)' }}
               >
+                <div
+                  className="aspect-[4/3] w-full"
+                  aria-hidden="true"
+                  style={{
+                    backgroundImage: `url(/stachelbehr/card-${c.slug}.jpg)`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundColor: '#1B1F25',
+                  }}
+                />
+                <div className="p-7">
                 <div className="text-[10px] uppercase tracking-[0.25em] mb-3" style={{ color: '#C8A67A' }}>
                   {c.tagline}
                 </div>
@@ -222,6 +257,7 @@ export default function StachelbehrPage() {
                 <p className="text-sm leading-relaxed" style={{ color: '#A8A498' }}>
                   {c.body}
                 </p>
+                </div>
               </div>
             ))}
           </div>
@@ -230,14 +266,32 @@ export default function StachelbehrPage() {
 
       {/* Heritage */}
       <section
-        className="py-24"
+        className="relative py-24 overflow-hidden"
         style={{
           backgroundColor: '#15181D',
           borderTop: '1px solid rgba(255,255,255,0.06)',
           borderBottom: '1px solid rgba(255,255,255,0.06)',
         }}
       >
-        <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-12 gap-12 items-start">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+          style={{
+            backgroundImage: 'url(/stachelbehr/heritage-bg.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.18,
+          }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+          style={{
+            background:
+              'linear-gradient(90deg, rgba(21,24,29,0.94) 0%, rgba(21,24,29,0.78) 60%, rgba(21,24,29,0.55) 100%)',
+          }}
+        />
+        <div className="relative mx-auto max-w-7xl px-6 grid md:grid-cols-12 gap-12 items-start">
           <div className="md:col-span-5">
             <div className="text-[11px] uppercase tracking-[0.3em] mb-4" style={{ color: '#C8A67A' }}>
               Heritage
@@ -295,6 +349,39 @@ export default function StachelbehrPage() {
         </div>
       </section>
 
+      {/* Detail strip — drone, topography, tactical */}
+      <section className="py-16">
+        <div className="mx-auto max-w-7xl px-6 grid sm:grid-cols-3 gap-5">
+          {[
+            { src: '/stachelbehr/detail-keypad.jpg', cap: 'Fertigung · Solingen' },
+            { src: '/stachelbehr/detail-topo.jpg', cap: 'Geländeanalyse · Strategy Desk' },
+            { src: '/stachelbehr/detail-schematic.jpg', cap: 'Modul-Spezifikation · Defence Datasheet' },
+          ].map((d) => (
+            <div
+              key={d.src}
+              className="rounded-sm overflow-hidden"
+              style={{ border: '1px solid rgba(255,255,255,0.06)', backgroundColor: '#1B1F25' }}
+            >
+              <div
+                className="aspect-[4/3] w-full"
+                aria-hidden="true"
+                style={{
+                  backgroundImage: `url(${d.src})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              />
+              <div
+                className="px-5 py-3 text-[10px] uppercase tracking-[0.25em]"
+                style={{ color: '#9C9888', backgroundColor: '#15181D' }}
+              >
+                {d.cap}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Pull-quote */}
       <section className="py-24">
         <div className="mx-auto max-w-4xl px-6 text-center">
@@ -311,8 +398,26 @@ export default function StachelbehrPage() {
       </section>
 
       {/* Open Positions */}
-      <section className="py-24" style={{ backgroundColor: '#15181D' }}>
-        <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-12 gap-10 items-end">
+      <section className="relative py-24 overflow-hidden" style={{ backgroundColor: '#15181D' }}>
+        <div
+          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+          style={{
+            backgroundImage: 'url(/stachelbehr/career-bg.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.22,
+          }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+          style={{
+            background:
+              'linear-gradient(90deg, rgba(21,24,29,0.55) 0%, rgba(21,24,29,0.85) 100%)',
+          }}
+        />
+        <div className="relative mx-auto max-w-7xl px-6 grid md:grid-cols-12 gap-10 items-end">
           <div className="md:col-span-5">
             <div className="text-[11px] uppercase tracking-[0.3em] mb-4" style={{ color: '#C8A67A' }}>
               Karriere
