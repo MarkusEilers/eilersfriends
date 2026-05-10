@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { cn } from '@/lib/utils/cn'
 
 interface Logo {
@@ -38,21 +39,31 @@ export function LogoScrollbar({ logos, speed = 'normal', className }: LogoScroll
             key={i}
             className="flex h-10 items-center justify-center px-2"
           >
-            {logo.src ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={logo.src}
-                alt={logo.name}
-                className="h-7 w-auto object-contain opacity-40 grayscale transition-opacity hover:opacity-70"
-              />
-            ) : (
-              <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">
-                {logo.name}
-              </span>
-            )}
+            <LogoItem logo={logo} />
           </div>
         ))}
       </div>
     </div>
+  )
+}
+
+
+function LogoItem({ logo }: { logo: Logo }) {
+  const [failed, setFailed] = useState(false)
+  if (logo.src && !failed) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={logo.src}
+        alt={logo.name}
+        onError={() => setFailed(true)}
+        className="h-7 w-auto object-contain opacity-40 grayscale transition-opacity hover:opacity-70"
+      />
+    )
+  }
+  return (
+    <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">
+      {logo.name}
+    </span>
   )
 }

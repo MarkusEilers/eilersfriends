@@ -8,15 +8,17 @@ import { LogoScrollbar } from '@/components/blocks/LogoScrollbar'
  * (i.e. the dark version designed to render on a light background). Files
  * still missing fall through to the text label so the strip never breaks.
  */
+// TODO: re-add `src: '/logos/<slug>.svg'` once on-white logo files are
+// uploaded to /public/logos/. Until then we show text labels.
 const LOGOS = [
-  { name: 'Wall Street Journal', src: '/logos/wsj.svg' },
-  { name: 'Forbes', src: '/logos/forbes.svg' },
-  { name: 'Handelsblatt', src: '/logos/handelsblatt.svg' },
-  { name: 'USA Today', src: '/logos/usa-today.svg' },
-  { name: 'Microsoft', src: '/logos/microsoft.svg' },
-  { name: 'Amazon', src: '/logos/amazon.svg' },
-  { name: 'Sonia.so', src: '/logos/sonia-so.svg' },
-  { name: 'Celero One', src: '/logos/celero-one.svg' },
+  { name: 'Wall Street Journal' },
+  { name: 'Forbes' },
+  { name: 'Handelsblatt' },
+  { name: 'USA Today' },
+  { name: 'Microsoft' },
+  { name: 'Amazon' },
+  { name: 'Sonia.so' },
+  { name: 'Celero One' },
 ]
 
 export function LogoStripSection() {

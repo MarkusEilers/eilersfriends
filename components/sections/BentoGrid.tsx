@@ -117,8 +117,10 @@ export function BentoGrid() {
             </div>
 
             {/* Liquid Leadership Podcast — spans both columns, red with cover backdrop */}
-            <Link
-              href="/aljona/podcast"
+            <a
+              href="https://www.youtube.com/@liquid.leadership"
+              target="_blank"
+              rel="noopener noreferrer"
               className="col-span-2 relative overflow-hidden rounded-3xl p-6 flex flex-col gap-3 group transition-transform hover:-translate-y-0.5"
               style={{
                 backgroundColor: '#7A0D17',
@@ -162,7 +164,7 @@ export function BentoGrid() {
                   Hören <ArrowRight size={12} />
                 </span>
               </div>
-            </Link>
+            </a>
           </div>
         </div>
       </div>
