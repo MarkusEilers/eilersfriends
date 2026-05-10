@@ -1,15 +1,22 @@
 import { useTranslations } from 'next-intl'
 import { LogoScrollbar } from '@/components/blocks/LogoScrollbar'
 
+/**
+ * Trust-Logo-Strip — partner / press logos.
+ *
+ * Each logo lives in /public/logos/<slug>.{svg,png} as an "on-white" version
+ * (i.e. the dark version designed to render on a light background). Files
+ * still missing fall through to the text label so the strip never breaks.
+ */
 const LOGOS = [
-  { name: 'Amazon' },
-  { name: 'Microsoft' },
-  { name: 'Wall Street Journal' },
-  { name: 'Barnes & Noble' },
-  { name: 'USA Today' },
-  { name: 'IZF' },
-  { name: 'Handelsblatt' },
-  { name: 'Forbes' },
+  { name: 'Wall Street Journal', src: '/logos/wsj.svg' },
+  { name: 'Forbes', src: '/logos/forbes.svg' },
+  { name: 'Handelsblatt', src: '/logos/handelsblatt.svg' },
+  { name: 'USA Today', src: '/logos/usa-today.svg' },
+  { name: 'Microsoft', src: '/logos/microsoft.svg' },
+  { name: 'Amazon', src: '/logos/amazon.svg' },
+  { name: 'Sonia.so', src: '/logos/sonia-so.svg' },
+  { name: 'Celero One', src: '/logos/celero-one.svg' },
 ]
 
 export function LogoStripSection() {

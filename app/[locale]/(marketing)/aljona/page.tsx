@@ -175,10 +175,9 @@ export default async function AljonaPage({ params }: PageProps) {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/aljona-photo.jpg"
+                src="/aljona-portrait.jpg"
                 alt="Aljona Eilers"
                 className="h-full w-full object-cover"
-                style={{ filter: 'grayscale(20%)' }}
               />
             </div>
           </div>

@@ -13,7 +13,7 @@ const coaches = {
   aljona: {
     name: 'Aljona Eilers',
     role: 'Transformational Leadership Coach',
-    photo: '/aljona-photo.jpg',
+    photo: '/aljona-portrait.jpg',
     linkedin: 'https://linkedin.com/in/aljonaeilers',
     accent: '#D4192B',
     bio: 'Aljona begleitet Führungskräfte und Gründer:innen auf dem Weg zu authentischer, wirkungsvoller Leadership.',
