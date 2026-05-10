@@ -93,7 +93,7 @@ export function CoachesSection() {
             {/* Photo */}
             <div className="relative w-full overflow-hidden bg-gray-100" style={{ aspectRatio: '3/4' }}>
               <Image
-                src="/aljona-portrait.jpg"
+                src="/aljona-photo.jpg"
                 alt="Aljona Eilers"
                 fill
                 className="object-cover object-center"
