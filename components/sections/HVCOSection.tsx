@@ -146,7 +146,7 @@ export async function HVCOSection() {
               visual.colSpan === 4 ? 'col-span-2 sm:col-span-4 lg:col-span-4'
               : 'col-span-2 lg:col-span-2'
 
-            const minH = visual.featured ? 'min-h-[320px] sm:min-h-[360px]' : 'min-h-[260px]'
+            const minH = visual.featured ? 'min-h-[240px]' : 'min-h-[220px]'
 
             // Two-tier blue theming: dark navy for featured, soft sky-blue for the rest.
             const cardBg = visual.featured
@@ -160,7 +160,7 @@ export async function HVCOSection() {
               <Link
                 key={f.id}
                 href={`/frameworks/${f.slug}`}
-                className={`group relative flex flex-col overflow-hidden rounded-2xl p-6 transition-all hover:-translate-y-0.5 ${spanClass} ${minH}`}
+                className={`group relative flex flex-col overflow-hidden rounded-2xl p-5 transition-all hover:-translate-y-0.5 ${spanClass} ${minH}`}
                 style={{
                   background: cardBg,
                   border: cardBorder,
@@ -170,7 +170,7 @@ export async function HVCOSection() {
 
                 {/* Content */}
                 <div className="relative flex flex-col h-full">
-                  <div className="flex items-start justify-between mb-5">
+                  <div className="flex items-start justify-between mb-4">
                     <div
                       className="flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-105"
                       style={{
@@ -218,7 +218,7 @@ export async function HVCOSection() {
 
                   {f.metaDescription && (
                     <p
-                      className={`mt-3 text-sm leading-relaxed flex-1 ${visual.featured ? 'line-clamp-4' : 'line-clamp-3'}`}
+                      className={`mt-3 text-sm leading-relaxed flex-1 ${visual.featured ? 'line-clamp-3' : 'line-clamp-3'}`}
                       style={{ color: bodyColor }}
                     >
                       {f.metaDescription}
@@ -226,7 +226,7 @@ export async function HVCOSection() {
                   )}
 
                   <div
-                    className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold"
+                    className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold"
                     style={{ color: visual.featured ? '#FFFFFF' : accent }}
                   >
                     Pack's an

@@ -3,12 +3,15 @@
 import { useTranslations } from 'next-intl'
 import { AnimatedNumber } from '@/components/blocks/AnimatedNumber'
 import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
+import { CompoundGrid } from '@/components/effects/CompoundGrid'
 
 export function HeroSection() {
   const t = useTranslations('hero')
 
   return (
     <section className="relative overflow-hidden px-6 pb-20 pt-14 sm:pt-24" style={{ backgroundColor: '#FAFAF8' }}>
+      {/* Living dot-grid: SalesMade thesis as ambient background */}
+      <CompoundGrid />
       {/* Decorative background orbs */}
       <KaroPatternCorner color="#F05A1A" opacity={0.08} corner="top-right" />
       <KaroPatternCorner color="#1A5FD4" opacity={0.06} corner="bottom-left" />
