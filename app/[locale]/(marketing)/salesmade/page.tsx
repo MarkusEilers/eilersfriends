@@ -8,6 +8,11 @@ import { SalesMadeRoiCalculator } from './RoiCalculator'
 import { SkillInventory } from '@/components/sections/salesmade/SkillInventory'
 import { ProgressionLadder } from '@/components/sections/salesmade/ProgressionLadder'
 import { SalesPricing } from '@/components/sections/salesmade/SalesPricing'
+import { MarketRealityStats } from '@/components/sections/salesmade/MarketRealityStats'
+import { CeoMonologue } from '@/components/sections/salesmade/CeoMonologue'
+import { MethodologyTriptych } from '@/components/sections/salesmade/MethodologyTriptych'
+import { SalesFlywheel } from '@/components/sections/salesmade/SalesFlywheel'
+import { BeforeAfter } from '@/components/sections/salesmade/BeforeAfter'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
@@ -231,28 +236,11 @@ export default async function SalesMadePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ─── 3. SYMPTOMS ─────────────────────────────────────────────── */}
-      <section className="px-6 py-20">
-        <div className="mx-auto max-w-3xl">
-          <div className="text-center">
-            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: accent }}>Erkennst du das?</span>
-            <h2 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>
-              Typische Symptome
-            </h2>
-          </div>
-          <ul className="mt-10 grid gap-3 sm:grid-cols-2">
-            {SYMPTOMS.map((s) => (
-              <li
-                key={s}
-                className="flex items-start gap-3 rounded-2xl border border-gray-100 bg-white p-5"
-              >
-                <AlertTriangle size={18} className="mt-0.5 flex-shrink-0" style={{ color: '#D4192B' }} />
-                <span className="text-sm font-semibold text-gray-800">{s}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {/* ─── 3. MARKET REALITY STATS ──────────────────────── */}
+      <MarketRealityStats />
+
+      {/* ─── 3b. CEO INNER MONOLOGUE ──────────────────────────── */}
+      <CeoMonologue />
 
       {/* ─── 4. GOOD NEWS ────────────────────────────────────────────── */}
       <section className="px-6 py-20" style={{ backgroundColor: '#FFF1EB' }}>
@@ -277,6 +265,9 @@ export default async function SalesMadePage({ params }: PageProps) {
           </p>
         </div>
       </section>
+
+      {/* ─── 4b. METHODOLOGY TRIPTYCH ──────────────────────── */}
+      <MethodologyTriptych />
 
       {/* ─── 5. VISION ───────────────────────────────────────────────── */}
       <section className="px-6 py-20">
@@ -402,6 +393,9 @@ export default async function SalesMadePage({ params }: PageProps) {
           </ul>
         </div>
       </section>
+
+      {/* ─── 7b. SALES FLYWHEEL ───────────────────────────── */}
+      <SalesFlywheel />
 
       {/* ─── 8. COACH ────────────────────────────────────────────────── */}
       <section className="px-6 py-20 bg-white">
@@ -539,6 +533,9 @@ export default async function SalesMadePage({ params }: PageProps) {
           </div>
         </div>
       </section>
+
+      {/* ─── 10b. BEFORE / AFTER ───────────────────────────── */}
+      <BeforeAfter />
 
       {/* ─── 11. PRICING ─────────────────────────────────────── */}
       <SalesPricing />
