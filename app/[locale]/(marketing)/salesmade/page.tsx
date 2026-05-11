@@ -2,9 +2,12 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
   Calendar, ArrowRight, Shield, Check, AlertTriangle,
-  TrendingUp, Users, Target, Sparkles, Award, BookOpen,
+  TrendingUp,
 } from 'lucide-react'
 import { SalesMadeRoiCalculator } from './RoiCalculator'
+import { SkillInventory } from '@/components/sections/salesmade/SkillInventory'
+import { ProgressionLadder } from '@/components/sections/salesmade/ProgressionLadder'
+import { SalesPricing } from '@/components/sections/salesmade/SalesPricing'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
@@ -492,35 +495,11 @@ export default async function SalesMadePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ─── 9. TOOLS ────────────────────────────────────────────────── */}
-      <section className="px-6 py-20" style={{ backgroundColor: '#EBF1FF' }}>
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center">
-            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: accent }}>
-              Werkzeuge statt Theorie
-            </span>
-            <h2 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>
-              Frameworks, die sofort funktionieren
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-gray-600">
-              Wir statten Dein Team mit praxiserprobten Frameworks aus — klare,
-              sofort anwendbare Werkzeuge von der Gestaltung effektiver
-              Erstgespräche bis zum effektiven Closing.
-            </p>
-          </div>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {TOOLS.map((t, i) => (
-              <div key={t.title} className="rounded-2xl border bg-white p-6 transition-shadow hover:shadow-md" style={{ borderColor: '#BBCFF5' }}>
-                <div className="text-xs font-bold tracking-widest" style={{ color: accent }}>
-                  {String(i + 1).padStart(2, '0')}
-                </div>
-                <h3 className="mt-2 text-base font-bold" style={{ color: '#0D0D0B' }}>{t.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-gray-600">{t.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ─── 9. SKILL INVENTORY ──────────────────────────────── */}
+      <SkillInventory />
+
+      {/* ─── 9b. PROGRESSION LADDER ────────────────────────────── */}
+      <ProgressionLadder />
 
       {/* ─── 10. COMPARISON ──────────────────────────────────────────── */}
       <section className="px-6 py-20">
@@ -561,67 +540,8 @@ export default async function SalesMadePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ─── 11. PLATINUM EXTRAS ────────────────────────────────────── */}
-      <section className="px-6 py-20" style={{ backgroundColor: navy }}>
-        <div className="mx-auto max-w-5xl">
-          <div className="text-center">
-            <span
-              className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest mb-4"
-              style={{ backgroundColor: 'rgba(176,124,10,0.25)', color: '#FFD37A' }}
-            >
-              Platinum-Extras · Limitiert auf 30 Seats
-            </span>
-            <h2 className="mt-3 text-3xl font-bold sm:text-4xl text-white">
-              Wenn Du es schneller willst
-            </h2>
-          </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-2">
-            <div className="rounded-2xl bg-white/5 p-8 backdrop-blur-sm" style={{ border: '1px solid rgba(255,211,122,0.25)' }}>
-              <div className="text-xs font-bold uppercase tracking-widest" style={{ color: '#FFD37A' }}>
-                Exklusive Leistungen
-              </div>
-              <ul className="mt-6 space-y-4 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
-                <li className="flex items-start gap-3">
-                  <Sparkles size={18} className="mt-0.5 flex-shrink-0" style={{ color: '#FFD37A' }} />
-                  Monatliche individuelle 1:1 Coaching Sessions (60 Min.) mit unseren
-                  führenden SalesMade Coaches
-                </li>
-                <li className="flex items-start gap-3">
-                  <Sparkles size={18} className="mt-0.5 flex-shrink-0" style={{ color: '#FFD37A' }} />
-                  Exklusive monatliche VIP-Gruppen-Session zur Vertiefung spezifischer
-                  strategischer Themen
-                </li>
-              </ul>
-            </div>
-            <div className="rounded-2xl bg-white/5 p-8 backdrop-blur-sm" style={{ border: '1px solid rgba(255,211,122,0.25)' }}>
-              <div className="text-xs font-bold uppercase tracking-widest" style={{ color: '#FFD37A' }}>
-                Quantifizierte Vorteile
-              </div>
-              <ul className="mt-6 space-y-4 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
-                <li className="flex items-start gap-3">
-                  <Award size={18} className="mt-0.5 flex-shrink-0" style={{ color: '#FFD37A' }} />
-                  Zusätzliche Steigerung der individuellen Verkaufs-Performance um bis
-                  zu 50 %
-                </li>
-                <li className="flex items-start gap-3">
-                  <Award size={18} className="mt-0.5 flex-shrink-0" style={{ color: '#FFD37A' }} />
-                  Schnelleres Erreichen individueller Vertriebsziele durch intensive
-                  1:1-Begleitung
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-12 text-center">
-            <Link
-              href="/kontakt"
-              className="inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-white shadow-lg transition-opacity hover:opacity-90"
-              style={{ backgroundColor: accent }}
-            >
-              <Calendar size={16} /> Jetzt bewerben
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* ─── 11. PRICING ─────────────────────────────────────── */}
+      <SalesPricing />
 
       {/* ─── 12. ROI CALCULATOR ─────────────────────────────────────── */}
       <section className="px-6 py-20">
