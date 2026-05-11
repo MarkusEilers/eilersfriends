@@ -14,7 +14,7 @@ export async function NewsletterSection() {
   const formattedCount = formatter.format(total)
 
   return (
-    <section id="newsletter" className="px-6 py-20" style={{ backgroundColor: '#F05A1A' }}>
+    <section id="newsletter" className="px-6 py-20" style={{ backgroundColor: '#1A5FD4' }}>
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-[1fr_480px] lg:items-center">
           {/* Left: Headline */}

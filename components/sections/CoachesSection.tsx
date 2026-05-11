@@ -14,7 +14,7 @@ export function CoachesSection() {
         <div className="mb-14 text-center">
           <span
             className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ backgroundColor: '#FFF1EB', color: '#F05A1A' }}
+            style={{ backgroundColor: '#EBF1FF', color: '#1A5FD4' }}
           >
             {t('eyebrow')}
           </span>
@@ -44,7 +44,7 @@ export function CoachesSection() {
               <div className="absolute bottom-4 left-4">
                 <span
                   className="inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-md"
-                  style={{ backgroundColor: '#F05A1A' }}
+                  style={{ backgroundColor: '#1A5FD4' }}
                 >
                   {t('markus.tag')}
                 </span>
@@ -103,7 +103,7 @@ export function CoachesSection() {
               <div className="absolute bottom-4 left-4">
                 <span
                   className="inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-md"
-                  style={{ backgroundColor: '#F05A1A' }}
+                  style={{ backgroundColor: '#1A5FD4' }}
                 >
                   {t('aljona.tag')}
                 </span>
@@ -132,7 +132,7 @@ export function CoachesSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-red-50"
-                  style={{ color: '#D4192B', borderColor: '#F5BBBC' }}
+                  style={{ color: '#EB0028', borderColor: '#F5BBBC' }}
                 >
                   <Linkedin size={13} />
                   {t('aljona.linkedin')}

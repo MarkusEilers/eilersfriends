@@ -106,7 +106,7 @@ export function SalesFlywheel() {
         <div className="mt-10 rounded-2xl border p-6 text-center" style={{ backgroundColor: '#0F1E3A', borderColor: '#0F1E3A' }}>
           <p className="text-base leading-relaxed text-white sm:text-lg">
             „Professionell ausgebildete Seller erzielen{' '}
-            <strong style={{ color: '#FFD37A' }}>48 % bis 280 %</strong> höhere Umsätze —
+            <strong style={{ color: '#93B8F5' }}>48 % bis 280 %</strong> höhere Umsätze —
             nicht weil sie mehr arbeiten, sondern weil sie besser sind."
           </p>
         </div>

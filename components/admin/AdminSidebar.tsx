@@ -78,7 +78,7 @@ export function AdminSidebar({ userName, userRole }: AdminSidebarProps) {
       {/* Logo */}
       <div className="px-6 py-6 border-b border-white/10">
         <p className="text-sm font-bold text-white tracking-tight">
-          Eilers<span style={{ color: '#F05A1A' }}>+</span>Friends
+          Eilers<span style={{ color: '#1A5FD4' }}>+</span>Friends
         </p>
         <p className="text-xs text-gray-500 mt-0.5">Coach Backend</p>
       </div>
@@ -98,7 +98,7 @@ export function AdminSidebar({ userName, userRole }: AdminSidebarProps) {
                   : 'text-gray-400 hover:bg-white/5 hover:text-white'
               }`}
             >
-              <Icon size={16} className={active ? 'text-orange-400' : ''} />
+              <Icon size={16} className={active ? 'text-blue-400' : ''} />
               {item.label}
               {active && <ChevronRight size={12} className="ml-auto text-gray-500" />}
             </Link>
@@ -109,7 +109,7 @@ export function AdminSidebar({ userName, userRole }: AdminSidebarProps) {
       {/* User */}
       <div className="px-4 py-4 border-t border-white/10">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: '#F05A1A' }}>
+          <div className="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: '#1A5FD4' }}>
             {userName.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0">

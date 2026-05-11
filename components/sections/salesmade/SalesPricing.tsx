@@ -176,7 +176,7 @@ export function SalesPricing() {
         {/* Footer reassurance */}
         <div
           className="mt-8 rounded-2xl border p-6 text-center"
-          style={{ backgroundColor: '#FFF9F5', borderColor: '#FECDBB' }}
+          style={{ backgroundColor: '#FFF9F5', borderColor: '#BBCFF5' }}
         >
           <p className="text-sm" style={{ color: '#0D0D0B' }}>
             <strong>90-Tage Geld-zurück-Garantie.</strong>{' '}

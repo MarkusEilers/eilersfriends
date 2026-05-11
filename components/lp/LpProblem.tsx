@@ -5,7 +5,7 @@ export function LpProblem({ content }: { content: Record<string, any> }) {
       ? { title: it, description: undefined as string | undefined }
       : { title: String(it.title ?? ''), description: it.description ? String(it.description) : undefined },
   )
-  const accent = '#D4192B'
+  const accent = '#EB0028'
 
   return (
     <section className="px-6 py-16" style={{ backgroundColor: '#FAFAF8' }}>

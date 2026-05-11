@@ -28,7 +28,7 @@ export function MarketRealityStats() {
         <div className="mb-12 text-center">
           <span
             className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
-            style={{ backgroundColor: '#FFEBEC', color: '#D4192B', border: '1px solid #F5BBBC' }}
+            style={{ backgroundColor: '#FFEBEC', color: '#EB0028', border: '1px solid #F5BBBC' }}
           >
             Die unbequeme Wahrheit
           </span>

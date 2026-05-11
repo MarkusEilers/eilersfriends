@@ -89,7 +89,7 @@ const TIERS: Tier[] = [
     rank: 'VI',
     title: 'Principal',
     duration: 'auf Einladung',
-    pin: '#D4192B',
+    pin: '#EB0028',
     pinBg: '#FFEBEC',
     requirements: [
       'Mehrere Kohorten gecoacht',

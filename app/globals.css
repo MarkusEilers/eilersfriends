@@ -6,15 +6,15 @@
   --font-serif: 'DM Serif Display', serif;
 
   /* Akzentfarben */
-  --color-orange: #F05A1A;
-  --color-orange-bg: #FFF1EB;
-  --color-orange-border: #FECDBB;
+  --color-orange: #1A5FD4;
+  --color-orange-bg: #EBF1FF;
+  --color-orange-border: #BBCFF5;
 
   --color-blue: #1A5FD4;
   --color-blue-bg: #EBF1FF;
   --color-blue-border: #BBCFF5;
 
-  --color-red: #D4192B;
+  --color-red: #EB0028;
   --color-red-bg: #FFEBEC;
   --color-red-border: #F5BBBC;
 

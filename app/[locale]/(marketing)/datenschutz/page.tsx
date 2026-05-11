@@ -40,7 +40,7 @@ export default async function DatenschutzPage({ params }: PageProps) {
                 Blütenäcker 55/2<br />
                 71332 Waiblingen<br />
                 Deutschland<br />
-                E-Mail: <a href="mailto:team@eilersfriends.com" className="underline" style={{ color: '#F05A1A' }}>team@eilersfriends.com</a>
+                E-Mail: <a href="mailto:team@eilersfriends.com" className="underline" style={{ color: '#1A5FD4' }}>team@eilersfriends.com</a>
               </p>
             </div>
 
@@ -87,7 +87,7 @@ export default async function DatenschutzPage({ params }: PageProps) {
               <p className="mt-3">
                 Wir Verwenden <strong>Beehiiv</strong> als Newsletter-Plattform. Weitere Informationen zur
                 Datenverarbeitung durch Beehiiv finden Sie unter:{' '}
-                <a href="https://www.beehiiv.com/privacy" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#F05A1A' }}>
+                <a href="https://www.beehiiv.com/privacy" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#1A5FD4' }}>
                   beehiiv.com/privacy
                 </a>
               </p>
@@ -114,7 +114,7 @@ export default async function DatenschutzPage({ params }: PageProps) {
               <p>
                 Diese Website wird auf der Plattform Vercel (Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789,
                 USA) gehostet. Beim Aufruf dieser Website werden automatisch Verbindungsdaten an Vercel übermittelt.
-                Weitere Informationen: <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#F05A1A' }}>vercel.com/legal/privacy-policy</a>
+                Weitere Informationen: <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#1A5FD4' }}>vercel.com/legal/privacy-policy</a>
               </p>
               <h3 className="font-semibold mb-2 mt-4">Google Fonts</h3>
               <p>
@@ -129,7 +129,7 @@ export default async function DatenschutzPage({ params }: PageProps) {
               <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>7. Kontakt bei Datenschutzfragen</h2>
               <p>
                 Bei Fragen zum Datenschutz wenden Sie sich bitte an:{' '}
-                <a href="mailto:team@eilersfriends.com" className="underline" style={{ color: '#F05A1A' }}>
+                <a href="mailto:team@eilersfriends.com" className="underline" style={{ color: '#1A5FD4' }}>
                   team@eilersfriends.com
                 </a>
               </p>

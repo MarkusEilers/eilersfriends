@@ -84,14 +84,14 @@ export function BentoGrid() {
               style={{ backgroundColor: '#FFEBEC', border: '1.5px solid #F5BBBC' }}
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: '#F5BBBC' }}>
-                <Users size={18} style={{ color: '#D4192B' }} />
+                <Users size={18} style={{ color: '#EB0028' }} />
               </div>
               <div>
-                <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#D4192B' }}>Leadership-Coaching</span>
+                <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#EB0028' }}>Leadership-Coaching</span>
                 <h3 className="mt-1 text-base font-bold" style={{ color: '#0D0D0B' }}>{t('aljona.title')}</h3>
                 <p className="mt-1 text-xs leading-relaxed text-gray-600">{t('aljona.text')}</p>
               </div>
-              <Link href="/aljona" className="mt-auto inline-flex items-center gap-1 text-xs font-semibold" style={{ color: '#D4192B' }}>
+              <Link href="/aljona" className="mt-auto inline-flex items-center gap-1 text-xs font-semibold" style={{ color: '#EB0028' }}>
                 Mehr <ArrowRight size={12} />
               </Link>
             </div>
@@ -103,14 +103,14 @@ export function BentoGrid() {
             >
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl" style={{ backgroundColor: '#F5BBBC' }}>
-                  <Layers size={18} style={{ color: '#D4192B' }} />
+                  <Layers size={18} style={{ color: '#EB0028' }} />
                 </div>
                 <div className="flex-1">
-                  <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#D4192B' }}>Framework</span>
+                  <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#EB0028' }}>Framework</span>
                   <h3 className="mt-1 text-base font-bold" style={{ color: '#0D0D0B' }}>{t('liquid.title')}</h3>
                   <p className="mt-1 text-xs leading-relaxed text-gray-600">{t('liquid.text')}</p>
                 </div>
-                <Link href="/aljona#liquid" className="flex-shrink-0 inline-flex items-center gap-1 text-xs font-semibold self-start mt-1" style={{ color: '#D4192B' }}>
+                <Link href="/aljona#liquid" className="flex-shrink-0 inline-flex items-center gap-1 text-xs font-semibold self-start mt-1" style={{ color: '#EB0028' }}>
                   Mehr <ArrowRight size={12} />
                 </Link>
               </div>
@@ -125,7 +125,7 @@ export function BentoGrid() {
               style={{
                 backgroundColor: '#7A0D17',
                 color: '#FFF',
-                border: '1.5px solid #D4192B',
+                border: '1.5px solid #EB0028',
                 minHeight: 180,
               }}
             >

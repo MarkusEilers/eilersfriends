@@ -223,7 +223,7 @@ export default async function FrontRowPage({ params }: PageProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-gray-50"
-                  style={{ color: '#D4192B', borderColor: '#F5BBBC' }}
+                  style={{ color: '#EB0028', borderColor: '#F5BBBC' }}
                 >
                   <Youtube size={13} /> TEDx Darmstadt 2025
                 </a>

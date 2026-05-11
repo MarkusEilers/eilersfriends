@@ -46,7 +46,7 @@ export default async function LandingPageRoute({ params }: PageProps) {
     notFound()
   }
 
-  const accent = page!.accentColor ?? '#F05A1A'
+  const accent = page!.accentColor ?? '#1A5FD4'
 
   return (
     <div className="min-h-screen" style={{ '--accent' : accent } as React.CSSProperties}>

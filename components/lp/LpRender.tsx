@@ -28,7 +28,7 @@ export interface SimpleSection {
 
 export function LpRender({
   sections,
-  accent = '#F05A1A',
+  accent = '#1A5FD4',
   emailList = 'general',
 }: {
   sections: SimpleSection[]

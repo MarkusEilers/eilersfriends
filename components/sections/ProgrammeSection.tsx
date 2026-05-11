@@ -6,8 +6,8 @@ const PROGRAMS = [
   {
     key: 'card1',
     icon: TrendingUp,
-    accent: '#F05A1A',
-    accentBg: '#FFF1EB',
+    accent: '#1A5FD4',
+    accentBg: '#EBF1FF',
     href: '/salesmade',
     popular: true,
     features: ['card1F1', 'card1F2', 'card1F3', 'card1F4'],
@@ -15,7 +15,7 @@ const PROGRAMS = [
   {
     key: 'card2',
     icon: Sparkles,
-    accent: '#D4192B',
+    accent: '#EB0028',
     accentBg: '#FFEBEC',
     href: '/aljona#liquid',
     popular: false,
@@ -43,7 +43,7 @@ export function ProgrammeSection() {
         <div className="mb-12 text-center">
           <span
             className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ backgroundColor: '#FFF1EB', color: '#F05A1A' }}
+            style={{ backgroundColor: '#EBF1FF', color: '#1A5FD4' }}
           >
             {t('eyebrow')}
           </span>

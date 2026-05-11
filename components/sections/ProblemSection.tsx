@@ -18,7 +18,7 @@ export function ProblemSection() {
         <div className="mb-12">
           <span
             className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ backgroundColor: '#FFF1EB', color: '#F05A1A' }}
+            style={{ backgroundColor: '#EBF1FF', color: '#1A5FD4' }}
           >
             {t('eyebrow')}
           </span>
@@ -41,9 +41,9 @@ export function ProblemSection() {
             >
               <div
                 className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl"
-                style={{ backgroundColor: '#FFF1EB' }}
+                style={{ backgroundColor: '#EBF1FF' }}
               >
-                <Icon size={22} style={{ color: '#F05A1A' }} />
+                <Icon size={22} style={{ color: '#1A5FD4' }} />
               </div>
               <h3 className="mb-2 text-lg font-bold" style={{ color: '#0D0D0B' }}>
                 {t(titleKey)}

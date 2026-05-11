@@ -54,7 +54,7 @@ export async function POST(request: Request) {
         ${subject ? `<tr><td><strong>Betreff:</strong></td><td>${escape(subject)}</td></tr>` : ''}
       </table>
       <h3>Nachricht</h3>
-      <div style="white-space:pre-wrap;border-left:3px solid #F05A1A;padding-left:12px;font-family:system-ui,sans-serif;font-size:14px">
+      <div style="white-space:pre-wrap;border-left:3px solid #1A5FD4;padding-left:12px;font-family:system-ui,sans-serif;font-size:14px">
         ${escape(message)}
       </div>
     `.trim()

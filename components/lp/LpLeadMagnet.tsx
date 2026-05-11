@@ -106,7 +106,7 @@ export function LpLeadMagnet({ content, accent, emailList }: Props) {
                     placeholder="Vorname (optional)"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-orange-300"
+                    className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
                   />
                   <input
                     type="email"
@@ -114,7 +114,7 @@ export function LpLeadMagnet({ content, accent, emailList }: Props) {
                     placeholder="Deine Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-orange-300"
+                    className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
                   />
                 </div>
                 <button

@@ -72,7 +72,7 @@ export default async function LandingPagesPage() {
             <button
               type="submit"
               className="flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-gray-50"
-              style={{ color: '#F05A1A', borderColor: '#FECDBB', backgroundColor: '#FFF1EB' }}
+              style={{ color: '#1A5FD4', borderColor: '#BBCFF5', backgroundColor: '#EBF1FF' }}
               title={lpTemplates['newsletter-welsh'].description}
             >
               <Sparkles size={16} />
@@ -94,7 +94,7 @@ export default async function LandingPagesPage() {
             <button
               type="submit"
               className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#F05A1A' }}
+              style={{ backgroundColor: '#1A5FD4' }}
             >
               <Plus size={16} />
               Leere Seite
@@ -138,7 +138,7 @@ function PageGroup({
 }) {
   const colorMap = {
     green: 'text-green-700 bg-green-50',
-    orange: 'text-orange-700 bg-orange-50',
+    orange: 'text-blue-700 bg-blue-50',
     gray: 'text-gray-600 bg-gray-100',
   }
 

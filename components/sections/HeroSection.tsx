@@ -13,14 +13,14 @@ export function HeroSection() {
       {/* Living dot-grid: SalesMade thesis as ambient background */}
       <CompoundGrid />
       {/* Decorative background orbs */}
-      <KaroPatternCorner color="#F05A1A" opacity={0.08} corner="top-right" />
+      <KaroPatternCorner color="#1A5FD4" opacity={0.08} corner="top-right" />
       <KaroPatternCorner color="#1A5FD4" opacity={0.06} corner="bottom-left" />
 
       <div className="relative mx-auto max-w-5xl">
         {/* Tag */}
         <div className="mb-8 flex justify-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold" style={{ color: '#F05A1A', backgroundColor: '#FFF1EB', borderColor: '#FECDBB' }}>
-            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: '#F05A1A' }} />
+          <span className="inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold" style={{ color: '#1A5FD4', backgroundColor: '#EBF1FF', borderColor: '#BBCFF5' }}>
+            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: '#1A5FD4' }} />
             {t('pill1')}
           </span>
         </div>
@@ -29,7 +29,7 @@ export function HeroSection() {
         <h1 className="text-center text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-[4rem]" style={{ color: '#0D0D0B' }}>
           {t('headline1')}
           <br />
-          <span style={{ color: '#F05A1A' }}>{t('headline2')}</span>
+          <span style={{ color: '#1A5FD4' }}>{t('headline2')}</span>
         </h1>
 
         {/* Subtext */}
@@ -54,7 +54,7 @@ export function HeroSection() {
         <div className="mt-16 grid grid-cols-2 divide-x divide-gray-200 rounded-2xl border border-gray-200 bg-white shadow-sm sm:grid-cols-4">
           {/* Stat 1: Orange */}
           <div className="flex flex-col items-center gap-1 px-4 py-7">
-            <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#F05A1A' }}>
+            <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#1A5FD4' }}>
               <AnimatedNumber value={867} suffix="+" />
             </span>
             <span className="text-xs text-gray-400 font-medium">{t('stat1Label')}</span>
@@ -70,7 +70,7 @@ export function HeroSection() {
 
           {/* Stat 3: Red */}
           <div className="flex flex-col items-center gap-1 px-4 py-7">
-            <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#D4192B' }}>
+            <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#EB0028' }}>
               <AnimatedNumber value={90} suffix="%+" />
             </span>
             <span className="text-xs text-gray-400 font-medium">{t('stat3Label')}</span>

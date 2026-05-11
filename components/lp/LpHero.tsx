@@ -78,7 +78,7 @@ export function LpHero({ content, accent, emailList }: LpHeroProps) {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="Dein Vorname"
-                  className="w-full rounded-full border border-gray-200 bg-white px-5 py-3.5 text-sm shadow-sm focus:border-orange-400 focus:outline-none"
+                  className="w-full rounded-full border border-gray-200 bg-white px-5 py-3.5 text-sm shadow-sm focus:border-blue-400 focus:outline-none"
                 />
                 <input
                   type="email"
@@ -86,7 +86,7 @@ export function LpHero({ content, accent, emailList }: LpHeroProps) {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="Deine Email-Adresse"
-                  className="w-full rounded-full border border-gray-200 bg-white px-5 py-3.5 text-sm shadow-sm focus:border-orange-400 focus:outline-none"
+                  className="w-full rounded-full border border-gray-200 bg-white px-5 py-3.5 text-sm shadow-sm focus:border-blue-400 focus:outline-none"
                 />
                 <button
                   type="submit"

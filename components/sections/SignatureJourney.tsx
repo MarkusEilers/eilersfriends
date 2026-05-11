@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import { SectionHeader } from '@/components/blocks/SectionHeader'
 
 const PHASES = ['phase1', 'phase2', 'phase3', 'phase4'] as const
-const PHASE_COLORS = ['#F05A1A', '#1A5FD4', '#D4192B', '#6B5CE7']
+const PHASE_COLORS = ['#1A5FD4', '#1A5FD4', '#EB0028', '#6B5CE7']
 
 export function SignatureJourney() {
   const t = useTranslations('journey')
@@ -21,7 +21,7 @@ export function SignatureJourney() {
           {/* Bad Place */}
           <div className="flex w-full items-center justify-center rounded-2xl border-2 border-red-border bg-red-bg px-6 py-8 text-center lg:w-48 lg:flex-shrink-0" style={{ backgroundColor: '#FFEBEC', borderColor: '#F5BBBC' }}>
             <div>
-              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#D4192B' }}>Start</span>
+              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#EB0028' }}>Start</span>
               <p className="mt-2 text-sm font-semibold text-gray-800">{t('badPlace')}</p>
             </div>
           </div>

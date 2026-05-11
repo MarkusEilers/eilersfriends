@@ -25,7 +25,7 @@ export function CeoMonologue() {
               „Ich weiß, dass mein Team besser sein muss.
               <br className="hidden sm:block" />
               Aber ich weiß nicht, was genau fehlt —{' '}
-              <span style={{ color: '#FFD37A' }}>und noch weniger, wie ich es ihnen beibringen soll.</span>"
+              <span style={{ color: '#93B8F5' }}>und noch weniger, wie ich es ihnen beibringen soll.</span>"
             </p>
             <div className="mt-6 text-xs uppercase tracking-widest" style={{ color: '#93B8F5' }}>
               Immer wieder.
@@ -43,7 +43,7 @@ export function CeoMonologue() {
             >
               <div
                 className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg"
-                style={{ backgroundColor: '#FFEBEC', color: '#D4192B' }}
+                style={{ backgroundColor: '#FFEBEC', color: '#EB0028' }}
               >
                 <Flag size={16} />
               </div>

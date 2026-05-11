@@ -25,7 +25,7 @@ export default async function EmailTemplatesPage() {
           </p>
         </div>
         <EmailTemplateEditor mode="create">
-          <button className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90" style={{ backgroundColor: '#F05A1A' }}>
+          <button className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90" style={{ backgroundColor: '#1A5FD4' }}>
             <Plus size={16} />
             Neues Template
           </button>
@@ -97,7 +97,7 @@ export default async function EmailTemplatesPage() {
 
 function TypeBadge({ type }: { type: string }) {
   const labels: Record<string, { label: string; color: string }> = {
-    doi_confirmation: { label: 'DOI Bestätigung', color: 'bg-orange-50 text-orange-700' },
+    doi_confirmation: { label: 'DOI Bestätigung', color: 'bg-blue-50 text-blue-700' },
     doi_welcome: { label: 'Welcome', color: 'bg-green-50 text-green-700' },
     sequence_step: { label: 'Sequenz-Schritt', color: 'bg-purple-50 text-purple-700' },
     transactional: { label: 'Transaktional', color: 'bg-gray-100 text-gray-600' },

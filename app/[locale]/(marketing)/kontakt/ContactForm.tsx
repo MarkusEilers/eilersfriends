@@ -43,9 +43,9 @@ export function ContactForm() {
       <div className="text-center py-8">
         <div
           className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full"
-          style={{ backgroundColor: '#FFF1EB' }}
+          style={{ backgroundColor: '#EBF1FF' }}
         >
-          <CheckCircle size={28} style={{ color: '#F05A1A' }} />
+          <CheckCircle size={28} style={{ color: '#1A5FD4' }} />
         </div>
         <h3 className="text-xl font-bold" style={{ color: '#0D0D0B' }}>Nachricht gesendet!</h3>
         <p className="mt-2 text-sm text-gray-600 max-w-md mx-auto">
@@ -56,7 +56,7 @@ export function ContactForm() {
           type="button"
           onClick={() => setStatus('idle')}
           className="mt-6 rounded-full border px-5 py-2 text-xs font-semibold"
-          style={{ color: '#F05A1A', borderColor: '#FECDBB' }}
+          style={{ color: '#1A5FD4', borderColor: '#BBCFF5' }}
         >
           Weitere Nachricht senden
         </button>
@@ -84,7 +84,7 @@ export function ContactForm() {
           minLength={10}
           rows={6}
           placeholder="Was beschäftigt dich? Worum soll es gehen?"
-          className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-orange-400 focus:bg-white resize-y"
+          className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-blue-400 focus:bg-white resize-y"
         />
         <p className="mt-1.5 text-[11px] text-gray-400">
           Mindestens 10 Zeichen. Aktuell: {form.message.length}.
@@ -101,7 +101,7 @@ export function ContactForm() {
         type="submit"
         disabled={status === 'loading'}
         className="inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
-        style={{ backgroundColor: '#F05A1A' }}
+        style={{ backgroundColor: '#1A5FD4' }}
       >
         {status === 'loading'
           ? <><Loader2 size={16} className="animate-spin" /> Wird gesendet…</>
@@ -112,7 +112,7 @@ export function ContactForm() {
       <p className="text-xs text-gray-400 text-center">
         Mit dem Absenden stimmst du zu, dass wir Deine Daten zur Beantwortung
         der Anfrage verarbeiten dürfen. Mehr in unserer{' '}
-        <a href="/datenschutz" className="underline" style={{ color: '#F05A1A' }}>Datenschutzerklärung</a>.
+        <a href="/datenschutz" className="underline" style={{ color: '#1A5FD4' }}>Datenschutzerklärung</a>.
       </p>
     </form>
   )
@@ -137,7 +137,7 @@ function Field({
         value={value}
         onChange={onChange}
         required={required}
-        className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-orange-400 focus:bg-white"
+        className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-blue-400 focus:bg-white"
       />
     </div>
   )

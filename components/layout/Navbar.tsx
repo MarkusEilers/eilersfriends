@@ -107,7 +107,7 @@ export function Navbar() {
               <Link
                 key={link.key}
                 href={link.href as '/'}
-                className="text-sm font-normal transition-colors hover:text-orange-600"
+                className="text-sm font-normal transition-colors hover:text-blue-600"
                 style={{ color: '#1F2937' }}
               >
                 {t(link.key)}
@@ -151,7 +151,7 @@ export function Navbar() {
                         className="flex w-full items-center gap-3 rounded-full px-3 py-2 text-sm transition-colors"
                         style={
                           active
-                            ? { backgroundColor: '#FFF1EB', color: '#F05A1A', fontWeight: 600 }
+                            ? { backgroundColor: '#EBF1FF', color: '#1A5FD4', fontWeight: 600 }
                             : { color: '#1F2937' }
                         }
                       >
@@ -172,7 +172,7 @@ export function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-              style={{ backgroundColor: '#F05A1A' }}
+              style={{ backgroundColor: '#1A5FD4' }}
             >
               {t('cta')}
             </a>
@@ -221,7 +221,7 @@ export function Navbar() {
                       <li key={item.key}>
                         <Link
                           href={item.href as '/'}
-                          className="flex items-center justify-between py-3.5 text-base font-medium transition-colors hover:text-orange-600"
+                          className="flex items-center justify-between py-3.5 text-base font-medium transition-colors hover:text-blue-600"
                           style={{ color: '#0D0D0B' }}
                         >
                           <span>{t(item.key)}</span>
@@ -240,7 +240,7 @@ export function Navbar() {
                           <li key={sub.key}>
                             <Link
                               href={sub.href as '/'}
-                              className="flex items-center justify-between py-2.5 pl-1 text-base font-medium transition-colors hover:text-orange-600"
+                              className="flex items-center justify-between py-2.5 pl-1 text-base font-medium transition-colors hover:text-blue-600"
                               style={{ color: '#0D0D0B' }}
                             >
                               <span>{t(sub.key)}</span>
@@ -267,7 +267,7 @@ export function Navbar() {
                       className={`flex items-center justify-center gap-2 rounded-full py-2.5 text-sm font-semibold transition-colors ${
                         locale === l.code ? 'text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
-                      style={locale === l.code ? { backgroundColor: '#F05A1A' } : undefined}
+                      style={locale === l.code ? { backgroundColor: '#1A5FD4' } : undefined}
                     >
                       <span>{l.flag}</span>
                       <span>{l.label}</span>
@@ -281,7 +281,7 @@ export function Navbar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-                style={{ backgroundColor: '#F05A1A' }}
+                style={{ backgroundColor: '#1A5FD4' }}
               >
                 {t('bookCta')} <ArrowRight size={14} />
               </a>

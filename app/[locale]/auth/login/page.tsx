@@ -68,7 +68,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-orange focus:ring-2"
-                style={{ '--tw-ring-color': '#F05A1A30' } as React.CSSProperties}
+                style={{ '--tw-ring-color': '#1A5FD430' } as React.CSSProperties}
               />
             </div>
             <div>
@@ -90,7 +90,7 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               className="flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-              style={{ backgroundColor: '#F05A1A' }}
+              style={{ backgroundColor: '#1A5FD4' }}
             >
               {loading && <Loader2 size={15} className="animate-spin" />}
               {t('submit')}

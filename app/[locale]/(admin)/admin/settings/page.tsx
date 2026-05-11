@@ -62,11 +62,11 @@ export default async function AdminSettingsPage() {
                       type="url"
                       defaultValue={s.value}
                       placeholder="https://calendly.com/..."
-                      className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none transition-colors focus:border-orange-400 focus:bg-white"
+                      className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none transition-colors focus:border-blue-400 focus:bg-white"
                     />
                     <button
                       type="submit"
-                      className="rounded-xl bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                      className="rounded-xl bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
                     >
                       Speichern
                     </button>

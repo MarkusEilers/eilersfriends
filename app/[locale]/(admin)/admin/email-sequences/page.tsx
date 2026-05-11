@@ -38,7 +38,7 @@ export default async function EmailSequencesPage() {
           </p>
         </div>
         <EmailSequenceEditor mode="create">
-          <button className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity" style={{ backgroundColor: '#F05A1A' }}>
+          <button className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity" style={{ backgroundColor: '#1A5FD4' }}>
             <Plus size={16} /> Neue Sequenz
           </button>
         </EmailSequenceEditor>

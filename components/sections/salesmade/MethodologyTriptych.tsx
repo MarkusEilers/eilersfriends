@@ -44,7 +44,7 @@ const LEVELS = [
     title: 'Machen',
     subtitle: 'Der tägliche Vollzug.',
     icon: Zap,
-    accent: '#D4192B',
+    accent: '#EB0028',
     accentBg: '#FFEBEC',
     intro:
       'Wir inspirieren Execution. Wer weiß und kann, aber nicht macht, hat nichts gewonnen. Deswegen bauen wir Struktur, Rituale und Momentum.',

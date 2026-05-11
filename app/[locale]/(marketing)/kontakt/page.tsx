@@ -27,11 +27,11 @@ export default async function KontaktPage({ params }: PageProps) {
     <main className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
 
       {/* Hero */}
-      <section className="px-6 py-20" style={{ backgroundColor: '#FFF1EB' }}>
+      <section className="px-6 py-20" style={{ backgroundColor: '#EBF1FF' }}>
         <div className="mx-auto max-w-3xl text-center">
           <span
             className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ backgroundColor: 'white', color: '#F05A1A', border: '1px solid #FECDBB' }}
+            style={{ backgroundColor: 'white', color: '#1A5FD4', border: '1px solid #BBCFF5' }}
           >
             Kontakt
           </span>
@@ -61,7 +61,7 @@ export default async function KontaktPage({ params }: PageProps) {
             {/* Strategie-Gespräch · Markus */}
             <div
               className="rounded-3xl p-6 text-white"
-              style={{ backgroundColor: '#F05A1A' }}
+              style={{ backgroundColor: '#1A5FD4' }}
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
@@ -78,7 +78,7 @@ export default async function KontaktPage({ params }: PageProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold transition-opacity hover:opacity-90"
-                style={{ color: '#F05A1A' }}
+                style={{ color: '#1A5FD4' }}
               >
                 Termin mit Markus
               </a>
@@ -87,7 +87,7 @@ export default async function KontaktPage({ params }: PageProps) {
             {/* Strategie-Gespräch · Aljona */}
             <div
               className="rounded-3xl p-6 text-white"
-              style={{ backgroundColor: '#D4192B' }}
+              style={{ backgroundColor: '#EB0028' }}
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
@@ -104,7 +104,7 @@ export default async function KontaktPage({ params }: PageProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold transition-opacity hover:opacity-90"
-                style={{ color: '#D4192B' }}
+                style={{ color: '#EB0028' }}
               >
                 Termin mit Aljona
               </a>
@@ -114,7 +114,7 @@ export default async function KontaktPage({ params }: PageProps) {
             <div className="rounded-3xl bg-white p-6 border border-gray-100">
               <div className="space-y-5">
                 <div className="flex gap-4">
-                  <Mail size={18} style={{ color: '#F05A1A' }} className="mt-0.5 flex-shrink-0" />
+                  <Mail size={18} style={{ color: '#1A5FD4' }} className="mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">E-Mail</p>
                     <a href="mailto:team@eilersfriends.com" className="text-sm" style={{ color: '#0D0D0B' }}>
@@ -123,7 +123,7 @@ export default async function KontaktPage({ params }: PageProps) {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <MapPin size={18} style={{ color: '#F05A1A' }} className="mt-0.5 flex-shrink-0" />
+                  <MapPin size={18} style={{ color: '#1A5FD4' }} className="mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Standort</p>
                     <p className="text-sm" style={{ color: '#0D0D0B' }}>
@@ -135,7 +135,7 @@ export default async function KontaktPage({ params }: PageProps) {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <Clock size={18} style={{ color: '#F05A1A' }} className="mt-0.5 flex-shrink-0" />
+                  <Clock size={18} style={{ color: '#1A5FD4' }} className="mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Erreichbarkeit</p>
                     <p className="text-sm" style={{ color: '#0D0D0B' }}>Mo–Fr: 9:00 – 18:00 Uhr</p>
@@ -151,13 +151,13 @@ export default async function KontaktPage({ params }: PageProps) {
                 <a href="https://linkedin.com/in/markuseilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-blue-50" style={{ color: '#1A5FD4', borderColor: '#BBCFF5' }}>
                   <Linkedin size={12} /> Markus
                 </a>
-                <a href="https://youtube.com/@markuseilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#D4192B', borderColor: '#F5BBBC' }}>
+                <a href="https://youtube.com/@markuseilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#EB0028', borderColor: '#F5BBBC' }}>
                   <Youtube size={12} /> Markus
                 </a>
-                <a href="https://www.linkedin.com/in/aljona-eilers-812b65194/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#D4192B', borderColor: '#F5BBBC' }}>
+                <a href="https://www.linkedin.com/in/aljona-eilers-812b65194/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#EB0028', borderColor: '#F5BBBC' }}>
                   <Linkedin size={12} /> Aljona
                 </a>
-                <a href="https://www.instagram.com/aljona_eilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#D4192B', borderColor: '#F5BBBC' }}>
+                <a href="https://www.instagram.com/aljona_eilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#EB0028', borderColor: '#F5BBBC' }}>
                   <Instagram size={12} /> Aljona
                 </a>
               </div>

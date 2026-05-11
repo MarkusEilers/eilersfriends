@@ -21,12 +21,12 @@ export function getDefaultDoiHtml(variables: {
     .wrapper { max-width: 560px; margin: 40px auto; background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb; }
     .header { background: #0A0D14; padding: 32px 40px; text-align: center; }
     .logo { color: #ffffff; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
-    .logo span { color: #F05A1A; }
+    .logo span { color: #1A5FD4; }
     .body { padding: 40px 40px 32px; }
     .body h1 { margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0D0D0B; line-height: 1.3; }
     .body p { margin: 0 0 24px; font-size: 15px; line-height: 1.7; color: #4b5563; }
     .btn-wrap { text-align: center; margin: 32px 0; }
-    .btn { display: inline-block; background: #F05A1A; color: #ffffff !important; text-decoration: none; padding: 14px 32px; border-radius: 100px; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+    .btn { display: inline-block; background: #1A5FD4; color: #ffffff !important; text-decoration: none; padding: 14px 32px; border-radius: 100px; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
     .divider { border: none; border-top: 1px solid #f3f4f6; margin: 32px 0; }
     .small { font-size: 13px; color: #9ca3af; line-height: 1.6; }
     .small a { color: #9ca3af; }

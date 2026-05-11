@@ -65,7 +65,7 @@ export function BeforeAfter() {
             style={{ backgroundColor: '#FFEBEC', border: '1px solid #F5BBBC' }}
           >
             <div className="flex items-center gap-2.5">
-              <X size={18} style={{ color: '#D4192B' }} strokeWidth={3} />
+              <X size={18} style={{ color: '#EB0028' }} strokeWidth={3} />
               <h3 className="text-lg font-bold" style={{ color: '#0D0D0B' }}>
                 Ohne Academy <span className="text-sm font-normal text-gray-600">— Freestyle-Vertrieb</span>
               </h3>
@@ -91,7 +91,7 @@ export function BeforeAfter() {
                 className="rounded-2xl bg-white p-5 border flex gap-3"
                 style={{ borderColor: '#F5BBBC' }}
               >
-                <X size={16} className="mt-0.5 flex-shrink-0" style={{ color: '#D4192B' }} strokeWidth={3} />
+                <X size={16} className="mt-0.5 flex-shrink-0" style={{ color: '#EB0028' }} strokeWidth={3} />
                 <span className="text-sm leading-relaxed" style={{ color: '#374151' }}>
                   {r.before}
                 </span>

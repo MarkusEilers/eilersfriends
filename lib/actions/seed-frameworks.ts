@@ -26,7 +26,7 @@ interface FrameworkSeed {
 
 const ACCENT_BY_TOPIC = {
   revenue: '#1A5FD4',
-  leadership: '#D4192B',
+  leadership: '#EB0028',
 }
 
 /** Smart default coach bio used across frameworks. */

@@ -10,7 +10,7 @@ import { createProgram, setProgramStatus, deleteProgram } from '@/lib/actions/pr
 
 const TYPE_META: Record<string, { label: string; color: string; bg: string; icon: React.ElementType }> = {
   academy: { label: 'Academy', color: '#1A5FD4', bg: '#EBF1FF', icon: GraduationCap },
-  coaching: { label: 'Coaching', color: '#D4192B', bg: '#FFEBEC', icon: UsersIcon },
+  coaching: { label: 'Coaching', color: '#EB0028', bg: '#FFEBEC', icon: UsersIcon },
   training: { label: 'Training', color: '#B07C0A', bg: '#FFF8E6', icon: Briefcase },
 }
 
@@ -69,7 +69,7 @@ export default async function ProgramsPage() {
           <button
             type="submit"
             className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: '#F05A1A' }}
+            style={{ backgroundColor: '#1A5FD4' }}
           >
             <Plus size={16} />
             Neues Programm
@@ -152,7 +152,7 @@ function Group({
 }) {
   const colorMap = {
     green: 'text-green-700 bg-green-50',
-    orange: 'text-orange-700 bg-orange-50',
+    orange: 'text-blue-700 bg-blue-50',
     gray: 'text-gray-600 bg-gray-100',
   }
   return (

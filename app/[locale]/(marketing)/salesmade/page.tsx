@@ -243,11 +243,11 @@ export default async function SalesMadePage({ params }: PageProps) {
       <CeoMonologue />
 
       {/* ─── 4. GOOD NEWS ────────────────────────────────────────────── */}
-      <section className="px-6 py-20" style={{ backgroundColor: '#FFF1EB' }}>
+      <section className="px-6 py-20" style={{ backgroundColor: '#EBF1FF' }}>
         <div className="mx-auto max-w-3xl text-center">
           <span
             className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ backgroundColor: 'white', color: '#F05A1A', border: '1px solid #FECDBB' }}
+            style={{ backgroundColor: 'white', color: '#1A5FD4', border: '1px solid #BBCFF5' }}
           >
             Die gute Nachricht
           </span>
@@ -259,7 +259,7 @@ export default async function SalesMadePage({ params }: PageProps) {
             gleich. Unternehmen, die das nachholen, sehen schnell deutlich bessere
             Ergebnisse in Conversions, im Umfang ihrer Abschlüsse und in der
             Motivation ihrer Teams. Insgesamt sind{' '}
-            <strong style={{ color: '#F05A1A' }}>
+            <strong style={{ color: '#1A5FD4' }}>
               Umsatzsteigerungen um 48 % in den ersten 12 Monaten die Regel.
             </strong>
           </p>
@@ -479,7 +479,7 @@ export default async function SalesMadePage({ params }: PageProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-gray-50"
-                  style={{ color: '#D4192B', borderColor: '#F5BBBC' }}
+                  style={{ color: '#EB0028', borderColor: '#F5BBBC' }}
                 >
                   YouTube
                 </a>
@@ -561,13 +561,13 @@ export default async function SalesMadePage({ params }: PageProps) {
       </section>
 
       {/* ─── 13. GUARANTEE ──────────────────────────────────────────── */}
-      <section className="px-6 py-16" style={{ backgroundColor: '#FFF1EB' }}>
+      <section className="px-6 py-16" style={{ backgroundColor: '#EBF1FF' }}>
         <div className="mx-auto flex max-w-3xl items-start gap-6 rounded-3xl bg-white p-8 shadow-sm">
           <div
             className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full"
-            style={{ backgroundColor: '#FFF1EB' }}
+            style={{ backgroundColor: '#EBF1FF' }}
           >
-            <Shield size={24} style={{ color: '#F05A1A' }} />
+            <Shield size={24} style={{ color: '#1A5FD4' }} />
           </div>
           <div>
             <h3 className="text-lg font-bold" style={{ color: '#0D0D0B' }}>

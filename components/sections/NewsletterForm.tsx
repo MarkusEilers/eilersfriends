@@ -30,7 +30,7 @@ export function NewsletterForm() {
   if (status === 'success') {
     return (
       <div className="flex flex-col items-center gap-4 py-8 text-center">
-        <CheckCircle size={48} style={{ color: '#F05A1A' }} />
+        <CheckCircle size={48} style={{ color: '#1A5FD4' }} />
         <div>
           <p className="text-lg font-bold text-gray-900">{t('successTitle')}</p>
           <p className="mt-1 text-sm text-gray-500">{t('successNote')}</p>
@@ -46,7 +46,7 @@ export function NewsletterForm() {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder={t('namePlaceholder')}
-        className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-orange-400 focus:bg-white"
+        className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-blue-400 focus:bg-white"
       />
       <input
         type="email"
@@ -54,7 +54,7 @@ export function NewsletterForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder={t('emailPlaceholder')}
-        className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-orange-400 focus:bg-white"
+        className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-colors focus:border-blue-400 focus:bg-white"
       />
       <label className="flex gap-3 cursor-pointer">
         <div className="relative flex-shrink-0 mt-0.5">
@@ -67,8 +67,8 @@ export function NewsletterForm() {
           <div
             className="h-5 w-5 rounded border-2 transition-colors flex items-center justify-center"
             style={{
-              borderColor: consent ? '#F05A1A' : '#D1D5DB',
-              backgroundColor: consent ? '#F05A1A' : 'white',
+              borderColor: consent ? '#1A5FD4' : '#D1D5DB',
+              backgroundColor: consent ? '#1A5FD4' : 'white',
             }}
           >
             {consent && (
@@ -86,7 +86,7 @@ export function NewsletterForm() {
         type="submit"
         disabled={!consent || status === 'loading'}
         className="flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold text-white transition-opacity disabled:opacity-40"
-        style={{ backgroundColor: '#F05A1A' }}
+        style={{ backgroundColor: '#1A5FD4' }}
       >
         {status === 'loading'
           ? <Loader2 size={16} className="animate-spin" />

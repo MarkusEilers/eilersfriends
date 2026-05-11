@@ -142,7 +142,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                           name="type"
                           value={form.type}
                           onChange={handleChange}
-                          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
+                          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
                         >
                           {TYPE_OPTIONS.map((o) => (
                             <option key={o.value} value={o.value}>{o.label}</option>
@@ -155,7 +155,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                           name="locale"
                           value={form.locale}
                           onChange={handleChange}
-                          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
+                          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
                         >
                           <option value="de">Deutsch (DE)</option>
                           <option value="en">Englisch (EN)</option>
@@ -169,7 +169,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                             name="isDefault"
                             checked={form.isDefault}
                             onChange={handleChange}
-                            className="h-4 w-4 rounded border-gray-300 text-orange-500 focus:ring-orange-400"
+                            className="h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-blue-400"
                           />
                           Standard für diesen Typ
                         </label>
@@ -185,7 +185,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                         onChange={handleChange}
                         required
                         placeholder="z.B. DOI-Bestätigung Deutsch v2"
-                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
+                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
                       />
                     </div>
 
@@ -198,7 +198,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                           value={form.fromName}
                           onChange={handleChange}
                           placeholder="Eilers+Friends"
-                          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
+                          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
                         />
                       </div>
                       <div>
@@ -208,7 +208,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                           value={form.fromEmail}
                           onChange={handleChange}
                           placeholder="hallo@eilersfriends.com"
-                          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
+                          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
                         />
                       </div>
                     </div>
@@ -222,7 +222,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                         onChange={handleChange}
                         required
                         placeholder="Bitte bestätige deine Anmeldung ✉️"
-                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
+                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
                       />
                     </div>
 
@@ -239,7 +239,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                         required
                         rows={14}
                         placeholder="<!DOCTYPE html><html>..."
-                        className="w-full rounded-lg border border-gray-200 px-3 py-2 font-mono text-xs focus:border-orange-400 focus:outline-none resize-y"
+                        className="w-full rounded-lg border border-gray-200 px-3 py-2 font-mono text-xs focus:border-blue-400 focus:outline-none resize-y"
                       />
                     </div>
 
@@ -254,7 +254,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                         onChange={handleChange}
                         rows={5}
                         placeholder="Hey {{firstName}}, ..."
-                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-400 focus:outline-none resize-y"
+                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none resize-y"
                       />
                     </div>
 
@@ -291,7 +291,7 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                     type="submit"
                     disabled={isPending}
                     className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
-                    style={{ backgroundColor: '#F05A1A' }}
+                    style={{ backgroundColor: '#1A5FD4' }}
                   >
                     {isPending && <Loader2 size={14} className="animate-spin" />}
                     Speichern

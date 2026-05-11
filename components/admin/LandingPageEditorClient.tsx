@@ -202,7 +202,7 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
     [sections],
   )
 
-  const accent = page.accentColor ?? '#F05A1A'
+  const accent = page.accentColor ?? '#1A5FD4'
   const dirtyCount = sections.filter((s) => s.dirty).length
 
   return (
@@ -235,7 +235,7 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
           <div className="mt-3 flex items-center gap-2">
             <input
               type="color"
-              value={page.accentColor ?? '#F05A1A'}
+              value={page.accentColor ?? '#1A5FD4'}
               onChange={(e) => setPage({ ...page, accentColor: e.target.value })}
               onBlur={() =>
                 updateLandingPageMeta({ id: page.id, accentColor: page.accentColor ?? undefined })
@@ -282,7 +282,7 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
                 <li key={s.id}>
                   <div
                     className={`group flex items-center gap-2 rounded-lg px-2 py-1.5 cursor-pointer transition-colors ${
-                      isSel ? 'bg-orange-50 ring-1 ring-orange-200' : 'hover:bg-gray-50'
+                      isSel ? 'bg-blue-50 ring-1 ring-blue-200' : 'hover:bg-gray-50'
                     }`}
                     onClick={() => setSelectedId(s.id)}
                   >
@@ -290,7 +290,7 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
                     <span className={`flex-1 text-sm truncate ${s.isVisible ? '' : 'opacity-50 line-through'}`}>
                       {meta?.label ?? s.type}
                     </span>
-                    {s.dirty && <span className="h-1.5 w-1.5 rounded-full bg-orange-500" title="Ungespeicherte Änderungen" />}
+                    {s.dirty && <span className="h-1.5 w-1.5 rounded-full bg-blue-500" title="Ungespeicherte Änderungen" />}
                     <button
                       onClick={(e) => { e.stopPropagation(); toggleVisibility(s) }}
                       className="opacity-0 group-hover:opacity-100 p-0.5 text-gray-400 hover:text-gray-700"
@@ -383,7 +383,7 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
                 className={`w-full rounded-xl border bg-white px-3 py-2 text-xs font-mono outline-none focus:ring-1 ${
                   selected.parseError
                     ? 'border-red-300 focus:ring-red-300'
-                    : 'border-gray-200 focus:ring-orange-300'
+                    : 'border-gray-200 focus:ring-blue-300'
                 }`}
               />
               {selected.parseError && (

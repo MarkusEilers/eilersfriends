@@ -75,7 +75,7 @@ export default async function SubscribersPage({ searchParams }: PageProps) {
         <StatCard label="Aktiv"           value={totals.active}       color="#157A45" icon={CheckCircle} />
         <StatCard label="Pending DOI"     value={totals.pending}      color="#B07C0A" icon={Clock} />
         <StatCard label="Abgemeldet"     value={totals.unsubscribed} color="#6B7280" icon={Ban} />
-        <StatCard label="Bounced"         value={totals.bounced}      color="#D4192B" icon={AlertTriangle} />
+        <StatCard label="Bounced"         value={totals.bounced}      color="#EB0028" icon={AlertTriangle} />
       </div>
 
       {/* Filters */}
@@ -87,14 +87,14 @@ export default async function SubscribersPage({ searchParams }: PageProps) {
             name="q"
             defaultValue={search}
             placeholder="Email oder Name suchen…"
-            className="w-full rounded-full border border-gray-200 bg-white pl-9 pr-4 py-2 text-sm outline-none focus:border-orange-400"
+            className="w-full rounded-full border border-gray-200 bg-white pl-9 pr-4 py-2 text-sm outline-none focus:border-blue-400"
           />
         </div>
         {statusFilter && <input type="hidden" name="status" value={statusFilter} />}
         <button
           type="submit"
           className="rounded-full px-4 py-2 text-xs font-semibold text-white"
-          style={{ backgroundColor: '#F05A1A' }}
+          style={{ backgroundColor: '#1A5FD4' }}
         >
           Suchen
         </button>
@@ -212,7 +212,7 @@ function FilterChip({
       href={href}
       className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
         isActive
-          ? 'bg-orange-500 text-white border-orange-500'
+          ? 'bg-blue-500 text-white border-blue-500'
           : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
       }`}
     >
@@ -226,7 +226,7 @@ function StatusBadge({ status }: { status: string }) {
     active: { color: '#157A45', bg: '#D7F2E0', label: 'Aktiv' },
     pending: { color: '#B07C0A', bg: '#FFF8E6', label: 'Pending DOI' },
     unsubscribed: { color: '#6B7280', bg: '#F3F4F6', label: 'Abgemeldet' },
-    bounced: { color: '#D4192B', bg: '#FFE5E7', label: 'Bounced' },
+    bounced: { color: '#EB0028', bg: '#FFE5E7', label: 'Bounced' },
   }
   const m = map[status] ?? { color: '#6B7280', bg: '#F3F4F6', label: status }
   return (

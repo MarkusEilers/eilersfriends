@@ -15,7 +15,7 @@ const coaches = {
     role: 'Transformational Leadership Coach',
     photo: '/aljona-photo.jpg',
     linkedin: 'https://linkedin.com/in/aljonaeilers',
-    accent: '#D4192B',
+    accent: '#EB0028',
     bio: 'Aljona begleitet Führungskräfte und Gründer:innen auf dem Weg zu authentischer, wirkungsvoller Leadership.',
   },
 }

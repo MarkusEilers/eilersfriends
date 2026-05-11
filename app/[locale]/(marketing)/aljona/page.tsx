@@ -112,7 +112,7 @@ export default async function AljonaPage({ params }: PageProps) {
   const { locale } = await params
   if (locale !== 'de') redirect('/de/aljona')
 
-  const accent = '#D4192B'
+  const accent = '#EB0028'
   const burgundy = '#7A1019'
 
   return (

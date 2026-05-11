@@ -158,7 +158,7 @@ function getDefaultWelcomeHtml(variables: {
     .wrapper { max-width: 560px; margin: 40px auto; background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb; }
     .header { background: #0A0D14; padding: 32px 40px; text-align: center; }
     .logo { color: #ffffff; font-size: 20px; font-weight: 700; }
-    .logo span { color: #F05A1A; }
+    .logo span { color: #1A5FD4; }
     .body { padding: 40px; }
     .body h1 { margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0D0D0B; }
     .body p { margin: 0 0 20px; font-size: 15px; line-height: 1.7; color: #4b5563; }

@@ -106,7 +106,7 @@ export function FrontRowForm() {
           className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-blue-300 resize-y"
         />
         <div className="mt-1 flex justify-end">
-          <span className={`text-xs ${charsLeft < 20 ? 'text-orange-600' : 'text-gray-400'}`}>
+          <span className={`text-xs ${charsLeft < 20 ? 'text-blue-600' : 'text-gray-400'}`}>
             {charsLeft} / {QUESTION_LIMIT}
           </span>
         </div>

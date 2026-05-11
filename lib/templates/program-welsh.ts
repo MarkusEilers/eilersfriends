@@ -362,7 +362,7 @@ export const newsletterWelshTemplate: LpTemplate = {
   name: 'Newsletter-Subscribe (Welsh-Style)',
   description:
     'Modelliert nach Justin Welshs Saturday-Solopreneur-Subscribe-Page. 5 Sektionen, fokussiert auf Email-Capture, Tweet-Wall als Social-Proof-Wand.',
-  accentColor: '#F05A1A',
+  accentColor: '#1A5FD4',
   defaultTitle: '[Newsletter-Name]',
   defaultSlug: 'newsletter-subscribe',
   defaultMetaDescription:

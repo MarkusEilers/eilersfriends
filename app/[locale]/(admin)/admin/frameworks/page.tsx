@@ -173,7 +173,7 @@ function Group({
 }) {
   const colorMap = {
     green: 'text-green-700 bg-green-50',
-    orange: 'text-orange-700 bg-orange-50',
+    orange: 'text-blue-700 bg-blue-50',
     gray: 'text-gray-600 bg-gray-100',
   }
   return (

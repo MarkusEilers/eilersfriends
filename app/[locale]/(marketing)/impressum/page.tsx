@@ -42,8 +42,8 @@ export default async function ImpressumPage({ params }: PageProps) {
             <div>
               <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>Kontakt</h2>
               <p>
-                E-Mail: <a href="mailto:team@eilersfriends.com" className="underline" style={{ color: '#F05A1A' }}>team@eilersfriends.com</a><br />
-                Website: <a href="https://eilersfriends.com" className="underline" style={{ color: '#F05A1A' }}>eilersfriends.com</a>
+                E-Mail: <a href="mailto:team@eilersfriends.com" className="underline" style={{ color: '#1A5FD4' }}>team@eilersfriends.com</a><br />
+                Website: <a href="https://eilersfriends.com" className="underline" style={{ color: '#1A5FD4' }}>eilersfriends.com</a>
               </p>
             </div>
 
@@ -68,7 +68,7 @@ export default async function ImpressumPage({ params }: PageProps) {
               <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>Streitschlichtung</h2>
               <p>
                 Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:{' '}
-                <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#F05A1A' }}>
+                <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#1A5FD4' }}>
                   https://ec.europa.eu/consumers/odr/
                 </a>
               </p>

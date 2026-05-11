@@ -10,7 +10,7 @@ export function CtaBlock() {
         <div
           className="relative overflow-hidden rounded-3xl px-8 py-14 sm:px-16 sm:py-20 text-center"
           style={{
-            background: 'linear-gradient(135deg, #F05A1A 0%, #FF8B4D 100%)',
+            background: 'linear-gradient(135deg, #1A5FD4 0%, #FF8B4D 100%)',
             color: 'white',
           }}
         >
@@ -34,7 +34,7 @@ export function CtaBlock() {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold transition-opacity hover:opacity-90"
-              style={{ color: '#F05A1A' }}
+              style={{ color: '#1A5FD4' }}
             >
               {t('button')} <ArrowRight size={14} />
             </a>

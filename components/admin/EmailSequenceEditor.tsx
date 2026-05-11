@@ -105,7 +105,7 @@ export function EmailSequenceEditor({ mode, sequence, children }: EmailSequenceE
                     onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                     required
                     placeholder="z.B. Welcome-Serie nach DOI"
-                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
                   />
                 </div>
 
@@ -116,7 +116,7 @@ export function EmailSequenceEditor({ mode, sequence, children }: EmailSequenceE
                     value={form.description}
                     onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                     rows={2}
-                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
                   />
                 </div>
 
@@ -127,7 +127,7 @@ export function EmailSequenceEditor({ mode, sequence, children }: EmailSequenceE
                     <select
                       value={form.trigger}
                       onChange={(e) => setForm((f) => ({ ...f, trigger: e.target.value }))}
-                      className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
+                      className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
                     >
                       {TRIGGERS.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
                     </select>
@@ -137,7 +137,7 @@ export function EmailSequenceEditor({ mode, sequence, children }: EmailSequenceE
                     <select
                       value={form.locale}
                       onChange={(e) => setForm((f) => ({ ...f, locale: e.target.value }))}
-                      className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-orange-400 focus:outline-none"
+                      className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
                     >
                       <option value="de">Deutsch</option>
                       <option value="en">Englisch</option>
@@ -152,7 +152,7 @@ export function EmailSequenceEditor({ mode, sequence, children }: EmailSequenceE
                     type="checkbox"
                     checked={form.isActive}
                     onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
-                    className="h-4 w-4 rounded border-gray-300 text-orange-500"
+                    className="h-4 w-4 rounded border-gray-300 text-blue-500"
                   />
                   <span className="text-sm font-medium text-gray-700">Sequenz aktivieren</span>
                   <span className="text-xs text-gray-400">(inaktive Sequenzen werden nicht ausgelöst)</span>
@@ -162,7 +162,7 @@ export function EmailSequenceEditor({ mode, sequence, children }: EmailSequenceE
                 <div>
                   <div className="mb-3 flex items-center justify-between">
                     <label className="text-xs font-semibold text-gray-700">Schritte ({steps.length})</label>
-                    <button type="button" onClick={addStep} className="flex items-center gap-1 text-xs font-semibold text-orange-600 hover:text-orange-800">
+                    <button type="button" onClick={addStep} className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800">
                       <Plus size={12} /> Schritt hinzufügen
                     </button>
                   </div>
@@ -175,7 +175,7 @@ export function EmailSequenceEditor({ mode, sequence, children }: EmailSequenceE
                     <div className="space-y-3">
                       {steps.map((step, idx) => (
                         <div key={idx} className="flex items-center gap-3 rounded-xl border border-gray-200 p-4">
-                          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white" style={{ backgroundColor: '#F05A1A' }}>
+                          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white" style={{ backgroundColor: '#1A5FD4' }}>
                             {idx + 1}
                           </div>
                           <div className="flex-1 grid grid-cols-2 gap-3">
@@ -185,7 +185,7 @@ export function EmailSequenceEditor({ mode, sequence, children }: EmailSequenceE
                                 value={step.templateId}
                                 onChange={(e) => setSteps((s) => s.map((st, i) => i === idx ? { ...st, templateId: e.target.value } : st))}
                                 placeholder="UUID des Templates"
-                                className="w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-mono focus:border-orange-400 focus:outline-none"
+                                className="w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-mono focus:border-blue-400 focus:outline-none"
                               />
                             </div>
                             <div>
@@ -196,7 +196,7 @@ export function EmailSequenceEditor({ mode, sequence, children }: EmailSequenceE
                               <select
                                 value={step.delayHours}
                                 onChange={(e) => setSteps((s) => s.map((st, i) => i === idx ? { ...st, delayHours: Number(e.target.value) } : st))}
-                                className="w-full rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs focus:border-orange-400 focus:outline-none"
+                                className="w-full rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs focus:border-blue-400 focus:outline-none"
                               >
                                 {[0, 1, 2, 4, 8, 12, 24, 48, 72, 96, 120, 168, 336].map((h) => (
                                   <option key={h} value={h}>{hoursLabel(h)}</option>
@@ -240,7 +240,7 @@ export function EmailSequenceEditor({ mode, sequence, children }: EmailSequenceE
                     type="submit"
                     disabled={isPending}
                     className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
-                    style={{ backgroundColor: '#F05A1A' }}
+                    style={{ backgroundColor: '#1A5FD4' }}
                   >
                     {isPending && <Loader2 size={14} className="animate-spin" />}
                     Speichern

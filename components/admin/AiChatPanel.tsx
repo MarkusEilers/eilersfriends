@@ -227,7 +227,7 @@ export function AiChatPanel({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={selectedSection ? `Anweisung für ${selectedSection.type}…` : 'Frage oder Anweisung…'}
-          className="flex-1 rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-sm outline-none focus:border-orange-300 focus:bg-white"
+          className="flex-1 rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-sm outline-none focus:border-blue-300 focus:bg-white"
           disabled={loading}
         />
         <button

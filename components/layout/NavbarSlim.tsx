@@ -28,7 +28,7 @@ export function NavbarSlim({
           target={ctaHref.startsWith('http') ? '_blank' : undefined}
           rel={ctaHref.startsWith('http') ? 'noopener noreferrer' : undefined}
           className="rounded-full px-5 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-          style={{ backgroundColor: '#F05A1A' }}
+          style={{ backgroundColor: '#1A5FD4' }}
         >
           {ctaLabel}
         </a>
