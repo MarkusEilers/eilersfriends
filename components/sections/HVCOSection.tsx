@@ -23,14 +23,14 @@ const SLUG_VISUALS: Record<
     icon: MessageSquareText,
     agentLabel: 'Discovery-Call AI',
     tagline: 'Generator + Notes-AI',
-    colSpan: 4,
+    colSpan: 2,
     featured: true,
   },
   'b2b-angebote': {
     icon: Target,
     agentLabel: 'PDF + Video',
     tagline: '8-Schritte-Bauplan',
-    colSpan: 4,
+    colSpan: 2,
     featured: true,
   },
   // ── Normal ────────────────────────────────────────────────
@@ -38,27 +38,27 @@ const SLUG_VISUALS: Record<
     icon: Wand2,
     agentLabel: '4 GPT Engines',
     tagline: 'Voice · Idea · Atomization · Drafting',
-    colSpan: 2,
+    colSpan: 1,
   },
   'beef-radar': {
     icon: Radar,
     agentLabel: 'Worksheet',
-    colSpan: 2,
+    colSpan: 1,
   },
   'core-messages': {
     icon: Lightbulb,
     agentLabel: '18-Min AI-Worksheet',
-    colSpan: 2,
+    colSpan: 1,
   },
   'strategic-preparation': {
     icon: GitBranch,
     agentLabel: 'Pre-Meeting Checklist',
-    colSpan: 2,
+    colSpan: 1,
   },
   'recommendation-pitch': {
     icon: FileText,
     agentLabel: 'Skript-Vorlage',
-    colSpan: 2,
+    colSpan: 1,
   },
 }
 
@@ -115,14 +115,14 @@ export async function HVCOSection() {
         <div className="text-center mb-14">
           <span
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest mb-5"
-            style={{ backgroundColor: 'rgba(147,184,245,0.15)', color: '#93B8F5', border: '1px solid rgba(147,184,245,0.30)' }}
+            style={{ backgroundColor: 'rgba(93,206,240,0.14)', color: '#5DCEF0', border: '1px solid rgba(93,206,240,0.30)' }}
           >
             <Bot size={12} />
             Pretrained AI-Agenten · Gratis
           </span>
           <h2 className="text-4xl font-bold leading-tight sm:text-5xl text-white">
             Klau dir unsere Frameworks.<br />
-            <span style={{ color: '#7AABF7' }}>Inklusive AI-Agenten.</span>
+            <span style={{ color: '#5DCEF0' }}>Inklusive AI-Agenten.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.70)' }}>
             Du brauchst nicht 47 Custom-GPTs basteln. Wir haben sie schon trainiert.
@@ -132,29 +132,33 @@ export async function HVCOSection() {
           </p>
         </div>
 
-        {/* Bento grid: 2 cols mobile / 4 cols tablet / 6 cols desktop */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+        {/* Bento grid: 1 col mobile / 2 cols tablet / 3 cols desktop · perfect 3+3+3 tessellation for 2 featured + 5 regular */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {sorted.map((f) => {
             const accent = f.accentColor ?? '#1A5FD4'
             const visual = SLUG_VISUALS[f.slug] ?? {
-              icon: BookOpen, agentLabel: 'Bauplan', colSpan: 2,
+              icon: BookOpen, agentLabel: 'Bauplan', colSpan: 1,
             }
             const Icon = visual.icon
 
-            // Map colSpan to Tailwind classes
+            // Map colSpan to Tailwind classes (3-col grid: featured spans 2, regular spans 1)
             const spanClass =
-              visual.colSpan === 4 ? 'col-span-2 sm:col-span-4 lg:col-span-4'
-              : 'col-span-2 lg:col-span-2'
+              visual.colSpan === 2 ? 'sm:col-span-2 lg:col-span-2'
+              : 'lg:col-span-1'
 
             const minH = visual.featured ? 'min-h-[240px]' : 'min-h-[220px]'
 
-            // Two-tier blue theming: dark navy for featured, soft sky-blue for the rest.
+            // All-blue palette with gradations from the brand banner:
+            // Featured = bright cyan → brand blue (eye-catching).
+            // Regular = brand blue → deep navy (anchored, premium).
             const cardBg = visual.featured
-              ? 'linear-gradient(135deg, #0E2A4F 0%, #173A6B 50%, #1F4A86 100%)'
-              : 'linear-gradient(135deg, #EAF2FB 0%, #DCE8F7 60%, #C9DBF0 100%)'
-            const cardBorder = visual.featured ? '1px solid rgba(255,255,255,0.10)' : '1px solid #DCE8F7'
-            const titleColor = visual.featured ? '#FFFFFF' : '#0D0D0B'
-            const bodyColor = visual.featured ? 'rgba(255,255,255,0.78)' : '#374151'
+              ? 'linear-gradient(135deg, #29B6E9 0%, #1A78D8 55%, #1A5FD4 100%)'
+              : 'linear-gradient(135deg, #1A5FD4 0%, #144FB5 60%, #0F3D8E 100%)'
+            const cardBorder = visual.featured
+              ? '1px solid rgba(180,220,245,0.40)'
+              : '1px solid rgba(147,184,245,0.18)'
+            const titleColor = '#FFFFFF'
+            const bodyColor = 'rgba(255,255,255,0.85)'
 
             return (
               <Link
@@ -174,9 +178,9 @@ export async function HVCOSection() {
                     <div
                       className="flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-105"
                       style={{
-                        backgroundColor: visual.featured ? 'rgba(255,255,255,0.12)' : 'white',
-                        color: visual.featured ? '#FFFFFF' : accent,
-                        border: visual.featured ? '1px solid rgba(255,255,255,0.20)' : `1px solid ${accent}30`,
+                        backgroundColor: 'rgba(255,255,255,0.14)',
+                        color: '#FFFFFF',
+                        border: '1px solid rgba(255,255,255,0.22)',
                       }}
                     >
                       <Icon size={20} />
@@ -185,7 +189,7 @@ export async function HVCOSection() {
                       {visual.featured && (
                         <span
                           className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
-                          style={{ backgroundColor: '#FFFFFF', color: accent }}
+                          style={{ backgroundColor: '#FFFFFF', color: '#0F3D8E' }}
                         >
                           ★ Beliebt
                         </span>
@@ -193,9 +197,9 @@ export async function HVCOSection() {
                       <span
                         className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
                         style={{
-                          backgroundColor: visual.featured ? 'rgba(255,255,255,0.14)' : '#0F1E3A',
-                          color: visual.featured ? '#FFFFFF' : '#93B8F5',
-                          border: visual.featured ? '1px solid rgba(255,255,255,0.18)' : 'none',
+                          backgroundColor: 'rgba(255,255,255,0.14)',
+                          color: '#FFFFFF',
+                          border: '1px solid rgba(255,255,255,0.18)',
                         }}
                       >
                         <Sparkles size={9} /> {visual.agentLabel}
@@ -211,7 +215,7 @@ export async function HVCOSection() {
                   </h3>
 
                   {visual.tagline && (
-                    <p className="mt-1 text-xs font-semibold" style={{ color: accent }}>
+                    <p className="mt-1 text-xs font-semibold" style={{ color: '#A8D8F2' }}>
                       {visual.tagline}
                     </p>
                   )}
@@ -227,7 +231,7 @@ export async function HVCOSection() {
 
                   <div
                     className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold"
-                    style={{ color: visual.featured ? '#FFFFFF' : accent }}
+                    style={{ color: '#FFFFFF' }}
                   >
                     Pack's an
                     <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
@@ -237,7 +241,7 @@ export async function HVCOSection() {
                 {/* Subtle accent line on hover */}
                 <div
                   className="absolute inset-x-0 bottom-0 h-[2px] rounded-b-2xl opacity-0 transition-opacity group-hover:opacity-100"
-                  style={{ backgroundColor: accent }}
+                  style={{ backgroundColor: '#29B6E9' }}
                 />
               </Link>
             )
