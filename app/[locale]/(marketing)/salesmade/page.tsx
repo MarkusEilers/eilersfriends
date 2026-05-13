@@ -270,8 +270,8 @@ export default async function SalesMadePage({ params }: PageProps) {
       {/* ─── 4b. METHODOLOGY TRIPTYCH ──────────────────────── */}
       <MethodologyTriptych />
 
-      {/* ─── 4c. PARTICIPANT LOOP ─────────────────────────── */}
-      <ParticipantLoop />
+      {/* ─── 4c. PARTICIPANT LOOP — temporarily disabled while debugging server-side exception */}
+      {/* <ParticipantLoop /> */}
 
             {/* ─── 5. VISION ───────────────────────────────────────────────── */}
       <section className="px-6 py-20">
