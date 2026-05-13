@@ -6,7 +6,7 @@
  * Die zwei Hero-Metriken (Conversion + Zyklen) bekommen Extra-Display
  * mit großen Zahlen, weil das die zwei stärksten quantitativen Versprechen sind.
  */
-import { ArrowRight, X, Check } from 'lucide-react'
+import { X, Check } from 'lucide-react'
 
 interface Row {
   before: string
@@ -78,7 +78,7 @@ export function BeforeAfter() {
         </div>
 
         {/* Column labels */}
-        <div className="hidden md:grid grid-cols-[1fr_64px_1fr] gap-3 mb-3 px-2">
+        <div className="hidden md:grid grid-cols-2 gap-3 mb-3 px-2">
           <div className="flex items-center gap-2.5">
             <div
               className="flex h-7 w-7 items-center justify-center rounded-full"
@@ -93,7 +93,6 @@ export function BeforeAfter() {
               <div className="text-[11px] text-gray-500">Freestyle-Vertrieb</div>
             </div>
           </div>
-          <div></div>
           <div className="flex items-center gap-2.5">
             <div
               className="flex h-7 w-7 items-center justify-center rounded-full"
@@ -117,7 +116,7 @@ export function BeforeAfter() {
             return (
               <div
                 key={i}
-                className="rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-[1fr_64px_1fr]"
+                className="rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2 relative isolate"
                 style={{
                   border: '1px solid #E5E7EB',
                   backgroundColor: '#FFFFFF',
@@ -126,6 +125,13 @@ export function BeforeAfter() {
                     : '0 1px 2px rgba(15,30,58,0.03)',
                 }}
               >
+                {/* Vertical hairline divider (desktop only) */}
+                <div
+                  className="hidden md:block absolute left-1/2 top-3 bottom-3 w-px -translate-x-1/2 pointer-events-none"
+                  aria-hidden="true"
+                  style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(15,30,58,0.10) 25%, rgba(15,30,58,0.10) 75%, transparent 100%)' }}
+                />
+
                 {/* Before (left) */}
                 <div
                   className="p-5 sm:p-6 flex gap-3 items-start"
@@ -144,20 +150,6 @@ export function BeforeAfter() {
                     <div className={`leading-relaxed ${isHero ? 'text-sm font-medium' : 'text-sm'}`} style={{ color: NAVY }}>
                       {r.before}
                     </div>
-                  </div>
-                </div>
-
-                {/* Center arrow (desktop only) */}
-                <div
-                  className="hidden md:flex items-center justify-center"
-                  style={{ backgroundColor: '#FAFAF8' }}
-                >
-                  <div
-                    className="flex h-9 w-9 items-center justify-center rounded-full"
-                    style={{ backgroundColor: NAVY, color: '#FFFFFF' }}
-                    aria-hidden="true"
-                  >
-                    <ArrowRight size={16} strokeWidth={2.5} />
                   </div>
                 </div>
 

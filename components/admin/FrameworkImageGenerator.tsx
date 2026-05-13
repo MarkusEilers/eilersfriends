@@ -1,24 +1,33 @@
 'use client'
 
 import { useState } from 'react'
-import { Loader2, Sparkles, RefreshCw } from 'lucide-react'
+import { Loader2, Sparkles, RefreshCw, Maximize2, Square } from 'lucide-react'
 
 interface Props {
   slug: string
-  defaultPrompt: string
+  heroPrompt: string
+  cardPrompt: string
   hasImage: boolean
 }
 
 type Provider = 'openai-2' | 'openai-1' | 'gemini'
+type Target = 'card' | 'hero'
 
-export function FrameworkImageGenerator({ slug, defaultPrompt, hasImage }: Props) {
+export function FrameworkImageGenerator({ slug, heroPrompt, cardPrompt, hasImage }: Props) {
   const [open, setOpen] = useState(false)
-  const [prompt, setPrompt] = useState(defaultPrompt)
+  const [target, setTarget] = useState<Target>('card')
+  const [prompt, setPrompt] = useState(cardPrompt)
   const [provider, setProvider] = useState<Provider>('openai-2')
   const [size, setSize] = useState<'1024x1024' | '1024x1536' | '1536x1024'>('1024x1024')
   const [quality, setQuality] = useState<'low' | 'medium' | 'high'>('medium')
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
+
+  function switchTarget(t: Target) {
+    setTarget(t)
+    setPrompt(t === 'hero' ? heroPrompt : cardPrompt)
+    setSize(t === 'hero' ? '1536x1024' : '1024x1024')
+  }
 
   async function handleGenerate() {
     setStatus('loading')
@@ -27,7 +36,7 @@ export function FrameworkImageGenerator({ slug, defaultPrompt, hasImage }: Props
       const res = await fetch('/api/admin/generate-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug, prompt, provider, size, quality }),
+        body: JSON.stringify({ slug, prompt, provider, size, quality, target }),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -51,10 +60,10 @@ export function FrameworkImageGenerator({ slug, defaultPrompt, hasImage }: Props
         onClick={() => setOpen(true)}
         className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold transition-colors hover:bg-gray-50"
         style={{ color: '#1A5FD4', borderColor: '#BBCFF5' }}
-        title={hasImage ? 'Bild neu generieren' : 'Bild generieren'}
+        title={hasImage ? 'Bilder neu generieren' : 'Bilder generieren'}
       >
         {hasImage ? <RefreshCw size={11} /> : <Sparkles size={11} />}
-        {hasImage ? 'Bild neu' : 'Bild generieren'}
+        {hasImage ? 'Bilder neu' : 'Bilder generieren'}
       </button>
     )
   }
@@ -72,6 +81,34 @@ export function FrameworkImageGenerator({ slug, defaultPrompt, hasImage }: Props
           disabled={status === 'loading'}
         >
           Abbrechen
+        </button>
+      </div>
+
+      {/* Target toggle: Card vs Hero */}
+      <div className="mb-3 inline-flex rounded-lg border border-gray-200 bg-white p-0.5">
+        <button
+          type="button"
+          onClick={() => switchTarget('card')}
+          disabled={status === 'loading'}
+          className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors"
+          style={{
+            backgroundColor: target === 'card' ? '#1A5FD4' : 'transparent',
+            color: target === 'card' ? '#FFFFFF' : '#6B7280',
+          }}
+        >
+          <Square size={12} /> Card (Square)
+        </button>
+        <button
+          type="button"
+          onClick={() => switchTarget('hero')}
+          disabled={status === 'loading'}
+          className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors"
+          style={{
+            backgroundColor: target === 'hero' ? '#1A5FD4' : 'transparent',
+            color: target === 'hero' ? '#FFFFFF' : '#6B7280',
+          }}
+        >
+          <Maximize2 size={12} /> Hero (Landscape)
         </button>
       </div>
 
@@ -121,7 +158,7 @@ export function FrameworkImageGenerator({ slug, defaultPrompt, hasImage }: Props
       <textarea
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
-        rows={6}
+        rows={7}
         className="w-full rounded-lg border border-gray-200 bg-white p-3 text-xs font-mono outline-none focus:border-blue-300"
         disabled={status === 'loading'}
         placeholder="Cinematic editorial photograph of…"
@@ -136,7 +173,7 @@ export function FrameworkImageGenerator({ slug, defaultPrompt, hasImage }: Props
           style={{ backgroundColor: '#1A5FD4' }}
         >
           {status === 'loading' && <Loader2 size={12} className="animate-spin" />}
-          {status === 'loading' ? 'Generiere…' : status === 'done' ? '✓ Fertig — neu laden' : 'Generieren (~15–40s)'}
+          {status === 'loading' ? 'Generiere…' : status === 'done' ? '✓ Fertig — neu laden' : `Generieren ${target === 'hero' ? 'Hero' : 'Card'} (~15–40s)`}
         </button>
         <span className="text-[10px] text-gray-400">
           {provider === 'openai-2' ? 'GPT-Image-2 · 2026' : provider === 'openai-1' ? 'GPT-Image-1 · 2025' : 'Gemini 2.5 Flash Image'}
@@ -147,7 +184,7 @@ export function FrameworkImageGenerator({ slug, defaultPrompt, hasImage }: Props
         <p className="mt-2 text-xs leading-relaxed text-red-600">{error}</p>
       )}
       <p className="mt-3 text-[10px] leading-relaxed text-gray-400">
-        Tipp: Editorial photography + tone hints (deep navy, cyan accents) liefern die besten Ergebnisse. Bei gpt-image-2 darfst Du auch Typografie im Prompt verlangen — das Modell kann Text rendern.
+        Tipp: Hero-Bilder zeigen jemanden in der erfolgreichen Aktion. Card-Bilder sind fokussierter, gleicher Mood. Marken-Palette: deep navy + cyan accents, kein Orange.
       </p>
     </div>
   )

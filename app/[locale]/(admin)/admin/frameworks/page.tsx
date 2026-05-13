@@ -203,7 +203,8 @@ function Group({
               <div className="pt-2 mb-3">
                 <FrameworkImageGenerator
                   slug={p.slug}
-                  defaultPrompt={FRAMEWORK_PROMPTS[p.slug] ?? 'Cinematic widescreen, deep blue tone, atmospheric, photorealistic, no text, no faces, 16:9'}
+                  heroPrompt={FRAMEWORK_PROMPTS[p.slug]?.hero ?? 'Cinematic landscape editorial photograph, deep navy + cyan, 16:9'}
+                  cardPrompt={FRAMEWORK_PROMPTS[p.slug]?.card ?? 'Cinematic square editorial, deep navy + cyan'}
                   hasImage={!!p.ogImageUrl}
                 />
               </div>

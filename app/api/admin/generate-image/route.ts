@@ -13,6 +13,8 @@ interface RequestBody {
   slug: string
   prompt: string
   provider?: Provider
+  /** Where to write the resulting image: 'card' → landingPages.ogImageUrl, 'hero' → hero section bg */
+  target?: 'card' | 'hero'
   /** Optional override size / quality (OpenAI only) */
   size?: '1024x1024' | '1024x1536' | '1536x1024'
   quality?: 'low' | 'medium' | 'high'
@@ -120,25 +122,32 @@ export async function POST(request: Request) {
     imageUrl = `data:${gen.mime};base64,${gen.b64}`
   }
 
-  await db.update(landingPages)
-    .set({ ogImageUrl: imageUrl, updatedAt: new Date() })
-    .where(eq(landingPages.id, page.id))
+  const target = body.target ?? 'card'
 
-  const sections = await db.select().from(landingPageSections)
-    .where(and(eq(landingPageSections.landingPageId, page.id), eq(landingPageSections.type, 'hero')))
-    .orderBy(asc(landingPageSections.order))
-    .limit(1)
-  if (sections.length > 0) {
-    const hero = sections[0]
-    const newContent = { ...((hero.content ?? {}) as Record<string, unknown>), backgroundImage: imageUrl }
-    await db.update(landingPageSections)
-      .set({ content: newContent, updatedAt: new Date() })
-      .where(eq(landingPageSections.id, hero.id))
+  if (target === 'card') {
+    // Card preview — overwrites the homepage HVCO cover + frameworks-index card
+    await db.update(landingPages)
+      .set({ ogImageUrl: imageUrl, updatedAt: new Date() })
+      .where(eq(landingPages.id, page.id))
+  } else {
+    // Hero — overwrites the hero-section background on the framework detail page
+    const sections = await db.select().from(landingPageSections)
+      .where(and(eq(landingPageSections.landingPageId, page.id), eq(landingPageSections.type, 'hero')))
+      .orderBy(asc(landingPageSections.order))
+      .limit(1)
+    if (sections.length > 0) {
+      const hero = sections[0]
+      const newContent = { ...((hero.content ?? {}) as Record<string, unknown>), backgroundImage: imageUrl }
+      await db.update(landingPageSections)
+        .set({ content: newContent, updatedAt: new Date() })
+        .where(eq(landingPageSections.id, hero.id))
+    }
   }
 
   return NextResponse.json({
     ok: true,
     slug: body.slug,
+    target,
     provider,
     storage: blobToken ? 'blob' : 'data-url',
     bytes: gen.b64.length,
