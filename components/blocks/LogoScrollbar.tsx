@@ -25,16 +25,20 @@ export function LogoScrollbar({ logos, speed = 'normal', className }: LogoScroll
   // Duplicate for seamless loop
   const doubled = [...logos, ...logos]
 
+  // When the doubled set fits the viewport, the marquee is invisible-still →
+  // we center on the page using justify-center. When it overflows, the
+  // animation kicks in and width:max-content takes precedence.
+  const tripled = [...logos, ...logos, ...logos]
   return (
     <div className={cn('overflow-hidden', className)} aria-hidden="true">
       <div
-        className="flex gap-12 whitespace-nowrap"
+        className="flex gap-12 whitespace-nowrap justify-center mx-auto"
         style={{
           animation: `marquee ${SPEED_MAP[speed]} linear infinite`,
           width: 'max-content',
         }}
       >
-        {doubled.map((logo, i) => (
+        {tripled.map((logo, i) => (
           <div
             key={i}
             className="flex h-10 items-center justify-center px-2"

@@ -4,21 +4,21 @@ import { LogoScrollbar } from '@/components/blocks/LogoScrollbar'
 /**
  * Trust-Logo-Strip — partner / press logos.
  *
- * Each logo lives in /public/logos/<slug>.{svg,png} as an "on-white" version
- * (i.e. the dark version designed to render on a light background). Files
- * still missing fall through to the text label so the strip never breaks.
+ * Each logo is an "on-white" monochrome SVG in /public/logos/. Source: Wikimedia
+ * Commons (publications, MS, Amazon), Sonia.so / Celero.io own websites.
+ * Normalized to currentColor so the LogoScrollbar's CSS grayscale + opacity
+ * treatment renders them uniformly. Text label is the alt + fallback if a file
+ * goes missing.
  */
-// TODO: re-add `src: '/logos/<slug>.svg'` once on-white logo files are
-// uploaded to /public/logos/. Until then we show text labels.
 const LOGOS = [
-  { name: 'Wall Street Journal' },
-  { name: 'Forbes' },
-  { name: 'Handelsblatt' },
-  { name: 'USA Today' },
-  { name: 'Microsoft' },
-  { name: 'Amazon' },
-  { name: 'Sonia.so' },
-  { name: 'Celero One' },
+  { name: 'Wall Street Journal', src: '/logos/wsj.svg' },
+  { name: 'Forbes',              src: '/logos/forbes.svg' },
+  { name: 'Handelsblatt',        src: '/logos/handelsblatt.svg' },
+  { name: 'USA Today',           src: '/logos/usa-today.svg' },
+  { name: 'Microsoft',           src: '/logos/microsoft.svg' },
+  { name: 'Amazon',              src: '/logos/amazon.svg' },
+  { name: 'Sonia.so',            src: '/logos/sonia-so.svg' },
+  { name: 'Celero One',          src: '/logos/celero-one.svg' },
 ]
 
 export function LogoStripSection() {
