@@ -101,10 +101,10 @@ export function LpHero({ content, accent, emailList }: LpHeroProps) {
             )}
           </div>
         ) : (
-          content.ctaHref && (
+          (content.ctaHref || true) && (
             <div className="mt-10">
               <a
-                href={content.ctaHref as string}
+                href={(content.ctaHref as string) || '#bauplan'}
                 className="inline-block rounded-full px-8 py-4 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90"
                 style={{ backgroundColor: accent }}
               >

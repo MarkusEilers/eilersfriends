@@ -12,7 +12,7 @@ export function LpCta({ content, accent }: { content: Record<string, any>; accen
         )}
         {content.ctaLabel && (
           <a
-            href={(content.ctaHref as string) || '#'}
+            href={(content.ctaHref as string) || '#bauplan'}
             className="mt-8 inline-block rounded-full px-10 py-4 text-sm font-semibold text-white shadow-lg transition-opacity hover:opacity-90"
             style={{ backgroundColor: accent }}
           >

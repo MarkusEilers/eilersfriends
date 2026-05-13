@@ -43,7 +43,7 @@ export function LpLeadMagnet({ content, accent, emailList }: Props) {
   const benefits: string[] = Array.isArray(content.benefits) ? content.benefits : []
 
   return (
-    <section className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
+    <section id="bauplan" className="px-6 py-20 scroll-mt-20" style={{ backgroundColor: '#FAFAF8' }}>
       <div className="mx-auto max-w-4xl">
         <div className="grid gap-10 md:grid-cols-[280px_1fr] md:items-center">
 
