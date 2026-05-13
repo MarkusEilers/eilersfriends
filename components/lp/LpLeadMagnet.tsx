@@ -12,11 +12,17 @@ interface Props {
 export function LpLeadMagnet({ content, accent, emailList }: Props) {
   const [email, setEmail] = useState('')
   const [firstName, setFirstName] = useState('')
+  const [consentPrivacy, setConsentPrivacy] = useState(false)
+  const [consentMarketing, setConsentMarketing] = useState(false)
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!email) return
+    if (!consentPrivacy || !consentMarketing) {
+      setStatus('error')
+      return
+    }
     setStatus('loading')
     try {
       const res = await fetch('/api/newsletter/subscribe', {
@@ -117,10 +123,40 @@ export function LpLeadMagnet({ content, accent, emailList }: Props) {
                     className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
                   />
                 </div>
+                {/* DOI consent checkboxes — both required */}
+                <div className="sm:col-span-2 space-y-2.5 mt-1">
+                  <label className="flex items-start gap-2.5 text-xs cursor-pointer" style={{ color: '#374151' }}>
+                    <input
+                      type="checkbox"
+                      required
+                      checked={consentPrivacy}
+                      onChange={(e) => setConsentPrivacy(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-gray-300"
+                      style={{ accentColor: accent }}
+                    />
+                    <span>
+                      Ich habe die <a href="/datenschutz" target="_blank" className="underline" style={{ color: accent }}>Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Bereitstellung der angeforderten Inhalte zu.
+                    </span>
+                  </label>
+                  <label className="flex items-start gap-2.5 text-xs cursor-pointer" style={{ color: '#374151' }}>
+                    <input
+                      type="checkbox"
+                      required
+                      checked={consentMarketing}
+                      onChange={(e) => setConsentMarketing(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-gray-300"
+                      style={{ accentColor: accent }}
+                    />
+                    <span>
+                      Ich möchte 1× pro Woche den SalesMade-Newsletter mit Frameworks, Templates und Insights erhalten. Abmeldung jederzeit per Klick — kein Spam.
+                    </span>
+                  </label>
+                </div>
+
                 <button
                   type="submit"
-                  disabled={status === 'loading'}
-                  className="sm:col-span-2 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
+                  disabled={status === 'loading' || !consentPrivacy || !consentMarketing}
+                  className="sm:col-span-2 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ backgroundColor: accent }}
                 >
                   {status === 'loading'
@@ -133,7 +169,9 @@ export function LpLeadMagnet({ content, accent, emailList }: Props) {
 
             {status === 'error' && (
               <p className="mt-3 text-xs text-red-600">
-                Fehler beim Anmelden. Bitte später erneut versuchen.
+                {!consentPrivacy || !consentMarketing
+                  ? 'Bitte beide Zustimmungen aktivieren, um den Download zu erhalten.'
+                  : 'Fehler beim Anmelden. Bitte später erneut versuchen.'}
               </p>
             )}
 

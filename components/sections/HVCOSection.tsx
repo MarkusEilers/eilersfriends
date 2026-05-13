@@ -188,7 +188,7 @@ export async function HVCOSection() {
                     className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
                     aria-hidden="true"
                     style={{
-                      backgroundImage: `url(/frameworks/${f.slug}.jpg)`,
+                      backgroundImage: `url(${f.ogImageUrl || `/frameworks/${f.slug}.jpg`})`,
                       backgroundSize: 'cover',
                       backgroundPosition: 'center',
                     }}

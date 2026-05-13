@@ -10,7 +10,7 @@ export function CtaBlock() {
         <div
           className="relative overflow-hidden rounded-3xl px-8 py-14 sm:px-16 sm:py-20 text-center"
           style={{
-            background: 'linear-gradient(135deg, #1A5FD4 0%, #FF8B4D 100%)',
+            background: 'linear-gradient(135deg, #1A5FD4 0%, #EB0028 100%)',
             color: 'white',
           }}
         >

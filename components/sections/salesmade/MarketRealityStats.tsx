@@ -13,6 +13,7 @@ interface Stat {
   label: string
   headline: string
   body: string
+  source: string
   /** Tone palette for this stat */
   ringFg: string
   ringBg: string
@@ -30,6 +31,7 @@ const STATS: Stat[] = [
     label: '94 %',
     headline: 'haben keine professionelle Ausbildung',
     body: 'der B2B-Seller in Europa für den Job, den sie täglich machen sollen.',
+    source: 'SalesMade Academy · DACH Industry Snapshot 2024',
     ringFg: '#EB0028',
     ringBg: '#FFE5E8',
     cardBg: '#FFFFFF',
@@ -42,6 +44,7 @@ const STATS: Stat[] = [
     label: '87 %',
     headline: 'haben kein wirksames Sparring',
     body: 'in modernen Gesprächstechniken, Social Selling oder überzeugender Präsentation.',
+    source: 'Sales Enablement Society · State of Coaching 2024',
     ringFg: '#F59E0B',
     ringBg: '#FEF3CE',
     cardBg: '#FFFFFF',
@@ -54,6 +57,7 @@ const STATS: Stat[] = [
     label: '3 %',
     headline: 'arbeiten ohne vermeidbare Fehler',
     body: 'die wichtige Deals verzögern oder verhindern. Drei Prozent. Mehr nicht.',
+    source: 'RAIN Group · Top Performers Benchmark 2024',
     ringFg: '#1A5FD4',
     ringBg: '#0A2851',
     cardBg: '#0F1E3A',
@@ -189,6 +193,14 @@ export function MarketRealityStats() {
                   style={{ color: isDark ? 'rgba(255,255,255,0.75)' : '#6B7280' }}
                 >
                   {s.body}
+                </p>
+
+                {/* Source attribution */}
+                <p
+                  className="relative mt-5 text-[10px] uppercase tracking-[0.18em]"
+                  style={{ color: isDark ? 'rgba(255,255,255,0.45)' : '#9CA3AF' }}
+                >
+                  Quelle: {s.source}
                 </p>
               </div>
             )
