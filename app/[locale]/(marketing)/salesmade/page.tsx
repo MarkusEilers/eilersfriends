@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 const CRISIS_STATS = [
   {
     persona: 'der B2B-Verkäufer',
-    number: '93%',
+    number: '94%',
     label: 'ohne professionelle Ausbildung',
     description:
       'Aufmerksamkeit gewinnen, Gespräche führen, überzeugen, Angebote machen — alles experimenteller Freestyle.',
