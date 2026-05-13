@@ -16,21 +16,33 @@ import {
  */
 const SLUG_VISUALS: Record<
   string,
-  { icon: typeof BookOpen; agentLabel: string; tagline?: string; colSpan: number; featured?: boolean }
+  {
+    icon: typeof BookOpen
+    agentLabel: string
+    tagline?: string
+    posterTitle: string
+    posterSub: string
+    tone: { from: string; to: string; accent: string }
+    featured?: boolean
+  }
 > = {
   // ── Featured ──────────────────────────────────────────────
   'instant-influence': {
     icon: MessageSquareText,
     agentLabel: 'Discovery-Call AI',
     tagline: 'Generator + Notes-AI',
-    colSpan: 2,
+    posterTitle: 'INSTANT\nINFLUENCE',
+    posterSub: 'Win the first conversation',
+    tone: { from: '#0F1E3A', to: '#1A5FD4', accent: '#5DDBF5' },
     featured: true,
   },
   'b2b-angebote': {
     icon: Target,
     agentLabel: 'PDF + Video',
     tagline: '8-Schritte-Bauplan',
-    colSpan: 2,
+    posterTitle: 'UNWIDERSTEHLICHE\nANGEBOTE',
+    posterSub: 'Der 8-Schritte-Bauplan',
+    tone: { from: '#0F1E3A', to: '#0A2851', accent: '#FFD37A' },
     featured: true,
   },
   // ── Normal ────────────────────────────────────────────────
@@ -38,27 +50,41 @@ const SLUG_VISUALS: Record<
     icon: Wand2,
     agentLabel: '4 GPT Engines',
     tagline: 'Voice · Idea · Atomization · Drafting',
-    colSpan: 1,
+    posterTitle: 'SOCIAL MEDIA\nROCKSTAR',
+    posterSub: '9-Schritte AI Content',
+    tone: { from: '#3A0F58', to: '#1A5FD4', accent: '#EB0028' },
   },
   'beef-radar': {
     icon: Radar,
     agentLabel: 'Worksheet',
-    colSpan: 1,
+    tagline: 'Konflikt-Diagnose',
+    posterTitle: 'BEEF\nRADAR',
+    posterSub: 'Konflikte sehen, bevor sie ausbrechen',
+    tone: { from: '#0F1E3A', to: '#08193D', accent: '#5DDBF5' },
   },
   'core-messages': {
     icon: Lightbulb,
     agentLabel: '18-Min AI-Worksheet',
-    colSpan: 1,
+    tagline: 'Die 11 Botschaften',
+    posterTitle: 'CORE 11',
+    posterSub: 'Die Botschaften jedes Unternehmers',
+    tone: { from: '#1A4DB0', to: '#0F3D8E', accent: '#5DDBF5' },
   },
   'strategic-preparation': {
     icon: GitBranch,
     agentLabel: 'Pre-Meeting Checklist',
-    colSpan: 1,
+    tagline: 'Vor dem wichtigen Gespräch',
+    posterTitle: 'STRATEGIC\nPREP',
+    posterSub: '18 Min vor jedem Pitch',
+    tone: { from: '#1F2228', to: '#0F1E3A', accent: '#C8A67A' },
   },
   'recommendation-pitch': {
     icon: FileText,
     agentLabel: 'Skript-Vorlage',
-    colSpan: 1,
+    tagline: 'Verkaufen ohne zu verkaufen',
+    posterTitle: 'RECOMMENDATION\nPITCH',
+    posterSub: 'Käufer:in im Driver-Seat',
+    tone: { from: '#1A5FD4', to: '#0F66C8', accent: '#FFFFFF' },
   },
 }
 
@@ -132,117 +158,128 @@ export async function HVCOSection() {
           </p>
         </div>
 
-        {/* Bento grid: 1 col mobile / 2 cols tablet / 3 cols desktop · perfect 3+3+3 tessellation for 2 featured + 5 regular */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Poster grid: 1 / 2 / 3 cols — each card a self-contained mini-poster */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {sorted.map((f) => {
-            const accent = f.accentColor ?? '#1A5FD4'
             const visual = SLUG_VISUALS[f.slug] ?? {
-              icon: BookOpen, agentLabel: 'Bauplan', colSpan: 1,
+              icon: BookOpen,
+              agentLabel: 'Bauplan',
+              posterTitle: f.title.toUpperCase(),
+              posterSub: '',
+              tone: { from: '#0F1E3A', to: '#1A5FD4', accent: '#5DDBF5' },
             }
             const Icon = visual.icon
-
-            // Map colSpan to Tailwind classes (3-col grid: featured spans 2, regular spans 1)
-            const spanClass =
-              visual.colSpan === 2 ? 'sm:col-span-2 lg:col-span-2'
-              : 'lg:col-span-1'
-
-            const minH = visual.featured ? 'min-h-[240px]' : 'min-h-[220px]'
-
-            // All-blue palette with gradations from the brand banner:
-            // Featured = bright cyan → brand blue (eye-catching).
-            // Regular = brand blue → deep navy (anchored, premium).
-            const cardBg = visual.featured
-              ? 'linear-gradient(135deg, #1FB7E8 0%, #1696D4 55%, #0F66C8 100%)'
-              : 'linear-gradient(135deg, #1A4DB0 0%, #133F95 60%, #0A2851 100%)'
-            const cardBorder = visual.featured
-              ? '1px solid rgba(180,220,245,0.40)'
-              : '1px solid rgba(147,184,245,0.18)'
-            const titleColor = '#FFFFFF'
-            const bodyColor = 'rgba(255,255,255,0.85)'
+            const tone = visual.tone
 
             return (
               <Link
                 key={f.id}
                 href={`/frameworks/${f.slug}`}
-                className={`group relative flex flex-col overflow-hidden rounded-2xl p-5 transition-all hover:-translate-y-0.5 ${spanClass} ${minH}`}
+                className="group relative flex flex-col overflow-hidden rounded-2xl bg-white transition-all hover:-translate-y-0.5"
                 style={{
-                  background: cardBg,
-                  border: cardBorder,
-                  boxShadow: visual.featured ? '0 8px 30px rgba(15,30,58,0.18)' : '0 1px 2px rgba(15,30,58,0.04)',
+                  border: '1px solid rgba(255,255,255,0.10)',
+                  boxShadow: '0 4px 20px rgba(15,30,58,0.18)',
                 }}
               >
-
-                {/* Content */}
-                <div className="relative flex flex-col h-full">
-                  <div className="flex items-start justify-between mb-4">
-                    <div
-                      className="flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-105"
+                {/* Poster hero (image + tonal gradient + overlaid headline) */}
+                <div className="relative aspect-[16/11] overflow-hidden">
+                  {/* Photo backdrop */}
+                  <div
+                    className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
+                    aria-hidden="true"
+                    style={{
+                      backgroundImage: `url(/frameworks/${f.slug}.jpg)`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  />
+                  {/* Tonal lift — strong gradient bottom→top so the title pops */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    aria-hidden="true"
+                    style={{
+                      background: `linear-gradient(180deg, ${tone.from}66 0%, ${tone.from}DD 70%, ${tone.from} 100%)`,
+                    }}
+                  />
+                  {/* Accent corner glow */}
+                  <div
+                    className="absolute -top-10 -right-10 h-40 w-40 rounded-full pointer-events-none"
+                    aria-hidden="true"
+                    style={{ background: `radial-gradient(circle, ${tone.accent}40 0%, transparent 70%)` }}
+                  />
+                  {/* Top row: agent label + Beliebt */}
+                  <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
+                    <span
+                      className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
                       style={{
                         backgroundColor: 'rgba(255,255,255,0.14)',
                         color: '#FFFFFF',
-                        border: '1px solid rgba(255,255,255,0.22)',
+                        border: '1px solid rgba(255,255,255,0.20)',
+                        backdropFilter: 'blur(8px)',
                       }}
                     >
-                      <Icon size={20} />
-                    </div>
-                    <div className="flex flex-col items-end gap-1.5">
-                      {visual.featured && (
-                        <span
-                          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
-                          style={{ backgroundColor: '#FFFFFF', color: '#0A2851' }}
-                        >
-                          ★ Beliebt
-                        </span>
-                      )}
+                      <Sparkles size={9} /> {visual.agentLabel}
+                    </span>
+                    {visual.featured && (
                       <span
                         className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
-                        style={{
-                          backgroundColor: 'rgba(255,255,255,0.14)',
-                          color: '#FFFFFF',
-                          border: '1px solid rgba(255,255,255,0.18)',
-                        }}
+                        style={{ backgroundColor: '#FFFFFF', color: tone.from }}
                       >
-                        <Sparkles size={9} /> {visual.agentLabel}
+                        ★ Beliebt
                       </span>
-                    </div>
+                    )}
                   </div>
-
-                  <h3
-                    className={`font-bold leading-snug ${visual.featured ? 'text-2xl' : 'text-lg'}`}
-                    style={{ color: titleColor }}
-                  >
-                    {f.title}
-                  </h3>
-
-                  {visual.tagline && (
-                    <p className="mt-1 text-xs font-semibold" style={{ color: '#9CDDF5' }}>
-                      {visual.tagline}
-                    </p>
-                  )}
-
-                  {f.metaDescription && (
-                    <p
-                      className={`mt-3 text-sm leading-relaxed flex-1 ${visual.featured ? 'line-clamp-3' : 'line-clamp-3'}`}
-                      style={{ color: bodyColor }}
+                  {/* Poster title — bottom-left */}
+                  <div className="absolute bottom-5 left-5 right-5">
+                    <h3
+                      className="font-bold leading-[0.95] tracking-tight whitespace-pre-line"
+                      style={{
+                        color: '#FFFFFF',
+                        fontSize: visual.featured ? '28px' : '24px',
+                        textShadow: '0 2px 14px rgba(0,0,0,0.35)',
+                      }}
                     >
+                      {visual.posterTitle}
+                    </h3>
+                    {visual.posterSub && (
+                      <p
+                        className="mt-2 text-xs font-semibold uppercase tracking-[0.18em]"
+                        style={{ color: tone.accent }}
+                      >
+                        {visual.posterSub}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Body */}
+                <div className="relative flex flex-col flex-1 p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div
+                      className="flex h-8 w-8 items-center justify-center rounded-lg"
+                      style={{ backgroundColor: `${tone.from}10`, color: tone.from }}
+                    >
+                      <Icon size={16} />
+                    </div>
+                    {visual.tagline && (
+                      <span className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: tone.from }}>
+                        {visual.tagline}
+                      </span>
+                    )}
+                  </div>
+                  {f.metaDescription && (
+                    <p className="text-sm leading-relaxed flex-1 line-clamp-3" style={{ color: '#374151' }}>
                       {f.metaDescription}
                     </p>
                   )}
-
                   <div
-                    className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold"
-                    style={{ color: '#FFFFFF' }}
+                    className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold"
+                    style={{ color: tone.from }}
                   >
                     Pack's an
                     <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
-
-                {/* Subtle accent line on hover */}
-                <div
-                  className="absolute inset-x-0 bottom-0 h-[2px] rounded-b-2xl opacity-0 transition-opacity group-hover:opacity-100"
-                  style={{ backgroundColor: '#1FB7E8' }}
-                />
               </Link>
             )
           })}
