@@ -92,7 +92,7 @@ export async function HVCOSection() {
   }).slice(0, 7)
 
   return (
-    <section className="relative overflow-hidden px-6 py-24" style={{ backgroundColor: '#0A1A2E' }}>
+    <section className="relative overflow-hidden px-6 py-24" style={{ backgroundColor: '#08193D' }}>
       {/* Subtle Karo-Pattern for cinematic texture */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -106,8 +106,8 @@ export async function HVCOSection() {
         }}
       />
       {/* Top + bottom gradient fades to anchor against neighboring sections */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-24" style={{ background: 'linear-gradient(180deg, #0F1E3A 0%, transparent 100%)' }} aria-hidden="true" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16" style={{ background: 'linear-gradient(0deg, #0F1E3A 0%, transparent 100%)' }} aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24" style={{ background: 'linear-gradient(180deg, #0A2851 0%, transparent 100%)' }} aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16" style={{ background: 'linear-gradient(0deg, #0A2851 0%, transparent 100%)' }} aria-hidden="true" />
 
       <div className="relative mx-auto max-w-7xl">
 
@@ -122,7 +122,7 @@ export async function HVCOSection() {
           </span>
           <h2 className="text-4xl font-bold leading-tight sm:text-5xl text-white">
             Klau dir unsere Frameworks.<br />
-            <span style={{ color: '#5DCEF0' }}>Inklusive AI-Agenten.</span>
+            <span style={{ color: '#5DDBF5' }}>Inklusive AI-Agenten.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.70)' }}>
             Du brauchst nicht 47 Custom-GPTs basteln. Wir haben sie schon trainiert.
@@ -152,8 +152,8 @@ export async function HVCOSection() {
             // Featured = bright cyan → brand blue (eye-catching).
             // Regular = brand blue → deep navy (anchored, premium).
             const cardBg = visual.featured
-              ? 'linear-gradient(135deg, #29B6E9 0%, #1A78D8 55%, #1A5FD4 100%)'
-              : 'linear-gradient(135deg, #1A5FD4 0%, #144FB5 60%, #0F3D8E 100%)'
+              ? 'linear-gradient(135deg, #1FB7E8 0%, #1696D4 55%, #0F66C8 100%)'
+              : 'linear-gradient(135deg, #1A4DB0 0%, #133F95 60%, #0A2851 100%)'
             const cardBorder = visual.featured
               ? '1px solid rgba(180,220,245,0.40)'
               : '1px solid rgba(147,184,245,0.18)'
@@ -189,7 +189,7 @@ export async function HVCOSection() {
                       {visual.featured && (
                         <span
                           className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
-                          style={{ backgroundColor: '#FFFFFF', color: '#0F3D8E' }}
+                          style={{ backgroundColor: '#FFFFFF', color: '#0A2851' }}
                         >
                           ★ Beliebt
                         </span>
@@ -215,7 +215,7 @@ export async function HVCOSection() {
                   </h3>
 
                   {visual.tagline && (
-                    <p className="mt-1 text-xs font-semibold" style={{ color: '#A8D8F2' }}>
+                    <p className="mt-1 text-xs font-semibold" style={{ color: '#9CDDF5' }}>
                       {visual.tagline}
                     </p>
                   )}
@@ -241,7 +241,7 @@ export async function HVCOSection() {
                 {/* Subtle accent line on hover */}
                 <div
                   className="absolute inset-x-0 bottom-0 h-[2px] rounded-b-2xl opacity-0 transition-opacity group-hover:opacity-100"
-                  style={{ backgroundColor: '#29B6E9' }}
+                  style={{ backgroundColor: '#1FB7E8' }}
                 />
               </Link>
             )

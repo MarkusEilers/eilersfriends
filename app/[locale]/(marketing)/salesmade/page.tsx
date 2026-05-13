@@ -13,6 +13,7 @@ import { CeoMonologue } from '@/components/sections/salesmade/CeoMonologue'
 import { MethodologyTriptych } from '@/components/sections/salesmade/MethodologyTriptych'
 import { SalesFlywheel } from '@/components/sections/salesmade/SalesFlywheel'
 import { BeforeAfter } from '@/components/sections/salesmade/BeforeAfter'
+import { ParticipantLoop } from '@/components/sections/salesmade/ParticipantLoop'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
@@ -269,7 +270,10 @@ export default async function SalesMadePage({ params }: PageProps) {
       {/* ─── 4b. METHODOLOGY TRIPTYCH ──────────────────────── */}
       <MethodologyTriptych />
 
-      {/* ─── 5. VISION ───────────────────────────────────────────────── */}
+      {/* ─── 4c. PARTICIPANT LOOP ─────────────────────────── */}
+      <ParticipantLoop />
+
+            {/* ─── 5. VISION ───────────────────────────────────────────────── */}
       <section className="px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="text-center">

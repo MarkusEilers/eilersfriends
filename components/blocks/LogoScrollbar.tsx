@@ -41,7 +41,7 @@ export function LogoScrollbar({ logos, speed = 'normal', className }: LogoScroll
         {tripled.map((logo, i) => (
           <div
             key={i}
-            className="flex h-10 items-center justify-center px-2"
+            className="flex h-7 items-center justify-center px-2"
           >
             <LogoItem logo={logo} />
           </div>
@@ -61,7 +61,7 @@ function LogoItem({ logo }: { logo: Logo }) {
         src={logo.src}
         alt={logo.name}
         onError={() => setFailed(true)}
-        className="h-7 w-auto object-contain opacity-40 grayscale transition-opacity hover:opacity-70"
+        className="h-[18px] w-auto object-contain opacity-40 grayscale transition-opacity hover:opacity-70"
       />
     )
   }
