@@ -211,7 +211,7 @@ function Group({
               <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-gray-50">
                 <div className="flex gap-1.5">
                   <Link
-                    href={`/admin/landing-pages/${p.id}`}
+                    href={`/admin/frameworks/${p.id}`}
                     className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold text-gray-600 hover:bg-gray-50"
                   >
                     <Edit3 size={11} /> Bearbeiten

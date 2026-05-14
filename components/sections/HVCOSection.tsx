@@ -1,3 +1,6 @@
+import { mergedMeta, type Deliverable } from '@/lib/db/queries/framework-meta'
+
+const _slug_visuals_legacy_icons = SLUG_VISUALS // kept for hardcoded icon refs
 import { db } from '@/lib/db'
 import { landingPages } from '@/lib/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
@@ -161,12 +164,17 @@ export async function HVCOSection() {
         {/* Poster grid: 1 / 2 / 3 cols — each card a self-contained mini-poster */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {sorted.map((f) => {
-            const visual = SLUG_VISUALS[f.slug] ?? {
-              icon: BookOpen,
-              agentLabel: 'Bauplan',
-              posterTitle: f.title.toUpperCase(),
-              posterSub: '',
-              tone: { from: '#0F1E3A', to: '#1A5FD4', accent: '#5DDBF5' },
+            // Pull card meta from DB merged with hardcoded fallback
+            const fallback = SLUG_VISUALS[f.slug]
+            const dbMeta = mergedMeta(f.slug, f.cardMeta as Parameters<typeof mergedMeta>[1])
+            const visual = {
+              icon: fallback?.icon ?? BookOpen,
+              agentLabel: dbMeta.agentLabel ?? fallback?.agentLabel ?? 'Bauplan',
+              tagline: dbMeta.tagline ?? fallback?.tagline,
+              posterTitle: dbMeta.posterTitle ?? fallback?.posterTitle ?? f.title.toUpperCase(),
+              posterSub: dbMeta.posterSubtitle ?? fallback?.posterSub ?? '',
+              tone: dbMeta.tone ?? fallback?.tone ?? { from: '#0F1E3A', to: '#1A5FD4', accent: '#5DDBF5' },
+              featured: fallback?.featured,
             }
             const Icon = visual.icon
             const tone = visual.tone
