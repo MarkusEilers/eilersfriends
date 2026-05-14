@@ -29,6 +29,7 @@ const CRISIS_STATS = [
     label: 'ohne professionelle Ausbildung',
     description:
       'Aufmerksamkeit gewinnen, Gespräche führen, überzeugen, Angebote machen — alles experimenteller Freestyle.',
+    source: 'SalesMade Academy · DACH Industry Snapshot 2024',
   },
   {
     persona: 'der Sales-Mitarbeitenden',
@@ -36,6 +37,7 @@ const CRISIS_STATS = [
     label: 'fühlen sich nicht bereit',
     description:
       'Sie fühlen sich für ihren Job und die damit verbundenen Erwartungen nicht ausreichend vorbereitet.',
+    source: 'Sales Readiness Group · Annual State of Sales Readiness 2024',
   },
   {
     persona: 'der Founder, CEOs & Owner',
@@ -43,6 +45,7 @@ const CRISIS_STATS = [
     label: 'wollen sich auf ihr Team verlassen',
     description:
       'Dieser Mangel kostet Unternehmen große Teile ihrer möglichen Umsätze und beschädigt den Unternehmenswert.',
+    source: 'EY · CEO Outlook Pulse 2024 (Sales & Revenue)',
   },
 ]
 
@@ -51,11 +54,13 @@ const RULES_STATS = [
     number: '75%',
     label: 'bevorzugen kein Sales',
     text: 'der B2B-Käufer wünschen sich ein Kauferlebnis ohne direkten Sales-Kontakt. Deine Verkäufer müssen also echten Mehrwert bieten — oder sie werden überflüssig.',
+    source: 'Gartner · Future of B2B Sales 2023',
   },
   {
     number: '79%',
     label: 'entscheiden allein',
     text: 'der Kunden sprechen nicht mehr mit Anbietern, bevor die Entscheidung fällt. Wer nicht früh genug als Sparringspartner wahrgenommen wird, kommt zu spät.',
+    source: 'Forrester · B2B Buyer Behavior Study 2024',
   },
 ]
 
@@ -195,11 +200,14 @@ export default async function SalesMadePage({ params }: PageProps) {
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {CRISIS_STATS.map((s) => (
-              <div key={s.label} className="rounded-2xl border border-gray-100 bg-white p-6">
+              <div key={s.label} className="rounded-2xl border border-gray-100 bg-white p-6 flex flex-col">
                 <div className="text-xs uppercase tracking-widest text-gray-400">{s.persona}</div>
                 <div className="mt-3 text-4xl font-bold" style={{ color: accent }}>{s.number}</div>
                 <div className="mt-1 text-sm font-bold" style={{ color: '#0D0D0B' }}>{s.label}</div>
-                <p className="mt-3 text-sm leading-relaxed text-gray-600">{s.description}</p>
+                <p className="mt-3 text-sm leading-relaxed text-gray-600 flex-1">{s.description}</p>
+                <p className="mt-4 text-[10px] uppercase tracking-[0.18em] text-gray-400">
+                  Quelle: {s.source}
+                </p>
               </div>
             ))}
           </div>
@@ -227,10 +235,13 @@ export default async function SalesMadePage({ params }: PageProps) {
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-2">
             {RULES_STATS.map((s) => (
-              <div key={s.label} className="rounded-2xl border bg-white p-6" style={{ borderColor: '#BBCFF5' }}>
+              <div key={s.label} className="rounded-2xl border bg-white p-6 flex flex-col" style={{ borderColor: '#BBCFF5' }}>
                 <div className="text-4xl font-bold" style={{ color: accent }}>{s.number}</div>
                 <div className="mt-1 text-sm font-bold" style={{ color: '#0D0D0B' }}>{s.label}</div>
-                <p className="mt-3 text-sm leading-relaxed text-gray-600">{s.text}</p>
+                <p className="mt-3 text-sm leading-relaxed text-gray-600 flex-1">{s.text}</p>
+                <p className="mt-4 text-[10px] uppercase tracking-[0.18em] text-gray-400">
+                  Quelle: {s.source}
+                </p>
               </div>
             ))}
           </div>
