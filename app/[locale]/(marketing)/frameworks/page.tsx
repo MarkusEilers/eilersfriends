@@ -8,7 +8,7 @@ import {
   Lightbulb, GitBranch, FileText, BookOpen, FileDown, Video, ClipboardList,
 } from 'lucide-react'
 import { redirect } from 'next/navigation'
-import { mergedMeta } from '@/lib/db/queries/framework-meta'
+import { mergedMeta, type CardMeta } from '@/lib/db/queries/framework-meta'
 
 /** Per-slug visual config — mirrors HVCOSection so the design language matches.
  *  But here we have more space: longer body + deliverables list per card. */
@@ -190,7 +190,7 @@ export default async function FrameworksIndex({ params }: PageProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {sorted.map((f) => {
                 const fallback = SLUG_VISUALS[f.slug]
-                const dbMeta = mergedMeta(f.slug, f.cardMeta as Parameters<typeof mergedMeta>[1])
+                const dbMeta = mergedMeta(f.slug, f.cardMeta as CardMeta | null)
                 // Map deliverable icons from string to component (Bibliothek der erlaubten Icons)
                 const ICON_LOOKUP = { FileDown, Video, ClipboardList, Wand2, BookOpen, Sparkles }
                 const dbDeliverables = (dbMeta.deliverables ?? []).map((d) => ({

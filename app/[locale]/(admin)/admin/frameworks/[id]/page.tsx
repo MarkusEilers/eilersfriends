@@ -4,7 +4,7 @@ import { ArrowLeft, Save } from 'lucide-react'
 import { db } from '@/lib/db'
 import { landingPages } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
-import { DEFAULT_CARD_META, mergedMeta, type Deliverable } from '@/lib/db/queries/framework-meta'
+import { mergedMeta, type Deliverable, type CardMeta } from '@/lib/db/queries/framework-meta'
 import { saveFrameworkMetaAction } from '@/lib/actions/framework-meta'
 import { FrameworkImageGenerator } from '@/components/admin/FrameworkImageGenerator'
 import { FRAMEWORK_PROMPTS } from '@/lib/data/framework-prompts'
@@ -32,7 +32,7 @@ export default async function AdminFrameworkEditPage({ params }: PageProps) {
   }
   if (!row) redirect('/admin/frameworks')
 
-  const meta = mergedMeta(row.slug, row.cardMeta as Parameters<typeof mergedMeta>[1])
+  const meta = mergedMeta(row.slug, row.cardMeta as CardMeta | null)
   const deliverables = meta.deliverables ?? []
   // Pad to 5 rows for the form
   while (deliverables.length < 5) deliverables.push({ icon: 'FileDown', label: '' })

@@ -1,4 +1,4 @@
-import { mergedMeta } from '@/lib/db/queries/framework-meta'
+import { mergedMeta, type CardMeta } from '@/lib/db/queries/framework-meta'
 import { db } from '@/lib/db'
 import { landingPages } from '@/lib/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
@@ -164,7 +164,7 @@ export async function HVCOSection() {
           {sorted.map((f) => {
             // Pull card meta from DB merged with hardcoded fallback
             const fallback = SLUG_VISUALS[f.slug]
-            const dbMeta = mergedMeta(f.slug, f.cardMeta as Parameters<typeof mergedMeta>[1])
+            const dbMeta = mergedMeta(f.slug, f.cardMeta as CardMeta | null)
             const visual = {
               icon: fallback?.icon ?? BookOpen,
               agentLabel: dbMeta.agentLabel ?? fallback?.agentLabel ?? 'Bauplan',
