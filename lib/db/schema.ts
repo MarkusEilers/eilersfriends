@@ -368,15 +368,7 @@ export const landingPages = pgTable('landing_pages', {
   accentColor: text('accent_color'),              // z.B. '#1A5FD4' für SalesMade
   templateKey: text('template_key'),              // z.B. 'program-welsh', 'newsletter-welsh', 'framework-leadmagnet'
   // Card / Poster meta — edited via /admin/frameworks/[id]
-  cardMeta: json('card_meta').$type<{
-    posterTitle?: string
-    posterSubtitle?: string
-    tagline?: string
-    agentLabel?: string
-    tone?: { from: string; to: string; accent: string }
-    deliverables?: Array<{ icon: string; label: string }>
-    heroImageUrl?: string
-  }>(),
+  cardMeta: json('card_meta').$type<Record<string, unknown>>(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
