@@ -224,8 +224,7 @@ function ColorField({ label, name, defaultValue }: { label: string; name: string
     <div>
       <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">{label}</label>
       <div className="flex gap-1.5 items-center">
-        <input type="color" name={name + '__pick'} defaultValue={defaultValue} className="h-9 w-9 rounded border border-gray-200 cursor-pointer"
-               onChange={undefined /* uncontrolled visual picker — value below is what's submitted */} />
+        <input type="color" name={name + '__pick'} defaultValue={defaultValue} className="h-9 w-9 rounded border border-gray-200 cursor-pointer" />
         <input
           type="text"
           name={name}

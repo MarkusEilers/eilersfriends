@@ -2,7 +2,7 @@
  * SalesMade Skill-Inventar — 16 Skills über 5 Disziplinen.
  *
  * Reihenfolge folgt der Logik eines echten Deals:
- * Strategie → Discovery → Botschaft → Closing → Pipeline.
+ * Pipeline → Strategie → Discovery → Botschaft → Closing.
  */
 import { Compass, Eye, MessageSquare, Handshake, Magnet } from 'lucide-react'
 
@@ -24,8 +24,21 @@ interface Discipline {
 
 const DISCIPLINES: Discipline[] = [
   {
-    id: 'strategy',
+    id: 'pipeline',
     number: '01',
+    name: 'Pipeline & Hebel',
+    description: 'Systematisch, planbar, skalierbar — bevor das erste Gespräch beginnt.',
+    icon: Magnet,
+    accent: '#1A5FD4',
+    accentLight: '#EBF1FF',
+    skills: [
+      { name: 'Social Media Rockstar', tagline: 'Der 9-Schritte-AI-Content-Prozess für magnetische Inbound-Leads' },
+      { name: 'The Magnetic Outreach Framework', tagline: 'Intriguing Cold Call + Godfather Letters — Outbound, das nicht nervt' },
+    ],
+  },
+  {
+    id: 'strategy',
+    number: '02',
     name: 'Strategie & Vorbereitung',
     description: 'Was wir tun, bevor wir den Mund aufmachen.',
     icon: Compass,
@@ -40,7 +53,7 @@ const DISCIPLINES: Discipline[] = [
   },
   {
     id: 'discovery',
-    number: '02',
+    number: '03',
     name: 'Discovery & Erstgespräch',
     description: 'Die ersten 60 Sekunden bis zum ersten Value-Hit.',
     icon: Eye,
@@ -54,7 +67,7 @@ const DISCIPLINES: Discipline[] = [
   },
   {
     id: 'persuasion',
-    number: '03',
+    number: '04',
     name: 'Botschaft & Überzeugung',
     description: 'Wir tragen Sinn, nicht Features.',
     icon: MessageSquare,
@@ -68,7 +81,7 @@ const DISCIPLINES: Discipline[] = [
   },
   {
     id: 'closing',
-    number: '04',
+    number: '05',
     name: 'Angebot · Verhandlung · Closing',
     description: 'Vom Vorschlag zum verbindlichen Ja.',
     icon: Handshake,
@@ -76,22 +89,10 @@ const DISCIPLINES: Discipline[] = [
     accentLight: '#EBF1FF',
     skills: [
       { name: 'Unwiderstehliche B2B-Angebote', tagline: 'Der 8-Schritte-Bauplan' },
-      { name: 'Beef Radar / Konfliktdiagnostik', tagline: 'Einwände diagnostizieren, bevor sie aussprechbar werden' },
+      { name: 'Beef Radar', tagline: 'Value-Kommunikation passend zu den echten Needs' },
+      { name: 'Einwände gezielt vorwegnehmen', tagline: 'Bevor sie ausgesprochen werden, sind sie schon entwaffnet' },
       { name: 'Bombensichere Verhandlungen', tagline: 'Die 9 Prinzipien für mehrwertige Abschlüsse' },
       { name: 'Recommendation Pitch', tagline: 'Verkaufen, indem man empfiehlt — Käufer:in im Driver-Seat' },
-    ],
-  },
-  {
-    id: 'pipeline',
-    number: '05',
-    name: 'Pipeline & Hebel',
-    description: 'Systematisch, planbar, skalierbar.',
-    icon: Magnet,
-    accent: '#1A5FD4',
-    accentLight: '#EBF1FF',
-    skills: [
-      { name: 'Social Media Rockstar', tagline: 'Der 9-Schritte-AI-Content-Prozess für magnetische Inbound-Leads' },
-      { name: 'The Magnetic Outreach Framework', tagline: 'Intriguing Cold Call + Godfather Letters — Outbound, das nicht nervt' },
     ],
   },
 ]
