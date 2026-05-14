@@ -40,7 +40,7 @@ export function HeroSection() {
         {/* CTA */}
         <div className="mt-8 flex justify-center">
           <a
-            href="https://calendly.com/eilersfriends"
+            href="https://calendly.com/markuseilers/kennenlernen"
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-full px-8 py-4 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90"

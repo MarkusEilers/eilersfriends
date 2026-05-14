@@ -168,7 +168,7 @@ export function Navbar() {
 
             {/* CTA button (desktop) */}
             <a
-              href="https://calendly.com/eilersfriends"
+              href="https://calendly.com/markuseilers/kennenlernen"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
@@ -277,7 +277,7 @@ export function Navbar() {
               </div>
 
               <a
-                href="https://calendly.com/eilersfriends"
+                href="https://calendly.com/markuseilers/kennenlernen"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"

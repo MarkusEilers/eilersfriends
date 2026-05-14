@@ -30,7 +30,7 @@ export function CtaBlock() {
           {/* CTA Button */}
           <div className="mt-10">
             <a
-              href="https://calendly.com/eilersfriends"
+              href="https://calendly.com/markuseilers/kennenlernen"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold transition-opacity hover:opacity-90"

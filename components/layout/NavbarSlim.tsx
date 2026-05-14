@@ -8,7 +8,7 @@ interface NavbarSlimProps {
 
 export function NavbarSlim({
   ctaLabel = 'Gespräch buchen',
-  ctaHref = 'https://calendly.com/eilersfriends',
+  ctaHref = 'https://calendly.com/markuseilers/kennenlernen',
 }: NavbarSlimProps) {
   return (
     <header className="w-full bg-white border-b border-gray-100">
