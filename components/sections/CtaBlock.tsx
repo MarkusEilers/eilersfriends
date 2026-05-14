@@ -1,8 +1,10 @@
-import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
+import { getSetting } from '@/lib/db/queries/settings'
 import { Users, ArrowRight } from 'lucide-react'
 
-export function CtaBlock() {
-  const t = useTranslations('cta')
+export async function CtaBlock() {
+  const t = await getTranslations('cta')
+  const calendlyUrl = await getSetting('calendly.markus')
 
   return (
     <section className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
@@ -30,7 +32,7 @@ export function CtaBlock() {
           {/* CTA Button */}
           <div className="mt-10">
             <a
-              href="https://calendly.com/markuseilers/kennenlernen"
+              href={calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold transition-opacity hover:opacity-90"

@@ -35,7 +35,7 @@ const SLUG_VISUALS: Record<
     agentLabel: 'Discovery-Call AI',
     tagline: 'Generator + Notes-AI',
     posterTitle: 'INSTANT\nINFLUENCE',
-    posterSub: 'Win the first conversation',
+    posterSub: 'Kunden im ersten Gespräch gewinnen',
     tone: { from: '#0F1E3A', to: '#1A5FD4', accent: '#5DDBF5' },
     featured: true,
   },

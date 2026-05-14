@@ -44,7 +44,7 @@ async function ensureColumn() {
 export const DEFAULT_CARD_META: Record<string, CardMeta> = {
   'instant-influence': {
     posterTitle: 'INSTANT\nINFLUENCE',
-    posterSubtitle: 'Win the first conversation',
+    posterSubtitle: 'Kunden im ersten Gespräch gewinnen',
     tagline: 'Generator + Notes-AI',
     agentLabel: 'Discovery-Call AI',
     tone: { from: '#0F1E3A', to: '#1A5FD4', accent: '#5DDBF5' },

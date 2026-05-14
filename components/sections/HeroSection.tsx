@@ -5,7 +5,7 @@ import { AnimatedNumber } from '@/components/blocks/AnimatedNumber'
 import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
 import { CompoundGrid } from '@/components/effects/CompoundGrid'
 
-export function HeroSection() {
+export function HeroSection({ calendlyUrl }: { calendlyUrl: string }) {
   const t = useTranslations('hero')
 
   return (
@@ -40,7 +40,7 @@ export function HeroSection() {
         {/* CTA */}
         <div className="mt-8 flex justify-center">
           <a
-            href="https://calendly.com/markuseilers/kennenlernen"
+            href={calendlyUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-full px-8 py-4 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90"

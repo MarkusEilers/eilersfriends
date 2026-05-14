@@ -10,17 +10,19 @@ import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { CtaBlock } from '@/components/sections/CtaBlock'
 import { NewsletterSection } from '@/components/sections/NewsletterSection'
 import { Topbar } from '@/components/layout/Topbar'
+import { getSetting } from '@/lib/db/queries/settings'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { CookieBanner } from '@/components/layout/CookieBanner'
 
-export default function HomePage() {
+export default async function HomePage() {
+  const calendlyUrl = await getSetting('calendly.markus')
   return (
     <>
       <Topbar />
-      <Navbar />
+      <Navbar calendlyUrl={calendlyUrl} />
       <main>
-        <HeroSection />
+        <HeroSection calendlyUrl={calendlyUrl} />
         <LogoStripSection />
         <ProblemSection />
         <BentoGrid />

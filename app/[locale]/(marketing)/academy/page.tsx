@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { getSetting } from '@/lib/db/queries/settings'
 import { ArrowRight, CheckCircle, Users, BookOpen, Zap, Award } from 'lucide-react'
 import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
 import { redirect } from 'next/navigation'
@@ -43,7 +44,8 @@ interface PageProps {
   params: Promise<{ locale: string }>
 }
 
-export default async function AcademyPage({ params }: PageProps) {
+export default async function AcademyPage({
+  const calendlyUrl = await getSetting('calendly.markus') params }: PageProps) {
   const { locale } = await params
   if (locale !== 'de') redirect('/de/academy')
 
@@ -85,7 +87,7 @@ export default async function AcademyPage({ params }: PageProps) {
 
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <a
-              href="https://calendly.com/markuseilers/kennenlernen"
+              href={calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90"
@@ -257,7 +259,7 @@ export default async function AcademyPage({ params }: PageProps) {
             Ein kurzes Gespräch mit Markus stellt sicher, dass das Programm zu Dir passt.
           </p>
           <a
-            href="https://calendly.com/markuseilers/kennenlernen"
+            href={calendlyUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-semibold shadow-md transition-opacity hover:opacity-90"

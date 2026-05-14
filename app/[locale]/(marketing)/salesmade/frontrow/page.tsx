@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { getSetting } from '@/lib/db/queries/settings'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
@@ -39,7 +40,8 @@ const PERKS = [
   },
 ]
 
-export default async function FrontRowPage({ params }: PageProps) {
+export default async function FrontRowPage({
+  const calendlyUrl = await getSetting('calendly.markus') params }: PageProps) {
   const { locale } = await params
   if (locale !== 'de') redirect('/de/salesmade/frontrow')
 
@@ -171,7 +173,7 @@ export default async function FrontRowPage({ params }: PageProps) {
             woran du arbeitest.
           </p>
           <a
-            href="https://calendly.com/markuseilers/kennenlernen"
+            href={calendlyUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-8 inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90"
