@@ -461,8 +461,7 @@ export default async function SalesMadePage({ params }: PageProps) {
                   Pitching-Klischee zu verfallen.
                 </p>
                 <p>
-                  Aus 500+ begleiteten Gründer:innen und €50M+ aktiviertem Umsatz
-                  ist die SalesMade-Methodik entstanden — das System, das hinter
+                  Aus 500+ begleiteten Gründer:innen ist die SalesMade-Methodik entstanden — das System, das hinter
                   dieser Academy steht. Dazu kommt seine Erfahrung als gefragter
                   Keynote-Speaker für modernen Vertrieb, KI im Verkauf und
                   Kundenkommunikation auf Augenhöhe.

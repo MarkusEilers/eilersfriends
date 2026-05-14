@@ -37,7 +37,7 @@ const MARKUS_BIO = {
     name: 'Markus Eilers',
     role: 'Revenue Systems · B2B-Vertrieb · TEDx Speaker',
     photoUrl: '/markus-photo.jpg',
-    bio: 'Markus baut seit 25+ Jahren B2B-Vertriebsorganisationen — von Start-ups bis Konzerne. Aus 500+ begleiteten Gründer:innen und €50M+ aktiviertem Umsatz ist die SalesMade-Methodik entstanden. Dieses Framework ist ein extrahierter Baustein daraus.',
+    bio: 'Markus baut seit 25+ Jahren B2B-Vertriebsorganisationen — von Start-ups bis Konzerne. Aus 500+ begleiteten Gründer:innen ist die SalesMade-Methodik entstanden. Dieses Framework ist ein extrahierter Baustein daraus.',
     socials: {
       linkedin: 'https://linkedin.com/in/markuseilers',
       youtube: 'https://youtube.com/@markuseilers',
