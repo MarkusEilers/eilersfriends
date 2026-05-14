@@ -1,6 +1,4 @@
-import { mergedMeta, type Deliverable } from '@/lib/db/queries/framework-meta'
-
-const _slug_visuals_legacy_icons = SLUG_VISUALS // kept for hardcoded icon refs
+import { mergedMeta } from '@/lib/db/queries/framework-meta'
 import { db } from '@/lib/db'
 import { landingPages } from '@/lib/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
