@@ -68,21 +68,18 @@ export function HeroSection({ calendlyUrl }: { calendlyUrl: string }) {
             <span className="text-xs text-gray-400 font-medium">{t('stat2Label')}</span>
           </div>
 
-          {/* Stat 3: Red */}
+          {/* Stat 3: Blue — Weiterempfehlung */}
           <div className="flex flex-col items-center gap-1 px-4 py-7">
-            <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#EB0028' }}>
-              <AnimatedNumber value={90} suffix="%+" />
+            <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#1A5FD4' }}>
+              <AnimatedNumber value={98} suffix="%" />
             </span>
             <span className="text-xs text-gray-400 font-medium">{t('stat3Label')}</span>
           </div>
 
-          {/* Stat 4: Serif */}
+          {/* Stat 4: Erfahrung — same font family as the others */}
           <div className="flex flex-col items-center gap-1 px-4 py-7">
-            <span className="inline-flex items-baseline gap-0.5 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>
-              <AnimatedNumber value={15} />
-              <span className="font-serif italic" style={{ fontFamily: 'DM Serif Display, serif', fontSize: '2.25rem', lineHeight: 1 }}>
-                {' '}{t('stat4Unit')}
-              </span>
+            <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>
+              <AnimatedNumber value={25} suffix={` ${t('stat4Unit')}`} />
             </span>
             <span className="text-xs text-gray-400 font-medium">{t('stat4Label')}</span>
           </div>

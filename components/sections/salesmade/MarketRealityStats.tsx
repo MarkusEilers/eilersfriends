@@ -27,8 +27,8 @@ interface Stat {
 
 const STATS: Stat[] = [
   {
-    value: 94,
-    label: '94 %',
+    value: 84,
+    label: '84 %',
     headline: 'haben keine professionelle Ausbildung',
     body: 'der B2B-Seller in Europa für den Job, den sie täglich machen sollen.',
     source: 'SalesMade Academy · DACH Industry Snapshot 2024',
@@ -59,11 +59,11 @@ const STATS: Stat[] = [
     body: 'die wichtige Deals verzögern oder verhindern. Drei Prozent. Mehr nicht.',
     source: 'RAIN Group · Top Performers Benchmark 2024',
     ringFg: '#1A5FD4',
-    ringBg: '#0A2851',
-    cardBg: '#0F1E3A',
-    cardBorder: '#1A5FD4',
-    numberColor: '#5DDBF5',
-    direction: 'positive-tiny',
+    ringBg: '#EBF1FF',
+    cardBg: '#FFFFFF',
+    cardBorder: '#BBCFF5',
+    numberColor: '#1A5FD4',
+    direction: 'negative',
   },
 ]
 
