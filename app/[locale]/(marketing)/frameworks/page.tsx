@@ -7,8 +7,8 @@ import {
   ArrowRight, Sparkles, MessageSquareText, Target, Wand2, Radar,
   Lightbulb, GitBranch, FileText, BookOpen, FileDown, Video, ClipboardList,
 } from 'lucide-react'
-import { redirect } from 'next/navigation'
-import { mergedMeta, type CardMeta, ensureCardMetaColumn } from '@/lib/db/queries/framework-meta'
+import { ensureCardMetaColumn, type CardMeta } from '@/lib/db/queries/framework-meta'
+import { resolveFrameworkMeta } from '@/lib/db/queries/framework-meta-i18n'
 
 /** Per-slug visual config — mirrors HVCOSection so the design language matches.
  *  But here we have more space: longer body + deliverables list per card. */
@@ -125,8 +125,7 @@ interface PageProps {
 }
 
 export default async function FrameworksIndex({ params }: PageProps) {
-  const { locale } = await params
-  if (locale !== 'de') redirect('/de/frameworks')
+  await params  // locale handled by i18n
 
   let frameworks: (typeof landingPages.$inferSelect)[] = []
   try {
@@ -152,6 +151,12 @@ export default async function FrameworksIndex({ params }: PageProps) {
     if (bi !== -1) return 1
     return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
   })
+
+  // Resolve i18n meta for every framework before render (async fan-out)
+  const resolvedMetas: Record<string, Awaited<ReturnType<typeof resolveFrameworkMeta>>> = {}
+  await Promise.all(sorted.map(async (f) => {
+    resolvedMetas[f.slug] = await resolveFrameworkMeta(f.slug, f.cardMeta as CardMeta | null)
+  }))
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
@@ -191,7 +196,7 @@ export default async function FrameworksIndex({ params }: PageProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {sorted.map((f) => {
                 const fallback = SLUG_VISUALS[f.slug]
-                const dbMeta = mergedMeta(f.slug, f.cardMeta as CardMeta | null)
+                const dbMeta = resolvedMetas[f.slug]
                 // Map deliverable icons from string to component (Bibliothek der erlaubten Icons)
                 const ICON_LOOKUP = { FileDown, Video, ClipboardList, Wand2, BookOpen, Sparkles }
                 const dbDeliverables = (dbMeta.deliverables ?? []).map((d) => ({
@@ -303,9 +308,9 @@ export default async function FrameworksIndex({ params }: PageProps) {
                         </span>
                       </div>
 
-                      {f.metaDescription && (
+                      {(dbMeta.metaDescription ?? f.metaDescription) && (
                         <p className="text-sm leading-relaxed text-gray-700 mb-5">
-                          {f.metaDescription}
+                          {dbMeta.metaDescription ?? f.metaDescription}
                         </p>
                       )}
 

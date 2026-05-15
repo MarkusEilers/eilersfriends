@@ -164,17 +164,15 @@
     "card3F4": "Custom Strategy"
   },
   "hvco": {
-    "eyebrow": "Kostenlose Ressourcen",
-    "headline": "Starte jetzt — kostenlos",
-    "resource1Title": "Vertriebssystem Guide",
-    "resource1Text": "Der komplette PDF-Guide: Wie du in 90 Tagen ein reproduzierbares Vertriebssystem aufbaust.",
-    "resource1Cta": "Guide laden",
-    "resource2Title": "Self-Assessment Tool",
-    "resource2Text": "Finde heraus, wo dein Vertrieb wirklich steht — in 5 Minuten.",
-    "resource2Cta": "Assessment starten",
-    "resource3Title": "Video-Masterclass",
-    "resource3Text": "Die 3 größten Fehler im B2B-Vertrieb — und wie du sie sofort vermeidest.",
-    "resource3Cta": "Video ansehen"
+    "eyebrow": "Pretrained AI-Agenten · Gratis",
+    "headlineMain": "Klau dir unsere Frameworks.",
+    "headlineAccent": "Inklusive AI-Agenten.",
+    "body": "Du brauchst nicht 47 Custom-GPTs basteln. Wir haben sie schon trainiert. Jedes Framework kommt mit Bauplan + den AI-Agenten, die wir dafür gebaut haben. Email rein — Zugang raus.",
+    "bodyHighlight": "+ den AI-Agenten",
+    "beliebtBadge": "★ Beliebt",
+    "cardCta": "Pack's an",
+    "footerLink": "Alle Frameworks ansehen",
+    "footerNote": "Mehr Frameworks rollen wöchentlich aus. Mit jedem ein neuer AI-Agent."
   },
   "testimonials": {
     "eyebrow": "Stimmen",
@@ -238,5 +236,161 @@
     "submit": "Anmelden",
     "error": "E-Mail oder Passwort falsch.",
     "forgotPassword": "Passwort vergessen?"
+  },
+  "frameworks": {
+    "instant-influence": {
+      "posterTitle": "INSTANT\nINFLUENCE",
+      "posterSubtitle": "Kunden im ersten Gespräch gewinnen",
+      "tagline": "Generator + Notes-AI",
+      "agentLabel": "Discovery-Call AI",
+      "title": "Instant Influence — Kunden im ersten Gespräch gewinnen",
+      "metaDescription": "Die 3 Zutaten, die Kunden im ersten Gespräch gewinnen. Discovery-Call-Generator + Learning + Notes-AI als interaktives Tool.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "32-S. PDF: Generator-Template + 3 Notes-AI-Modi"
+        },
+        {
+          "icon": "Video",
+          "label": "24-Min Video-Walkthrough: erstes Gespräch live"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Bonus: Discovery-Call-Score-Karte"
+        }
+      ]
+    },
+    "b2b-angebote": {
+      "posterTitle": "UNWIDERSTEHLICHE\nANGEBOTE",
+      "posterSubtitle": "Der 8-Schritte-Bauplan",
+      "tagline": "8-Schritte-Bauplan",
+      "agentLabel": "PDF + Video",
+      "title": "Unwiderstehliche B2B-Angebote",
+      "metaDescription": "Der komplette Bauplan für B2B-Angebote, die sich von selbst verkaufen — in 8 einfachen Schritten. Inkl. Video-Masterclass.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "40-S. PDF: 8 Schritte zum unwiderstehlichen Angebot"
+        },
+        {
+          "icon": "Video",
+          "label": "47-Min Video-Masterclass von Markus Eilers"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Bonus: Angebots-Template als Google-Doc"
+        }
+      ]
+    },
+    "hailiom": {
+      "posterTitle": "SOCIAL MEDIA\nROCKSTAR",
+      "posterSubtitle": "9-Schritte AI Content",
+      "tagline": "Voice · Idea · Atomization · Drafting",
+      "agentLabel": "4 GPT Engines",
+      "title": "Hailiom — 9-Step AI Content Foundation & Explosion",
+      "metaDescription": "Der vortrainierte 9-Schritte-Prozess, der 87 % deiner Content-Marketing-Arbeit eliminiert und endlich qualifizierte Leads liefert. Kostenlos als Bauplan.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "Bauplan: 9-Schritte-Content-Prozess"
+        },
+        {
+          "icon": "Wand2",
+          "label": "4 GPT Engines: Voice · Idea · Atomization · Drafting"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Wochen-Kadenz-Template"
+        }
+      ]
+    },
+    "beef-radar": {
+      "posterTitle": "BEEF\nRADAR",
+      "posterSubtitle": "Konflikte sehen, bevor sie ausbrechen",
+      "tagline": "Konflikt-Diagnose",
+      "agentLabel": "Worksheet",
+      "title": "Beef Radar — Vom Merkmal zum Financial Impact",
+      "metaDescription": "Der einfache, übersehene Hack, mit dem du eine Tonne Wert kommunizierst — sodass auch der CFO zuhört. Kostenlos als Bauplan + Worksheet.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "Worksheet: 7 Signale, die andere übersehen"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Diagnose-Karte für Vorstandsgespräche"
+        },
+        {
+          "icon": "Video",
+          "label": "12-Min Walk-Through mit echten Beispielen"
+        }
+      ]
+    },
+    "core-messages": {
+      "posterTitle": "CORE 11",
+      "posterSubtitle": "Die Botschaften jedes Unternehmers",
+      "tagline": "Die 11 Botschaften",
+      "agentLabel": "18-Min AI-Worksheet",
+      "title": "Core — Die 11 Botschaften, die jede:r Unternehmer:in im Schlaf können sollte",
+      "metaDescription": "Die 11 Kern-Botschaften für planbares Wachstum — und wie du deine eigenen in 18 Minuten findest. Kostenlos als Bauplan + Worksheet.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "Bauplan: Die 11 Kern-Botschaften"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "18-Min AI-Worksheet — Deine 11 finden"
+        },
+        {
+          "icon": "Video",
+          "label": "Beispiel-Set: 11 Botschaften eines SaaS-Founders"
+        }
+      ]
+    },
+    "strategic-preparation": {
+      "posterTitle": "STRATEGIC\nPREP",
+      "posterSubtitle": "18 Min vor jedem Pitch",
+      "tagline": "Vor dem wichtigen Gespräch",
+      "agentLabel": "Pre-Meeting Checklist",
+      "title": "Strategic Preparation — In 8 Schritten zu jedem wichtigen Gespräch",
+      "metaDescription": "Auch in den schwierigsten und wichtigsten Gesprächen souverän überzeugen. In 8 Schritten — mit AI-Worksheet als Beschleuniger.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "8-Schritte-Checklist als PDF + Google-Doc"
+        },
+        {
+          "icon": "Wand2",
+          "label": "GPT Engine: füllt 60 % der Vorbereitung selbst"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Beispiel-Prep für einen Series-A-Pitch"
+        }
+      ]
+    },
+    "recommendation-pitch": {
+      "posterTitle": "RECOMMENDATION\nPITCH",
+      "posterSubtitle": "Käufer:in im Driver-Seat",
+      "tagline": "Verkaufen ohne zu verkaufen",
+      "agentLabel": "Skript-Vorlage",
+      "title": "The \"Recommendation\" Pitch — Verkaufen ohne zu verkaufen",
+      "metaDescription": "Wie du Empfehlungen aussprichst statt zu pitchen — und damit den Käufer ins Driver-Seat setzt. Kostenlos als Bauplan + Skript.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "Skript-Vorlage: 5 Recommendation-Muster"
+        },
+        {
+          "icon": "Video",
+          "label": "10-Min Coaching-Video: wie es klingt"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Konversations-Karte für Live-Gespräche"
+        }
+      ]
+    }
   }
 }

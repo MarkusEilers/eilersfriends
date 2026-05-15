@@ -6,11 +6,14 @@ import { Menu, X, ChevronRight, ChevronDown, ArrowRight } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 
-// Language picker hidden until EN/RU translations actually exist.
-// Marketing pages redirect every non-'de' locale back to /de/* anyway,
-// so showing alternative flags was misleading.
+// Language picker: DE + EN are available; EN content exists for the
+// homepage + framework hub. Other marketing pages still redirect to
+// /de/* when locale is non-'de'. Once Aljona / Markus / SalesMade etc.
+// have full EN strings extracted into messages/*.json + their per-page
+// redirects dropped, the picker offers EN seamlessly site-wide.
 const LOCALES = [
   { code: 'de', label: 'DE', flag: '🇩🇪' },
+  { code: 'en', label: 'EN', flag: '🇬🇧' },
 ] as const
 
 // Top-level desktop nav items

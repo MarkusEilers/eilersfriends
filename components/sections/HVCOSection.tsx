@@ -1,4 +1,6 @@
-import { mergedMeta, type CardMeta, ensureCardMetaColumn } from '@/lib/db/queries/framework-meta'
+import { getTranslations } from 'next-intl/server'
+import { ensureCardMetaColumn, type CardMeta } from '@/lib/db/queries/framework-meta'
+import { resolveFrameworkMeta } from '@/lib/db/queries/framework-meta-i18n'
 import { db } from '@/lib/db'
 import { landingPages } from '@/lib/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
@@ -92,6 +94,7 @@ const SLUG_VISUALS: Record<
 const FEATURED_ORDER = ['instant-influence', 'b2b-angebote']
 
 export async function HVCOSection() {
+  const t = await getTranslations('hvco')
   let frameworks: (typeof landingPages.$inferSelect)[] = []
   try {
     await ensureCardMetaColumn()
@@ -118,6 +121,12 @@ export async function HVCOSection() {
     if (bi !== -1) return 1
     return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
   }).slice(0, 7)
+  // Resolve i18n meta for every framework before render (async fan-out)
+  const resolvedMetas: Record<string, Awaited<ReturnType<typeof resolveFrameworkMeta>>> = {}
+  await Promise.all(sorted.map(async (f) => {
+    resolvedMetas[f.slug] = await resolveFrameworkMeta(f.slug, f.cardMeta as CardMeta | null)
+  }))
+
 
   return (
     <section className="relative overflow-hidden px-6 py-24" style={{ backgroundColor: '#08193D' }}>
@@ -146,26 +155,23 @@ export async function HVCOSection() {
             style={{ backgroundColor: 'rgba(93,206,240,0.14)', color: '#5DCEF0', border: '1px solid rgba(93,206,240,0.30)' }}
           >
             <Bot size={12} />
-            Pretrained AI-Agenten · Gratis
+            {t('eyebrow')}
           </span>
           <h2 className="text-4xl font-bold leading-tight sm:text-5xl text-white">
-            Klau dir unsere Frameworks.<br />
-            <span style={{ color: '#5DDBF5' }}>Inklusive AI-Agenten.</span>
+            {t('headlineMain')}<br />
+            <span style={{ color: '#5DDBF5' }}>{t('headlineAccent')}</span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.70)' }}>
-            Du brauchst nicht 47 Custom-GPTs basteln. Wir haben sie schon trainiert.
-            Jedes Framework kommt mit Bauplan{' '}
-            <span className="font-semibold text-white">+ den AI-Agenten</span>,
-            die wir dafür gebaut haben. Email rein — Zugang raus.
+            {t('body')}
           </p>
         </div>
 
         {/* Poster grid: 1 / 2 / 3 cols — each card a self-contained mini-poster */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {sorted.map((f) => {
-            // Pull card meta from DB merged with hardcoded fallback
+            // Pull card meta from i18n messages > DB cardMeta > hardcoded fallback
             const fallback = SLUG_VISUALS[f.slug]
-            const dbMeta = mergedMeta(f.slug, f.cardMeta as CardMeta | null)
+            const dbMeta = resolvedMetas[f.slug]
             const visual = {
               icon: fallback?.icon ?? BookOpen,
               agentLabel: dbMeta.agentLabel ?? fallback?.agentLabel ?? 'Bauplan',
@@ -232,7 +238,7 @@ export async function HVCOSection() {
                         className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest"
                         style={{ backgroundColor: '#FFFFFF', color: tone.from }}
                       >
-                        ★ Beliebt
+                        {t('beliebtBadge')}
                       </span>
                     )}
                   </div>
@@ -283,7 +289,7 @@ export async function HVCOSection() {
                     className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold"
                     style={{ color: tone.from }}
                   >
-                    Pack's an
+                    {t('cardCta')}
                     <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
@@ -301,12 +307,12 @@ export async function HVCOSection() {
               style={{ backgroundColor: 'white', color: '#0F1E3A' }}
             >
               <Zap size={14} />
-              Alle Frameworks ansehen
+              {t('footerLink')}
             </Link>
           </div>
         ) : (
           <p className="mt-10 text-center text-xs" style={{ color: 'rgba(255,255,255,0.40)' }}>
-            Mehr Frameworks rollen wöchentlich aus. Mit jedem ein neuer AI-Agent.
+            {t('footerNote')}
           </p>
         )}
       </div>
