@@ -44,10 +44,10 @@ interface PageProps {
   params: Promise<{ locale: string }>
 }
 
-export default async function AcademyPage({
-  const calendlyUrl = await getSetting('calendly.markus') params }: PageProps) {
+export default async function AcademyPage({ params }: PageProps) {
   const { locale } = await params
   if (locale !== 'de') redirect('/de/academy')
+  const calendlyUrl = await getSetting('calendly.markus')
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>

@@ -40,10 +40,10 @@ const PERKS = [
   },
 ]
 
-export default async function FrontRowPage({
-  const calendlyUrl = await getSetting('calendly.markus') params }: PageProps) {
+export default async function FrontRowPage({ params }: PageProps) {
   const { locale } = await params
   if (locale !== 'de') redirect('/de/salesmade/frontrow')
+  const calendlyUrl = await getSetting('calendly.markus')
 
   const accent = '#1A5FD4'
   const navy = '#0F1E3A'
