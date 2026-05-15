@@ -12,6 +12,7 @@ import {
   Settings,
   ChevronRight,
   BookOpen,
+  Image as ImageIcon,
 } from 'lucide-react'
 
 const navItems = [
