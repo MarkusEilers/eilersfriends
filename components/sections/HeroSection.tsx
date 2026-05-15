@@ -60,18 +60,18 @@ export function HeroSection({ calendlyUrl }: { calendlyUrl: string }) {
             <span className="text-xs text-gray-400 font-medium">{t('stat1Label')}</span>
           </div>
 
-          {/* Stat 2: Blue */}
+          {/* Stat 2: Blue — Weiterempfehlung */}
           <div className="flex flex-col items-center gap-1 px-4 py-7">
             <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#1A5FD4' }}>
-              <AnimatedNumber value={48} suffix="%" />
+              <AnimatedNumber value={98} suffix="%" />
             </span>
             <span className="text-xs text-gray-400 font-medium">{t('stat2Label')}</span>
           </div>
 
-          {/* Stat 3: Blue — Weiterempfehlung */}
+          {/* Stat 3: Blue — Mehr Umsatz */}
           <div className="flex flex-col items-center gap-1 px-4 py-7">
             <span className="text-3xl font-bold sm:text-4xl" style={{ color: '#1A5FD4' }}>
-              <AnimatedNumber value={98} suffix="%" />
+              <AnimatedNumber value={48} suffix="%" />
             </span>
             <span className="text-xs text-gray-400 font-medium">{t('stat3Label')}</span>
           </div>

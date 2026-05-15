@@ -21,7 +21,7 @@
     "link": "Mehr erfahren"
   },
   "hero": {
-    "pill1": "Für ambitionierte Gründer und Gründerinnen",
+    "pill1": "Für ambitionierte B2B-Gründer und Gründerinnen",
     "headline1": "Entfessle Dein Winning Team",
     "headline2": "für planbares Wachstum",
     "subtext": "Gründer arbeiten mit uns, um kundennahe Teams weiter zu professionalisieren für planbares Wachstum.",
@@ -29,12 +29,12 @@
     "ctaSecondary": "Programme ansehen",
     "stat1Value": "867+",
     "stat1Label": "Teilnehmer",
-    "stat2Value": "48%",
-    "stat2Label": "Mehr Umsatz",
-    "stat3Value": "98%",
-    "stat3Label": "Weiterempfehlung",
+    "stat2Value": "98%",
+    "stat2Label": "Weiterempfehlung",
+    "stat3Value": "48%",
+    "stat3Label": "Mehr Umsatz",
     "stat4Value": "25",
-    "stat4Unit": "J.",
+    "stat4Unit": "Jahre",
     "stat4Label": "Erfahrung"
   },
   "logos": {
