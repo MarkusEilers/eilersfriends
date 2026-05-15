@@ -9,7 +9,7 @@ export async function NewsletterSection() {
 
   // Locale-aware thousand separator
   const formatter = new Intl.NumberFormat(
-    locale === 'en' ? 'en-US' : locale === 'ru' ? 'ru-RU' : 'de-DE'
+    locale === 'en' ? 'en-US' : locale === 'es' ? 'es-ES' : 'de-DE'
   )
   const formattedCount = formatter.format(total)
 
