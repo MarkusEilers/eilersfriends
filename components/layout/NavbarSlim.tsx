@@ -3,7 +3,7 @@ import { Link } from '@/lib/i18n/navigation'
 
 interface NavbarSlimProps {
   ctaLabel?: string
-  ctaHref?: string
+  ctaHref: string
 }
 
 export function NavbarSlim({
