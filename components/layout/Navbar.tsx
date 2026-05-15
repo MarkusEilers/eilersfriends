@@ -6,9 +6,11 @@ import { Menu, X, ChevronRight, ChevronDown, ArrowRight } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 
+// Language picker hidden until EN/RU translations actually exist.
+// Marketing pages redirect every non-'de' locale back to /de/* anyway,
+// so showing alternative flags was misleading.
 const LOCALES = [
   { code: 'de', label: 'DE', flag: '🇩🇪' },
-  { code: 'en', label: 'EN', flag: '🇬🇧' },
 ] as const
 
 // Top-level desktop nav items
@@ -118,7 +120,8 @@ export function Navbar({ calendlyUrl }: { calendlyUrl: string }) {
           {/* Right side: language + CTA */}
           <div className="flex items-center gap-3">
 
-            {/* Language switcher (desktop) — flag + chevron, opens dropdown */}
+            {/* Language switcher (desktop) — flag + chevron, opens dropdown — only render if >1 locale */}
+            {LOCALES.length > 1 && (
             <div ref={langRef} className="hidden lg:block relative">
               <button
                 onClick={() => setLangOpen((v) => !v)}
@@ -164,7 +167,8 @@ export function Navbar({ calendlyUrl }: { calendlyUrl: string }) {
                   })}
                 </div>
               )}
-            </div>
+            </div>)}
+
 
             {/* CTA button (desktop) */}
             <a
@@ -257,6 +261,7 @@ export function Navbar({ calendlyUrl }: { calendlyUrl: string }) {
 
             {/* Footer of drawer: language picker + CTA */}
             <div className="border-t border-gray-100 px-6 py-5 space-y-4">
+              {LOCALES.length > 1 && (
               <div>
                 <p className="text-xs text-gray-400 mb-2">{t('languagePicker')}</p>
                 <div className="grid grid-cols-2 gap-2">
@@ -275,6 +280,7 @@ export function Navbar({ calendlyUrl }: { calendlyUrl: string }) {
                   ))}
                 </div>
               </div>
+              )}
 
               <a
                 href={calendlyUrl}
