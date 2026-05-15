@@ -142,6 +142,6 @@ export async function getCardMeta(slug: string, dbMeta?: CardMeta | null): Promi
 export async function updateCardMeta(slug: string, meta: CardMeta): Promise<void> {
   await ensureColumn()
   await db.update(landingPages)
-    .set({ cardMeta: meta, updatedAt: new Date() })
+    .set({ cardMeta: meta as unknown as Record<string, unknown>, updatedAt: new Date() })
     .where(eq(landingPages.slug, slug))
 }
