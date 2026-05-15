@@ -1,168 +1,433 @@
 {
   "nav": {
-    "programmes": "Programme",
+    "programmes": "Programas",
     "coaches": "Coaches",
     "frameworks": "Frameworks",
-    "results": "Ergebnisse",
-    "cta": "Gespräch buchen"
+    "results": "Resultados",
+    "cta": "Reservar conversación",
+    "home": "Inicio",
+    "team": "Equipo",
+    "resources": "Recursos",
+    "aljona": "Aljona Eilers",
+    "markus": "Markus Eilers",
+    "salesmadeFramework": "SalesMade Framework",
+    "liquidLeadership": "Liquid Leadership",
+    "contact": "Contacto",
+    "languagePicker": "Elegir idioma",
+    "bookCta": "Reservar sesión estratégica"
   },
   "topbar": {
-    "message": "Soft-Launch läuft — Jetzt Frühbucher-Platz sichern",
-    "link": "Mehr erfahren"
+    "message": "Soft-Launch en marcha — Asegura tu plaza early-bird",
+    "link": "Saber más"
   },
   "hero": {
-    "pill1": "Bewährt in 15+ Branchen",
-    "pill2": "Für Gründer:innen & Führungskräfte",
-    "headline1": "Verkauf ist keine",
-    "headlineAccent": "Kunst",
-    "headline2": "sondern",
-    "headlineBlue": "Können",
-    "subtext": "Wir helfen Gründern und Vertriebsteams, aus Wissen echte Fähigkeit zu machen — messbar, reproduzierbar, skalierbar.",
-    "ctaPrimary": "Kostenloses Gespräch",
-    "ctaSecondary": "Programme ansehen",
+    "pill1": "Para founders B2B ambiciosos",
+    "headline1": "Libera tu Winning Team",
+    "headline2": "para un crecimiento predecible",
+    "subtext": "Los founders trabajan con nosotros para profesionalizar aún más los equipos cercanos al cliente y lograr un crecimiento predecible.",
+    "ctaPrimary": "Reservar sesión estratégica",
+    "ctaSecondary": "Ver programas",
     "stat1Value": "867+",
-    "stat1Label": "Teilnehmer",
-    "stat2Value": "48%",
-    "stat2Label": "Mehr Umsatz",
-    "stat3Value": "90%+",
-    "stat3Label": "Weiterempfehlung",
-    "stat4Value": "15",
-    "stat4Unit": "J.",
-    "stat4Label": "Erfahrung"
+    "stat1Label": "Participantes",
+    "stat2Value": "98%",
+    "stat2Label": "Recomendarían",
+    "stat3Value": "48%",
+    "stat3Label": "Más facturación",
+    "stat4Value": "25",
+    "stat4Unit": "años",
+    "stat4Label": "Experiencia"
   },
   "logos": {
-    "title": "Vertraut von Teams bei"
+    "title": "Equipos que confían en nosotros"
   },
   "problem": {
-    "eyebrow": "Das Problem",
-    "headline": "Warum Wissen allein nicht reicht",
-    "card1Title": "Das Plateau-Problem",
-    "card1Text": "Ihr Team weiß, was zu tun ist — aber die Zahlen stagnieren. Mehr Wissen bringt keinen Durchbruch mehr.",
-    "card2Title": "Wissen ≠ Können ≠ Machen",
-    "card2Text": "Der Abstand zwischen dem, was man gelernt hat, und dem, was man tatsächlich tut, ist der teuerste Abstand im Unternehmen.",
-    "card3Title": "Chaos statt System",
-    "card3Text": "Kein klarer Prozess, keine Reproduzierbarkeit — jeder macht irgendwie Vertrieb, aber niemand macht ihn systematisch."
+    "eyebrow": "De más de 500 sparrings con founders",
+    "headline": "En qué se enfocan los\ntop founders tech",
+    "card1Title": "La facturación no es casualidad",
+    "card1Text": "Los top founders no dejan sus ventas al azar. Tienen un sistema — reproducible, medible, escalable.",
+    "card2Title": "El hustle tiene fecha de caducidad",
+    "card2Text": "Trabajar más funciona hasta cierto punto. Después se necesitan palancas: mejores procesos, mejores personas, mejor liderazgo.",
+    "card3Title": "El liderazgo se aprende",
+    "card3Text": "Los mejores líderes no nacieron así. Entrenaron sus habilidades de forma sistemática — eso es exactamente lo que hacemos contigo.",
+    "card4Title": "Estás en buena compañía",
+    "card4Text": "Más de 867 founders y directivos ya han trabajado con nosotros. Tu reto no es único — la solución sí lo será."
   },
   "bento": {
-    "eyebrow": "Beliebte Services",
-    "headline": "Ein Ökosystem für echtes Wachstum",
+    "eyebrow": "Servicios populares",
+    "headline": "Un ecosistema para crecimiento real",
     "salesmade": {
       "eyebrow": "Academy",
       "title": "SalesMade Academy",
-      "text": "Das systematische Vertriebs-Trainingsprogramm für Gründer und Teams"
+      "text": "El programa sistemático de entrenamiento de ventas para founders y equipos",
+      "badges": [
+        "12 semanas",
+        "Medible",
+        "Foco B2B"
+      ],
+      "cta": "Saber más"
     },
     "markus": {
       "eyebrow": "Coaching",
-      "title": "1:1 mit Markus",
-      "text": "Strategisches Sparring auf Augenhöhe"
+      "title": "1:1 con Markus",
+      "text": "Sparring estratégico de igual a igual",
+      "eyebrowTag": "Coaching de ventas",
+      "cta": "Más"
     },
     "aljona": {
       "eyebrow": "Coaching",
-      "title": "1:1 mit Aljona",
-      "text": "Liquid Leadership für die nächste Wachstumsstufe"
+      "title": "1:1 con Aljona",
+      "text": "Liquid Leadership para el siguiente nivel de crecimiento",
+      "eyebrowTag": "Coaching de liderazgo",
+      "cta": "Más"
     },
     "liquid": {
       "eyebrow": "Framework",
       "title": "Liquid Leadership",
-      "text": "Das Führungsframework für skalierbare Unternehmenskultur"
+      "text": "El framework de liderazgo para una cultura empresarial escalable",
+      "cta": "Más"
+    },
+    "podcast": {
+      "badge": "Podcast",
+      "title": "Liquid Leadership Podcast",
+      "text": "Aljona en conversación con founders y líderes sobre el siguiente nivel de crecimiento.",
+      "cta": "Escuchar"
     }
   },
   "journey": {
-    "eyebrow": "Die Methode",
-    "headline": "Von wo du bist — zu wo du sein willst",
-    "badPlace": "Wo du gerade bist",
-    "happyPlace": "Wo du sein wirst",
+    "eyebrow": "El método",
+    "headline": "De donde estás — a donde quieres llegar",
+    "badPlace": "Donde estás ahora",
+    "happyPlace": "Donde estarás",
     "phase1": "Discovery",
     "phase2": "Foundation",
     "phase3": "Execution",
     "phase4": "Mastery"
   },
   "coaches": {
-    "eyebrow": "Deine Coaches",
-    "headline": "Zwei Perspektiven. Eine Mission.",
+    "eyebrow": "Tus coaches",
+    "headline": "Dos disciplinas. Un resultado.",
+    "subtext": "Más de 500 founders acompañados. Combinamos Revenue Systems y Transformational Leadership.",
     "markus": {
       "name": "Markus Eilers",
-      "role": "Vertriebs- & Business-Coach",
-      "bio": "15+ Jahre Erfahrung im B2B-Vertrieb. Hat über 867 Gründer und Führungskräfte dabei geholfen, ihre Verkaufszahlen systematisch zu steigern.",
-      "stat": "867+ Klienten",
+      "tag": "Revenue Systems",
+      "role": "Coach de ventas y de negocio",
+      "bio": "Más de 15 años en ventas B2B. Ha acompañado a más de 500 founders y directivos a construir facturación reproducible de forma sistemática.",
+      "stat": "500+ clientes",
       "linkedin": "LinkedIn",
-      "cta": "Mehr über Markus"
+      "cta": "Más sobre Markus"
     },
     "aljona": {
       "name": "Aljona Eilers",
-      "role": "Leadership & Culture Coach",
-      "bio": "TEDx Speaker. Expertin für Führungskultur und Organisation. Hilft Unternehmen, skalierbare Strukturen aufzubauen.",
-      "stat": "48% Umsatzsteigerung",
+      "tag": "Transformational Leadership",
+      "role": "Coach de liderazgo y cultura",
+      "bio": "TEDx Speaker. Experta en cultura de liderazgo, escalado y transformación personal. Ayuda a los founders a alcanzar su siguiente nivel.",
+      "stat": "TEDx Speaker",
       "linkedin": "LinkedIn",
-      "cta": "Mehr über Aljona"
+      "cta": "Más sobre Aljona"
     }
   },
+  "academy": {
+    "pill": "Soft-Launch 2026 · Solo 30 plazas",
+    "eyebrow": "",
+    "headline": "SalesMade Academy",
+    "tagline": "Bridging the Sales Education Gap.",
+    "step1Label": "FASE 1",
+    "step1Title": "Escenario de cliente simulado",
+    "step1Text": "Construye tu sistema de ventas: posicionamiento, pipeline, mensajes — itinerario individual.",
+    "step2Label": "FASE 2 & 3",
+    "step2Title": "Itinerario individual de aprendizaje",
+    "step2Text": "Coaching en vivo con un top coach que no está \"for hire\". Deals reales, resultados reales.",
+    "stat1Value": "12",
+    "stat1Label": "Meses de acompañamiento",
+    "stat2Value": "30",
+    "stat2Label": "Plazas exclusivas",
+    "stat3Value": "13",
+    "stat3Label": "Skills clave",
+    "trust1": "867+ vendedores entrenados",
+    "trust2": "Garantía de 90 días",
+    "trust3": "15+ años de experiencia",
+    "cta": "Más sobre la Academy",
+    "subtext": "Cómo hacemos aún mejores a los mejores vendedores — y damos al 82 % restante una oportunidad real de cumplir expectativas y alcanzar objetivos.",
+    "step1Desc": "Cada participante atraviesa un escenario realista en el que se miden de forma individual 13 skills decisivos de ventas.",
+    "step2Desc": "A partir del benchmark desarrollamos para cada seller un plan de desarrollo a medida en 5 niveles de dificultad."
+  },
+  "programme": {
+    "eyebrow": "Programas",
+    "headline": "Encuentra tu punto de entrada",
+    "card1Tag": "Most Popular",
+    "card1Title": "SalesMade Academy",
+    "card1Text": "El camino a facturación predecible para tu empresa B2B en crecimiento — estructurado en 13 pasos claros.",
+    "card1Cta": "Saber más",
+    "card2Tag": "Framework",
+    "card2Title": "Liquid Leadership",
+    "card2Text": "Para líderes que sienten que su equipo puede más — y quieren saber cómo desatarlo.",
+    "card2Cta": "Saber más",
+    "card3Tag": "Sin compromiso",
+    "card3Title": "Winning Team Programa",
+    "card3Text": "Revenue Systems + Transformational Leadership. Cuando estás listo para abordar ambos a la vez.",
+    "card3Cta": "Saber más",
+    "card1Badge": "Recomendado",
+    "card1F1": "Framework de 13 pasos",
+    "card1F2": "Group Coaching semanal",
+    "card1F3": "Comunidad privada",
+    "card1F4": "Sesiones de sparring 1:1",
+    "card2F1": "Programa intensivo de 6 meses",
+    "card2F2": "4× coachings 1:1 mensuales",
+    "card2F3": "Entrenamiento de EQ y comunicación",
+    "card2F4": "Red de alumni de por vida",
+    "card3F1": "SalesMade + Liquid Leadership completo",
+    "card3F2": "Executive Coaching",
+    "card3F3": "Workshops para el equipo",
+    "card3F4": "Estrategia a medida"
+  },
   "hvco": {
-    "eyebrow": "Kostenlose Ressourcen",
-    "headline": "Starte jetzt — kostenlos",
-    "resource1Title": "Vertriebssystem Guide",
-    "resource1Text": "Der komplette PDF-Guide: Wie du in 90 Tagen ein reproduzierbares Vertriebssystem aufbaust.",
-    "resource1Cta": "Guide laden",
-    "resource2Title": "Self-Assessment Tool",
-    "resource2Text": "Finde heraus, wo dein Vertrieb wirklich steht — in 5 Minuten.",
-    "resource2Cta": "Assessment starten",
-    "resource3Title": "Video-Masterclass",
-    "resource3Text": "Die 3 größten Fehler im B2B-Vertrieb — und wie du sie sofort vermeidest.",
-    "resource3Cta": "Video ansehen"
+    "eyebrow": "Agentes de IA pre-entrenados · Gratis",
+    "headlineMain": "Llévate nuestros frameworks.",
+    "headlineAccent": "Con agentes de IA incluidos.",
+    "body": "No necesitas montar 47 GPTs a medida. Ya los hemos entrenado. Cada framework viene con plano + los agentes de IA que hemos construido. Pones tu email — recibes acceso.",
+    "bodyHighlight": "+ los agentes de IA",
+    "beliebtBadge": "★ Popular",
+    "cardCta": "A por ello",
+    "footerLink": "Ver todos los frameworks",
+    "footerNote": "Cada semana lanzamos más frameworks. Con cada uno, un nuevo agente de IA."
   },
   "testimonials": {
-    "eyebrow": "Stimmen",
-    "headline": "Was unsere Klienten sagen"
+    "eyebrow": "Voces",
+    "headline": "Lo que dicen nuestros clientes",
+    "cards": [
+      {
+        "authorName": "Dirk Battermann",
+        "authorRole": "Head of Sales",
+        "authorCompany": "smapOne AG",
+        "quote": "Markus nos ayudó a sistematizar nuestro proceso de ventas desde los cimientos. Los resultados superaron con creces nuestras expectativas."
+      },
+      {
+        "authorName": "Michael Strohäcker",
+        "authorRole": "Founder & CEO",
+        "authorCompany": "pakadoo GmbH",
+        "quote": "Tras solo 3 meses teníamos un proceso de ventas claro y reproducible. El resultado: 48% más de facturación."
+      },
+      {
+        "authorName": "Cornelius Zinow",
+        "authorRole": "Founder",
+        "authorCompany": "OSC",
+        "quote": "La combinación de SalesMade Academy y coaching 1:1 era justo lo que necesitábamos. Saber + Poder + Hacer — eso funciona."
+      }
+    ]
   },
   "cta": {
-    "eyebrow": "Bereit für den nächsten Schritt?",
-    "headline": "45 Minuten für Deine nächsten 36 Monate",
-    "subtext": "Im kostenlosen Strategiegespräch analysieren wir gemeinsam, wo dein größtes Wachstumspotenzial liegt.",
-    "button": "Jetzt Termin buchen",
-    "note": "Kostenlos & unverbindlich"
+    "eyebrow": "Together: Winning Teams",
+    "headline": "Revenue Systems + Transformational Leadership = Crecimiento predecible",
+    "subtext": "",
+    "button": "Reservar sesión estratégica",
+    "note": ""
   },
   "newsletter": {
-    "eyebrow": "Newsletter",
-    "headline": "6.552 Gründer lesen bereits mit",
-    "subtext": "Jeden Dienstag: praxiserprobte Strategien aus 15 Jahren Vertriebserfahrung.",
-    "placeholder": "Deine E-Mail-Adresse",
-    "button": "Jetzt anmelden",
-    "note": "Kein Spam. Jederzeit kündbar."
+    "category": "La carta para founders sobre Growth & Leadership",
+    "headline": "Únete a otras {count} personas emprendedoras",
+    "subtext": "Cada martes: estrategias probadas de 15 años de experiencia en ventas — directamente a tu bandeja.",
+    "namePlaceholder": "Nombre",
+    "emailPlaceholder": "E-mail",
+    "button": "Suscribirme",
+    "consentText": "Sí, quiero recibir e-mails gratuitos de Eilers+Friends e información personalizada en la dirección de correo indicada, basada en mis datos de registro y mi comportamiento de uso del newsletter. Puedo cancelar este servicio desde cualquier e-mail. He leído la política de privacidad y acepto expresamente.",
+    "confirmationNote": "Recibirás un e-mail de confirmación para verificar tu suscripción.",
+    "successTitle": "¡Casi listo!",
+    "successNote": "Te hemos enviado un e-mail de confirmación. Por favor, confirma tu suscripción.",
+    "errorNote": "Algo ha salido mal. Por favor, inténtalo de nuevo."
   },
   "footer": {
-    "tagline": "Systematisches Wachstum für Gründer:innen.",
-    "programmes": "Programme",
+    "tagline": "Crecimiento sistemático para founders.",
+    "programmes": "Programas",
     "salesmade": "SalesMade Academy",
     "liquidLeadership": "Liquid Leadership",
+    "b2bFramework": "Framework de oferta B2B",
     "coaches": "Coaches",
     "markus": "Markus Eilers",
     "aljona": "Aljona Eilers",
-    "resources": "Ressourcen",
-    "frameworks": "Frameworks",
+    "unternehmen": "Empresa",
+    "about": "Sobre nosotros",
     "blog": "Blog",
     "newsletter": "Newsletter",
-    "legal": "Rechtliches",
-    "privacy": "Datenschutz",
-    "imprint": "Impressum",
-    "contact": "Kontakt",
-    "copyright": "© 2026 Eilers+Friends. Alle Rechte vorbehalten.",
-    "madeWith": "Made with ♥ für Gründer:innen"
+    "ressourcen": "Recursos",
+    "legal": "Legal",
+    "privacy": "Privacidad",
+    "imprint": "Aviso legal",
+    "contact": "Contacto",
+    "cookieSettings": "Configuración de cookies",
+    "copyright": "© 2026 Eilers+Friends. Todos los derechos reservados.",
+    "madeWith": "Hecho con ♥ para founders"
   },
   "cookie": {
-    "title": "Wir respektieren deine Privatsphäre",
-    "text": "Wir verwenden Cookies, um deine Erfahrung zu verbessern. Du kannst selbst entscheiden, welche Cookies du zulässt.",
-    "accept": "Alle akzeptieren",
-    "reject": "Ablehnen",
-    "settings": "Einstellungen"
+    "title": "Respetamos tu privacidad",
+    "text": "Usamos cookies para mejorar tu experiencia. Tú decides cuáles permitir.",
+    "accept": "Aceptar todas",
+    "reject": "Rechazar",
+    "settings": "Ajustes"
   },
   "auth": {
-    "login": "Anmelden",
-    "loginTitle": "Willkommen zurück",
-    "loginSubtext": "Melde dich an, um dein Lernportal zu öffnen.",
-    "email": "E-Mail",
-    "password": "Passwort",
-    "submit": "Anmelden",
-    "error": "E-Mail oder Passwort falsch.",
-    "forgotPassword": "Passwort vergessen?"
+    "login": "Iniciar sesión",
+    "loginTitle": "Bienvenido de nuevo",
+    "loginSubtext": "Inicia sesión para abrir tu portal de aprendizaje.",
+    "email": "E-mail",
+    "password": "Contraseña",
+    "submit": "Iniciar sesión",
+    "error": "E-mail o contraseña incorrectos.",
+    "forgotPassword": "¿Has olvidado tu contraseña?"
+  },
+  "frameworks": {
+    "instant-influence": {
+      "posterTitle": "INSTANT\nINFLUENCE",
+      "posterSubtitle": "Ganar clientes en la primera conversación",
+      "tagline": "Generator + Notes-AI",
+      "agentLabel": "Discovery-Call AI",
+      "title": "Instant Influence — Ganar clientes en la primera conversación",
+      "metaDescription": "Los 3 ingredientes que ganan clientes en la primera conversación. Generador de Discovery-Call + Learning + Notes-AI como herramienta interactiva.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "PDF de 32 págs.: plantilla Generator + 3 modos Notes-AI"
+        },
+        {
+          "icon": "Video",
+          "label": "Vídeo walkthrough de 24 min: la primera conversación en vivo"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Bonus: tarjeta de scoring del Discovery-Call"
+        }
+      ]
+    },
+    "b2b-angebote": {
+      "posterTitle": "OFERTAS\nIRRESISTIBLES",
+      "posterSubtitle": "El plano de 8 pasos",
+      "tagline": "Plano de 8 pasos",
+      "agentLabel": "PDF + Vídeo",
+      "title": "Ofertas B2B irresistibles",
+      "metaDescription": "El plano completo para ofertas B2B que se venden solas — en 8 pasos sencillos. Incluye masterclass en vídeo.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "PDF de 40 págs.: 8 pasos a la oferta irresistible"
+        },
+        {
+          "icon": "Video",
+          "label": "Masterclass en vídeo de 47 min con Markus Eilers"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Bonus: plantilla de oferta en Google Doc"
+        }
+      ]
+    },
+    "hailiom": {
+      "posterTitle": "SOCIAL MEDIA\nROCKSTAR",
+      "posterSubtitle": "Contenido con IA en 9 pasos",
+      "tagline": "Voice · Idea · Atomization · Drafting",
+      "agentLabel": "4 GPT Engines",
+      "title": "Hailiom — 9-Step AI Content Foundation & Explosion",
+      "metaDescription": "El proceso pre-entrenado de 9 pasos que elimina el 87 % de tu trabajo de content marketing y por fin entrega leads cualificados. Gratis como plano.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "Plano: proceso de contenido en 9 pasos"
+        },
+        {
+          "icon": "Wand2",
+          "label": "4 GPT Engines: Voice · Idea · Atomization · Drafting"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Plantilla de cadencia semanal"
+        }
+      ]
+    },
+    "beef-radar": {
+      "posterTitle": "BEEF\nRADAR",
+      "posterSubtitle": "Ver conflictos antes de que estallen",
+      "tagline": "Diagnóstico de conflictos",
+      "agentLabel": "Worksheet",
+      "title": "Beef Radar — De la característica al impacto financiero",
+      "metaDescription": "El hack sencillo y olvidado con el que comunicas toneladas de valor — para que también escuche el CFO. Gratis como plano + worksheet.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "Worksheet: 7 señales que otros pasan por alto"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Tarjeta de diagnóstico para conversaciones con la dirección"
+        },
+        {
+          "icon": "Video",
+          "label": "Walk-through de 12 min con ejemplos reales"
+        }
+      ]
+    },
+    "core-messages": {
+      "posterTitle": "CORE 11",
+      "posterSubtitle": "Los mensajes que toda founder debería dominar",
+      "tagline": "Los 11 mensajes",
+      "agentLabel": "AI-Worksheet de 18 min",
+      "title": "Core — Los 11 mensajes que toda founder debería dominar dormida",
+      "metaDescription": "Los 11 mensajes clave para un crecimiento predecible — y cómo encontrar los tuyos en 18 minutos. Gratis como plano + worksheet.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "Plano: los 11 mensajes clave"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "AI-Worksheet de 18 min — Encuentra tus 11"
+        },
+        {
+          "icon": "Video",
+          "label": "Set de ejemplo: 11 mensajes de un founder SaaS"
+        }
+      ]
+    },
+    "strategic-preparation": {
+      "posterTitle": "STRATEGIC\nPREP",
+      "posterSubtitle": "18 minutos antes de cada pitch",
+      "tagline": "Antes de la conversación importante",
+      "agentLabel": "Checklist pre-meeting",
+      "title": "Strategic Preparation — En 8 pasos a cada conversación importante",
+      "metaDescription": "Convence con solvencia incluso en las conversaciones más difíciles e importantes. En 8 pasos — con AI-Worksheet como acelerador.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "Checklist de 8 pasos en PDF + Google Doc"
+        },
+        {
+          "icon": "Wand2",
+          "label": "GPT Engine: completa el 60 % de la preparación por ti"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Preparación de ejemplo para un pitch Series A"
+        }
+      ]
+    },
+    "recommendation-pitch": {
+      "posterTitle": "RECOMMENDATION\nPITCH",
+      "posterSubtitle": "El comprador en el asiento del piloto",
+      "tagline": "Vender sin vender",
+      "agentLabel": "Plantilla de guion",
+      "title": "The \"Recommendation\" Pitch — Vender sin vender",
+      "metaDescription": "Cómo dar recomendaciones en lugar de pitches — y poner al comprador en el asiento del piloto. Gratis como plano + guion.",
+      "deliverables": [
+        {
+          "icon": "FileDown",
+          "label": "Plantilla de guion: 5 patrones de Recommendation"
+        },
+        {
+          "icon": "Video",
+          "label": "Vídeo coaching de 10 min: cómo suena"
+        },
+        {
+          "icon": "ClipboardList",
+          "label": "Tarjeta de conversación para charlas en vivo"
+        }
+      ]
+    }
   }
 }

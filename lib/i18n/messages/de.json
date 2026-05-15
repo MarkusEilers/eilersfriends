@@ -58,22 +58,39 @@
     "salesmade": {
       "eyebrow": "Academy",
       "title": "SalesMade Academy",
-      "text": "Das systematische Vertriebs-Trainingsprogramm für Gründer und Teams"
+      "text": "Das systematische Vertriebs-Trainingsprogramm für Gründer und Teams",
+      "badges": [
+        "12 Wochen",
+        "Messbar",
+        "B2B-Fokus"
+      ],
+      "cta": "Mehr erfahren"
     },
     "markus": {
       "eyebrow": "Coaching",
       "title": "1:1 mit Markus",
-      "text": "Strategisches Sparring auf Augenhöhe"
+      "text": "Strategisches Sparring auf Augenhöhe",
+      "eyebrowTag": "Sales-Coaching",
+      "cta": "Mehr"
     },
     "aljona": {
       "eyebrow": "Coaching",
       "title": "1:1 mit Aljona",
-      "text": "Liquid Leadership für die nächste Wachstumsstufe"
+      "text": "Liquid Leadership für die nächste Wachstumsstufe",
+      "eyebrowTag": "Leadership-Coaching",
+      "cta": "Mehr"
     },
     "liquid": {
       "eyebrow": "Framework",
       "title": "Liquid Leadership",
-      "text": "Das Führungsframework für skalierbare Unternehmenskultur"
+      "text": "Das Führungsframework für skalierbare Unternehmenskultur",
+      "cta": "Mehr"
+    },
+    "podcast": {
+      "badge": "Podcast",
+      "title": "Liquid Leadership Podcast",
+      "text": "Aljona im Gespräch mit Gründer:innen und Leader:innen über die nächste Wachstumsstufe.",
+      "cta": "Hören"
     }
   },
   "journey": {
@@ -176,7 +193,27 @@
   },
   "testimonials": {
     "eyebrow": "Stimmen",
-    "headline": "Was unsere Klienten sagen"
+    "headline": "Was unsere Klienten sagen",
+    "cards": [
+      {
+        "authorName": "Dirk Battermann",
+        "authorRole": "Head Of Sales",
+        "authorCompany": "smapOne AG",
+        "quote": "Markus hat uns geholfen, unseren Vertriebsprozess von Grund auf zu systematisieren. Die Ergebnisse haben unsere Erwartungen weit übertroffen."
+      },
+      {
+        "authorName": "Michael Strohäcker",
+        "authorRole": "Founder & CEO",
+        "authorCompany": "pakadoo GmbH",
+        "quote": "Nach nur 3 Monaten hatten wir einen klaren, reproduzierbaren Verkaufsprozess. 48% mehr Umsatz ist das Ergebnis."
+      },
+      {
+        "authorName": "Cornelius Zinow",
+        "authorRole": "Founder",
+        "authorCompany": "OSC",
+        "quote": "Die Kombination aus SalesMade Academy und 1:1-Coaching war genau das, was wir gebraucht haben. Wissen + Können + Machen — das funktioniert."
+      }
+    ]
   },
   "cta": {
     "eyebrow": "Together: Winning Teams",

@@ -58,22 +58,39 @@
     "salesmade": {
       "eyebrow": "Academy",
       "title": "SalesMade Academy",
-      "text": "The systematic sales training program for founders and teams"
+      "text": "The systematic sales training program for founders and teams",
+      "badges": [
+        "12 weeks",
+        "Measurable",
+        "B2B focus"
+      ],
+      "cta": "Learn more"
     },
     "markus": {
       "eyebrow": "Coaching",
       "title": "1:1 with Markus",
-      "text": "Strategic sparring at eye level"
+      "text": "Strategic sparring at eye level",
+      "eyebrowTag": "Sales coaching",
+      "cta": "More"
     },
     "aljona": {
       "eyebrow": "Coaching",
       "title": "1:1 with Aljona",
-      "text": "Liquid Leadership for the next growth stage"
+      "text": "Liquid Leadership for the next growth stage",
+      "eyebrowTag": "Leadership coaching",
+      "cta": "More"
     },
     "liquid": {
       "eyebrow": "Framework",
       "title": "Liquid Leadership",
-      "text": "The leadership framework for scalable company culture"
+      "text": "The leadership framework for scalable company culture",
+      "cta": "More"
+    },
+    "podcast": {
+      "badge": "Podcast",
+      "title": "Liquid Leadership Podcast",
+      "text": "Aljona in conversation with founders and leaders about the next stage of growth.",
+      "cta": "Listen"
     }
   },
   "journey": {
@@ -176,7 +193,27 @@
   },
   "testimonials": {
     "eyebrow": "Testimonials",
-    "headline": "What our clients say"
+    "headline": "What our clients say",
+    "cards": [
+      {
+        "authorName": "Dirk Battermann",
+        "authorRole": "Head of Sales",
+        "authorCompany": "smapOne AG",
+        "quote": "Markus helped us systematise our sales process from the ground up. The results far exceeded our expectations."
+      },
+      {
+        "authorName": "Michael Strohäcker",
+        "authorRole": "Founder & CEO",
+        "authorCompany": "pakadoo GmbH",
+        "quote": "After just 3 months we had a clear, reproducible sales process. 48% more revenue is the result."
+      },
+      {
+        "authorName": "Cornelius Zinow",
+        "authorRole": "Founder",
+        "authorCompany": "OSC",
+        "quote": "The combination of SalesMade Academy and 1:1 coaching was exactly what we needed. Knowing + being able + doing — that works."
+      }
+    ]
   },
   "cta": {
     "eyebrow": "Together: Winning Teams",

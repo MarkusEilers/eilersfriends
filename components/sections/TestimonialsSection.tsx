@@ -2,29 +2,17 @@ import { useTranslations } from 'next-intl'
 import { SectionHeader } from '@/components/blocks/SectionHeader'
 import { TestimonialCard } from '@/components/blocks/TestimonialCard'
 
-const TESTIMONIALS = [
-  {
-    authorName: 'Dirk Battermann',
-    authorRole: 'Head Of Sales',
-    authorCompany: 'smapOne AG',
-    quote: 'Markus hat uns geholfen, unseren Vertriebsprozess von Grund auf zu systematisieren. Die Ergebnisse haben unsere Erwartungen weit übertroffen.',
-  },
-  {
-    authorName: 'Michael Strohäcker',
-    authorRole: 'Founder & CEO',
-    authorCompany: 'pakadoo GmbH',
-    quote: 'Nach nur 3 Monaten hatten wir einen klaren, reproduzierbaren Verkaufsprozess. 48% mehr Umsatz ist das Ergebnis.',
-  },
-  {
-    authorName: 'Cornelius Zinow',
-    authorRole: 'Founder',
-    authorCompany: 'OSC',
-    quote: 'Die Kombination aus SalesMade Academy und 1:1-Coaching war genau das, was wir gebraucht haben. Wissen + Können + Machen — das funktioniert.',
-  },
-]
+interface TestimonialEntry {
+  authorName: string
+  authorRole: string
+  authorCompany?: string
+  quote: string
+}
 
 export function TestimonialsSection() {
   const t = useTranslations('testimonials')
+  // Cards are arrays in messages JSON. useTranslations().raw() returns the raw JSON value.
+  const cards = (t.raw('cards') as TestimonialEntry[]) ?? []
 
   return (
     <section id="ergebnisse" className="bg-gray-50 px-6 py-20">
@@ -36,7 +24,7 @@ export function TestimonialsSection() {
         />
 
         <div className="mt-12 grid gap-6 sm:grid-cols-3">
-          {TESTIMONIALS.map((testimonial) => (
+          {cards.map((testimonial) => (
             <TestimonialCard key={testimonial.authorName} {...testimonial} />
           ))}
         </div>

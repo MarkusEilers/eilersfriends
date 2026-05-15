@@ -58,22 +58,39 @@
     "salesmade": {
       "eyebrow": "Академия",
       "title": "SalesMade Academy",
-      "text": "Системная программа тренинга по продажам для основателей и команд"
+      "text": "Системная программа тренинга по продажам для основателей и команд",
+      "badges": [
+        "12 недель",
+        "Измеримо",
+        "B2B-фокус"
+      ],
+      "cta": "Узнать больше"
     },
     "markus": {
       "eyebrow": "Коучинг",
       "title": "1:1 с Маркусом",
-      "text": "Стратегический спарринг на равных"
+      "text": "Стратегический спарринг на равных",
+      "eyebrowTag": "Sales-коучинг",
+      "cta": "Подробнее"
     },
     "aljona": {
       "eyebrow": "Коучинг",
       "title": "1:1 с Альёной",
-      "text": "Liquid Leadership для следующего этапа роста"
+      "text": "Liquid Leadership для следующего этапа роста",
+      "eyebrowTag": "Leadership-коучинг",
+      "cta": "Подробнее"
     },
     "liquid": {
       "eyebrow": "Фреймворк",
       "title": "Liquid Leadership",
-      "text": "Фреймворк лидерства для масштабируемой корпоративной культуры"
+      "text": "Фреймворк лидерства для масштабируемой корпоративной культуры",
+      "cta": "Подробнее"
+    },
+    "podcast": {
+      "badge": "Подкаст",
+      "title": "Liquid Leadership Podcast",
+      "text": "Альёна в разговоре с фаундерами и лидерами о следующем уровне роста.",
+      "cta": "Слушать"
     }
   },
   "journey": {
@@ -160,7 +177,27 @@
   },
   "testimonials": {
     "eyebrow": "Отзывы",
-    "headline": "Что говорят наши клиенты"
+    "headline": "Что говорят наши клиенты",
+    "cards": [
+      {
+        "authorName": "Dirk Battermann",
+        "authorRole": "Head Of Sales",
+        "authorCompany": "smapOne AG",
+        "quote": "Маркус помог нам системно выстроить процесс продаж с самого основания. Результаты намного превзошли наши ожидания."
+      },
+      {
+        "authorName": "Michael Strohäcker",
+        "authorRole": "Founder & CEO",
+        "authorCompany": "pakadoo GmbH",
+        "quote": "Уже через 3 месяца у нас был чёткий, воспроизводимый процесс продаж. Результат — 48% роста выручки."
+      },
+      {
+        "authorName": "Cornelius Zinow",
+        "authorRole": "Founder",
+        "authorCompany": "OSC",
+        "quote": "Сочетание SalesMade Academy и индивидуального коучинга — это именно то, что нам было нужно. Знать + уметь + делать — это работает."
+      }
+    ]
   },
   "cta": {
     "eyebrow": "Готовы к следующему шагу?",

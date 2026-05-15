@@ -41,7 +41,7 @@ export function BentoGrid() {
 
               {/* Feature badges */}
               <div className="mt-5 flex flex-wrap gap-2">
-                {['12 Wochen', 'Messbar', 'B2B-Fokus'].map((f) => (
+                {(t.raw('salesmade.badges') as string[]).map((f) => (
                   <span key={f} className="rounded-full px-3 py-1 text-xs font-semibold" style={{ backgroundColor: '#BBCFF5', color: '#0F1E3A' }}>
                     {f}
                   </span>
@@ -54,7 +54,7 @@ export function BentoGrid() {
               className="relative mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white self-start transition-opacity hover:opacity-90"
               style={{ backgroundColor: '#1A5FD4' }}
             >
-              Mehr erfahren <ArrowRight size={14} />
+              {t('salesmade.cta')} <ArrowRight size={14} />
             </Link>
           </div>
 
@@ -69,12 +69,12 @@ export function BentoGrid() {
                 <TrendingUp size={18} style={{ color: '#1A5FD4' }} />
               </div>
               <div>
-                <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#1A5FD4' }}>Sales-Coaching</span>
+                <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#1A5FD4' }}>{t('markus.eyebrowTag')}</span>
                 <h3 className="mt-1 text-base font-bold" style={{ color: '#0D0D0B' }}>{t('markus.title')}</h3>
                 <p className="mt-1 text-xs leading-relaxed text-gray-600">{t('markus.text')}</p>
               </div>
               <Link href="/markus" className="mt-auto inline-flex items-center gap-1 text-xs font-semibold" style={{ color: '#1A5FD4' }}>
-                Mehr <ArrowRight size={12} />
+                {t('markus.cta')} <ArrowRight size={12} />
               </Link>
             </div>
 
@@ -87,12 +87,12 @@ export function BentoGrid() {
                 <Users size={18} style={{ color: '#EB0028' }} />
               </div>
               <div>
-                <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#EB0028' }}>Leadership-Coaching</span>
+                <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#EB0028' }}>{t('aljona.eyebrowTag')}</span>
                 <h3 className="mt-1 text-base font-bold" style={{ color: '#0D0D0B' }}>{t('aljona.title')}</h3>
                 <p className="mt-1 text-xs leading-relaxed text-gray-600">{t('aljona.text')}</p>
               </div>
               <Link href="/aljona" className="mt-auto inline-flex items-center gap-1 text-xs font-semibold" style={{ color: '#EB0028' }}>
-                Mehr <ArrowRight size={12} />
+                {t('aljona.cta')} <ArrowRight size={12} />
               </Link>
             </div>
 
@@ -111,7 +111,7 @@ export function BentoGrid() {
                   <p className="mt-1 text-xs leading-relaxed text-gray-600">{t('liquid.text')}</p>
                 </div>
                 <Link href="/aljona#liquid" className="flex-shrink-0 inline-flex items-center gap-1 text-xs font-semibold self-start mt-1" style={{ color: '#EB0028' }}>
-                  Mehr <ArrowRight size={12} />
+                  {t('liquid.cta')} <ArrowRight size={12} />
                 </Link>
               </div>
             </div>
@@ -154,14 +154,14 @@ export function BentoGrid() {
                   <Mic size={18} />
                 </div>
                 <div className="flex-1">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: 'rgba(255,255,255,0.75)' }}>Podcast</span>
-                  <h3 className="mt-1 text-base font-bold">Liquid Leadership Podcast</h3>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: 'rgba(255,255,255,0.75)' }}>{t('podcast.badge')}</span>
+                  <h3 className="mt-1 text-base font-bold">{t('podcast.title')}</h3>
                   <p className="mt-1 text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)' }}>
-                    Aljona im Gespräch mit Gründer:innen und Leader:innen über die nächste Wachstumsstufe.
+                    {t('podcast.text')}
                   </p>
                 </div>
                 <span className="flex-shrink-0 inline-flex items-center gap-1 text-xs font-semibold self-start mt-1">
-                  Hören <ArrowRight size={12} />
+                  {t('podcast.cta')} <ArrowRight size={12} />
                 </span>
               </div>
             </a>
