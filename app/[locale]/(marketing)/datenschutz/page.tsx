@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Datenschutzerklärung — Eilers+Friends',
@@ -10,8 +9,7 @@ interface PageProps {
 }
 
 export default async function DatenschutzPage({ params }: PageProps) {
-  const { locale } = await params
-  if (locale !== 'de') redirect('/de/datenschutz')
+  await params // locale not needed — Link from i18n nav resolves it
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>

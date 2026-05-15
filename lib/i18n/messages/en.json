@@ -429,5 +429,205 @@
         }
       ]
     }
+  },
+  "salesmadePage": {
+    "meta": {
+      "title": "SalesMade Academy — From Experimental Freestyle to a Predictable Revenue System",
+      "description": "12-month transformation programme for B2B sales teams. Conversion 28% → 60%. AI-powered platform with personal sparring. 100% money-back guarantee after 90 days."
+    },
+    "hero": {
+      "badge": "SalesMade Academy · Soft-Launch · Limited Seats",
+      "headline1": "From Uncertainty to",
+      "headlineAccent": "Predictable Revenue.",
+      "subtext": "The SalesMade Academy is not a seminar. It is a 12-month transformation programme that turns your sellers into indispensable sparring partners for your customers.",
+      "cta": "Book a benchmarking conversation",
+      "note": "Only a few seats left in the soft-launch."
+    },
+    "crisis": {
+      "eyebrow": "The Invisible Crisis in B2B Sales",
+      "headline": "Without knowing and without being able, all the doing helps little.",
+      "sourceLabel": "Source",
+      "cards": [
+        {
+          "persona": "of B2B sellers",
+          "number": "84%",
+          "label": "no professional training",
+          "description": "Capturing attention, leading conversations, persuading, making offers — all experimental freestyle.",
+          "source": "SalesMade Academy · DACH Industry Snapshot 2024"
+        },
+        {
+          "persona": "of sales staff",
+          "number": "67%",
+          "label": "do not feel ready",
+          "description": "They feel insufficiently prepared for their job and the expectations that come with it.",
+          "source": "Sales Readiness Group · Annual State of Sales Readiness 2024"
+        },
+        {
+          "persona": "of founders, CEOs & owners",
+          "number": "88%",
+          "label": "want to rely on their team",
+          "description": "This gap costs companies large portions of potential revenue and damages enterprise value.",
+          "source": "EY · CEO Outlook Pulse 2024 (Sales & Revenue)"
+        }
+      ]
+    },
+    "rules": {
+      "eyebrow": "Market Reality",
+      "headline": "The rules of the game have changed",
+      "subtext": "Buyers today are more informed than ever. They research independently, compare vendors and make decisions before a salesperson ever enters the picture. Anyone still working with classic pitch and product presentation in this environment loses — not because the product is bad, but because the sales approach is outdated.",
+      "cards": [
+        {
+          "number": "75%",
+          "label": "prefer no sales",
+          "text": "of B2B buyers want a buying experience without direct sales contact. Your sellers must therefore add real value — or become obsolete.",
+          "source": "Gartner · Future of B2B Sales 2023"
+        },
+        {
+          "number": "79%",
+          "label": "decide on their own",
+          "text": "of customers no longer talk to vendors before the decision is made. If you are not perceived as a sparring partner early enough, you are too late.",
+          "source": "Forrester · B2B Buyer Behavior Study 2024"
+        }
+      ]
+    },
+    "goodNews": {
+      "badge": "The good news",
+      "headline": "The challenge is solvable.",
+      "bodyPre": "In direct comparison, most competitors in a market are in the same boat. Companies that close this gap quickly see clearly better results in conversions, deal size and team motivation. Overall, ",
+      "bodyAccent": "revenue increases of 48% in the first 12 months are the rule."
+    },
+    "vision": {
+      "eyebrow": "This is what success feels like",
+      "headline": "What you as Founder/CEO are actually entitled to",
+      "items": [
+        "A confident, charismatic and well-trained sales team",
+        "Capturing the attention of the right decision-makers",
+        "Customers who feel fully understood",
+        "Smart infotainment at eye level that inspires well-informed decisions",
+        "Offers packaged so irresistibly that the customer feels foolish for not taking them",
+        "Predictable, foreseeable revenue and higher order volumes"
+      ]
+    },
+    "system": {
+      "eyebrow": "The system for predictable success",
+      "headline": "The SalesMade Academy is not a seminar.",
+      "subtext": "It is a 12-month transformation programme that turns your sellers into indispensable sparring partners for your customers.",
+      "step1Label": "Step 1",
+      "step1Title": "Simulated customer scenario",
+      "step1Pre": "Every participant runs through a realistic customer scenario in which ",
+      "step1Accent": "13 decisive sales skills",
+      "step1Post": " are measured and assessed individually.",
+      "step2Label": "Step 2",
+      "step2Title": "Individual learning path",
+      "step2Pre": "Based on the benchmark we develop for each seller a ",
+      "step2Accent": "tailored development plan",
+      "step2Post": " — with adapted scenarios across 5 difficulty levels and real-time feedback.",
+      "stats": [
+        {
+          "value": "12",
+          "label": "months of guidance"
+        },
+        {
+          "value": "50",
+          "label": "exclusive seats"
+        },
+        {
+          "value": "13",
+          "label": "core skills"
+        },
+        {
+          "value": "24",
+          "label": "training modules"
+        }
+      ],
+      "measuresLabel": "Supporting measures",
+      "measures": [
+        "Monthly live training with top sales leaders",
+        "Group coaching for tactical problem solving",
+        "Community with experienced coaches",
+        "AI tools, playbooks & GPT Engines",
+        "Certifications for acquired skills",
+        "Quarterly re-assessments"
+      ]
+    },
+    "results": {
+      "eyebrow": "Outcomes",
+      "headline": "What our participants concretely achieve",
+      "items": [
+        "Increase the efficiency and quality of sales conversations by at least 30%",
+        "Lift close rates in discovery calls from an average 28% to up to 60%",
+        "Measurable reduction in average sales cycle length by up to 38%",
+        "Professionally trained sellers achieve 48% – 280% higher revenue",
+        "Build a clear, proven sales structure",
+        "Significantly improved customer satisfaction through targeted, empathic communication"
+      ]
+    },
+    "coach": {
+      "eyebrow": "Your coach",
+      "name": "Markus Eilers",
+      "roleTag": "Revenue Systems · B2B Sales",
+      "tags": [
+        "TEDx Speaker",
+        "TOP 100 Trainer",
+        "TOP 100 Speaker",
+        "Keynote Speaker"
+      ],
+      "bio1": "Markus has been building sales organisations for over two decades — from start-ups to enterprises. His focus: how B2B teams convince customers in the AI era without falling into the pitching cliché.",
+      "bio2": "From 500+ accompanied founders the SalesMade methodology has emerged — the system behind this academy. Plus his experience as a sought-after keynote speaker on modern sales, AI in selling and customer communication at eye level.",
+      "quote": "\"Most sales teams improvise. The best have a system — and a shared vocabulary for it. That is exactly what we build in the Academy.\""
+    },
+    "comparison": {
+      "eyebrow": "You have a choice",
+      "headline": "Two paths. One decision.",
+      "hardTitle": "The hard way",
+      "hardTextPre": "Experiment in uncertainty on your own, occasionally exchange experiences with other founders, and go through an unpleasant but probably unavoidable hire-and-fire cycle. That will work in the end, takes between ",
+      "hardTextAccent": "3 and 5 years",
+      "hardTextPost": ". Costs a fortune and produces growing frustration in the team and among the owners.",
+      "easyTitle": "The easy way",
+      "easyTextPre": "Adopt once and for all what already works and delivers measurable, better results. ",
+      "easyTextAccent": "Revenue increases of 48% in the first 12 months are the rule.",
+      "easyTextPost": " That way the measures pay for themselves."
+    },
+    "roi": {
+      "eyebrow": "How much potential is left on the table?",
+      "headline": "Calculate it yourself",
+      "subtext": "Adjust the values to your situation."
+    },
+    "guarantee": {
+      "title": "90-Day 100% money-back guarantee",
+      "text": "If after 90 days you see no measurable improvements in your KPIs, we refund the full investment. No questions asked."
+    },
+    "faq": {
+      "headline": "Frequently asked questions",
+      "items": [
+        {
+          "q": "Who is the Academy for?",
+          "a": "The SalesMade Academy is aimed at B2B sales teams that want to systematically improve their conversion rates and achieve predictable revenue. Ideal for companies with 5–50 sellers who are willing to invest in professional training."
+        },
+        {
+          "q": "How much time does my team need to invest?",
+          "a": "The programme spans 12 months with 90 minutes of live training per month, 120 minutes of group coaching and self-paced learning. The content is practical and directly applicable in day-to-day business."
+        },
+        {
+          "q": "What happens if we see no results?",
+          "a": "We offer a 100% money-back guarantee. If after 90 days you see no measurable improvements in your KPIs, we refund the full investment. No questions asked."
+        },
+        {
+          "q": "Can we send individual employees only?",
+          "a": "Yes, that is possible. However, the best results appear when the entire team trains together. That way a unified sales language and methodology emerges across the company."
+        },
+        {
+          "q": "What sets the Academy apart from classic trainings?",
+          "a": "6-day classroom trainings are out — and for pretty good reasons. The SalesMade Academy is a digital, AI-powered platform with personal sparring through experienced sales leaders. We pick up every team member exactly where they are today and lead them step by step, month by month, through the right skills."
+        }
+      ]
+    },
+    "finalCta": {
+      "eyebrow": "From uncertainty to predictable revenue.",
+      "headline": "45 minutes for your next 36 months.",
+      "subtext": "How convincingly does your team work in direct comparison? Our no-obligation benchmark can give you valuable insights. Your team runs through a realistic customer scenario in which we observe and assess 13 decisive sales skills.",
+      "cta": "Book a benchmarking conversation",
+      "note": "Only a few seats left in the soft-launch."
+    }
   }
 }

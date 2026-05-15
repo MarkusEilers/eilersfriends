@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Link } from '@/lib/i18n/navigation'
 import { Calendar, ArrowRight, Mic, Award, Target, Lightbulb } from 'lucide-react'
-import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Markus Eilers — Smarter Selling im KI-Zeitalter',
@@ -85,8 +84,7 @@ interface PageProps {
 }
 
 export default async function MarkusPage({ params }: PageProps) {
-  const { locale } = await params
-  if (locale !== 'de') redirect('/de/markus')
+  await params // locale not needed — Link from i18n nav resolves it
 
   const accent = '#1A5FD4'
   const navy = '#0F1E3A'

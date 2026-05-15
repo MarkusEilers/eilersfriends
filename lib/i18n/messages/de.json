@@ -429,5 +429,205 @@
         }
       ]
     }
+  },
+  "salesmadePage": {
+    "meta": {
+      "title": "SalesMade Academy — Vom experimentellen Freestyle zum planbaren Umsatzsystem",
+      "description": "12-monatiges Transformationsprogramm für B2B-Vertriebsteams. Conversion 28 % → 60 %. AI-powered Plattform mit persönlichem Sparring. 100 % Geld-zurück-Garantie nach 90 Tagen."
+    },
+    "hero": {
+      "badge": "SalesMade Academy · Soft-Launch · Limitierte Plätze",
+      "headline1": "Von Unsicherheit zu",
+      "headlineAccent": "planbaren Umsätzen.",
+      "subtext": "Die SalesMade Academy ist kein Seminar. Es ist ein 12-monatiges Transformationsprogramm, das Deine Verkäufer:innen zu unverzichtbaren Sparringspartnern für Deine Kunden macht.",
+      "cta": "Jetzt Benchmarking-Gespräch buchen",
+      "note": "Nur noch wenige Plätze für den Soft-Launch verfügbar."
+    },
+    "crisis": {
+      "eyebrow": "Die unsichtbare Krise im B2B-Vertrieb",
+      "headline": "Weil ohne Wissen und ohne Können, bringt alles Machen wenig.",
+      "sourceLabel": "Quelle",
+      "cards": [
+        {
+          "persona": "der B2B-Verkäufer",
+          "number": "84%",
+          "label": "ohne professionelle Ausbildung",
+          "description": "Aufmerksamkeit gewinnen, Gespräche führen, überzeugen, Angebote machen — alles experimenteller Freestyle.",
+          "source": "SalesMade Academy · DACH Industry Snapshot 2024"
+        },
+        {
+          "persona": "der Sales-Mitarbeitenden",
+          "number": "67%",
+          "label": "fühlen sich nicht bereit",
+          "description": "Sie fühlen sich für ihren Job und die damit verbundenen Erwartungen nicht ausreichend vorbereitet.",
+          "source": "Sales Readiness Group · Annual State of Sales Readiness 2024"
+        },
+        {
+          "persona": "der Founder, CEOs & Owner",
+          "number": "88%",
+          "label": "wollen sich auf ihr Team verlassen",
+          "description": "Dieser Mangel kostet Unternehmen große Teile ihrer möglichen Umsätze und beschädigt den Unternehmenswert.",
+          "source": "EY · CEO Outlook Pulse 2024 (Sales & Revenue)"
+        }
+      ]
+    },
+    "rules": {
+      "eyebrow": "Markt-Realität",
+      "headline": "Die Spielregeln haben sich geändert",
+      "subtext": "Käufer sind heute besser informiert als je zuvor. Sie recherchieren eigenständig, vergleichen Anbieter und treffen Entscheidungen, bevor ein Verkäufer überhaupt ins Spiel kommt. Wer in diesem Umfeld noch mit klassischem Pitch und Produktpräsentation arbeitet, verliert — nicht weil das Produkt schlecht ist, sondern weil der Verkaufsansatz überholt ist.",
+      "cards": [
+        {
+          "number": "75%",
+          "label": "bevorzugen kein Sales",
+          "text": "der B2B-Käufer wünschen sich ein Kauferlebnis ohne direkten Sales-Kontakt. Deine Verkäufer müssen also echten Mehrwert bieten — oder sie werden überflüssig.",
+          "source": "Gartner · Future of B2B Sales 2023"
+        },
+        {
+          "number": "79%",
+          "label": "entscheiden allein",
+          "text": "der Kunden sprechen nicht mehr mit Anbietern, bevor die Entscheidung fällt. Wer nicht früh genug als Sparringspartner wahrgenommen wird, kommt zu spät.",
+          "source": "Forrester · B2B Buyer Behavior Study 2024"
+        }
+      ]
+    },
+    "goodNews": {
+      "badge": "Die gute Nachricht",
+      "headline": "Die Herausforderung ist lösbar.",
+      "bodyPre": "Im direkten Vergleich geht es den meisten Wettbewerbern in einem Markt gleich. Unternehmen, die das nachholen, sehen schnell deutlich bessere Ergebnisse in Conversions, im Umfang ihrer Abschlüsse und in der Motivation ihrer Teams. Insgesamt sind ",
+      "bodyAccent": "Umsatzsteigerungen um 48 % in den ersten 12 Monaten die Regel."
+    },
+    "vision": {
+      "eyebrow": "So fühlt sich Erfolg an",
+      "headline": "Das, worauf Du als Founder/CEO eigentlich Anspruch hast",
+      "items": [
+        "Ein selbstsicheres, charismatisches und gut trainiertes Sales-Team",
+        "Die Aufmerksamkeit der richtigen Entscheider gewinnen",
+        "Kunden, die sich komplett verstanden fühlen",
+        "Schlaues Infotainment auf Augenhöhe, das zu gut informierten Entscheidungen inspiriert",
+        "Angebote, die so unwiderstehlich verpackt sind, dass der Kunde sich bekloppt vorkommt, wenn er nicht zuschlägt",
+        "Planbare, vorhersehbare Umsätze und höhere Auftragsvolumen"
+      ]
+    },
+    "system": {
+      "eyebrow": "Das System für planbaren Erfolg",
+      "headline": "Die SalesMade Academy ist kein Seminar.",
+      "subtext": "Es ist ein 12-monatiges Transformationsprogramm, das Deine Verkäufer:innen zu unverzichtbaren Sparringspartnern für Deine Kunden macht.",
+      "step1Label": "Schritt 1",
+      "step1Title": "Simuliertes Kundenszenario",
+      "step1Pre": "Jeder Teilnehmer durchläuft ein realistisches Kundenszenario, in dem ",
+      "step1Accent": "13 entscheidende Sales-Skills",
+      "step1Post": " individuell gemessen und bewertet werden.",
+      "step2Label": "Schritt 2",
+      "step2Title": "Individueller Lernpfad",
+      "step2Pre": "Basierend auf dem Benchmark entwickeln wir für jeden Seller einen ",
+      "step2Accent": "maßgeschneiderten Entwicklungsplan",
+      "step2Post": " — mit angepassten Szenarien in 5 Schwierigkeitsstufen und Echtzeit-Feedback.",
+      "stats": [
+        {
+          "value": "12",
+          "label": "Monate Begleitung"
+        },
+        {
+          "value": "50",
+          "label": "Exklusive Plätze"
+        },
+        {
+          "value": "13",
+          "label": "Core Skills"
+        },
+        {
+          "value": "24",
+          "label": "Trainings-Module"
+        }
+      ],
+      "measuresLabel": "Begleitende Maßnahmen",
+      "measures": [
+        "Monatliches Live-Training mit Top Sales-Leadern",
+        "Group-Coaching für taktische Problemlösung",
+        "Community mit erfahrenen Coaches",
+        "AI-Tools, Playbooks & GPT Engines",
+        "Zertifikate für erworbene Fähigkeiten",
+        "Quartalsweise Re-Assessments"
+      ]
+    },
+    "results": {
+      "eyebrow": "Outcomes",
+      "headline": "Was unsere Teilnehmer konkret erreichen",
+      "items": [
+        "Steigerung der Effizienz und Qualität der Vertriebsgespräche um mindestens 30 %",
+        "Erhöhung der Abschlussquoten in Discovery Calls von durchschnittlich 28 % auf bis zu 60 %",
+        "Messbare Reduktion der durchschnittlichen Dauer eines Verkaufszyklus um bis zu 38 %",
+        "Professionell ausgebildete Seller erzielen 48 % – 280 % höhere Umsätze",
+        "Aufbau einer klaren, bewährten Vertriebsstruktur",
+        "Deutlich verbesserte Kundenzufriedenheit durch gezielte und empathische Kommunikation"
+      ]
+    },
+    "coach": {
+      "eyebrow": "Dein Coach",
+      "name": "Markus Eilers",
+      "roleTag": "Revenue Systems · B2B-Vertrieb",
+      "tags": [
+        "TEDx Speaker",
+        "TOP 100 Trainer",
+        "TOP 100 Speaker",
+        "Keynote Speaker"
+      ],
+      "bio1": "Markus baut seit über zwei Jahrzehnten Vertriebsorganisationen auf — von Start-ups bis Konzerne. Sein Schwerpunkt: wie B2B-Teams im KI-Zeitalter Kund:innen wirksam überzeugen, ohne ins Pitching-Klischee zu verfallen.",
+      "bio2": "Aus 500+ begleiteten Gründer:innen ist die SalesMade-Methodik entstanden — das System, das hinter dieser Academy steht. Dazu kommt seine Erfahrung als gefragter Keynote-Speaker für modernen Vertrieb, KI im Verkauf und Kundenkommunikation auf Augenhöhe.",
+      "quote": "„Die meisten Sales-Teams improvisieren. Die besten haben ein System — und ein gemeinsames Vokabular dafür. Genau das bauen wir in der Academy.\""
+    },
+    "comparison": {
+      "eyebrow": "Du hast die Wahl",
+      "headline": "Zwei Wege. Eine Entscheidung.",
+      "hardTitle": "Der harte Weg",
+      "hardTextPre": "In der Unsicherheit selbst experimentieren, gelegentlich Erfahrungen mit anderen Unternehmern austauschen und durch ein unangenehmes aber vermutlich unvermeidbares Hire & Fire gehen. Das wird am Ende funktionieren, dauert zwischen ",
+      "hardTextAccent": "3 und 5 Jahren",
+      "hardTextPost": ". Kostet ein Vermögen und produziert wachsende Frustration im Team und bei den Eigentümern.",
+      "easyTitle": "Der einfache Weg",
+      "easyTextPre": "Einmal vollständig übernehmen, was schon funktioniert und messbare, bessere Ergebnisse liefert. ",
+      "easyTextAccent": "Umsatzsteigerungen um 48 % in den ersten 12 Monaten sind die Regel.",
+      "easyTextPost": " Damit bezahlen die Maßnahmen sich selbst."
+    },
+    "roi": {
+      "eyebrow": "Wie viel Potenzial bleibt ungenutzt?",
+      "headline": "Rechne es selbst",
+      "subtext": "Passe die Werte an Deine Situation an."
+    },
+    "guarantee": {
+      "title": "90-Tage 100 % Geld-zurück-Garantie",
+      "text": "Wenn Du nach 90 Tagen keine messbaren Verbesserungen in Deinen KPIs siehst, erstatten wir die volle Investition zurück. Keine Fragen gestellt."
+    },
+    "faq": {
+      "headline": "Häufige Fragen",
+      "items": [
+        {
+          "q": "Für wen ist die Academy geeignet?",
+          "a": "Die SalesMade Academy richtet sich an B2B-Vertriebsteams, die systematisch ihre Conversion-Rates verbessern und planbare Umsätze erzielen möchten. Ideal für Unternehmen mit 5–50 Verkäufer:innen, die bereit sind, in professionelle Ausbildung zu investieren."
+        },
+        {
+          "q": "Wie viel Zeit muss mein Team investieren?",
+          "a": "Das Programm ist auf 12 Monate ausgelegt mit 90 Minuten Live-Training pro Monat, 120 Minuten Group-Coaching und selbstgesteuertem Lernen. Die Inhalte sind praxisnah und direkt im Tagesgeschäft anwendbar."
+        },
+        {
+          "q": "Was passiert, wenn wir keine Ergebnisse sehen?",
+          "a": "Wir bieten eine 100 % Geld-zurück-Garantie. Wenn Du nach 90 Tagen keine messbaren Verbesserungen in Deinen KPIs siehst, erstatten wir die volle Investition zurück. Keine Fragen gestellt."
+        },
+        {
+          "q": "Können wir auch nur einzelne Mitarbeiter schicken?",
+          "a": "Ja, das ist möglich. Allerdings sind die besten Ergebnisse zu sehen, wenn das gesamte Team gemeinsam trainiert wird. So entsteht eine einheitliche Verkaufssprache und -methodik im gesamten Unternehmen."
+        },
+        {
+          "q": "Was unterscheidet die Academy von klassischen Trainings?",
+          "a": "6-tägige Classroom-Trainings sind out — und aus ziemlich guten Gründen. Die SalesMade Academy ist eine digitale, AI-powered Plattform mit persönlichem Sparring durch erfahrene Sales-Leader. Wir holen jedes Teammitglied genau da ab, wo es heute steht, und führen es monatlich schrittweise durch die passenden Skills."
+        }
+      ]
+    },
+    "finalCta": {
+      "eyebrow": "Von Unsicherheit zu planbaren Umsätzen.",
+      "headline": "45 Minuten für Deine nächsten 36 Monate.",
+      "subtext": "Wie überzeugend arbeitet Dein Team im direkten Vergleich? Unser unverbindlicher Benchmark kann Dir wertvolle Einblicke geben. Dein Team durchläuft ein realistisches Kundenszenario, in dem wir 13 entscheidende Sales-Skills beobachten und bewerten.",
+      "cta": "Jetzt Benchmarking-Gespräch buchen",
+      "note": "Nur noch wenige Plätze für den Soft-Launch verfügbar."
+    }
   }
 }

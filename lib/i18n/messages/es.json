@@ -429,5 +429,205 @@
         }
       ]
     }
+  },
+  "salesmadePage": {
+    "meta": {
+      "title": "SalesMade Academy — Del freestyle experimental a un sistema de ingresos predecible",
+      "description": "Programa de transformación de 12 meses para equipos de ventas B2B. Conversión 28% → 60%. Plataforma con IA y sparring personal. Garantía 100% de devolución a los 90 días."
+    },
+    "hero": {
+      "badge": "SalesMade Academy · Soft-Launch · Plazas limitadas",
+      "headline1": "De la incertidumbre a",
+      "headlineAccent": "ingresos predecibles.",
+      "subtext": "La SalesMade Academy no es un seminario. Es un programa de transformación de 12 meses que convierte a tus vendedores en sparring imprescindibles para tus clientes.",
+      "cta": "Reservar conversación de benchmarking",
+      "note": "Quedan pocas plazas para el soft-launch."
+    },
+    "crisis": {
+      "eyebrow": "La crisis invisible en las ventas B2B",
+      "headline": "Sin saber y sin poder, todo el hacer sirve de poco.",
+      "sourceLabel": "Fuente",
+      "cards": [
+        {
+          "persona": "de los vendedores B2B",
+          "number": "84%",
+          "label": "sin formación profesional",
+          "description": "Captar atención, llevar la conversación, convencer, hacer ofertas — todo freestyle experimental.",
+          "source": "SalesMade Academy · DACH Industry Snapshot 2024"
+        },
+        {
+          "persona": "del personal de ventas",
+          "number": "67%",
+          "label": "no se sienten preparados",
+          "description": "No se sienten suficientemente preparados para su puesto y las expectativas que conlleva.",
+          "source": "Sales Readiness Group · Annual State of Sales Readiness 2024"
+        },
+        {
+          "persona": "de los founders, CEOs y propietarios",
+          "number": "88%",
+          "label": "quieren poder confiar en su equipo",
+          "description": "Esta carencia cuesta a las empresas gran parte de sus ingresos potenciales y daña el valor de la compañía.",
+          "source": "EY · CEO Outlook Pulse 2024 (Sales & Revenue)"
+        }
+      ]
+    },
+    "rules": {
+      "eyebrow": "Realidad del mercado",
+      "headline": "Las reglas del juego han cambiado",
+      "subtext": "Los compradores hoy están más informados que nunca. Investigan por su cuenta, comparan proveedores y toman decisiones antes de que un vendedor entre en escena. Quien sigue trabajando con el pitch clásico y la presentación de producto pierde — no porque el producto sea malo, sino porque el enfoque de venta está obsoleto.",
+      "cards": [
+        {
+          "number": "75%",
+          "label": "prefieren sin sales",
+          "text": "de los compradores B2B desean una experiencia de compra sin contacto directo con ventas. Tus vendedores deben aportar valor real — o quedarán obsoletos.",
+          "source": "Gartner · Future of B2B Sales 2023"
+        },
+        {
+          "number": "79%",
+          "label": "deciden por su cuenta",
+          "text": "de los clientes ya no hablan con proveedores antes de tomar la decisión. Quien no es percibido como sparring desde el principio llega tarde.",
+          "source": "Forrester · B2B Buyer Behavior Study 2024"
+        }
+      ]
+    },
+    "goodNews": {
+      "badge": "La buena noticia",
+      "headline": "El reto tiene solución.",
+      "bodyPre": "En comparación directa, la mayoría de competidores de un mercado están en la misma situación. Las empresas que cierran esa brecha ven enseguida mejores resultados en conversión, en tamaño de operación y en motivación del equipo. En total, ",
+      "bodyAccent": "aumentos de facturación del 48% en los primeros 12 meses son la regla."
+    },
+    "vision": {
+      "eyebrow": "Así se siente el éxito",
+      "headline": "A lo que tú, como founder/CEO, tienes derecho",
+      "items": [
+        "Un equipo de ventas seguro, carismático y bien entrenado",
+        "Captar la atención de los decisores correctos",
+        "Clientes que se sienten plenamente comprendidos",
+        "Infotainment inteligente, de igual a igual, que inspira decisiones bien informadas",
+        "Ofertas tan irresistibles que el cliente se siente tonto si no las acepta",
+        "Ingresos predecibles, anticipables y mayores volúmenes de pedido"
+      ]
+    },
+    "system": {
+      "eyebrow": "El sistema para un éxito predecible",
+      "headline": "La SalesMade Academy no es un seminario.",
+      "subtext": "Es un programa de transformación de 12 meses que convierte a tus vendedores en sparring imprescindibles para tus clientes.",
+      "step1Label": "Paso 1",
+      "step1Title": "Escenario de cliente simulado",
+      "step1Pre": "Cada participante atraviesa un escenario realista en el que se miden y evalúan de forma individual ",
+      "step1Accent": "13 skills de ventas decisivos",
+      "step1Post": ".",
+      "step2Label": "Paso 2",
+      "step2Title": "Itinerario individual de aprendizaje",
+      "step2Pre": "A partir del benchmark desarrollamos para cada seller un ",
+      "step2Accent": "plan de desarrollo a medida",
+      "step2Post": " — con escenarios adaptados en 5 niveles de dificultad y feedback en tiempo real.",
+      "stats": [
+        {
+          "value": "12",
+          "label": "meses de acompañamiento"
+        },
+        {
+          "value": "50",
+          "label": "plazas exclusivas"
+        },
+        {
+          "value": "13",
+          "label": "skills clave"
+        },
+        {
+          "value": "24",
+          "label": "módulos de training"
+        }
+      ],
+      "measuresLabel": "Medidas de acompañamiento",
+      "measures": [
+        "Training en vivo mensual con top sales leaders",
+        "Group coaching para resolución táctica",
+        "Comunidad con coaches experimentados",
+        "Herramientas de IA, playbooks y GPT Engines",
+        "Certificados por skills adquiridos",
+        "Re-assessments trimestrales"
+      ]
+    },
+    "results": {
+      "eyebrow": "Outcomes",
+      "headline": "Lo que consiguen concretamente nuestros participantes",
+      "items": [
+        "Aumento de eficiencia y calidad de las conversaciones de ventas en al menos un 30%",
+        "Subida de tasas de cierre en discovery calls de una media del 28% hasta el 60%",
+        "Reducción medible de la duración media del ciclo de ventas en hasta un 38%",
+        "Vendedores con formación profesional logran 48% – 280% más facturación",
+        "Construcción de una estructura de ventas clara y probada",
+        "Satisfacción del cliente claramente mejorada mediante comunicación dirigida y empática"
+      ]
+    },
+    "coach": {
+      "eyebrow": "Tu coach",
+      "name": "Markus Eilers",
+      "roleTag": "Revenue Systems · Ventas B2B",
+      "tags": [
+        "TEDx Speaker",
+        "TOP 100 Trainer",
+        "TOP 100 Speaker",
+        "Keynote Speaker"
+      ],
+      "bio1": "Markus lleva más de dos décadas construyendo organizaciones de ventas — de start-ups a grandes empresas. Su foco: cómo los equipos B2B convencen a sus clientes en la era de la IA sin caer en el cliché del pitching.",
+      "bio2": "De más de 500 founders acompañados nace la metodología SalesMade — el sistema que hay detrás de esta academy. A eso se suma su experiencia como keynote speaker solicitado en ventas modernas, IA en ventas y comunicación con el cliente de igual a igual.",
+      "quote": "\"La mayoría de los equipos de ventas improvisa. Los mejores tienen un sistema — y un vocabulario común para él. Eso es exactamente lo que construimos en la Academy.\""
+    },
+    "comparison": {
+      "eyebrow": "Tienes elección",
+      "headline": "Dos caminos. Una decisión.",
+      "hardTitle": "El camino duro",
+      "hardTextPre": "Experimentar en la incertidumbre tú solo, intercambiar de vez en cuando experiencias con otros founders, y pasar por un hire & fire incómodo pero probablemente inevitable. Eso al final funciona, dura entre ",
+      "hardTextAccent": "3 y 5 años",
+      "hardTextPost": ". Cuesta una fortuna y produce frustración creciente en el equipo y en los propietarios.",
+      "easyTitle": "El camino fácil",
+      "easyTextPre": "Adoptar una vez por todas lo que ya funciona y entrega resultados medibles y mejores. ",
+      "easyTextAccent": "Aumentos del 48% en los primeros 12 meses son la regla.",
+      "easyTextPost": " Así las medidas se pagan solas."
+    },
+    "roi": {
+      "eyebrow": "¿Cuánto potencial queda sin aprovechar?",
+      "headline": "Calcúlalo tú mismo",
+      "subtext": "Ajusta los valores a tu situación."
+    },
+    "guarantee": {
+      "title": "Garantía de 90 días, 100% del dinero",
+      "text": "Si tras 90 días no ves mejoras medibles en tus KPIs, devolvemos la inversión completa. Sin preguntas."
+    },
+    "faq": {
+      "headline": "Preguntas frecuentes",
+      "items": [
+        {
+          "q": "¿Para quién es la Academy?",
+          "a": "La SalesMade Academy se dirige a equipos de ventas B2B que quieren mejorar sistemáticamente sus tasas de conversión y conseguir ingresos predecibles. Ideal para empresas con 5–50 vendedores dispuestas a invertir en formación profesional."
+        },
+        {
+          "q": "¿Cuánto tiempo debe invertir mi equipo?",
+          "a": "El programa dura 12 meses con 90 minutos de training en vivo al mes, 120 minutos de group coaching y aprendizaje autodirigido. Los contenidos son prácticos y aplicables directamente en el día a día."
+        },
+        {
+          "q": "¿Qué pasa si no vemos resultados?",
+          "a": "Ofrecemos una garantía de devolución del 100%. Si tras 90 días no ves mejoras medibles en tus KPIs, devolvemos la inversión completa. Sin preguntas."
+        },
+        {
+          "q": "¿Podemos enviar solo a empleados individuales?",
+          "a": "Sí, es posible. Aun así los mejores resultados aparecen cuando todo el equipo se entrena junto. Así surge un lenguaje y una metodología de ventas unificados en toda la empresa."
+        },
+        {
+          "q": "¿Qué diferencia a la Academy de los trainings clásicos?",
+          "a": "Los trainings de aula de 6 días están out — y por buenas razones. La SalesMade Academy es una plataforma digital con IA y sparring personal con sales leaders experimentados. Recogemos a cada persona donde está hoy y la llevamos paso a paso, mes a mes, por los skills adecuados."
+        }
+      ]
+    },
+    "finalCta": {
+      "eyebrow": "De la incertidumbre a ingresos predecibles.",
+      "headline": "45 minutos para tus próximos 36 meses.",
+      "subtext": "¿Cómo de convincente trabaja tu equipo en comparación directa? Nuestro benchmark sin compromiso te puede dar perspectiva valiosa. Tu equipo recorre un escenario realista en el que observamos y evaluamos 13 skills decisivos de ventas.",
+      "cta": "Reservar conversación de benchmarking",
+      "note": "Quedan pocas plazas para el soft-launch."
+    }
   }
 }

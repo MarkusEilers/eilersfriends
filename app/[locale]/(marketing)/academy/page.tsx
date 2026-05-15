@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { getSetting } from '@/lib/db/queries/settings'
 import { ArrowRight, CheckCircle, Users, BookOpen, Zap, Award } from 'lucide-react'
 import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
-import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'SalesMade Academy — Systematisches Vertriebs-Training für Gründer',
@@ -45,8 +44,7 @@ interface PageProps {
 }
 
 export default async function AcademyPage({ params }: PageProps) {
-  const { locale } = await params
-  if (locale !== 'de') redirect('/de/academy')
+  await params // locale not needed — Link from i18n nav resolves it
   const calendlyUrl = await getSetting('calendly.markus')
 
   return (

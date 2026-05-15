@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Impressum — Eilers+Friends',
@@ -10,8 +9,7 @@ interface PageProps {
 }
 
 export default async function ImpressumPage({ params }: PageProps) {
-  const { locale } = await params
-  if (locale !== 'de') redirect('/de/impressum')
+  await params // locale not needed — Link from i18n nav resolves it
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>

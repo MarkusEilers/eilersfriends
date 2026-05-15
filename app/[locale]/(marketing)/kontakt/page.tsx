@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Mail, MapPin, Clock, Linkedin, Youtube, Instagram, Calendar } from 'lucide-react'
 import { ContactForm } from './ContactForm'
 import { getSetting } from '@/lib/db/queries/settings'
-import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Kontakt — Eilers+Friends',
@@ -15,8 +14,7 @@ interface PageProps {
 }
 
 export default async function KontaktPage({ params }: PageProps) {
-  const { locale } = await params
-  if (locale !== 'de') redirect('/de/kontakt')
+  await params // locale not needed — Link from i18n nav resolves it
 
   const [calendlyMarkus, calendlyAljona] = await Promise.all([
     getSetting('calendly.markus'),

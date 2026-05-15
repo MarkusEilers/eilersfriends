@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Link } from '@/lib/i18n/navigation'
 import {
   Calendar, ArrowRight, Heart, MessageCircle, Shield, Sparkles,
   Mic, Award, AlertTriangle, Check, Star,
 } from 'lucide-react'
-import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Aljona Eilers — Leadership für ein Winning Team',
@@ -109,8 +108,7 @@ interface PageProps {
 }
 
 export default async function AljonaPage({ params }: PageProps) {
-  const { locale } = await params
-  if (locale !== 'de') redirect('/de/aljona')
+  await params // locale not needed — Link from i18n nav resolves it
 
   const accent = '#EB0028'
   const burgundy = '#7A1019'
