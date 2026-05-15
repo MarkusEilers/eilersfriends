@@ -280,9 +280,9 @@ export async function HVCOSection() {
                       </span>
                     )}
                   </div>
-                  {f.metaDescription && (
+                  {(dbMeta.metaDescription ?? f.metaDescription) && (
                     <p className="text-sm leading-relaxed flex-1 line-clamp-3" style={{ color: '#374151' }}>
-                      {f.metaDescription}
+                      {dbMeta.metaDescription ?? f.metaDescription}
                     </p>
                   )}
                   <div
