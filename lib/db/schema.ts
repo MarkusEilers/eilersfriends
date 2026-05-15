@@ -461,3 +461,18 @@ export const siteSettings = pgTable('site_settings', {
   value: text('value').notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
+
+
+// ─── Trust Logos (admin-editable logo strip) ──────────────────────────────────
+export const trustLogos = pgTable('trust_logos', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  slug: text('slug').notNull().unique(),
+  name: text('name').notNull(),
+  domain: text('domain'),
+  src: text('src'),  // image URL (full path)
+  alt: text('alt'),  // accessibility text
+  order: integer('order').default(0).notNull(),
+  isVisible: boolean('is_visible').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})

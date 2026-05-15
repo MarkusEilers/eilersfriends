@@ -36,6 +36,11 @@ const navItems = [
     icon: BookOpen,
   },
   {
+    label: 'Logoleiste',
+    href: '/admin/logos',
+    icon: ImageIcon,
+  },
+  {
     label: 'Email-Sequenzen',
     href: '/admin/email-sequences',
     icon: ListOrdered,

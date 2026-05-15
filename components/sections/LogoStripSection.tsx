@@ -1,28 +1,15 @@
-import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import { LogoScrollbar } from '@/components/blocks/LogoScrollbar'
+import { getVisibleTrustLogos } from '@/lib/db/queries/trust-logos'
 
 /**
  * Trust-Logo-Strip — partner / press logos.
- *
- * Each logo is an "on-white" monochrome SVG in /public/logos/. Source: Wikimedia
- * Commons (publications, MS, Amazon), Sonia.so / Celero.io own websites.
- * Normalized to currentColor so the LogoScrollbar's CSS grayscale + opacity
- * treatment renders them uniformly. Text label is the alt + fallback if a file
- * goes missing.
+ * Source of truth: trust_logos DB table (admin-editable via /admin/logos).
+ * Falls back to seed defaults if DB is unreachable.
  */
-const LOGOS = [
-  { name: 'Wall Street Journal', src: '/logos/wsj.svg' },
-  { name: 'Forbes',              src: '/logos/forbes.svg' },
-  { name: 'Handelsblatt',        src: '/logos/handelsblatt.svg' },
-  { name: 'USA Today',           src: '/logos/usa-today.svg' },
-  { name: 'Microsoft',           src: '/logos/microsoft.svg' },
-  { name: 'Amazon',              src: '/logos/amazon.svg' },
-  { name: 'Sonia.so',            src: '/logos/sonia-so.svg' },
-  { name: 'Celero One',          src: '/logos/celero-one.svg' },
-]
-
-export function LogoStripSection() {
-  const t = useTranslations('logos')
+export async function LogoStripSection() {
+  const t = await getTranslations('logos')
+  const logos = await getVisibleTrustLogos()
 
   return (
     <section className="border-y border-gray-100 bg-gray-50 py-10">
@@ -31,7 +18,10 @@ export function LogoStripSection() {
           {t('title')}
         </p>
       </div>
-      <LogoScrollbar logos={LOGOS} speed="normal" />
+      <LogoScrollbar
+        logos={logos.map((l) => ({ name: l.name, src: l.src ?? undefined }))}
+        speed="normal"
+      />
     </section>
   )
 }
