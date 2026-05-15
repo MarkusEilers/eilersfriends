@@ -8,7 +8,7 @@ import {
   Lightbulb, GitBranch, FileText, BookOpen, FileDown, Video, ClipboardList,
 } from 'lucide-react'
 import { redirect } from 'next/navigation'
-import { mergedMeta, type CardMeta } from '@/lib/db/queries/framework-meta'
+import { mergedMeta, type CardMeta, ensureCardMetaColumn } from '@/lib/db/queries/framework-meta'
 
 /** Per-slug visual config — mirrors HVCOSection so the design language matches.
  *  But here we have more space: longer body + deliverables list per card. */
@@ -130,6 +130,7 @@ export default async function FrameworksIndex({ params }: PageProps) {
 
   let frameworks: (typeof landingPages.$inferSelect)[] = []
   try {
+    await ensureCardMetaColumn()
     frameworks = await db
       .select()
       .from(landingPages)

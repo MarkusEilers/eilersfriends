@@ -30,7 +30,7 @@ export interface CardMeta {
 }
 
 let columnEnsured = false
-async function ensureColumn() {
+export async function ensureCardMetaColumn() {
   if (columnEnsured) return
   try {
     await db.execute(sql`ALTER TABLE landing_pages ADD COLUMN IF NOT EXISTS card_meta json`)
@@ -135,12 +135,12 @@ export function mergedMeta(slug: string, dbMeta: CardMeta | null | undefined): C
 }
 
 export async function getCardMeta(slug: string, dbMeta?: CardMeta | null): Promise<CardMeta> {
-  await ensureColumn()
+  await ensureCardMetaColumn()
   return mergedMeta(slug, dbMeta)
 }
 
 export async function updateCardMeta(slug: string, meta: CardMeta): Promise<void> {
-  await ensureColumn()
+  await ensureCardMetaColumn()
   await db.update(landingPages)
     .set({ cardMeta: meta as unknown as Record<string, unknown>, updatedAt: new Date() })
     .where(eq(landingPages.slug, slug))

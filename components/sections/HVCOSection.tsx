@@ -1,4 +1,4 @@
-import { mergedMeta, type CardMeta } from '@/lib/db/queries/framework-meta'
+import { mergedMeta, type CardMeta, ensureCardMetaColumn } from '@/lib/db/queries/framework-meta'
 import { db } from '@/lib/db'
 import { landingPages } from '@/lib/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
@@ -94,6 +94,7 @@ const FEATURED_ORDER = ['instant-influence', 'b2b-angebote']
 export async function HVCOSection() {
   let frameworks: (typeof landingPages.$inferSelect)[] = []
   try {
+    await ensureCardMetaColumn()
     frameworks = await db
       .select()
       .from(landingPages)
