@@ -56,41 +56,19 @@ export default async function KontaktPage({ params }: PageProps) {
           {/* Side panel */}
           <aside className="space-y-6">
 
-            {/* Strategie-Gespräch · Markus */}
-            <div
-              className="rounded-3xl p-6 text-white"
-              style={{ backgroundColor: '#1A5FD4' }}
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
-                  <Calendar size={18} />
-                </div>
-                <div className="text-[10px] uppercase tracking-[0.25em] font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>Sales · Revenue</div>
-              </div>
-              <h3 className="text-lg font-bold">30 Min mit Markus</h3>
-              <p className="mt-1.5 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
-                Strategisches Sparring zu Vertriebssystem, AI-Hebeln und planbarem Wachstum.
-              </p>
-              <a
-                href={calendlyMarkus}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold transition-opacity hover:opacity-90"
-                style={{ color: '#1A5FD4' }}
-              >
-                Termin mit Markus
-              </a>
-            </div>
-
-            {/* Strategie-Gespräch · Aljona */}
+            {/* Strategie-Gespräch · Aljona (ladies first) */}
             <div
               className="rounded-3xl p-6 text-white"
               style={{ backgroundColor: '#EB0028' }}
             >
               <div className="flex items-center gap-3 mb-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
-                  <Calendar size={18} />
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/aljona-photo.jpg"
+                  alt="Aljona Eilers"
+                  className="h-12 w-12 rounded-full object-cover ring-2"
+                  style={{ objectPosition: '50% 18%', boxShadow: '0 0 0 2px rgba(255,255,255,0.35)' }}
+                />
                 <div className="text-[10px] uppercase tracking-[0.25em] font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>Liquid Leadership</div>
               </div>
               <h3 className="text-lg font-bold">30 Min mit Aljona</h3>
@@ -104,7 +82,37 @@ export default async function KontaktPage({ params }: PageProps) {
                 className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold transition-opacity hover:opacity-90"
                 style={{ color: '#EB0028' }}
               >
-                Termin mit Aljona
+                <Calendar size={14} /> Termin mit Aljona
+              </a>
+            </div>
+
+            {/* Strategie-Gespräch · Markus */}
+            <div
+              className="rounded-3xl p-6 text-white"
+              style={{ backgroundColor: '#1A5FD4' }}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/markus-photo.jpg"
+                  alt="Markus Eilers"
+                  className="h-12 w-12 rounded-full object-cover ring-2"
+                  style={{ objectPosition: '50% 20%', boxShadow: '0 0 0 2px rgba(255,255,255,0.35)' }}
+                />
+                <div className="text-[10px] uppercase tracking-[0.25em] font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>Sales · Revenue</div>
+              </div>
+              <h3 className="text-lg font-bold">30 Min mit Markus</h3>
+              <p className="mt-1.5 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                Strategisches Sparring zu Vertriebssystem, AI-Hebeln und planbarem Wachstum.
+              </p>
+              <a
+                href={calendlyMarkus}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold transition-opacity hover:opacity-90"
+                style={{ color: '#1A5FD4' }}
+              >
+                <Calendar size={14} /> Termin mit Markus
               </a>
             </div>
 
@@ -145,18 +153,25 @@ export default async function KontaktPage({ params }: PageProps) {
             {/* Social */}
             <div className="rounded-3xl bg-white p-6 border border-gray-100">
               <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Social</p>
+              {/* Row 1: Aljona — LinkedIn, Instagram, Liquid Leadership YouTube */}
               <div className="flex flex-wrap gap-2">
-                <a href="https://linkedin.com/in/markuseilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-blue-50" style={{ color: '#1A5FD4', borderColor: '#BBCFF5' }}>
-                  <Linkedin size={12} /> Markus
-                </a>
-                <a href="https://youtube.com/@markuseilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#EB0028', borderColor: '#F5BBBC' }}>
-                  <Youtube size={12} /> Markus
-                </a>
                 <a href="https://www.linkedin.com/in/aljona-eilers-812b65194/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#EB0028', borderColor: '#F5BBBC' }}>
                   <Linkedin size={12} /> Aljona
                 </a>
                 <a href="https://www.instagram.com/aljona_eilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#EB0028', borderColor: '#F5BBBC' }}>
                   <Instagram size={12} /> Aljona
+                </a>
+                <a href="https://www.youtube.com/@liquid.leadership" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-red-50" style={{ color: '#EB0028', borderColor: '#F5BBBC' }}>
+                  <Youtube size={12} /> Liquid Leadership
+                </a>
+              </div>
+              {/* Row 2: Markus — LinkedIn, YouTube */}
+              <div className="mt-2 flex flex-wrap gap-2">
+                <a href="https://linkedin.com/in/markuseilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-blue-50" style={{ color: '#1A5FD4', borderColor: '#BBCFF5' }}>
+                  <Linkedin size={12} /> Markus
+                </a>
+                <a href="https://youtube.com/@markuseilers" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-blue-50" style={{ color: '#1A5FD4', borderColor: '#BBCFF5' }}>
+                  <Youtube size={12} /> Markus
                 </a>
               </div>
             </div>
