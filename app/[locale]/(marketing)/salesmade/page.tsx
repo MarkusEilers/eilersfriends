@@ -93,9 +93,9 @@ export default async function SalesMadePage({ params }: PageProps) {
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {crisisCards.map((s) => (
               <div key={s.label} className="rounded-2xl border border-gray-100 bg-white p-6 flex flex-col">
-                <div className="text-xs uppercase tracking-widest text-gray-400">{s.persona}</div>
-                <div className="mt-3 text-4xl font-bold" style={{ color: accent }}>{s.number}</div>
-                <div className="mt-1 text-sm font-bold" style={{ color: '#0D0D0B' }}>{s.label}</div>
+                <div className="text-4xl font-bold" style={{ color: accent }}>{s.number}</div>
+                <div className="mt-1 text-xs uppercase tracking-widest text-gray-400">{s.persona}</div>
+                <div className="mt-3 text-sm font-bold" style={{ color: '#0D0D0B' }}>{s.label}</div>
                 <p className="mt-3 text-sm leading-relaxed text-gray-600 flex-1">{s.description}</p>
                 <p className="mt-4 text-[10px] uppercase tracking-[0.18em] text-gray-400">
                   {t('crisis.sourceLabel')}: {s.source}
