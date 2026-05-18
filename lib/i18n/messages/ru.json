@@ -619,6 +619,24 @@
       "subtext": "Wie überzeugend arbeitet Dein Team im direkten Vergleich? Unser unverbindlicher Benchmark kann Dir wertvolle Einblicke geben. Dein Team durchläuft ein realistisches Kundenszenario, in dem wir 13 entscheidende Sales-Skills beobachten und bewerten.",
       "cta": "Jetzt Benchmarking-Gespräch buchen",
       "note": "Nur noch wenige Plätze für den Soft-Launch verfügbar."
+    },
+    "roiCalculator": {
+      "labelSalespeople": "Anzahl Verkäufer",
+      "labelDealValue": "Durchschnittlicher Deal-Wert",
+      "labelMeetings": "Erstgespräche pro Verkäufer / Monat",
+      "labelConversion": "Aktuelle Conversion (Discovery → Close)",
+      "activityLiftLabel": "+ Activity-Lift:",
+      "activityLiftBody": "Liegt Dein Team unter {floor} Erstgesprächen/Monat, bringen wir es im Programm auf dieses Niveau. Die Berechnung rechnet daher mit {floor} statt {current}.",
+      "capLabel": "Über dem Skill-Cap:",
+      "capBody": "Ab {cap} % ist die Conversion isoliert schwer weiter zu steigern. Die Berechnung modelliert für diesen Slider keinen zusätzlichen Conversion-Lift — Wachstum kommt dann nur aus Aktivität, Deal-Wert + Pipeline.",
+      "liftLabel": "+ Skill-Lift:",
+      "liftBody": "Im Programm rechnen wir mit +{lift} pp (gekappt bei {cap} %). Berechnung verwendet daher {upgraded} % statt {current} %.",
+      "resultEyebrow": "Ungenutztes Potenzial",
+      "perYear": "pro Jahr",
+      "narrativeAtCapPre": "Basierend auf unveränderter Conversion ({current} % — bereits über Skill-Cap)",
+      "narrativeLiftPre": "Basierend auf verbesserter Conversion ({current} % → {upgraded} %)",
+      "narrativePost": ", +48 % höheren Deal-Werten und mindestens {floor} Erstgesprächen pro Verkäufer/Monat — Branchenkennzahlen unserer Kunden.",
+      "cta": "Jetzt unverbindliches Erstgespräch sichern"
     }
   },
   "kontaktPage": {

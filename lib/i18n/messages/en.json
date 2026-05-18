@@ -635,6 +635,24 @@
       "subtext": "How convincingly does your team work in direct comparison? Our no-obligation benchmark can give you valuable insights. Your team runs through a realistic customer scenario in which we observe and assess 13 decisive sales skills.",
       "cta": "Book a benchmarking conversation",
       "note": "Only a few seats left in the soft-launch."
+    },
+    "roiCalculator": {
+      "labelSalespeople": "Number of sellers",
+      "labelDealValue": "Average deal value",
+      "labelMeetings": "Discovery calls per seller / month",
+      "labelConversion": "Current conversion (Discovery → Close)",
+      "activityLiftLabel": "+ Activity lift:",
+      "activityLiftBody": "If your team is below {floor} discovery calls/month, the programme brings it up to that level. The calculation therefore uses {floor} instead of {current}.",
+      "capLabel": "Above the skill cap:",
+      "capBody": "Above {cap}% it is hard to lift conversion further in isolation. The calculation models no additional conversion lift for this slider — growth then comes only from activity, deal value + pipeline.",
+      "liftLabel": "+ Skill lift:",
+      "liftBody": "In the programme we model +{lift} pp (capped at {cap}%). The calculation therefore uses {upgraded}% instead of {current}%.",
+      "resultEyebrow": "Unused potential",
+      "perYear": "per year",
+      "narrativeAtCapPre": "Based on unchanged conversion ({current}% — already above the skill cap)",
+      "narrativeLiftPre": "Based on improved conversion ({current}% → {upgraded}%)",
+      "narrativePost": ", +48% higher deal values and at least {floor} discovery calls per seller/month — benchmarks from our customers.",
+      "cta": "Book a no-strings-attached intro call"
     }
   },
   "kontaktPage": {

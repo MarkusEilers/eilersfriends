@@ -635,6 +635,24 @@
       "subtext": "¿Cómo de convincente trabaja tu equipo en comparación directa? Nuestro benchmark sin compromiso te puede dar perspectiva valiosa. Tu equipo recorre un escenario realista en el que observamos y evaluamos 13 skills decisivos de ventas.",
       "cta": "Reservar conversación de benchmarking",
       "note": "Quedan pocas plazas para el soft-launch."
+    },
+    "roiCalculator": {
+      "labelSalespeople": "Número de vendedores",
+      "labelDealValue": "Deal value promedio",
+      "labelMeetings": "Discovery calls por vendedor / mes",
+      "labelConversion": "Conversión actual (Discovery → Close)",
+      "activityLiftLabel": "+ Activity lift:",
+      "activityLiftBody": "Si tu equipo está por debajo de {floor} discovery calls/mes, el programa lo eleva a ese nivel. El cálculo usa por tanto {floor} en lugar de {current}.",
+      "capLabel": "Por encima del skill cap:",
+      "capBody": "Por encima del {cap} % es difícil elevar la conversión aún más de forma aislada. El cálculo no modela un lift adicional para este slider — el crecimiento viene entonces solo de actividad, deal value y pipeline.",
+      "liftLabel": "+ Skill lift:",
+      "liftBody": "En el programa modelamos +{lift} pp (cap en {cap} %). El cálculo usa por tanto {upgraded} % en lugar de {current} %.",
+      "resultEyebrow": "Potencial sin explotar",
+      "perYear": "al año",
+      "narrativeAtCapPre": "Basado en conversión sin cambios ({current} % — ya por encima del skill cap)",
+      "narrativeLiftPre": "Basado en conversión mejorada ({current} % → {upgraded} %)",
+      "narrativePost": ", deal values +48 % más altos y al menos {floor} discovery calls por vendedor/mes — benchmarks de nuestros clientes.",
+      "cta": "Reservar conversación inicial sin compromiso"
     }
   },
   "kontaktPage": {
