@@ -837,5 +837,117 @@
       "cta": "Book a strategy call",
       "note": "Valuable perspective from other companies · 100% confidential · For tech leaders"
     }
+  },
+  "markusPage": {
+    "meta": {
+      "title": "Markus Eilers — Smarter Selling in the AI era",
+      "description": "Sought-after keynote speaker for modern marketing, authentic sales and effective customer communication. TOP 100 Speaker · TEDx Speaker · Microsoft Cloud Ambassador."
+    },
+    "hero": {
+      "badge": "TOP 100 Speaker · Microsoft Cloud Ambassador",
+      "headline1": "Smarter Selling —",
+      "headlineAccent": "convince customers effectively in the AI era.",
+      "subtext": "Sought-after keynote speaker for modern marketing, authentic sales and effective customer communication.",
+      "pills": [
+        "25+ years of experience",
+        "Microsoft Cloud Ambassador",
+        "TOP 100 Speaker",
+        "TEDx Speaker"
+      ],
+      "ctaPrimary": "Request a keynote",
+      "ctaSecondary": "See keynote topics",
+      "quote": "\"Practical, empathic and entertaining — Markus captivates every audience.\"",
+      "quoteAuthor": "— Event manager, tech conference"
+    },
+    "topics": {
+      "eyebrow": "Keynote topics",
+      "headline": "Practical impulses for your B2B event",
+      "subtext": "Entertaining, empathic and with real value.",
+      "keynoteLabel": "KEYNOTE",
+      "items": [
+        {
+          "title": "The future of B2B sales",
+          "subtitle": "How tomorrow’s economy buys and sells",
+          "points": [
+            "How organisations will decide in the future — and what that means for your sales team",
+            "Selling on Social",
+            "The role of AI, empathy and trust in the modern sales process"
+          ]
+        },
+        {
+          "title": "Social selling & smart communication",
+          "subtitle": "Trust and visibility in the digital era",
+          "points": [
+            "How you build trust and visibility even when nobody knows you yet",
+            "Selling on Social",
+            "What LinkedIn, content and communication can really deliver"
+          ]
+        },
+        {
+          "title": "Growth with a system",
+          "subtitle": "The path to more revenue in the tech sector",
+          "points": [
+            "The only 3 levers for smarter growth to scale your business sustainably",
+            "How to turn existing customers into the key driver of your growth",
+            "How to convince with clear messages and irresistible offers"
+          ]
+        }
+      ]
+    },
+    "credentials": {
+      "eyebrow": "Why Markus Eilers?",
+      "headline": "Over 25 years of experience you will feel.",
+      "cards": [
+        {
+          "title": "TOP 100 Speaker & Trainer",
+          "description": "Awarded as one of the most sought-after keynote speakers in the German-speaking region"
+        },
+        {
+          "title": "Microsoft Cloud Ambassador",
+          "description": "Certified expert and adviser for digital transformation and cloud technologies"
+        },
+        {
+          "title": "25+ years of experience",
+          "description": "Two decades in marketing, sales and consulting — from start-ups to enterprises"
+        },
+        {
+          "title": "Practical & entertaining",
+          "description": "Keynotes with high real value, empathic delivery and real-world examples"
+        }
+      ]
+    },
+    "testimonials": {
+      "eyebrow": "What organisers say",
+      "headline": "Voices from real events",
+      "items": [
+        {
+          "text": "Markus enriched our event with his keynote. The participants were thrilled!",
+          "author": "Sandra L.",
+          "role": "Event manager, tech conference"
+        },
+        {
+          "text": "Practical, entertaining and inspiring. Exactly what we were looking for.",
+          "author": "Michael K.",
+          "role": "Head of Events, industry association"
+        },
+        {
+          "text": "The perfect mix of expertise and entertainment. Highly recommended!",
+          "author": "Julia M.",
+          "role": "Marketing director, enterprise"
+        }
+      ]
+    },
+    "crosslink": {
+      "eyebrow": "Also interesting",
+      "headline": "Markus doesn't just build stage moments.",
+      "body": "Behind the keynotes is a system: the SalesMade Academy. 12 months, 13 sales skills, AI-powered — for B2B teams that want predictable revenue.",
+      "cta": "To the SalesMade Academy"
+    },
+    "finalCta": {
+      "headline": "Book Markus for your event",
+      "subtext": "Captivate your audience with a keynote that inspires and delivers real value.",
+      "cta": "Request a keynote",
+      "note": "Free initial consultation · Tailored content · For B2B events"
+    }
   }
 }
