@@ -1,13 +1,14 @@
 /**
- * Sales Performance Journey — Sonia-style geschwungener Pfad.
+ * Sales Performance Journey — Sonia-Style geschwungener Pfad mit 4 Stationen.
  *
- * 4 Stationen auf einer Welle, alternierend oben/unten. Jede Station
- * pulsiert in einem sanften 4-Sekunden-Heartbeat von links nach rechts,
- * versetzt um je 1 s. Animation läuft automatisch in einer Endlosschleife.
- *
- * Reduzierte Hierarchie: nur Titel + Tagline + Body. Keine Pull-Quote-Box
- * darunter (das hatten wir in der alten Version — übersteigt jetzt das
- * Aufmerksamkeitsbudget).
+ * Layout:
+ * - SVG-Pfad spannt sich hinter allen 4 Stationen, passiert jedes Icon mittig.
+ * - Stationen stehen in einer Reihe; jedes Icon-Disc sitzt auf dem Pfad.
+ * - Unter jedem Icon: ein 80%-opaques Kärtchen mit Titel/Tagline/Body, das
+ *   den Pfad sanft überblendet.
+ * - Heartbeat-Animation: jede Station pulsiert in 16s-Loop, versetzt um je 2s
+ *   von links nach rechts. Halbe Geschwindigkeit gegenüber Vorgänger-Version.
+ * - Respektiert prefers-reduced-motion.
  */
 'use client'
 
@@ -46,64 +47,75 @@ export function SalesFlywheel() {
           </p>
         </div>
 
-        {/* Wavy path with stations */}
-        <div className="relative">
-          {/* SVG wavy path connecting all stations (desktop only) */}
+        {/* Stations + path container */}
+        <div className="relative pt-2">
+          {/* Wavy SVG path — sits absolutely behind all 4 icons, anchored to
+              the icon row's vertical center (~36px from top of the relative box). */}
           <svg
-            className="hidden lg:block absolute inset-0 w-full pointer-events-none"
-            viewBox="0 0 1000 220"
+            className="hidden lg:block absolute inset-x-0 pointer-events-none"
+            viewBox="0 0 1000 160"
             preserveAspectRatio="none"
-            style={{ height: 220, top: 70 }}
+            style={{ top: 0, height: 160, zIndex: 0 }}
             aria-hidden="true"
           >
+            {/* Stations sit at x = 125, 375, 625, 875 (centred in their 4-col grid),
+                vertical anchor y = 36. The path enters/exits at y=36 and waves up/down between. */}
             <path
-              d="M 50,110 C 200,30 280,30 370,110 C 460,190 540,190 630,110 C 720,30 800,30 950,110"
+              d="M 0,36 Q 60,-10 125,36 Q 250,90 375,36 Q 500,-10 625,36 Q 750,90 875,36 Q 940,-10 1000,36"
               fill="none"
               stroke="#BBCFF5"
-              strokeWidth="2"
-              strokeDasharray="6 4"
-              opacity="0.7"
+              strokeWidth="2.5"
+              strokeDasharray="6 5"
+              opacity="0.85"
             />
           </svg>
 
           {/* Stations row */}
-          <div className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-4" style={{ zIndex: 1 }}>
             {stages.map((s, i) => {
               const Icon = STAGE_ICONS[i] ?? ClipboardCheck
-              const offsetClass = i % 2 === 0 ? 'lg:mt-0' : 'lg:mt-32'
               return (
                 <div
                   key={s.title}
-                  className={`relative flex flex-col items-center text-center ${offsetClass} salesmade-station`}
-                  style={{
-                    // Each station heartbeats with a staggered delay
-                    animationDelay: `${i * 1}s`,
-                  }}
+                  className="flex flex-col items-center text-center"
                 >
-                  {/* Icon disc */}
+                  {/* Icon disc — sits ON the path */}
                   <div
                     className="salesmade-station-disc relative flex h-16 w-16 items-center justify-center rounded-full"
                     style={{
                       backgroundColor: '#EBF1FF',
-                      border: '1px solid #BBCFF5',
+                      border: '1.5px solid #BBCFF5',
                       color: BLUE,
-                      animationDelay: `${i * 1}s`,
+                      animationDelay: `${i * 2}s`,
+                      zIndex: 2,
                     }}
                   >
-                    <Icon size={26} strokeWidth={1.8} />
+                    <Icon size={24} strokeWidth={1.8} />
                   </div>
-                  {/* Number label */}
-                  <span className="mt-3 font-mono text-[11px] font-bold tracking-widest" style={{ color: BLUE }}>
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  {/* Title */}
-                  <h3 className="mt-2 text-lg font-bold" style={{ color: '#0D0D0B' }}>
-                    {s.title}
-                  </h3>
-                  {/* Tagline */}
-                  <p className="mt-1 text-sm font-semibold" style={{ color: BLUE }}>{s.tagline}</p>
-                  {/* Body */}
-                  <p className="mt-3 max-w-[230px] text-sm leading-relaxed text-gray-600">{s.body}</p>
+
+                  {/* 80%-opaque card overlaying the path */}
+                  <div
+                    className="mt-5 w-full rounded-2xl px-5 py-5"
+                    style={{
+                      backgroundColor: 'rgba(255,255,255,0.80)',
+                      backdropFilter: 'blur(2px)',
+                      WebkitBackdropFilter: 'blur(2px)',
+                      border: '1px solid rgba(187,207,245,0.55)',
+                    }}
+                  >
+                    <span className="font-mono text-[11px] font-bold tracking-widest" style={{ color: BLUE }}>
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <h3 className="mt-1 text-lg font-bold" style={{ color: '#0D0D0B' }}>
+                      {s.title}
+                    </h3>
+                    <p className="mt-1 text-sm font-semibold" style={{ color: BLUE }}>
+                      {s.tagline}
+                    </p>
+                    <p className="mt-3 text-sm leading-relaxed text-gray-600">
+                      {s.body}
+                    </p>
+                  </div>
                 </div>
               )
             })}
@@ -111,7 +123,7 @@ export function SalesFlywheel() {
         </div>
       </div>
 
-      {/* Heartbeat keyframes — one full 4s cycle, then 4s rest = 8s loop */}
+      {/* Heartbeat keyframes — 16 s loop (half speed vs. prior), staggered 2 s per station */}
       <style jsx>{`
         @keyframes salesmadeHeartbeat {
           0%, 80%, 100% {
@@ -136,7 +148,7 @@ export function SalesFlywheel() {
           }
         }
         :global(.salesmade-station-disc) {
-          animation: salesmadeHeartbeat 8s ease-in-out infinite;
+          animation: salesmadeHeartbeat 16s ease-in-out infinite;
           will-change: transform, box-shadow;
         }
         @media (prefers-reduced-motion: reduce) {
