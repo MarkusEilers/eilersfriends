@@ -164,7 +164,7 @@ export function Navbar({ calendlyUrl }: { calendlyUrl: string }) {
                       >
                         <span className="text-base leading-none">{l.flag}</span>
                         <span>
-                          {l.code === 'de' ? 'Deutsch' : l.code === 'en' ? 'English' : 'Русский'}
+                          {l.code === 'de' ? 'Deutsch' : l.code === 'en' ? 'English' : 'Español'}
                         </span>
                       </button>
                     )
