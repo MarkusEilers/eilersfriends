@@ -1001,7 +1001,7 @@
       "levelLabel": "Level",
       "levels": [
         {
-          "title": "Knowing",
+          "title": "Know how",
           "subtitle": "The right models.",
           "intro": "The right models, frameworks and insights — understandable, practical, immediately applicable. Not theory for its own sake.",
           "points": [
@@ -1013,7 +1013,7 @@
           ]
         },
         {
-          "title": "Being able",
+          "title": "Skill",
           "subtitle": "Muscle memory.",
           "intro": "Knowing isn't enough. Only through simulation, feedback and repetition does real capability emerge — the kind retrievable in difficult conversations.",
           "points": [
@@ -1025,8 +1025,8 @@
           ]
         },
         {
-          "title": "Doing",
-          "subtitle": "The daily execution.",
+          "title": "Execution",
+          "subtitle": "The daily practice.",
           "intro": "We inspire execution. Whoever knows and can do but doesn't do, hasn't won anything. That's why we build structure, rituals and momentum.",
           "points": [
             "3 weekly rituals for sales teams",
