@@ -258,11 +258,18 @@
     "madeWith": "Hecho con ♥ para founders"
   },
   "cookie": {
-    "title": "Respetamos tu privacidad",
-    "text": "Usamos cookies para mejorar tu experiencia. Tú decides cuáles permitir.",
-    "accept": "Aceptar todas",
-    "reject": "Rechazar",
-    "settings": "Ajustes"
+    "title": "Uso de cookies",
+    "intro": "Usamos cookies técnicamente necesarias para el funcionamiento del sitio. Además, con tu consentimiento, queremos establecer otras cookies — tú decides cuáles.",
+    "privacyLink": "Política de privacidad",
+    "analyticsLabel": "Cookies de análisis",
+    "analyticsBody": "Registran page views, web vitals y errores de forma agregada. Se evalúan vía Vercel Analytics, sin perfilado.",
+    "marketingLabel": "Cookies de marketing",
+    "marketingBody": "Tracking de conversión y retargeting para nuestros anuncios en LinkedIn, Meta y Google. Aún no activo — el slot queda preparado.",
+    "rejectAll": "Rechazar todo",
+    "acceptAll": "Aceptar todo",
+    "individualSelection": "Selección individual",
+    "saveSelection": "Guardar selección individual",
+    "showLess": "Mostrar menos"
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -628,6 +635,207 @@
       "subtext": "¿Cómo de convincente trabaja tu equipo en comparación directa? Nuestro benchmark sin compromiso te puede dar perspectiva valiosa. Tu equipo recorre un escenario realista en el que observamos y evaluamos 13 skills decisivos de ventas.",
       "cta": "Reservar conversación de benchmarking",
       "note": "Quedan pocas plazas para el soft-launch."
+    }
+  },
+  "kontaktPage": {
+    "meta": {
+      "title": "Contacto — Eilers+Friends",
+      "description": "¿Tienes preguntas sobre nuestros programas o quieres reservar una conversación estratégica sin compromiso? Esperamos tu mensaje."
+    },
+    "hero": {
+      "badge": "Contacto",
+      "headline": "Crezcamos juntos",
+      "subtext": "¿Tienes preguntas sobre nuestros programas o quieres reservar una conversación estratégica sin compromiso? Esperamos tu mensaje."
+    },
+    "aljonaBox": {
+      "eyebrow": "Liquid Leadership",
+      "title": "30 min con Aljona",
+      "text": "Sparring sobre liderazgo, cultura y el siguiente nivel de crecimiento como emprendedor/a.",
+      "cta": "Reservar con Aljona"
+    },
+    "markusBox": {
+      "eyebrow": "Sales · Revenue",
+      "title": "30 min con Markus",
+      "text": "Sparring estratégico sobre sistema de ventas, palancas de IA y crecimiento predecible.",
+      "cta": "Reservar con Markus"
+    },
+    "info": {
+      "emailLabel": "Email",
+      "locationLabel": "Ubicación",
+      "locationBody": "Eilers+Friends, uphill ventures GmbH\nBlütenäcker 55/2\n71332 Waiblingen\nAlemania",
+      "reachabilityLabel": "Horario",
+      "reachabilityBody": "Lu–Vi: 9:00 – 18:00 (CET)",
+      "socialLabel": "Social"
+    }
+  },
+  "aljonaPage": {
+    "meta": {
+      "title": "Aljona Eilers — Liderazgo para un Winning Team",
+      "description": "Con empatía y autoliderazgo hacia el líder al que otros quieren seguir. TEDx Speaker · Autora bestseller WSJ · Experta en Neurociencia Aplicada. Liquid Leadership para líderes tech."
+    },
+    "hero": {
+      "badge": "Liderazgo para un Winning Team",
+      "headline1": "Con empatía y autoliderazgo hacia un",
+      "headlineAccent": "líder al que otros quieren seguir.",
+      "subtext": "Los leadership secrets de una bailarina del Bolshoi y emprendedora serial.",
+      "pills": [
+        "TEDx Speaker",
+        "Autora bestseller WSJ",
+        "500+ líderes acompañados",
+        "15+ años de experiencia"
+      ],
+      "ctaPrimary": "Reservar conversación estratégica gratuita",
+      "ctaSecondary": "Descubrir programas",
+      "quote": "\"Todo lo que he conseguido, lo he conseguido gracias a Aljona.\"",
+      "quoteAuthor": "— Katharina M."
+    },
+    "problem": {
+      "eyebrow": "Lideras un equipo exitoso.",
+      "headline": "¿Pero a qué precio?",
+      "subtext": "El 76 % de los directivos teme el ritmo de adopción de la IA. Pero el verdadero reto no es la tecnología — es el liderazgo humano.",
+      "cards": [
+        {
+          "title": "Espiral de burnout",
+          "description": "Trabajas 60+ horas, pero el equipo no entrega lo esperado"
+        },
+        {
+          "title": "Fuga de talento",
+          "description": "Tus mejores personas se van — y no sabes por qué"
+        },
+        {
+          "title": "Distancia emocional",
+          "description": "Te sientes aislado/a aunque estás rodeado/a de gente"
+        },
+        {
+          "title": "Fatiga de decisión",
+          "description": "Cada decisión se siente más pesada que la anterior"
+        }
+      ]
+    },
+    "framework": {
+      "eyebrow": "El framework",
+      "headline": "Liquid Leadership",
+      "subtext": "Un liderazgo que se adapta — sin perderse. Basado en Neurociencia Aplicada y 15+ años de experiencia práctica.",
+      "cards": [
+        {
+          "title": "Inteligencia emocional",
+          "description": "Compréndete antes de liderar a otros"
+        },
+        {
+          "title": "Comunicación adaptativa",
+          "description": "Habla el idioma de tu equipo"
+        },
+        {
+          "title": "Decisiones resilientes",
+          "description": "Mantén la claridad bajo presión"
+        },
+        {
+          "title": "Presencia auténtica",
+          "description": "Lidera desde tu fuerza real"
+        }
+      ]
+    },
+    "programs": {
+      "eyebrow": "Programas",
+      "headline": "Elige tu camino",
+      "subtext": "Elige el camino que encaje contigo.",
+      "items": [
+        {
+          "badge": "⭐ Recomendado",
+          "title": "Liquid Leadership",
+          "subtitle": "Para líderes tech que quieren llevar a su equipo al siguiente nivel.",
+          "description": "Un programa intensivo de 6 meses que combina inteligencia emocional con Neurociencia Aplicada.",
+          "sectionTitle": "Lo que te espera:",
+          "features": [
+            "Inventario personal y definición de objetivos",
+            "4× sesiones 1:1 de coaching al mes",
+            "Entrenamiento de EQ y comunicación",
+            "Masterminds grupales quincenales",
+            "Acceso a recursos de liderazgo exclusivos",
+            "Red de alumni de por vida"
+          ],
+          "quote": "Líderes a los que su equipo sigue con entusiasmo",
+          "cta": "Saber más"
+        },
+        {
+          "badge": "Mastermind",
+          "title": "LeaderShe Mastermind",
+          "subtitle": "Para mujeres en posiciones de liderazgo en empresas tecnológicas.",
+          "description": "Una comunidad exclusiva para líderes tech femeninas que quieren liderar con autenticidad.",
+          "sectionTitle": "Tus ventajas:",
+          "features": [
+            "Sesiones mensuales de mastermind",
+            "Red de peer support y accountability",
+            "Recursos de liderazgo exclusivos",
+            "Retiros y workshops trimestrales",
+            "Llamadas 1:1 de coaching a demanda",
+            "Acceso a la comunidad LeaderShe"
+          ],
+          "quote": "Reconoce el potencial sin explotar. Lidera con autenticidad.",
+          "cta": "Saber más"
+        },
+        {
+          "badge": "Bestseller",
+          "title": "Programa Bestseller",
+          "subtitle": "Tu bestseller personal — la historia que entusiasma a los decisores.",
+          "description": "Conviértete en thought leader con tu propio libro en Amazon y Barnes & Noble.",
+          "sectionTitle": "Tu camino al bestseller:",
+          "features": [
+            "Tu hero journey como libro (200+ páginas)",
+            "12+ meses de contenido convincente",
+            "Plataforma para captar clientes premium",
+            "Publicación en Amazon y Barnes & Noble",
+            "Apoyo de marketing y launch",
+            "Garantía de éxito de 36 meses"
+          ],
+          "quote": "Garantía: cliente A o devolución del dinero",
+          "cta": "Saber más"
+        }
+      ]
+    },
+    "speaker": {
+      "eyebrow": "Aljona como keynote speaker",
+      "headline": "Del Bolshoi Ballet al liderazgo tech",
+      "subtext": "Una historia que mueve e inspira.",
+      "credentials": "TEDx Speaker · Autora bestseller WSJ · Experta en Neurociencia Aplicada",
+      "topics": [
+        "Secretos para un liderazgo efectivo en un mundo con IA",
+        "Si nadie quiere seguirte, no eres un líder",
+        "Liderar con más impacto usando inteligencia emocional"
+      ],
+      "cta": "Consultar disponibilidad"
+    },
+    "testimonials": {
+      "eyebrow": "Lo que dicen los líderes",
+      "headline": "Voces de transformaciones reales",
+      "items": [
+        {
+          "quote": "Todo lo que he logrado, lo he logrado gracias a y con Aljona.",
+          "author": "Katharina Michrin",
+          "role": "Líder tech"
+        },
+        {
+          "quote": "Aljona me ayudó a darme cuenta de que no tengo que elegir entre éxito y salud.",
+          "author": "Anónimo",
+          "role": "Scale-up CEO"
+        },
+        {
+          "quote": "La precisión de una bailarina y la resiliencia de una emprendedora — justo lo que necesitaba.",
+          "author": "Startup founder",
+          "role": "Tech industry"
+        }
+      ]
+    },
+    "finalCta": {
+      "headline": "Instant Energy Boost for your Team",
+      "subtext": "En una conversación estratégica gratuita de 30 minutos analizamos juntos:",
+      "benefits": [
+        "Claridad sobre tu mayor reto de liderazgo",
+        "Un primer paso concreto hacia la solución",
+        "Feedback honesto sobre tu estilo de liderazgo"
+      ],
+      "cta": "Reservar conversación estratégica",
+      "note": "Perspectiva valiosa de otras empresas · 100 % confidencial · Para líderes tech"
     }
   }
 }

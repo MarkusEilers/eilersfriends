@@ -242,11 +242,18 @@
     "madeWith": "Сделано с ♥ для основателей"
   },
   "cookie": {
-    "title": "Мы уважаем вашу конфиденциальность",
-    "text": "Мы используем cookies для улучшения вашего опыта. Вы сами решаете, какие cookies разрешить.",
-    "accept": "Принять все",
-    "reject": "Отклонить",
-    "settings": "Настройки"
+    "title": "Использование cookies",
+    "intro": "Мы используем технически необходимые cookies для работы сайта. Помимо этого, с твоего согласия мы хотим устанавливать дополнительные cookies — ты решаешь, какие.",
+    "privacyLink": "Политика конфиденциальности",
+    "analyticsLabel": "Аналитические cookies",
+    "analyticsBody": "Фиксируют просмотры страниц, web vitals и ошибки в агрегированном виде. Анализируются через Vercel Analytics, без профилирования.",
+    "marketingLabel": "Маркетинговые cookies",
+    "marketingBody": "Conversion-tracking и ретаргетинг для нашей рекламы на LinkedIn, Meta и Google. Пока не активны — слот зарезервирован.",
+    "rejectAll": "Отклонить всё",
+    "acceptAll": "Принять всё",
+    "individualSelection": "Индивидуальный выбор",
+    "saveSelection": "Сохранить индивидуальный выбор",
+    "showLess": "Свернуть"
   },
   "auth": {
     "login": "Войти",
@@ -612,6 +619,207 @@
       "subtext": "Wie überzeugend arbeitet Dein Team im direkten Vergleich? Unser unverbindlicher Benchmark kann Dir wertvolle Einblicke geben. Dein Team durchläuft ein realistisches Kundenszenario, in dem wir 13 entscheidende Sales-Skills beobachten und bewerten.",
       "cta": "Jetzt Benchmarking-Gespräch buchen",
       "note": "Nur noch wenige Plätze für den Soft-Launch verfügbar."
+    }
+  },
+  "kontaktPage": {
+    "meta": {
+      "title": "Kontakt — Eilers+Friends",
+      "description": "Hast Du Fragen zu unseren Programmen oder möchtest Du ein unverbindliches Strategie-Gespräch vereinbaren? Wir freuen uns auf Deine Nachricht."
+    },
+    "hero": {
+      "badge": "Kontakt",
+      "headline": "Lass uns gemeinsam wachsen",
+      "subtext": "Hast Du Fragen zu unseren Programmen oder möchtest Du ein unverbindliches Strategie-Gespräch vereinbaren? Wir freuen uns auf Deine Nachricht."
+    },
+    "aljonaBox": {
+      "eyebrow": "Liquid Leadership",
+      "title": "30 Min mit Aljona",
+      "text": "Sparring zu Führung, Kultur und der nächsten Wachstumsstufe als Unternehmer:in.",
+      "cta": "Termin mit Aljona"
+    },
+    "markusBox": {
+      "eyebrow": "Sales · Revenue",
+      "title": "30 Min mit Markus",
+      "text": "Strategisches Sparring zu Vertriebssystem, AI-Hebeln und planbarem Wachstum.",
+      "cta": "Termin mit Markus"
+    },
+    "info": {
+      "emailLabel": "E-Mail",
+      "locationLabel": "Standort",
+      "locationBody": "Eilers+Friends, uphill ventures GmbH\nBlütenäcker 55/2\n71332 Waiblingen\nDeutschland",
+      "reachabilityLabel": "Erreichbarkeit",
+      "reachabilityBody": "Mo–Fr: 9:00 – 18:00 Uhr",
+      "socialLabel": "Social"
+    }
+  },
+  "aljonaPage": {
+    "meta": {
+      "title": "Aljona Eilers — Leadership für ein Winning Team",
+      "description": "Mit Empathie und Selbstführung zum Leader, dem andere gerne folgen. TEDx Speaker · WSJ Bestseller-Autorin · Applied Neuroscience Expert. Liquid Leadership für Tech-Führungskräfte."
+    },
+    "hero": {
+      "badge": "Leadership für ein Winning Team",
+      "headline1": "Mit Empathie und Selbstführung zum",
+      "headlineAccent": "Leader, dem andere gerne folgen.",
+      "subtext": "Die Leadership Secrets einer Bolshoi Ballerina und Serial-Entrepreneurin.",
+      "pills": [
+        "TEDx Speaker",
+        "WSJ Bestseller-Autorin",
+        "500+ Führungskräfte begleitet",
+        "15+ Jahre Erfahrung"
+      ],
+      "ctaPrimary": "Kostenloses Strategiegespräch",
+      "ctaSecondary": "Programme entdecken",
+      "quote": "„Alles, was ich erreicht habe, habe ich Dank Aljona erreicht.\"",
+      "quoteAuthor": "— Katharina M."
+    },
+    "problem": {
+      "eyebrow": "Du führst ein erfolgreiches Team.",
+      "headline": "Aber zu welchem Preis?",
+      "subtext": "76 % der Führungskräfte fürchten das Tempo der KI-Adoption. Aber die wahre Herausforderung ist nicht die Technologie — es ist die menschliche Führung.",
+      "cards": [
+        {
+          "title": "Burnout-Spirale",
+          "description": "Du arbeitest 60+ Stunden, aber das Team liefert nicht wie erwartet"
+        },
+        {
+          "title": "Talent-Flucht",
+          "description": "Deine besten Leute gehen — und Du weißt nicht warum"
+        },
+        {
+          "title": "Emotionale Distanz",
+          "description": "Du fühlst Dich isoliert, obwohl Du von Menschen umgeben bist"
+        },
+        {
+          "title": "Entscheidungsmüdigkeit",
+          "description": "Jede Entscheidung fühlt sich schwerer an als die letzte"
+        }
+      ]
+    },
+    "framework": {
+      "eyebrow": "Das Framework",
+      "headline": "Liquid Leadership",
+      "subtext": "Führung, die sich anpasst — ohne sich zu verlieren. Basierend auf Applied Neuroscience und 15+ Jahren Praxiserfahrung.",
+      "cards": [
+        {
+          "title": "Emotionale Intelligenz",
+          "description": "Verstehe Dich selbst, bevor Du andere führst"
+        },
+        {
+          "title": "Adaptive Kommunikation",
+          "description": "Sprich die Sprache Deines Teams"
+        },
+        {
+          "title": "Resiliente Entscheidungen",
+          "description": "Klarheit unter Druck bewahren"
+        },
+        {
+          "title": "Authentische Präsenz",
+          "description": "Führe mit Deiner wahren Stärke"
+        }
+      ]
+    },
+    "programs": {
+      "eyebrow": "Programme",
+      "headline": "Wähle Deinen Weg",
+      "subtext": "Wähle den Weg, der zu Dir passt.",
+      "items": [
+        {
+          "badge": "⭐ Empfohlen",
+          "title": "Liquid Leadership",
+          "subtitle": "Für Tech-Führungskräfte, die ihr Team auf das nächste Level bringen wollen.",
+          "description": "Ein 6-monatiges Intensiv-Programm, das emotionale Intelligenz mit Applied Neuroscience verbindet.",
+          "sectionTitle": "Was Dich erwartet:",
+          "features": [
+            "Persönliche Bestandsaufnahme & Zielsetzung",
+            "4× monatliche 1:1 Coaching Sessions",
+            "EQ & Kommunikations-Training",
+            "2-wöchentliche Gruppen-Masterminds",
+            "Zugang zu exklusiven Leadership-Resources",
+            "Lifetime Alumni-Netzwerk"
+          ],
+          "quote": "Leader, denen ihr Team mit Begeisterung folgt",
+          "cta": "Mehr erfahren"
+        },
+        {
+          "badge": "Mastermind",
+          "title": "LeaderShe Mastermind",
+          "subtitle": "Für Frauen in Führungspositionen in Technologie-Unternehmen.",
+          "description": "Eine exklusive Community für weibliche Tech-Leader, die authentisch führen wollen.",
+          "sectionTitle": "Deine Vorteile:",
+          "features": [
+            "Monatliche Mastermind-Sessions",
+            "Peer Support & Accountability Network",
+            "Exklusive Leadership-Resources",
+            "Quarterly Retreats & Workshops",
+            "1:1 Coaching-Calls bei Bedarf",
+            "Zugang zur LeaderShe Community"
+          ],
+          "quote": "Erkenne ungenutztes Potenzial. Führe authentisch.",
+          "cta": "Mehr erfahren"
+        },
+        {
+          "badge": "Bestseller",
+          "title": "Bestseller-Programm",
+          "subtitle": "Dein persönlicher Bestseller — die Story, die Entscheider begeistert.",
+          "description": "Werde zum Thought Leader mit Deinem eigenen Buch auf Amazon & Barnes & Noble.",
+          "sectionTitle": "Dein Weg zum Bestseller:",
+          "features": [
+            "Deine Hero-Journey als Buch (200+ Seiten)",
+            "12+ Monate an überzeugendem Content",
+            "Plattform für Premium-Kundengewinnung",
+            "Amazon & Barnes & Noble Veröffentlichung",
+            "Marketing & Launch-Support",
+            "36-Monate Erfolgsgarantie"
+          ],
+          "quote": "Garantie: A-Kunde oder Geld zurück",
+          "cta": "Mehr erfahren"
+        }
+      ]
+    },
+    "speaker": {
+      "eyebrow": "Aljona als Keynote-Sprecherin",
+      "headline": "Von Bolshoi Ballet zur Tech-Leadership",
+      "subtext": "Eine Story, die bewegt und inspiriert.",
+      "credentials": "TEDx Speaker · WSJ Bestseller-Autorin · Applied Neuroscience Expert",
+      "topics": [
+        "Geheimnisse für Wirksames Leadership in einer AI Welt",
+        "Wenn Dir niemand folgen möchte, bist Du kein Leader",
+        "Wirksamer führen mit Emotionaler Intelligenz"
+      ],
+      "cta": "Verfügbarkeit anfragen"
+    },
+    "testimonials": {
+      "eyebrow": "Was Führungskräfte sagen",
+      "headline": "Stimmen aus echten Transformationen",
+      "items": [
+        {
+          "quote": "Alles, was ich erreicht habe, habe ich Dank und mit Aljona erreicht.",
+          "author": "Katharina Michrin",
+          "role": "Tech-Führungskraft"
+        },
+        {
+          "quote": "Aljona half mir zu erkennen, dass ich nicht zwischen Erfolg und Gesundheit wählen muss.",
+          "author": "Anonym",
+          "role": "Scale-up CEO"
+        },
+        {
+          "quote": "Die Präzision einer Ballerina und die Resilienz einer Unternehmerin — genau das brauchte ich.",
+          "author": "Startup-Gründerin",
+          "role": "Tech Industry"
+        }
+      ]
+    },
+    "finalCta": {
+      "headline": "Instant Energy Boost for your Team",
+      "subtext": "In einem kostenlosen 30-Minuten Strategiegespräch analysieren wir gemeinsam:",
+      "benefits": [
+        "Klarheit über Deine größte Führungsherausforderung",
+        "Einen konkreten ersten Schritt zur Lösung",
+        "Ehrliches Feedback zu Deinem Leadership-Stil"
+      ],
+      "cta": "Jetzt Strategiegespräch buchen",
+      "note": "Wertvolle Perspektive von anderen Unternehmen · 100 % vertraulich · Für Tech-Führungskräfte"
     }
   }
 }

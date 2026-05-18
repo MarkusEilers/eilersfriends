@@ -258,11 +258,18 @@
     "madeWith": "Made with ♥ for founders"
   },
   "cookie": {
-    "title": "We respect your privacy",
-    "text": "We use cookies to improve your experience. You can decide which cookies you allow.",
-    "accept": "Accept all",
-    "reject": "Decline",
-    "settings": "Settings"
+    "title": "Use of cookies",
+    "intro": "We use technically necessary cookies to operate the site. Beyond that we would like to set further cookies with your consent — you decide which ones.",
+    "privacyLink": "Privacy policy",
+    "analyticsLabel": "Analytics cookies",
+    "analyticsBody": "Capture page views, web vitals and errors in aggregated form. Evaluated via Vercel Analytics, no profiling.",
+    "marketingLabel": "Marketing cookies",
+    "marketingBody": "Conversion tracking and retargeting for our ads on LinkedIn, Meta and Google. Not yet active — slot stays prepared.",
+    "rejectAll": "Reject all",
+    "acceptAll": "Accept all",
+    "individualSelection": "Individual selection",
+    "saveSelection": "Save individual selection",
+    "showLess": "Show less"
   },
   "auth": {
     "login": "Sign In",
@@ -628,6 +635,207 @@
       "subtext": "How convincingly does your team work in direct comparison? Our no-obligation benchmark can give you valuable insights. Your team runs through a realistic customer scenario in which we observe and assess 13 decisive sales skills.",
       "cta": "Book a benchmarking conversation",
       "note": "Only a few seats left in the soft-launch."
+    }
+  },
+  "kontaktPage": {
+    "meta": {
+      "title": "Contact — Eilers+Friends",
+      "description": "Got questions about our programmes or want to schedule a no-strings-attached strategy conversation? We look forward to your message."
+    },
+    "hero": {
+      "badge": "Contact",
+      "headline": "Let's grow together",
+      "subtext": "Got questions about our programmes or want to schedule a no-strings-attached strategy conversation? We look forward to your message."
+    },
+    "aljonaBox": {
+      "eyebrow": "Liquid Leadership",
+      "title": "30 min with Aljona",
+      "text": "Sparring on leadership, culture and the next growth stage as an entrepreneur.",
+      "cta": "Book with Aljona"
+    },
+    "markusBox": {
+      "eyebrow": "Sales · Revenue",
+      "title": "30 min with Markus",
+      "text": "Strategic sparring on sales systems, AI levers and predictable growth.",
+      "cta": "Book with Markus"
+    },
+    "info": {
+      "emailLabel": "Email",
+      "locationLabel": "Location",
+      "locationBody": "Eilers+Friends, uphill ventures GmbH\nBlütenäcker 55/2\n71332 Waiblingen\nGermany",
+      "reachabilityLabel": "Office hours",
+      "reachabilityBody": "Mon–Fri: 9:00 am – 6:00 pm CET",
+      "socialLabel": "Social"
+    }
+  },
+  "aljonaPage": {
+    "meta": {
+      "title": "Aljona Eilers — Leadership for a Winning Team",
+      "description": "With empathy and self-leadership to a leader others gladly follow. TEDx Speaker · WSJ bestselling author · Applied Neuroscience expert. Liquid Leadership for tech leaders."
+    },
+    "hero": {
+      "badge": "Leadership for a Winning Team",
+      "headline1": "With empathy and self-leadership to a",
+      "headlineAccent": "leader others gladly follow.",
+      "subtext": "The leadership secrets of a Bolshoi ballerina and serial entrepreneur.",
+      "pills": [
+        "TEDx Speaker",
+        "WSJ bestselling author",
+        "500+ leaders accompanied",
+        "15+ years of experience"
+      ],
+      "ctaPrimary": "Book a free strategy call",
+      "ctaSecondary": "Discover programmes",
+      "quote": "\"Everything I have achieved, I have achieved thanks to Aljona.\"",
+      "quoteAuthor": "— Katharina M."
+    },
+    "problem": {
+      "eyebrow": "You lead a successful team.",
+      "headline": "But at what price?",
+      "subtext": "76% of leaders fear the pace of AI adoption. But the real challenge is not technology — it is human leadership.",
+      "cards": [
+        {
+          "title": "Burnout spiral",
+          "description": "You work 60+ hours, but the team doesn't deliver as expected"
+        },
+        {
+          "title": "Talent flight",
+          "description": "Your best people leave — and you don't know why"
+        },
+        {
+          "title": "Emotional distance",
+          "description": "You feel isolated even though you are surrounded by people"
+        },
+        {
+          "title": "Decision fatigue",
+          "description": "Every decision feels heavier than the last"
+        }
+      ]
+    },
+    "framework": {
+      "eyebrow": "The framework",
+      "headline": "Liquid Leadership",
+      "subtext": "Leadership that adapts — without losing itself. Based on Applied Neuroscience and 15+ years of practical experience.",
+      "cards": [
+        {
+          "title": "Emotional intelligence",
+          "description": "Understand yourself before you lead others"
+        },
+        {
+          "title": "Adaptive communication",
+          "description": "Speak the language of your team"
+        },
+        {
+          "title": "Resilient decisions",
+          "description": "Stay clear under pressure"
+        },
+        {
+          "title": "Authentic presence",
+          "description": "Lead with your true strength"
+        }
+      ]
+    },
+    "programs": {
+      "eyebrow": "Programmes",
+      "headline": "Choose your path",
+      "subtext": "Choose the path that fits you.",
+      "items": [
+        {
+          "badge": "⭐ Recommended",
+          "title": "Liquid Leadership",
+          "subtitle": "For tech leaders who want to take their team to the next level.",
+          "description": "A 6-month intensive programme combining emotional intelligence with Applied Neuroscience.",
+          "sectionTitle": "What's included:",
+          "features": [
+            "Personal inventory & goal setting",
+            "4× monthly 1:1 coaching sessions",
+            "EQ & communication training",
+            "Bi-weekly group masterminds",
+            "Access to exclusive leadership resources",
+            "Lifetime alumni network"
+          ],
+          "quote": "Leaders whose team follows with enthusiasm",
+          "cta": "Learn more"
+        },
+        {
+          "badge": "Mastermind",
+          "title": "LeaderShe Mastermind",
+          "subtitle": "For women in leadership positions at technology companies.",
+          "description": "An exclusive community for female tech leaders who want to lead authentically.",
+          "sectionTitle": "Your benefits:",
+          "features": [
+            "Monthly mastermind sessions",
+            "Peer support & accountability network",
+            "Exclusive leadership resources",
+            "Quarterly retreats & workshops",
+            "1:1 coaching calls on demand",
+            "Access to the LeaderShe community"
+          ],
+          "quote": "Recognise untapped potential. Lead authentically.",
+          "cta": "Learn more"
+        },
+        {
+          "badge": "Bestseller",
+          "title": "Bestseller programme",
+          "subtitle": "Your personal bestseller — the story that excites decision-makers.",
+          "description": "Become a thought leader with your own book on Amazon & Barnes & Noble.",
+          "sectionTitle": "Your path to bestseller:",
+          "features": [
+            "Your hero journey as a book (200+ pages)",
+            "12+ months of compelling content",
+            "Platform for premium client acquisition",
+            "Amazon & Barnes & Noble publication",
+            "Marketing & launch support",
+            "36-month success guarantee"
+          ],
+          "quote": "Guarantee: A-customer or money back",
+          "cta": "Learn more"
+        }
+      ]
+    },
+    "speaker": {
+      "eyebrow": "Aljona as keynote speaker",
+      "headline": "From Bolshoi Ballet to tech leadership",
+      "subtext": "A story that moves and inspires.",
+      "credentials": "TEDx Speaker · WSJ bestselling author · Applied Neuroscience expert",
+      "topics": [
+        "Secrets to effective leadership in an AI world",
+        "If nobody wants to follow you, you're not a leader",
+        "Lead more effectively with emotional intelligence"
+      ],
+      "cta": "Check availability"
+    },
+    "testimonials": {
+      "eyebrow": "What leaders say",
+      "headline": "Voices from real transformations",
+      "items": [
+        {
+          "quote": "Everything I have achieved, I have achieved thanks to and with Aljona.",
+          "author": "Katharina Michrin",
+          "role": "Tech leader"
+        },
+        {
+          "quote": "Aljona helped me realise I don't have to choose between success and health.",
+          "author": "Anonymous",
+          "role": "Scale-up CEO"
+        },
+        {
+          "quote": "A ballerina's precision and an entrepreneur's resilience — exactly what I needed.",
+          "author": "Startup founder",
+          "role": "Tech industry"
+        }
+      ]
+    },
+    "finalCta": {
+      "headline": "Instant Energy Boost for your Team",
+      "subtext": "In a free 30-minute strategy call we analyse together:",
+      "benefits": [
+        "Clarity on your biggest leadership challenge",
+        "A concrete first step towards a solution",
+        "Honest feedback on your leadership style"
+      ],
+      "cta": "Book a strategy call",
+      "note": "Valuable perspective from other companies · 100% confidential · For tech leaders"
     }
   }
 }
