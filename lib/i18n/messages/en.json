@@ -949,5 +949,420 @@
       "cta": "Request a keynote",
       "note": "Free initial consultation · Tailored content · For B2B events"
     }
+  },
+  "salesmadeExt": {
+    "marketStats": {
+      "eyebrow": "The uncomfortable truth",
+      "headline1": "In Europe there is no real",
+      "headline2": "sales education.",
+      "subtext": "Sales is one of the most demanding jobs there is — reading people, building trust, disarming objections, all under pressure. But nobody trains for it. No vocational school. No degree. No recognised certification.",
+      "badgeProblem": "⚠ Problem",
+      "sourceLabel": "Source",
+      "cards": [
+        {
+          "headline": "have no professional training",
+          "body": "of B2B sellers in Europe — for the job they are expected to do every day.",
+          "source": "SalesMade Academy · DACH Industry Snapshot 2024"
+        },
+        {
+          "headline": "have no effective sparring",
+          "body": "in modern conversation techniques, social selling or convincing presentation.",
+          "source": "Sales Enablement Society · State of Coaching 2024"
+        },
+        {
+          "headline": "work without avoidable mistakes",
+          "body": "that delay or block important deals. Three percent. No more.",
+          "source": "RAIN Group · Top Performers Benchmark 2024"
+        }
+      ],
+      "footer1": "Three percent",
+      "footer2": " work the way a professionally trained sales team would work. ",
+      "footer3": "Ninety-seven percent",
+      "footer4": " have levers that are not yet activated."
+    },
+    "ceoMonologue": {
+      "eyebrow": "What CEOs, founders and sales leaders tell us",
+      "quote1": "\"I know my team needs to be better.",
+      "quote2": "But I don't know exactly what's missing — ",
+      "quoteAccent": "and even less how I'm supposed to teach them.\"",
+      "note": "Again and again.",
+      "pains": [
+        "You see that conversations aren't working — but you weren't there and don't quite know why.",
+        "You want to develop your team, but you can't be the coach yourself. You have too much else to do.",
+        "You already booked trainings. Once. For a day. Three weeks later everything was forgotten.",
+        "You ask yourself: is it the people, the method — or is there simply no good solution?"
+      ]
+    },
+    "triptych": {
+      "eyebrow": "Our approach",
+      "headline1": "We close all three gaps.",
+      "headline2": "Simultaneously.",
+      "subtext": "Most trainings only convey knowledge. We go further — all the way to real change in the conversation.",
+      "levelLabel": "Level",
+      "levels": [
+        {
+          "title": "Knowing",
+          "subtitle": "The right models.",
+          "intro": "The right models, frameworks and insights — understandable, practical, immediately applicable. Not theory for its own sake.",
+          "points": [
+            "Why customers decide differently today",
+            "How limbic communication really works",
+            "What makes offers irresistible",
+            "How to build trust in minutes",
+            "The 5 myths that hold sellers back"
+          ]
+        },
+        {
+          "title": "Being able",
+          "subtitle": "Muscle memory.",
+          "intro": "Knowing isn't enough. Only through simulation, feedback and repetition does real capability emerge — the kind retrievable in difficult conversations.",
+          "points": [
+            "Simulations across 5 difficulty levels",
+            "Real-time feedback from experienced coaches",
+            "Group coaching with real customer cases",
+            "Objection handling until it sticks",
+            "Individual learning paths after assessment"
+          ]
+        },
+        {
+          "title": "Doing",
+          "subtitle": "The daily execution.",
+          "intro": "We inspire execution. Whoever knows and can do but doesn't do, hasn't won anything. That's why we build structure, rituals and momentum.",
+          "points": [
+            "3 weekly rituals for sales teams",
+            "The 10 commandments of successful B2B sellers",
+            "Playbooks that get used the next day",
+            "Community for accountability and energy",
+            "GPT tools for fast execution"
+          ]
+        }
+      ]
+    },
+    "flywheel": {
+      "eyebrow": "The Sales Performance Flywheel",
+      "headline1": "Not a course. A self-",
+      "headline2": "reinforcing system.",
+      "subtext": "Every round makes your team better. Month by month. Measurable.",
+      "stages": [
+        {
+          "title": "Assessment",
+          "tagline": "Individual diagnosis",
+          "body": "Every seller runs through a realistic, tricky customer scenario. We see immediately: where are the real gaps?"
+        },
+        {
+          "title": "Skill building",
+          "tagline": "Tailor-made",
+          "body": "Targeted training exactly where it falls short. Live sessions, simulations, coaching. No time for the irrelevant."
+        },
+        {
+          "title": "Confidence & results",
+          "tagline": "Measurable impact",
+          "body": "Whoever gets better notices it immediately in real conversations. Higher conversion, better deals, less stress."
+        },
+        {
+          "title": "More activity",
+          "tagline": "Upward spiral",
+          "body": "Whoever experiences success becomes more active. More conversations, more pipeline, more momentum. The flywheel spins faster."
+        }
+      ],
+      "pull1": "\"Professionally trained sellers achieve ",
+      "pull2": "48% to 280%",
+      "pull3": " higher revenue — not because they work more, but because they are better.\""
+    },
+    "beforeAfter": {
+      "eyebrow": "Before / after",
+      "headline1": "The difference is",
+      "headline2": "tangible in the next conversation.",
+      "beforeLabel": "Without academy",
+      "beforeSubtitle": "Freestyle selling",
+      "afterLabel": "With the academy",
+      "afterSubtitle": "Methodology",
+      "rows": [
+        {
+          "before": "Conversations follow a template — the seller talks, the customer listens (or not)",
+          "after": "Sellers lead the conversation — with structure, empathy and a clear goal"
+        },
+        {
+          "before": "72% of opportunities evaporate already in the first conversation",
+          "after": "Discovery-call conversion more than doubled",
+          "metricLabel": "Discovery-call conversion",
+          "beforeValue": "28%",
+          "afterValue": "73%"
+        },
+        {
+          "before": "No structure — everyone in the team does it differently, results unpredictable",
+          "after": "Clear playbooks — everyone knows what works when and how"
+        },
+        {
+          "before": "Objections are feared instead of used",
+          "after": "Objections are anticipated and disarmed — before they arrive"
+        },
+        {
+          "before": "Offers are sent — and you wait. And wait.",
+          "after": "Irresistible offers: the customer feels foolish for not taking them"
+        },
+        {
+          "before": "Sales cycles take 30–50% longer than necessary",
+          "after": "Sales cycles up to 50% shorter",
+          "metricLabel": "Sales cycle duration",
+          "beforeValue": "+30–50%",
+          "afterValue": "−50%"
+        },
+        {
+          "before": "Demotivation eats activity — downward spiral",
+          "after": "Confidence creates activity — the flywheel spins upward"
+        }
+      ]
+    },
+    "skillInventory": {
+      "eyebrowPre": "Skills · ",
+      "eyebrowPost": " modules",
+      "headline": "What your sellers will really master.",
+      "subtextPre": "",
+      "subtextPost": " skills across five disciplines. Each skill comes as a standalone module with a blueprint, AI tools and a sparring scenario where it is practised live.",
+      "footer1": "Every module is measured — not just \"attended\". Across all 16 skills there are ",
+      "footer2": "five difficulty levels in sparring",
+      "footer3": " where your sellers prove their capability live.",
+      "disciplines": [
+        {
+          "name": "Pipeline & levers",
+          "description": "Systematic, predictable, scalable — before the first conversation starts.",
+          "skills": [
+            {
+              "name": "Social Media Rockstar",
+              "tagline": "The 9-step AI content process for magnetic inbound leads"
+            },
+            {
+              "name": "The Magnetic Outreach Framework",
+              "tagline": "Intriguing cold call + godfather letters — outbound that does not annoy"
+            }
+          ]
+        },
+        {
+          "name": "Strategy & preparation",
+          "description": "What we do before we open our mouths.",
+          "skills": [
+            {
+              "name": "Customer intelligence & account research",
+              "tagline": "Who sits there, what matters to them"
+            },
+            {
+              "name": "The Identity Switch",
+              "tagline": "Who is my ICP right now — and do I position us for that?"
+            },
+            {
+              "name": "Funnel math",
+              "tagline": "The numbers behind the system"
+            },
+            {
+              "name": "Strategic preparation",
+              "tagline": "18-min AI worksheet before every important conversation"
+            }
+          ]
+        },
+        {
+          "name": "Discovery & first conversation",
+          "description": "The first 60 seconds to the first value hit.",
+          "skills": [
+            {
+              "name": "Instant Influence",
+              "tagline": "The 3 ingredients that win customers in the first conversation"
+            },
+            {
+              "name": "Limbic communication & body language",
+              "tagline": "What customers read before we speak"
+            },
+            {
+              "name": "Tactical empathy & trust building",
+              "tagline": "90 seconds to resonance, Voss-style"
+            }
+          ]
+        },
+        {
+          "name": "Message & persuasion",
+          "description": "We carry meaning, not features.",
+          "skills": [
+            {
+              "name": "Core Messages",
+              "tagline": "The 11 messages every entrepreneur should master in their sleep"
+            },
+            {
+              "name": "Belief Bridge",
+              "tagline": "Build the bridge from old to new belief systems"
+            },
+            {
+              "name": "Bulletproof Delivery / Optimum Path",
+              "tagline": "The targeted path to the first experienced value"
+            }
+          ]
+        },
+        {
+          "name": "Offer · negotiation · closing",
+          "description": "From proposal to binding yes.",
+          "skills": [
+            {
+              "name": "Irresistible B2B offers",
+              "tagline": "The 8-step blueprint"
+            },
+            {
+              "name": "Beef Radar",
+              "tagline": "Value communication matched to real needs"
+            },
+            {
+              "name": "Pre-empt objections",
+              "tagline": "Before they are spoken, they are already disarmed"
+            },
+            {
+              "name": "Bombproof negotiations",
+              "tagline": "The 9 principles for value-rich closes"
+            },
+            {
+              "name": "Recommendation Pitch",
+              "tagline": "Selling by recommending — buyer in the driver seat"
+            }
+          ]
+        }
+      ]
+    },
+    "progressionLadder": {
+      "eyebrow": "Skill levels",
+      "headline": "Six levels. One sales career.",
+      "subtext1": "Every level is ",
+      "subtext2": "measurable",
+      "subtext3": " — by completed modules, passed sparring levels and documented deal outcomes. No self-labelling. Whoever is quick gets faster. Whoever is thorough goes more thorough.",
+      "tierLabel": "Level",
+      "requirementsLabel": "Requirements",
+      "unlocksLabel": "Unlocks",
+      "footer": "Sparring difficulty levels: I — V. Each module with its own scenario catalogue.",
+      "tiers": [
+        {
+          "title": "Apprentice",
+          "duration": "0 – 3 months",
+          "requirements": [
+            "Onboarding completed",
+            "Discipline \"Strategy & preparation\" finished",
+            "Sparring level 1 + 2 passed"
+          ],
+          "unlocks": [
+            "All modules",
+            "Group coaching",
+            "Community access"
+          ]
+        },
+        {
+          "title": "Junior",
+          "duration": "3 – 6 months",
+          "requirements": [
+            "Disciplines 1 + 2 + 3 finished",
+            "Sparring level 3 passed",
+            "First discovery-call review in coaching"
+          ],
+          "unlocks": [
+            "Extended playbook library",
+            "Peer sparring rights"
+          ]
+        },
+        {
+          "title": "Professional",
+          "duration": "6 – 12 months",
+          "requirements": [
+            "All 5 disciplines completed",
+            "Sparring level 4 passed",
+            "3 real discovery calls reviewed in group coaching",
+            "First own playbook variant built"
+          ],
+          "unlocks": [
+            "Quarterly 1:1",
+            "Own templates",
+            "LinkedIn badge"
+          ]
+        },
+        {
+          "title": "Senior",
+          "duration": "12 – 18 months",
+          "requirements": [
+            "Sparring level 5 passed",
+            "5 documented deals with performance above industry average",
+            "Specialised topic developed + presented internally"
+          ],
+          "unlocks": [
+            "Direct coach Slack",
+            "Faculty-lectures access"
+          ]
+        },
+        {
+          "title": "Master",
+          "duration": "18+ months",
+          "requirements": [
+            "Actively coaches other apprentices & juniors",
+            "Contribution to the academy library (playbook · case · mini-module)",
+            "Own case track with reproducible results"
+          ],
+          "unlocks": [
+            "Curriculum-roadmap voice",
+            "Master badge (public)"
+          ]
+        },
+        {
+          "title": "Principal",
+          "duration": "by invitation",
+          "requirements": [
+            "Coached multiple cohorts",
+            "Active faculty member presenting",
+            "Curriculum co-development"
+          ],
+          "unlocks": [
+            "Faculty status",
+            "IP co-creation"
+          ]
+        }
+      ]
+    },
+    "pricing": {
+      "eyebrow": "Investment",
+      "headline1": "The investment pays back",
+      "headline2": "with the first additional deal.",
+      "subtext": "Choose the path that fits your team and your goals. Whoever pays upfront gets two months free.",
+      "recommendedBadge": "Recommended",
+      "priceMonth": "/ month",
+      "priceYearPre": "or ",
+      "priceYearMid": " / year — equivalent to € ",
+      "priceYearPost": " / month (2 months free)",
+      "guarantee1": "90-day money-back guarantee.",
+      "guarantee2": " If after 90 days you see no measurable improvements in your KPIs, we refund the full investment. No questions asked.",
+      "tiers": [
+        {
+          "name": "Standard",
+          "features": [
+            "90 min monthly live training with top practitioners",
+            "120 min group coaching per month",
+            "Open community with experienced coaches",
+            "All 16 training modules (instant access)",
+            "Sparring across 5 difficulty levels",
+            "Playbooks, templates, emails, posters",
+            "GPT engines for prep & follow-up",
+            "Campaigns for upsell, cross-sell & winback",
+            "Certificates & network",
+            "90-day guarantee"
+          ],
+          "cta": "Get started",
+          "note": "Max. 250 seats · cancel monthly"
+        },
+        {
+          "name": "Platinum",
+          "features": [
+            "Everything in Standard",
+            "Monthly 1:1 coaching session (60 min)",
+            "Exclusive VIP group session per month",
+            "Personal learning paths after individual assessment",
+            "Direct coach access for urgent cases",
+            "Up to 50% additional performance gain",
+            "Prioritised onboarding & setup"
+          ],
+          "cta": "Apply now",
+          "note": "Only 30 seats · limited due to 1:1 interaction"
+        }
+      ]
+    }
   }
 }

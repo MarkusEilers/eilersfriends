@@ -949,5 +949,420 @@
       "cta": "Solicitar keynote",
       "note": "Consulta inicial gratuita · Contenido a medida · Para eventos B2B"
     }
+  },
+  "salesmadeExt": {
+    "marketStats": {
+      "eyebrow": "La verdad incómoda",
+      "headline1": "En Europa no existe una verdadera",
+      "headline2": "formación de ventas.",
+      "subtext": "Vender es uno de los trabajos más exigentes que hay — leer a las personas, generar confianza, desarmar objeciones, todo bajo presión. Pero nadie forma para eso. Ni formación profesional. Ni estudios. Ni una certificación reconocida.",
+      "badgeProblem": "⚠ Problema",
+      "sourceLabel": "Fuente",
+      "cards": [
+        {
+          "headline": "no tiene formación profesional",
+          "body": "de los vendedores B2B en Europa — para el trabajo que se espera que hagan cada día.",
+          "source": "SalesMade Academy · DACH Industry Snapshot 2024"
+        },
+        {
+          "headline": "no tiene sparring efectivo",
+          "body": "en técnicas modernas de conversación, social selling o presentación convincente.",
+          "source": "Sales Enablement Society · State of Coaching 2024"
+        },
+        {
+          "headline": "trabaja sin errores evitables",
+          "body": "que retrasan o bloquean operaciones importantes. Tres por ciento. Nada más.",
+          "source": "RAIN Group · Top Performers Benchmark 2024"
+        }
+      ],
+      "footer1": "Un tres por ciento",
+      "footer2": " trabaja como lo haría un equipo de ventas con formación profesional. ",
+      "footer3": "Un noventa y siete por ciento",
+      "footer4": " tiene palancas que aún no se han activado."
+    },
+    "ceoMonologue": {
+      "eyebrow": "Lo que nos cuentan CEOs, founders y sales leaders",
+      "quote1": "\"Sé que mi equipo tiene que ser mejor.",
+      "quote2": "Pero no sé exactamente qué falta — ",
+      "quoteAccent": "y aún menos cómo enseñárselo.\"",
+      "note": "Una y otra vez.",
+      "pains": [
+        "Ves que las conversaciones no funcionan — pero no estuviste y no sabes exactamente por qué.",
+        "Quieres desarrollar a tu equipo, pero no puedes ser tú el coach. Tienes demasiado más que hacer.",
+        "Ya has reservado trainings. Una vez. Por un día. Tres semanas después todo estaba olvidado.",
+        "Te preguntas: ¿es la gente, el método — o sencillamente no hay buena solución?"
+      ]
+    },
+    "triptych": {
+      "eyebrow": "Nuestro enfoque",
+      "headline1": "Cerramos las tres brechas.",
+      "headline2": "A la vez.",
+      "subtext": "La mayoría de trainings solo transmiten conocimiento. Nosotros vamos más allá — hasta el cambio real en la conversación.",
+      "levelLabel": "Nivel",
+      "levels": [
+        {
+          "title": "Saber",
+          "subtitle": "Los modelos correctos.",
+          "intro": "Los modelos, frameworks y conocimientos correctos — comprensibles, prácticos, aplicables al instante. No teoría por la teoría.",
+          "points": [
+            "Por qué los clientes deciden hoy de otra forma",
+            "Cómo funciona realmente la comunicación límbica",
+            "Qué hace que una oferta sea irresistible",
+            "Cómo generar confianza en minutos",
+            "Los 5 mitos que frenan a los vendedores"
+          ]
+        },
+        {
+          "title": "Poder",
+          "subtitle": "La memoria muscular.",
+          "intro": "Saber no basta. Solo mediante simulación, feedback y repetición surge la verdadera capacidad — la que aparece en conversaciones difíciles.",
+          "points": [
+            "Simulaciones en 5 niveles de dificultad",
+            "Feedback en tiempo real de coaches experimentados",
+            "Group coaching con casos reales de clientes",
+            "Manejo de objeciones hasta que está",
+            "Itinerarios individuales tras assessment"
+          ]
+        },
+        {
+          "title": "Hacer",
+          "subtitle": "La ejecución diaria.",
+          "intro": "Inspiramos la ejecución. Quien sabe y puede, pero no hace, no ha ganado nada. Por eso construimos estructura, rituales y momentum.",
+          "points": [
+            "3 rituales semanales para equipos de ventas",
+            "Los 10 mandamientos del vendedor B2B exitoso",
+            "Playbooks que se usan al día siguiente",
+            "Comunidad para accountability y energía",
+            "Herramientas GPT para ejecución rápida"
+          ]
+        }
+      ]
+    },
+    "flywheel": {
+      "eyebrow": "El Sales Performance Flywheel",
+      "headline1": "No es un curso. Es un sistema",
+      "headline2": "que se autorrefuerza.",
+      "subtext": "Cada vuelta hace mejor a tu equipo. Mes a mes. Medible.",
+      "stages": [
+        {
+          "title": "Assessment",
+          "tagline": "Diagnóstico individual",
+          "body": "Cada vendedor se enfrenta a un escenario realista y exigente. Vemos al instante dónde están las brechas reales."
+        },
+        {
+          "title": "Construcción de skills",
+          "tagline": "A medida",
+          "body": "Training dirigido exactamente donde falta. Sesiones en vivo, simulaciones, coaching. Sin tiempo para lo irrelevante."
+        },
+        {
+          "title": "Confianza y resultados",
+          "tagline": "Impacto medible",
+          "body": "Quien mejora lo nota de inmediato en conversaciones reales. Más conversión, mejores deals, menos estrés."
+        },
+        {
+          "title": "Más actividad",
+          "tagline": "Espiral ascendente",
+          "body": "Quien experimenta éxito se vuelve más activo. Más conversaciones, más pipeline, más momentum. El flywheel gira más rápido."
+        }
+      ],
+      "pull1": "\"Los vendedores con formación profesional logran ",
+      "pull2": "48% a 280%",
+      "pull3": " más ingresos — no porque trabajen más, sino porque son mejores.\""
+    },
+    "beforeAfter": {
+      "eyebrow": "Antes / después",
+      "headline1": "La diferencia es",
+      "headline2": "palpable en la siguiente conversación.",
+      "beforeLabel": "Sin la academy",
+      "beforeSubtitle": "Venta freestyle",
+      "afterLabel": "Con la academy",
+      "afterSubtitle": "Metodología",
+      "rows": [
+        {
+          "before": "Las conversaciones siguen un guion — el vendedor habla, el cliente escucha (o no)",
+          "after": "Los vendedores guían la conversación — con estructura, empatía y objetivo claro"
+        },
+        {
+          "before": "El 72% de las oportunidades se evaporan ya en la primera conversación",
+          "after": "Conversión de discovery más que duplicada",
+          "metricLabel": "Conversión discovery-call",
+          "beforeValue": "28%",
+          "afterValue": "73%"
+        },
+        {
+          "before": "Sin estructura — cada uno en el equipo lo hace diferente, resultados impredecibles",
+          "after": "Playbooks claros — cada uno sabe qué funciona, cuándo y cómo"
+        },
+        {
+          "before": "Las objeciones se temen en vez de aprovecharse",
+          "after": "Las objeciones se anticipan y se desarman — antes de que aparezcan"
+        },
+        {
+          "before": "Las ofertas se envían — y se espera. Y se espera.",
+          "after": "Ofertas irresistibles: el cliente se siente tonto si no las acepta"
+        },
+        {
+          "before": "Los ciclos de venta duran un 30–50% más de lo necesario",
+          "after": "Ciclos de venta hasta un 50% más cortos",
+          "metricLabel": "Duración del ciclo de venta",
+          "beforeValue": "+30–50%",
+          "afterValue": "−50%"
+        },
+        {
+          "before": "La desmotivación se come la actividad — espiral descendente",
+          "after": "La confianza genera actividad — el flywheel gira hacia arriba"
+        }
+      ]
+    },
+    "skillInventory": {
+      "eyebrowPre": "Skills · ",
+      "eyebrowPost": " módulos",
+      "headline": "Lo que tus vendedores van a dominar de verdad.",
+      "subtextPre": "",
+      "subtextPost": " skills en cinco disciplinas. Cada skill es un módulo independiente con plano, herramientas de IA y un escenario de sparring donde se practica en vivo.",
+      "footer1": "Cada módulo se mide — no solo se \"asiste\". A lo largo de los 16 skills hay ",
+      "footer2": "cinco niveles de dificultad en el sparring",
+      "footer3": " donde tus vendedores demuestran su capacidad en vivo.",
+      "disciplines": [
+        {
+          "name": "Pipeline y palancas",
+          "description": "Sistemático, predecible, escalable — antes de que empiece la primera conversación.",
+          "skills": [
+            {
+              "name": "Social Media Rockstar",
+              "tagline": "El proceso AI de 9 pasos para inbound leads magnéticos"
+            },
+            {
+              "name": "The Magnetic Outreach Framework",
+              "tagline": "Intriguing Cold Call + Godfather Letters — outbound que no molesta"
+            }
+          ]
+        },
+        {
+          "name": "Estrategia y preparación",
+          "description": "Lo que hacemos antes de abrir la boca.",
+          "skills": [
+            {
+              "name": "Customer Intelligence & Account Research",
+              "tagline": "Quién está allí, qué les importa"
+            },
+            {
+              "name": "The Identity Switch",
+              "tagline": "¿Quién es mi ICP ahora — y nos posicionamos para él?"
+            },
+            {
+              "name": "Funnel Math",
+              "tagline": "Los números detrás del sistema"
+            },
+            {
+              "name": "Preparación estratégica",
+              "tagline": "AI-Worksheet de 18 min antes de cada conversación importante"
+            }
+          ]
+        },
+        {
+          "name": "Discovery y primera conversación",
+          "description": "Los primeros 60 segundos hasta el primer value hit.",
+          "skills": [
+            {
+              "name": "Instant Influence",
+              "tagline": "Los 3 ingredientes que ganan clientes en la primera conversación"
+            },
+            {
+              "name": "Comunicación límbica y lenguaje corporal",
+              "tagline": "Lo que los clientes leen antes de que hablemos"
+            },
+            {
+              "name": "Empatía táctica y construcción de confianza",
+              "tagline": "90 segundos hasta la resonancia, estilo Voss"
+            }
+          ]
+        },
+        {
+          "name": "Mensaje y persuasión",
+          "description": "Llevamos sentido, no features.",
+          "skills": [
+            {
+              "name": "Core Messages",
+              "tagline": "Los 11 mensajes que toda founder debería dominar dormida"
+            },
+            {
+              "name": "Belief Bridge",
+              "tagline": "Construir el puente del viejo al nuevo sistema de creencias"
+            },
+            {
+              "name": "Bulletproof Delivery / Optimum Path",
+              "tagline": "El camino dirigido al primer valor experimentado"
+            }
+          ]
+        },
+        {
+          "name": "Oferta · negociación · cierre",
+          "description": "De la propuesta al sí vinculante.",
+          "skills": [
+            {
+              "name": "Ofertas B2B irresistibles",
+              "tagline": "El plano de 8 pasos"
+            },
+            {
+              "name": "Beef Radar",
+              "tagline": "Comunicación de valor adaptada a las necesidades reales"
+            },
+            {
+              "name": "Anticipar objeciones",
+              "tagline": "Antes de que se digan, ya están desarmadas"
+            },
+            {
+              "name": "Negociaciones a prueba de bombas",
+              "tagline": "Los 9 principios para cierres con más valor"
+            },
+            {
+              "name": "Recommendation Pitch",
+              "tagline": "Vender recomendando — el comprador en el asiento del piloto"
+            }
+          ]
+        }
+      ]
+    },
+    "progressionLadder": {
+      "eyebrow": "Nivel de skill",
+      "headline": "Seis niveles. Una carrera en ventas.",
+      "subtext1": "Cada nivel es ",
+      "subtext2": "medible",
+      "subtext3": " — por módulos completados, niveles de sparring superados y deal-outcomes documentados. Sin autoetiquetado. Quien sea rápido va más rápido. Quien sea minucioso va más a fondo.",
+      "tierLabel": "Nivel",
+      "requirementsLabel": "Requisitos",
+      "unlocksLabel": "Desbloquea",
+      "footer": "Niveles de dificultad de sparring: I — V. Cada módulo con su propio catálogo de escenarios.",
+      "tiers": [
+        {
+          "title": "Apprentice",
+          "duration": "0 – 3 meses",
+          "requirements": [
+            "Onboarding completado",
+            "Disciplina \"Estrategia y preparación\" terminada",
+            "Sparring nivel 1 + 2 superados"
+          ],
+          "unlocks": [
+            "Todos los módulos",
+            "Group coaching",
+            "Acceso a la comunidad"
+          ]
+        },
+        {
+          "title": "Junior",
+          "duration": "3 – 6 meses",
+          "requirements": [
+            "Disciplinas 1 + 2 + 3 terminadas",
+            "Sparring nivel 3 superado",
+            "Primera evaluación de discovery-call en coaching"
+          ],
+          "unlocks": [
+            "Biblioteca de playbooks ampliada",
+            "Derechos de peer sparring"
+          ]
+        },
+        {
+          "title": "Professional",
+          "duration": "6 – 12 meses",
+          "requirements": [
+            "Las 5 disciplinas completadas",
+            "Sparring nivel 4 superado",
+            "3 discovery calls reales evaluadas en group coaching",
+            "Primera variante propia de playbook construida"
+          ],
+          "unlocks": [
+            "1:1 trimestral",
+            "Templates propios",
+            "Badge en LinkedIn"
+          ]
+        },
+        {
+          "title": "Senior",
+          "duration": "12 – 18 meses",
+          "requirements": [
+            "Sparring nivel 5 superado",
+            "5 deals documentados con performance sobre la media del sector",
+            "Tema propio desarrollado y presentado internamente"
+          ],
+          "unlocks": [
+            "Slack directo con el coach",
+            "Acceso a faculty lectures"
+          ]
+        },
+        {
+          "title": "Master",
+          "duration": "18+ meses",
+          "requirements": [
+            "Hace coaching activo a apprentices y juniors",
+            "Contribución a la biblioteca de la academy (playbook · case · mini-módulo)",
+            "Track propio de casos con resultados reproducibles"
+          ],
+          "unlocks": [
+            "Voz en la roadmap de currículo",
+            "Master badge (público)"
+          ]
+        },
+        {
+          "title": "Principal",
+          "duration": "por invitación",
+          "requirements": [
+            "Ha hecho coaching a varias cohortes",
+            "Faculty member activo presentando",
+            "Codesarrollo del currículo"
+          ],
+          "unlocks": [
+            "Estatus de faculty",
+            "Cocreación de IP"
+          ]
+        }
+      ]
+    },
+    "pricing": {
+      "eyebrow": "Inversión",
+      "headline1": "La inversión se amortiza",
+      "headline2": "con el primer deal adicional.",
+      "subtext": "Elige el camino que encaje con tu equipo y tus objetivos. Quien paga upfront, recibe dos meses gratis.",
+      "recommendedBadge": "Recomendado",
+      "priceMonth": "/ mes",
+      "priceYearPre": "o ",
+      "priceYearMid": " / año — equivale a € ",
+      "priceYearPost": " / mes (2 meses gratis)",
+      "guarantee1": "Garantía de devolución de 90 días.",
+      "guarantee2": " Si tras 90 días no ves mejoras medibles en tus KPIs, devolvemos la inversión completa. Sin preguntas.",
+      "tiers": [
+        {
+          "name": "Standard",
+          "features": [
+            "90 min de training en vivo al mes con top practitioners",
+            "120 min de group coaching al mes",
+            "Comunidad abierta con coaches experimentados",
+            "Los 16 módulos de training (acceso inmediato)",
+            "Sparring en 5 niveles de dificultad",
+            "Playbooks, plantillas, emails, posters",
+            "GPT Engines para preparación y follow-up",
+            "Campañas para upsell, cross-sell y winback",
+            "Certificados y red",
+            "Garantía de 90 días"
+          ],
+          "cta": "Empezar ahora",
+          "note": "Máx. 250 plazas · cancelación mensual"
+        },
+        {
+          "name": "Platinum",
+          "features": [
+            "Todo lo de Standard",
+            "Sesión 1:1 de coaching al mes (60 min)",
+            "Sesión VIP grupal exclusiva al mes",
+            "Itinerarios personales tras assessment individual",
+            "Acceso directo al coach para casos urgentes",
+            "Hasta un 50% más de performance",
+            "Onboarding y setup prioritarios"
+          ],
+          "cta": "Solicitar plaza",
+          "note": "Solo 30 plazas · limitado por interacción 1:1"
+        }
+      ]
+    }
   }
 }

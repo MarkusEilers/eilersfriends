@@ -1,187 +1,133 @@
 /**
- * Vorher / Nachher — taktischer Kontrast als Transformation.
+ * Vorher / Nachher — Pair-Cards.
  *
- * Statt zwei paralleler Spalten zeigt jede Zeile EINE horizontale
- * Transformation: links rot (Pain), Pfeil mittig, rechts blau (Outcome).
- * Die zwei Hero-Metriken (Conversion + Zyklen) bekommen Extra-Display
- * mit großen Zahlen, weil das die zwei stärksten quantitativen Versprechen sind.
+ * Jede Zeile = EINE klare Transformation auf einer Karte. Links rot (Pain),
+ * Pfeil in der Mitte, rechts blau (Outcome). Keine separaten Schriftgrößen
+ * für "Hero-Metriken" — die Metrik (z.B. 28 → 73 %) wird als kleiner Chip
+ * in einer Eckecke der Karte gezeigt, damit die Hierarchie konsistent bleibt.
  */
-import { X, Check } from 'lucide-react'
+'use client'
+
+import { useTranslations } from 'next-intl'
+import { ArrowRight, X, Check } from 'lucide-react'
 
 interface Row {
   before: string
   after: string
-  /** Optional metric to display prominently */
-  metric?: {
-    beforeValue: string
-    afterValue: string
-    label: string
-  }
+  metricLabel?: string
+  beforeValue?: string
+  afterValue?: string
 }
 
-const ROWS: Row[] = [
-  {
-    before: 'Gespräche verlaufen nach Schema F — der Seller redet, der Kunde hört zu (oder nicht)',
-    after: 'Seller führen das Gespräch — mit Struktur, Empathie und klarem Ziel',
-  },
-  {
-    before: '72 % der Chancen verpuffen schon im ersten Gespräch',
-    after: 'Discovery-Call-Conversion mehr als doppelt so hoch',
-    metric: { beforeValue: '28 %', afterValue: '73 %', label: 'Discovery-Call-Conversion' },
-  },
-  {
-    before: 'Keine Struktur — jede:r im Team macht es anders, Ergebnisse nicht planbar',
-    after: 'Klare Playbooks — jede:r weiß, was wann wie funktioniert',
-  },
-  {
-    before: 'Einwände werden gefürchtet statt genutzt',
-    after: 'Einwände werden antizipiert und entwaffnet — bevor sie kommen',
-  },
-  {
-    before: 'Angebote werden verschickt — und man wartet. Und wartet.',
-    after: 'Unwiderstehliche Angebote: Der Kunde fühlt sich dumm, wenn er nicht zuschlägt',
-  },
-  {
-    before: 'Verkaufszyklen dauern 30–50 % länger als nötig',
-    after: 'Verkaufszyklen um bis zu 50 % kürzer',
-    metric: { beforeValue: '+30–50 %', afterValue: '−50 %', label: 'Dauer Verkaufszyklus' },
-  },
-  {
-    before: 'Demotivation frisst die Aktivität — Abwärtsspirale',
-    after: 'Confidence erzeugt Aktivität — das Flywheel dreht aufwärts',
-  },
-]
-
 const RED = '#EB0028'
-const RED_BG = '#FFEBEC'
-const RED_BG_SOFT = '#FFF4F5'
 const BLUE = '#1A5FD4'
-const BLUE_BG = '#EBF1FF'
-const BLUE_BG_SOFT = '#F4F7FE'
 const NAVY = '#0F1E3A'
 
 export function BeforeAfter() {
+  const t = useTranslations('salesmadeExt.beforeAfter')
+  const rows = (t.raw('rows') as Row[]) ?? []
+
   return (
     <section className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-5xl">
         <div className="mb-12 text-center">
           <span
             className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
-            style={{ backgroundColor: BLUE_BG, color: BLUE, border: `1px solid ${BLUE_BG}` }}
+            style={{ backgroundColor: '#EBF1FF', color: BLUE, border: `1px solid #BBCFF5` }}
           >
-            Vorher / Nachher
+            {t('eyebrow')}
           </span>
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>
-            Der Unterschied ist
-            <br className="hidden sm:block" /> im nächsten Gespräch spürbar.
+            {t('headline1')}
+            <br className="hidden sm:block" /> {t('headline2')}
           </h2>
         </div>
 
-        {/* Column labels */}
-        <div className="hidden md:grid grid-cols-2 gap-3 mb-3 px-2">
+        {/* Column header labels (visible on desktop only) */}
+        <div className="hidden md:grid grid-cols-[1fr_auto_1fr] gap-0 items-center mb-4 px-1">
           <div className="flex items-center gap-2.5">
-            <div
-              className="flex h-7 w-7 items-center justify-center rounded-full"
-              style={{ backgroundColor: RED, color: '#FFFFFF' }}
-            >
-              <X size={14} strokeWidth={3} />
-            </div>
-            <div>
-              <div className="text-xs font-bold uppercase tracking-widest" style={{ color: RED }}>
-                Ohne Academy
-              </div>
-              <div className="text-[11px] text-gray-500">Freestyle-Vertrieb</div>
-            </div>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full" style={{ backgroundColor: RED, color: '#fff' }}>
+              <X size={12} strokeWidth={3} />
+            </span>
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: RED }}>{t('beforeLabel')}</span>
           </div>
+          <div aria-hidden className="w-10" />
           <div className="flex items-center gap-2.5">
-            <div
-              className="flex h-7 w-7 items-center justify-center rounded-full"
-              style={{ backgroundColor: BLUE, color: '#FFFFFF' }}
-            >
-              <Check size={14} strokeWidth={3} />
-            </div>
-            <div>
-              <div className="text-xs font-bold uppercase tracking-widest" style={{ color: BLUE }}>
-                Mit der Academy
-              </div>
-              <div className="text-[11px] text-gray-500">Methodik</div>
-            </div>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full" style={{ backgroundColor: BLUE, color: '#fff' }}>
+              <Check size={12} strokeWidth={3} />
+            </span>
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: BLUE }}>{t('afterLabel')}</span>
           </div>
         </div>
 
-        {/* Pair rows */}
+        {/* Pair rows — one consistent design, no metric jumbo */}
         <div className="space-y-3">
-          {ROWS.map((r, i) => {
-            const isHero = !!r.metric
-            return (
+          {rows.map((r, i) => (
+            <div
+              key={i}
+              className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-0 items-stretch overflow-hidden rounded-2xl"
+              style={{
+                border: '1px solid #E5E7EB',
+                backgroundColor: '#FFFFFF',
+              }}
+            >
+              {/* Before */}
               <div
-                key={i}
-                className="rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2 relative isolate"
-                style={{
-                  border: '1px solid #E5E7EB',
-                  backgroundColor: '#FFFFFF',
-                  boxShadow: isHero
-                    ? '0 6px 24px rgba(15,30,58,0.06)'
-                    : '0 1px 2px rgba(15,30,58,0.03)',
-                }}
+                className="p-5 sm:p-6 flex items-start gap-3"
+                style={{ backgroundColor: '#FFF4F5' }}
               >
-                {/* Vertical hairline divider (desktop only) */}
-                <div
-                  className="hidden md:block absolute left-1/2 top-3 bottom-3 w-px -translate-x-1/2 pointer-events-none"
-                  aria-hidden="true"
-                  style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(15,30,58,0.10) 25%, rgba(15,30,58,0.10) 75%, transparent 100%)' }}
-                />
-
-                {/* Before (left) */}
-                <div
-                  className="p-5 sm:p-6 flex gap-3 items-start"
-                  style={{ backgroundColor: isHero ? RED_BG : RED_BG_SOFT }}
-                >
-                  <X size={16} className="mt-0.5 flex-shrink-0" style={{ color: RED }} strokeWidth={3} />
-                  <div className="flex-1 min-w-0">
-                    {r.metric && (
-                      <div
-                        className="font-bold leading-none mb-1.5"
-                        style={{ color: RED, fontSize: '2rem' }}
-                      >
-                        {r.metric.beforeValue}
-                      </div>
-                    )}
-                    <div className={`leading-relaxed ${isHero ? 'text-sm font-medium' : 'text-sm'}`} style={{ color: NAVY }}>
-                      {r.before}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Mobile divider strip */}
-                <div
-                  className="md:hidden h-px"
-                  style={{ background: `linear-gradient(90deg, ${RED}40 0%, ${NAVY} 50%, ${BLUE}40 100%)` }}
-                />
-
-                {/* After (right) */}
-                <div
-                  className="p-5 sm:p-6 flex gap-3 items-start"
-                  style={{ backgroundColor: isHero ? BLUE_BG : BLUE_BG_SOFT }}
-                >
-                  <Check size={16} className="mt-0.5 flex-shrink-0" style={{ color: BLUE }} strokeWidth={3} />
-                  <div className="flex-1 min-w-0">
-                    {r.metric && (
-                      <div
-                        className="font-bold leading-none mb-1.5"
-                        style={{ color: BLUE, fontSize: '2rem' }}
-                      >
-                        {r.metric.afterValue}
-                      </div>
-                    )}
-                    <div className={`leading-relaxed ${isHero ? 'text-sm font-medium' : 'text-sm'}`} style={{ color: NAVY }}>
-                      {r.after}
-                    </div>
-                  </div>
+                <X size={16} className="mt-1 flex-shrink-0" style={{ color: RED }} strokeWidth={2.5} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm leading-relaxed" style={{ color: NAVY }}>{r.before}</p>
+                  {r.beforeValue && (
+                    <span
+                      className="mt-3 inline-block rounded-full px-3 py-1 text-xs font-bold"
+                      style={{ backgroundColor: '#FFE2E5', color: RED }}
+                    >
+                      {r.beforeValue}{r.metricLabel ? ' · ' + r.metricLabel : ''}
+                    </span>
+                  )}
                 </div>
               </div>
-            )
-          })}
+
+              {/* Arrow column (desktop) / horizontal divider (mobile) */}
+              <div
+                className="hidden md:flex items-center justify-center px-2"
+                aria-hidden="true"
+              >
+                <span
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-white"
+                  style={{ border: '1px solid #E5E7EB', color: NAVY }}
+                >
+                  <ArrowRight size={14} />
+                </span>
+              </div>
+              <div
+                className="md:hidden h-px"
+                aria-hidden="true"
+                style={{ background: `linear-gradient(90deg, ${RED}30 0%, ${NAVY} 50%, ${BLUE}30 100%)` }}
+              />
+
+              {/* After */}
+              <div
+                className="p-5 sm:p-6 flex items-start gap-3"
+                style={{ backgroundColor: '#F4F7FE' }}
+              >
+                <Check size={16} className="mt-1 flex-shrink-0" style={{ color: BLUE }} strokeWidth={2.5} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm leading-relaxed" style={{ color: NAVY }}>{r.after}</p>
+                  {r.afterValue && (
+                    <span
+                      className="mt-3 inline-block rounded-full px-3 py-1 text-xs font-bold"
+                      style={{ backgroundColor: '#DDE7FB', color: BLUE }}
+                    >
+                      {r.afterValue}{r.metricLabel ? ' · ' + r.metricLabel : ''}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
