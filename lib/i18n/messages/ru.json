@@ -1114,27 +1114,32 @@
         {
           "title": "Assessment",
           "tagline": "Individuelle Diagnose",
-          "body": "Jede:r Seller tritt in einem realistischen, kniffligen Kundenszenario an. Wir sehen sofort: wo sind die echten Lücken?"
+          "body": "Jede:r Seller tritt in einem realistischen, kniffligen Kundenszenario an. Wir sehen sofort: wo sind die echten Lücken?",
+          "specific": "Beobachtetes Crack-the-Case-Szenario · 1:1 · 15-seitiger Visual-Report"
         },
         {
           "title": "Skill-Aufbau",
           "tagline": "Maßgeschneidert",
-          "body": "Gezieltes Training genau dort, wo es fehlt. Live-Sessions, Simulationen, Coaching. Keine Zeit für Irrelevantes."
+          "body": "Gezieltes Training genau dort, wo es fehlt. Live-Sessions, Simulationen, Coaching. Keine Zeit für Irrelevantes.",
+          "specific": "Monatliches 1:1-Coaching · Tools & Frameworks individuell zugeschnitten"
         },
         {
           "title": "Confidence & Ergebnisse",
           "tagline": "Messbare Wirkung",
-          "body": "Wer besser wird, merkt es sofort in echten Gesprächen. Höhere Conversion, bessere Deals, weniger Stress."
+          "body": "Wer besser wird, merkt es sofort in echten Gesprächen. Höhere Conversion, bessere Deals, weniger Stress.",
+          "specific": "Monatliches Group-Training · Regelmäßige Check-Ins & Accountability"
         },
         {
           "title": "Mehr Aktivität",
           "tagline": "Aufwärtsspirale",
-          "body": "Wer Erfolge erlebt, wird aktiver. Mehr Gespräche, mehr Pipeline, mehr Momentum. Das Flywheel dreht sich schneller."
+          "body": "Wer Erfolge erlebt, wird aktiver. Mehr Gespräche, mehr Pipeline, mehr Momentum. Das Flywheel dreht sich schneller.",
+          "specific": "Messbare Veränderung von Aktivität, Hebel und Outcomes"
         }
       ],
       "pull1": "„Professionell ausgebildete Seller erzielen ",
       "pull2": "48 % bis 280 %",
-      "pull3": " höhere Umsätze — nicht weil sie mehr arbeiten, sondern weil sie besser sind.\""
+      "pull3": " höhere Umsätze — nicht weil sie mehr arbeiten, sondern weil sie besser sind.\"",
+      "specificLabel": "Konkret"
     },
     "beforeAfter": {
       "eyebrow": "Vorher / Nachher",

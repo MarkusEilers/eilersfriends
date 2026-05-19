@@ -19,6 +19,7 @@ interface Stage {
   title: string
   tagline: string
   body: string
+  specific: string
 }
 
 const STAGE_ICONS = [ClipboardCheck, GraduationCap, TrendingUp, Activity]
@@ -115,6 +116,22 @@ export function SalesFlywheel() {
                     <p className="mt-3 text-sm leading-relaxed text-gray-600">
                       {s.body}
                     </p>
+
+                    {/* Specific — compact, visualised */}
+                    <div
+                      className="mt-4 rounded-xl px-3 py-2.5 text-left"
+                      style={{
+                        backgroundColor: 'rgba(235,241,255,0.7)',
+                        border: '1px solid rgba(187,207,245,0.6)',
+                      }}
+                    >
+                      <div className="text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: BLUE }}>
+                        {t('specificLabel')}
+                      </div>
+                      <div className="mt-1 text-[11px] leading-snug" style={{ color: '#0F1E3A' }}>
+                        {s.specific}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )

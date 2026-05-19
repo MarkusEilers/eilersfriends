@@ -1130,27 +1130,32 @@
         {
           "title": "Assessment",
           "tagline": "Diagnóstico individual",
-          "body": "Cada vendedor se enfrenta a un escenario realista y exigente. Vemos al instante dónde están las brechas reales."
+          "body": "Cada vendedor se enfrenta a un escenario realista y exigente. Vemos al instante dónde están las brechas reales.",
+          "specific": "Escenario crack-the-case observado · 1:1 · Informe visual de 15 páginas"
         },
         {
           "title": "Construcción de skills",
           "tagline": "A medida",
-          "body": "Training dirigido exactamente donde falta. Sesiones en vivo, simulaciones, coaching. Sin tiempo para lo irrelevante."
+          "body": "Training dirigido exactamente donde falta. Sesiones en vivo, simulaciones, coaching. Sin tiempo para lo irrelevante.",
+          "specific": "Coaching 1:1 mensual · Tools y frameworks elegidos a medida"
         },
         {
           "title": "Confianza y resultados",
           "tagline": "Impacto medible",
-          "body": "Quien mejora lo nota de inmediato en conversaciones reales. Más conversión, mejores deals, menos estrés."
+          "body": "Quien mejora lo nota de inmediato en conversaciones reales. Más conversión, mejores deals, menos estrés.",
+          "specific": "Group training mensual · Check-ins regulares y accountability"
         },
         {
           "title": "Más actividad",
           "tagline": "Espiral ascendente",
-          "body": "Quien experimenta éxito se vuelve más activo. Más conversaciones, más pipeline, más momentum. El flywheel gira más rápido."
+          "body": "Quien experimenta éxito se vuelve más activo. Más conversaciones, más pipeline, más momentum. El flywheel gira más rápido.",
+          "specific": "Cambios medibles en actividad, palancas y resultados"
         }
       ],
       "pull1": "\"Los vendedores con formación profesional logran ",
       "pull2": "48% a 280%",
-      "pull3": " más ingresos — no porque trabajen más, sino porque son mejores.\""
+      "pull3": " más ingresos — no porque trabajen más, sino porque son mejores.\"",
+      "specificLabel": "En concreto"
     },
     "beforeAfter": {
       "eyebrow": "Antes / después",

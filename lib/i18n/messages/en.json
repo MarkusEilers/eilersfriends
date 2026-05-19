@@ -1130,27 +1130,32 @@
         {
           "title": "Assessment",
           "tagline": "Individual diagnosis",
-          "body": "Every seller runs through a realistic, tricky customer scenario. We see immediately: where are the real gaps?"
+          "body": "Every seller runs through a realistic, tricky customer scenario. We see immediately: where are the real gaps?",
+          "specific": "Observed crack-the-case scenario · 1:1 · 15-page visual report"
         },
         {
           "title": "Skill building",
           "tagline": "Tailor-made",
-          "body": "Targeted training exactly where it falls short. Live sessions, simulations, coaching. No time for the irrelevant."
+          "body": "Targeted training exactly where it falls short. Live sessions, simulations, coaching. No time for the irrelevant.",
+          "specific": "Monthly 1:1 coaching · Tools & frameworks individually selected"
         },
         {
           "title": "Confidence & results",
           "tagline": "Measurable impact",
-          "body": "Whoever gets better notices it immediately in real conversations. Higher conversion, better deals, less stress."
+          "body": "Whoever gets better notices it immediately in real conversations. Higher conversion, better deals, less stress.",
+          "specific": "Monthly group training · Regular check-ins & accountability"
         },
         {
           "title": "More activity",
           "tagline": "Upward spiral",
-          "body": "Whoever experiences success becomes more active. More conversations, more pipeline, more momentum. The flywheel spins faster."
+          "body": "Whoever experiences success becomes more active. More conversations, more pipeline, more momentum. The flywheel spins faster.",
+          "specific": "Measurable changes to activity, leverage and outcomes"
         }
       ],
       "pull1": "\"Professionally trained sellers achieve ",
       "pull2": "48% to 280%",
-      "pull3": " higher revenue — not because they work more, but because they are better.\""
+      "pull3": " higher revenue — not because they work more, but because they are better.\"",
+      "specificLabel": "In concrete"
     },
     "beforeAfter": {
       "eyebrow": "Before / after",
