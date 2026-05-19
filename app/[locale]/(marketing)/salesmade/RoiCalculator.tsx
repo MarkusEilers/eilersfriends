@@ -12,10 +12,6 @@ const CURRENCY_LOCALE: Record<string, string> = {
   ru: 'ru-RU',
 }
 
-function interpolate(template: string, vars: Record<string, string | number>): string {
-  return template.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ''))
-}
-
 export function SalesMadeRoiCalculator({ accent }: { accent: string }) {
   const t = useTranslations('salesmadePage.roiCalculator')
   const locale = useLocale()
@@ -87,7 +83,7 @@ export function SalesMadeRoiCalculator({ accent }: { accent: string }) {
                 <span className="font-semibold" style={{ color: accent }}>
                   {t('activityLiftLabel')}
                 </span>{' '}
-                {interpolate(t('activityLiftBody'), { floor: ACTIVITY_FLOOR, current: meetings })}
+                {t('activityLiftBody', { floor: ACTIVITY_FLOOR, current: meetings })}
               </p>
             )}
           </div>
@@ -105,14 +101,14 @@ export function SalesMadeRoiCalculator({ accent }: { accent: string }) {
                   <span className="font-semibold" style={{ color: accent }}>
                     {t('capLabel')}
                   </span>{' '}
-                  {interpolate(t('capBody'), { cap: CONVERSION_CAP })}
+                  {t('capBody', { cap: CONVERSION_CAP })}
                 </>
               ) : (
                 <>
                   <span className="font-semibold" style={{ color: accent }}>
                     {t('liftLabel')}
                   </span>{' '}
-                  {interpolate(t('liftBody'), { lift: CONVERSION_LIFT_PP, cap: CONVERSION_CAP, upgraded: upgradedConversion, current: conversion })}
+                  {t('liftBody', { lift: CONVERSION_LIFT_PP, cap: CONVERSION_CAP, upgraded: upgradedConversion, current: conversion })}
                 </>
               )}
             </p>
@@ -129,9 +125,9 @@ export function SalesMadeRoiCalculator({ accent }: { accent: string }) {
           <div className="mt-1 text-xs text-gray-500">{t('perYear')}</div>
           <p className="mt-4 text-xs leading-relaxed text-gray-600">
             {isAtCap
-              ? interpolate(t('narrativeAtCapPre'), { current: conversion })
-              : interpolate(t('narrativeLiftPre'), { current: conversion, upgraded: upgradedConversion })}
-            {interpolate(t('narrativePost'), { floor: ACTIVITY_FLOOR })}
+              ? t('narrativeAtCapPre', { current: conversion })
+              : t('narrativeLiftPre', { current: conversion, upgraded: upgradedConversion })}
+            {t('narrativePost', { floor: ACTIVITY_FLOOR })}
           </p>
           <Link
             href="/kontakt"
