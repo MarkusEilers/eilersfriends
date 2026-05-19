@@ -6,8 +6,10 @@ import { Check, Star } from 'lucide-react'
 interface TierData { name: string; features: string[]; cta: string; note: string }
 
 const TIER_VISUALS = [
-  { monthly: 247, yearly: 2470, monthlyEffective: 205, accent: '#1A5FD4', accentBg: '#EBF1FF', highlight: false },
-  { monthly: 580, yearly: 5800, monthlyEffective: 483, accent: '#0F1E3A', accentBg: '#E5E9F0', highlight: true },
+  // Anchor 397 → Launch 247 (Cohort-1 Founding discount). Anchor is the regular post-launch listing.
+  { monthly: 247, anchor: 397, yearly: 2470, monthlyEffective: 205, accent: '#1A5FD4', accentBg: '#EBF1FF', highlight: false },
+  // Anchor 880 → Launch 580 (1:1 capacity discount). Anchor reflects the unbundled value.
+  { monthly: 580, anchor: 880, yearly: 5800, monthlyEffective: 483, accent: '#0F1E3A', accentBg: '#E5E9F0', highlight: true },
 ]
 
 export function SalesPricing() {
@@ -52,9 +54,13 @@ export function SalesPricing() {
 
                 <div className="mb-6">
                   <h3 className="text-2xl font-bold uppercase tracking-wide" style={{ color: v.accent }}>{tier.name}</h3>
-                  <div className="mt-4 flex items-baseline gap-2">
+                  <div className="mt-4 flex items-baseline gap-2 flex-wrap">
+                    <span className="text-2xl font-bold line-through opacity-60" style={{ color: '#9CA3AF' }}>€{v.anchor}</span>
                     <span className="text-5xl font-bold" style={{ color: '#0D0D0B' }}>€{v.monthly}</span>
                     <span className="text-sm text-gray-500">{t('priceMonth')}</span>
+                    <span className="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest" style={{ backgroundColor: v.accentBg, color: v.accent }}>
+                      Cohort 1
+                    </span>
                   </div>
                   <p className="mt-1 text-sm text-gray-600">
                     {t('priceYearPre')}<strong style={{ color: '#0D0D0B' }}>€{v.yearly.toLocaleString('de-DE')}</strong>{t('priceYearMid')}{v.monthlyEffective}{t('priceYearPost')}

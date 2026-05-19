@@ -17,8 +17,8 @@
     "bookCta": "Reservar sesión estratégica"
   },
   "topbar": {
-    "message": "Soft-Launch en marcha — Asegura tu plaza early-bird",
-    "link": "Saber más"
+    "message": "Cohort 1 arranca 2026 — solo 30 plazas founding · 90 días de devolución",
+    "link": "A la SalesMade Academy"
   },
   "hero": {
     "pill1": "Para founders B2B ambiciosos",
@@ -446,9 +446,14 @@
       "badge": "SalesMade Academy · Soft-Launch · Plazas limitadas",
       "headline1": "De la incertidumbre a",
       "headlineAccent": "ingresos predecibles.",
-      "subtext": "La SalesMade Academy no es un seminario. Es un programa de transformación de 12 meses que convierte a tus vendedores en sparring imprescindibles para tus clientes.",
+      "subtext": "La SalesMade Academy no es un seminario. Es un programa de transformación de 12 meses para founders B2B de software que convierte a tus vendedores en sparring imprescindibles para tus clientes.",
       "cta": "Reservar conversación de benchmarking",
-      "note": "Quedan pocas plazas para el soft-launch."
+      "note": "Quedan pocas plazas para el soft-launch.",
+      "pills": [
+        "25 años de experiencia",
+        "Garantía de devolución 90 días",
+        "Cohort 1 · solo 30 plazas"
+      ]
     },
     "crisis": {
       "eyebrow": "La crisis invisible en las ventas B2B",
@@ -457,24 +462,17 @@
       "cards": [
         {
           "persona": "de los vendedores B2B",
-          "number": "84%",
+          "number": "84 %",
           "label": "sin formación profesional",
           "description": "Captar atención, llevar la conversación, convencer, hacer ofertas — todo freestyle experimental.",
           "source": "SalesMade Academy · DACH Industry Snapshot 2024"
         },
         {
           "persona": "del personal de ventas",
-          "number": "67%",
+          "number": "67 %",
           "label": "no se sienten preparados",
           "description": "No se sienten suficientemente preparados para su puesto y las expectativas que conlleva.",
           "source": "Sales Readiness Group · Annual State of Sales Readiness 2024"
-        },
-        {
-          "persona": "de los founders, CEOs y propietarios",
-          "number": "88%",
-          "label": "quieren poder confiar en su equipo",
-          "description": "Esta carencia cuesta a las empresas gran parte de sus ingresos potenciales y daña el valor de la compañía.",
-          "source": "EY · CEO Outlook Pulse 2024 (Sales & Revenue)"
         }
       ]
     },
@@ -632,7 +630,7 @@
     "finalCta": {
       "eyebrow": "De la incertidumbre a ingresos predecibles.",
       "headline": "45 minutos para tus próximos 36 meses.",
-      "subtext": "¿Cómo de convincente trabaja tu equipo en comparación directa? Nuestro benchmark sin compromiso te puede dar perspectiva valiosa. Tu equipo recorre un escenario realista en el que observamos y evaluamos 13 skills decisivos de ventas.",
+      "subtext": "¿Cómo de convincente trabaja tu equipo de ventas de software en comparación directa? Nuestro benchmark sin compromiso te puede dar perspectiva valiosa. Tu equipo recorre un escenario realista en el que observamos y evaluamos 13 skills decisivos de ventas.",
       "cta": "Reservar conversación de benchmarking",
       "note": "Quedan pocas plazas para el soft-launch."
     },
@@ -653,6 +651,73 @@
       "narrativeLiftPre": "Basado en conversión mejorada ({current} % → {upgraded} %)",
       "narrativePost": ", deal values +48 % más altos y al menos {floor} discovery calls por vendedor/mes — benchmarks de nuestros clientes.",
       "cta": "Reservar conversación inicial sin compromiso"
+    },
+    "permissionStat": {
+      "value": "87 %",
+      "headline": "de los founders cree que vender es el skill más importante para tener éxito.",
+      "body": "De más de 500 sparrings con founders B2B de software — confirmado por estudios de Stripe, First Round Capital y EY.",
+      "source": "SalesMade Industry Survey · First Round + Stripe + EY · 2024"
+    },
+    "antiMyth": {
+      "eyebrow": "El mito del tipo vendedor",
+      "headline": "Vender no es talento. Es un oficio.",
+      "body": "El mito del vendedor nato impide que los founders se apropien de las ventas como skill. La realidad: los top sellers no son más extrovertidos — están mejor preparados, son más estructurados y practican con método.",
+      "proofs": [
+        "Los mejores vendedores B2B del mundo fueron entrenados, no nacieron así.",
+        "Voss no era un charmer — era negociador del FBI con sistema.",
+        "Predictable Revenue es un manual, no un rasgo innato."
+      ]
+    },
+    "formatPill": {
+      "eyebrow": "A tu ritmo",
+      "headline": "Aprende donde estés — cuatro formatos.",
+      "formats": [
+        {
+          "title": "Vídeos cortos",
+          "body": "10–15 min por skill drill. Mirables en el coche, en el gym, paseando."
+        },
+        {
+          "title": "Formatos de audio",
+          "body": "Cada módulo como episodio de podcast. Sin pantalla, sin esfuerzo."
+        },
+        {
+          "title": "Reference cards",
+          "body": "Una tarjeta A5 por skill. Plano + las preguntas clave para la conversación."
+        },
+        {
+          "title": "One-pagers",
+          "body": "Un one-pager imprimible por módulo con modelo, ejemplo y checklist."
+        }
+      ]
+    },
+    "coursesVsSkill": {
+      "eyebrow": "Lo que nos diferencia de los cursos",
+      "headline": "Los cursos transmiten conocimiento.\nNosotros construimos capacidad.",
+      "subtext": "La mayoría de programas de ventas vende horas en el sofá. Nosotros vendemos capacidad medible en la conversación real.",
+      "leftLabel": "Curso de ventas clásico",
+      "rightLabel": "SalesMade Academy",
+      "rows": [
+        {
+          "left": "40 horas de vídeo on-demand",
+          "right": "12 meses de training en vivo + group coaching + 1:1"
+        },
+        {
+          "left": "Un foro si tienes preguntas",
+          "right": "Sparring en 5 niveles de dificultad — tú practicas, nosotros damos feedback"
+        },
+        {
+          "left": "Sin medición del impacto",
+          "right": "13 skills de ventas evaluados individualmente · re-assessment trimestral"
+        },
+        {
+          "left": "Mismo curso para todos",
+          "right": "Plan de desarrollo a medida tras assessment"
+        },
+        {
+          "left": "Certificado sin aplicación real",
+          "right": "Resultados documentados de operaciones como prueba"
+        }
+      ]
     }
   },
   "kontaktPage": {

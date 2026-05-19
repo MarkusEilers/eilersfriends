@@ -17,8 +17,8 @@
     "bookCta": "Book Strategy Session"
   },
   "topbar": {
-    "message": "Soft-Launch is live — Secure your early bird spot now",
-    "link": "Learn more"
+    "message": "Cohort 1 launches 2026 — only 30 founding seats · 90-day money-back",
+    "link": "To the SalesMade Academy"
   },
   "hero": {
     "pill1": "For ambitious B2B founders and leaders",
@@ -446,9 +446,14 @@
       "badge": "SalesMade Academy · Soft-Launch · Limited Seats",
       "headline1": "Let's fill the",
       "headlineAccent": "Sales Education Gap",
-      "subtext": "The SalesMade Academy is not a seminar. It is a 12-month transformation programme that turns your sellers into indispensable sparring partners for your customers. It will take teams from uncertainty to predictable revenue.",
+      "subtext": "The SalesMade Academy is not a seminar. It is a 12-month transformation programme for B2B software founders that turns your sellers into indispensable sparring partners for your customers. It will take teams from uncertainty to predictable revenue.",
       "cta": "Book a benchmarking conversation",
-      "note": "Only a few seats left in the soft-launch."
+      "note": "Only a few seats left in the soft-launch.",
+      "pills": [
+        "25 years of experience",
+        "90-day money-back guarantee",
+        "Cohort 1 · only 30 seats"
+      ]
     },
     "crisis": {
       "eyebrow": "The Invisible Crisis in B2B Sales",
@@ -468,13 +473,6 @@
           "label": "do not feel ready",
           "description": "They feel insufficiently prepared for their job and the expectations that come with it.",
           "source": "Sales Readiness Group · Annual State of Sales Readiness 2024"
-        },
-        {
-          "persona": "of founders, CEOs & owners",
-          "number": "88%",
-          "label": "want to rely on their team",
-          "description": "This gap costs companies large portions of potential revenue and damages enterprise value.",
-          "source": "EY · CEO Outlook Pulse 2024 (Sales & Revenue)"
         }
       ]
     },
@@ -632,7 +630,7 @@
     "finalCta": {
       "eyebrow": "From uncertainty to predictable revenue.",
       "headline": "45 minutes for your next 36 months.",
-      "subtext": "How convincingly does your team work in direct comparison? Our no-obligation benchmark can give you valuable insights. Your team runs through a realistic customer scenario in which we observe and assess 13 decisive sales skills.",
+      "subtext": "How convincingly does your software sales team work in direct comparison? Our no-obligation benchmark can give you valuable insights. Your team runs through a realistic customer scenario in which we observe and assess 13 decisive sales skills.",
       "cta": "Book a benchmarking conversation",
       "note": "Only a few seats left in the soft-launch."
     },
@@ -653,6 +651,73 @@
       "narrativeLiftPre": "Based on improved conversion ({current}% → {upgraded}%)",
       "narrativePost": ", +48% higher deal values and at least {floor} discovery calls per seller/month — benchmarks from our customers.",
       "cta": "Book a no-strings-attached intro call"
+    },
+    "permissionStat": {
+      "value": "87%",
+      "headline": "of founders believe that selling is the most important skill for success.",
+      "body": "From 500+ sparrings with B2B software founders — corroborated by studies from Stripe, First Round Capital and EY.",
+      "source": "SalesMade Industry Survey · First Round + Stripe + EY · 2024"
+    },
+    "antiMyth": {
+      "eyebrow": "The myth of the seller type",
+      "headline": "Selling is not a talent. It is a craft.",
+      "body": "The myth of the natural-born seller stops founders from owning sales as a skill. The reality: top sellers aren't more extroverted — they are better prepared, more structured, and practise with method.",
+      "proofs": [
+        "The best B2B sellers worldwide were trained, not born.",
+        "Voss was no charmer — he was an FBI negotiator with a system.",
+        "Predictable Revenue is an instruction manual, not an innate trait."
+      ]
+    },
+    "formatPill": {
+      "eyebrow": "At your pace",
+      "headline": "Learn where you are — four formats.",
+      "formats": [
+        {
+          "title": "Short videos",
+          "body": "10–15 min per skill drill. Watchable in the car, at the gym, on a walk."
+        },
+        {
+          "title": "Audio formats",
+          "body": "Every module as a podcast episode. No screen, no effort."
+        },
+        {
+          "title": "Reference cards",
+          "body": "One A5 card per skill. Blueprint + the key questions for the conversation."
+        },
+        {
+          "title": "One-pagers",
+          "body": "A printable one-pager per module with model, example and checklist."
+        }
+      ]
+    },
+    "coursesVsSkill": {
+      "eyebrow": "What sets us apart from courses",
+      "headline": "Courses convey knowledge.\nWe build capability.",
+      "subtext": "Most sales programmes sell hours on the couch. We sell measurable capability in the real conversation.",
+      "leftLabel": "Classic sales course",
+      "rightLabel": "SalesMade Academy",
+      "rows": [
+        {
+          "left": "40 hours of on-demand video",
+          "right": "12 months of live training + group coaching + 1:1"
+        },
+        {
+          "left": "A forum if you have questions",
+          "right": "Sparring across 5 difficulty levels — you practise, we give feedback"
+        },
+        {
+          "left": "No measurement of impact",
+          "right": "13 sales skills assessed individually · quarterly re-assessment"
+        },
+        {
+          "left": "Same course for everyone",
+          "right": "Tailored development plan after assessment"
+        },
+        {
+          "left": "Certificate without real application",
+          "right": "Documented deal outcomes as proof"
+        }
+      ]
     }
   },
   "kontaktPage": {

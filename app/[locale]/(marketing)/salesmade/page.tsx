@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
 import {
-  Calendar, ArrowRight, Shield, Check,
-  TrendingUp,
+  Calendar, ArrowRight, Shield, Check, TrendingUp,
+  Award, Users, Sparkles, Play, Headphones, CreditCard, FileText, X as XIcon,
 } from 'lucide-react'
 import { SalesMadeRoiCalculator } from './RoiCalculator'
 import { SkillInventory } from '@/components/sections/salesmade/SkillInventory'
@@ -28,6 +28,8 @@ interface CrisisCard { persona: string; number: string; label: string; descripti
 interface RuleCard { number: string; label: string; text: string; source: string }
 interface SystemStat { value: string; label: string }
 interface FaqItem { q: string; a: string }
+interface FormatItem { title: string; body: string }
+interface CompareRow { left: string; right: string }
 
 export default async function SalesMadePage({ params }: PageProps) {
   await params
@@ -44,6 +46,10 @@ export default async function SalesMadePage({ params }: PageProps) {
   const resultItems = (t.raw('results.items') as string[]) ?? []
   const coachTags = (t.raw('coach.tags') as string[]) ?? []
   const faqItems = (t.raw('faq.items') as FaqItem[]) ?? []
+  const heroPills = (t.raw('hero.pills') as string[]) ?? []
+  const antiMythProofs = (t.raw('antiMyth.proofs') as string[]) ?? []
+  const formats = (t.raw('formatPill.formats') as FormatItem[]) ?? []
+  const compareRows = (t.raw('coursesVsSkill.rows') as CompareRow[]) ?? []
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
@@ -64,7 +70,22 @@ export default async function SalesMadePage({ params }: PageProps) {
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
             {t('hero.subtext')}
           </p>
-          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+          {/* Trust pills row */}
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+            {heroPills.map((p, i) => {
+              const Icon = [Award, Shield, Users][i] ?? Sparkles
+              return (
+                <span
+                  key={p}
+                  className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold"
+                  style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(147,184,245,0.30)', color: '#93B8F5' }}
+                >
+                  <Icon size={12} /> {p}
+                </span>
+              )
+            })}
+          </div>
+          <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link
               href="/kontakt"
               className="inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-white shadow-lg transition-opacity hover:opacity-90"
@@ -90,18 +111,75 @@ export default async function SalesMadePage({ params }: PageProps) {
               {t('crisis.headline')}
             </h2>
           </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {crisisCards.map((s) => (
-              <div key={s.label} className="rounded-2xl border border-gray-100 bg-white p-6 flex flex-col">
-                <div className="text-4xl font-bold" style={{ color: accent }}>{s.number}</div>
-                <div className="mt-1 text-xs uppercase tracking-widest text-gray-400">{s.persona}</div>
-                <div className="mt-3 text-sm font-bold" style={{ color: '#0D0D0B' }}>{s.label}</div>
-                <p className="mt-3 text-sm leading-relaxed text-gray-600 flex-1">{s.description}</p>
-                <p className="mt-4 text-[10px] uppercase tracking-[0.18em] text-gray-400">
-                  {t('crisis.sourceLabel')}: {s.source}
+          <div className="mt-12 grid gap-6 lg:grid-cols-[1.15fr_1fr] items-stretch">
+            {/* Left: Permission stat — large, founder-positive */}
+            <div
+              className="rounded-2xl p-8 flex flex-col justify-between"
+              style={{ backgroundColor: '#EBF1FF', border: '1.5px solid #BBCFF5' }}
+            >
+              <div>
+                <span
+                  className="inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] mb-5"
+                  style={{ backgroundColor: 'white', color: accent, border: `1px solid #BBCFF5` }}
+                >
+                  ★ Was Gründer:innen sagen
+                </span>
+                <div className="text-6xl font-bold leading-none" style={{ color: accent }}>
+                  {t('permissionStat.value')}
+                </div>
+                <p className="mt-4 text-lg font-bold leading-snug" style={{ color: '#0D0D0B' }}>
+                  {t('permissionStat.headline')}
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-gray-600">
+                  {t('permissionStat.body')}
                 </p>
               </div>
-            ))}
+              <p className="mt-6 text-[10px] uppercase tracking-[0.18em] text-gray-500">
+                {t('crisis.sourceLabel')}: {t('permissionStat.source')}
+              </p>
+            </div>
+
+            {/* Right: 2 smaller crisis cards stacked */}
+            <div className="grid gap-4">
+              {crisisCards.map((s) => (
+                <div key={s.label} className="rounded-2xl border border-gray-100 bg-white p-6 flex gap-5 items-start">
+                  <div className="text-4xl font-bold flex-shrink-0" style={{ color: accent, minWidth: 80 }}>{s.number}</div>
+                  <div>
+                    <div className="text-xs uppercase tracking-widest text-gray-400">{s.persona}</div>
+                    <div className="mt-1 text-sm font-bold" style={{ color: '#0D0D0B' }}>{s.label}</div>
+                    <p className="mt-2 text-sm leading-relaxed text-gray-600">{s.description}</p>
+                    <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-gray-400">
+                      {t('crisis.sourceLabel')}: {s.source}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 1b. ANTI-MYTH ────────────────────────────────────────── */}
+      <section className="px-6 py-16 bg-white">
+        <div className="mx-auto max-w-4xl">
+          <div className="rounded-3xl border p-8 sm:p-10 text-center" style={{ borderColor: '#BBCFF5', backgroundColor: '#FFFFFF' }}>
+            <span className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest" style={{ backgroundColor: '#EBF1FF', color: accent }}>
+              {t('antiMyth.eyebrow')}
+            </span>
+            <h2 className="mt-4 text-3xl font-bold sm:text-4xl leading-tight" style={{ color: '#0D0D0B' }}>
+              {t('antiMyth.headline')}
+            </h2>
+            <p className="mt-4 mx-auto max-w-2xl text-base leading-relaxed text-gray-600">
+              {t('antiMyth.body')}
+            </p>
+            <ul className="mt-7 grid gap-3 sm:grid-cols-3 text-left">
+              {antiMythProofs.map((p) => (
+                <li key={p} className="flex gap-3 text-sm rounded-xl p-4" style={{ backgroundColor: '#FAFAF8' }}>
+                  <Check size={16} className="mt-0.5 flex-shrink-0" style={{ color: accent }} />
+                  <span style={{ color: '#0D0D0B' }}>{p}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
@@ -158,6 +236,65 @@ export default async function SalesMadePage({ params }: PageProps) {
       </section>
 
       <MethodologyTriptych />
+      {/* ─── 4d. COURSES VS. SKILL ─────────────────────────────── */}
+      <section className="px-6 py-20 bg-white">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center mb-12">
+            <span
+              className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
+              style={{ backgroundColor: '#EBF1FF', color: accent, border: '1px solid #BBCFF5' }}
+            >
+              {t('coursesVsSkill.eyebrow')}
+            </span>
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl whitespace-pre-line" style={{ color: '#0D0D0B' }}>
+              {t('coursesVsSkill.headline')}
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-600">
+              {t('coursesVsSkill.subtext')}
+            </p>
+          </div>
+          <div className="hidden md:grid grid-cols-[1fr_auto_1fr] gap-0 items-center mb-4 px-1">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full" style={{ backgroundColor: '#9CA3AF', color: '#fff' }}>
+                <XIcon size={12} strokeWidth={3} />
+              </span>
+              <span className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('coursesVsSkill.leftLabel')}</span>
+            </div>
+            <div aria-hidden className="w-10" />
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full" style={{ backgroundColor: accent, color: '#fff' }}>
+                <Check size={12} strokeWidth={3} />
+              </span>
+              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: accent }}>{t('coursesVsSkill.rightLabel')}</span>
+            </div>
+          </div>
+          <div className="space-y-3">
+            {compareRows.map((row, i) => (
+              <div
+                key={i}
+                className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-0 items-stretch overflow-hidden rounded-2xl"
+                style={{ border: '1px solid #E5E7EB', backgroundColor: '#FFFFFF' }}
+              >
+                <div className="p-5 sm:p-6 flex items-start gap-3" style={{ backgroundColor: '#F6F6F4' }}>
+                  <XIcon size={16} className="mt-1 flex-shrink-0 text-gray-400" strokeWidth={2.5} />
+                  <p className="text-sm leading-relaxed text-gray-600">{row.left}</p>
+                </div>
+                <div className="hidden md:flex items-center justify-center px-2" aria-hidden="true">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white" style={{ border: '1px solid #E5E7EB', color: '#0F1E3A' }}>
+                    <ArrowRight size={14} />
+                  </span>
+                </div>
+                <div className="md:hidden h-px" aria-hidden="true" style={{ background: 'linear-gradient(90deg, #9CA3AF30 0%, #0F1E3A 50%, #1A5FD430 100%)' }} />
+                <div className="p-5 sm:p-6 flex items-start gap-3" style={{ backgroundColor: '#F4F7FE' }}>
+                  <Check size={16} className="mt-1 flex-shrink-0" style={{ color: accent }} strokeWidth={2.5} />
+                  <p className="text-sm leading-relaxed font-medium" style={{ color: '#0F1E3A' }}>{row.right}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* ─── 5. VISION ───────────────────────────────────────────────── */}
       <section className="px-6 py-20">
@@ -230,7 +367,33 @@ export default async function SalesMadePage({ params }: PageProps) {
             ))}
           </div>
 
+          {/* Format pill — four learning ingredients */}
           <div className="mt-16 rounded-3xl bg-white/5 p-8 backdrop-blur-sm" style={{ border: '1px solid rgba(147,184,245,0.25)' }}>
+            <div className="text-center">
+              <span className="inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(26,95,212,0.4)', color: '#93B8F5' }}>
+                {t('formatPill.eyebrow')}
+              </span>
+              <h3 className="mt-3 text-xl font-bold text-white sm:text-2xl">
+                {t('formatPill.headline')}
+              </h3>
+            </div>
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {formats.map((f, i) => {
+                const Icon = [Play, Headphones, CreditCard, FileText][i] ?? FileText
+                return (
+                  <div key={f.title} className="flex flex-col gap-3 rounded-2xl p-5" style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(147,184,245,0.18)' }}>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: 'rgba(26,95,212,0.25)', color: '#93B8F5' }}>
+                      <Icon size={18} />
+                    </div>
+                    <h4 className="text-sm font-bold text-white">{f.title}</h4>
+                    <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>{f.body}</p>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="mt-8 rounded-3xl bg-white/5 p-8 backdrop-blur-sm" style={{ border: '1px solid rgba(147,184,245,0.25)' }}>
             <h3 className="text-center text-sm font-bold uppercase tracking-widest" style={{ color: '#93B8F5' }}>
               {t('system.measuresLabel')}
             </h3>
