@@ -669,8 +669,8 @@
       ]
     },
     "formatPill": {
-      "eyebrow": "At your pace",
-      "headline": "Learn where you are — four formats.",
+      "eyebrow": "On the Job",
+      "headline": "Build the right skills — on the job.",
       "formats": [
         {
           "title": "Short videos",
@@ -681,12 +681,12 @@
           "body": "Every module as a podcast episode. No screen, no effort."
         },
         {
-          "title": "Reference cards",
-          "body": "One A5 card per skill. Blueprint + the key questions for the conversation."
+          "title": "Reference cards & one-pagers",
+          "body": "An A5 card per skill + a printable one-pager per module. Blueprints, examples, checklists."
         },
         {
-          "title": "One-pagers",
-          "body": "A printable one-pager per module with model, example and checklist."
+          "title": "Monthly 1:1 coaching",
+          "body": "60 min of real sparring on your open deals. Tailored to your context."
         }
       ]
     },
@@ -1450,7 +1450,11 @@
           "cta": "Apply now",
           "note": "Only 30 seats · limited due to 1:1 interaction"
         }
-      ]
+      ],
+      "softLaunchEyebrow": "Soft Launch Special",
+      "softLaunchHeadline": "Cohort 1 — only for the first 30 participants",
+      "softLaunchBody": "Lifetime-lock on the founding price. Once the 30 seats are gone, the next pricing tier kicks in.",
+      "seatsLeft": "limited to 30 seats"
     }
   }
 }

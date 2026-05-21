@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { Check, Star } from 'lucide-react'
+import { Check, Star, Sparkles } from 'lucide-react'
 
 interface TierData { name: string; features: string[]; cta: string; note: string }
 
@@ -19,6 +19,52 @@ export function SalesPricing() {
   return (
     <section className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
       <div className="mx-auto max-w-6xl">
+        {/* ─── Soft Launch Feuerwerk Banner ─────────────────────────── */}
+        <div className="mb-10">
+          <div
+            className="relative mx-auto max-w-3xl overflow-hidden rounded-3xl p-[2px]"
+            style={{
+              background: 'linear-gradient(135deg, #1A5FD4 0%, #6B5CE7 35%, #F05A1A 70%, #FFC93C 100%)',
+              boxShadow: '0 20px 60px -20px rgba(26,95,212,0.45), 0 8px 20px -10px rgba(240,90,26,0.35)',
+            }}
+          >
+            <div className="relative rounded-[22px] px-6 py-7 sm:px-10 sm:py-8" style={{ backgroundColor: '#0F1E3A' }}>
+              {/* Confetti dots — pure CSS */}
+              <span aria-hidden className="pointer-events-none absolute left-4 top-3 text-yellow-300 opacity-80 animate-pulse">
+                <Sparkles size={18} />
+              </span>
+              <span aria-hidden className="pointer-events-none absolute right-4 top-3 text-orange-300 opacity-80 animate-pulse" style={{ animationDelay: '0.4s' }}>
+                <Sparkles size={18} />
+              </span>
+              <span aria-hidden className="pointer-events-none absolute left-8 bottom-3 text-blue-300 opacity-70 animate-pulse" style={{ animationDelay: '0.8s' }}>
+                <Sparkles size={14} />
+              </span>
+              <span aria-hidden className="pointer-events-none absolute right-8 bottom-3 text-pink-300 opacity-70 animate-pulse" style={{ animationDelay: '1.2s' }}>
+                <Sparkles size={14} />
+              </span>
+
+              <div className="relative text-center">
+                <span
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em]"
+                  style={{
+                    background: 'linear-gradient(90deg, #F05A1A 0%, #FFC93C 100%)',
+                    color: '#0F1E3A',
+                    boxShadow: '0 4px 16px rgba(240,90,26,0.5)',
+                  }}
+                >
+                  <Sparkles size={12} fill="#0F1E3A" /> {t('softLaunchEyebrow')} <Sparkles size={12} fill="#0F1E3A" />
+                </span>
+                <h3 className="mt-4 text-xl font-bold text-white sm:text-2xl">
+                  {t('softLaunchHeadline')}
+                </h3>
+                <p className="mt-3 mx-auto max-w-xl text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)' }}>
+                  {t('softLaunchBody')}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="mb-14 text-center">
           <span className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
             style={{ backgroundColor: '#EBF1FF', color: '#1A5FD4', border: '1px solid #BBCFF5' }}>

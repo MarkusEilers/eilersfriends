@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
 import {
   Calendar, ArrowRight, Shield, Check, TrendingUp,
-  Award, Users, Sparkles, Play, Headphones, CreditCard, FileText, X as XIcon,
+  Award, Users, Sparkles, Play, Headphones, CreditCard, MessageCircle, X as XIcon,
 } from 'lucide-react'
 import { SalesMadeRoiCalculator } from './RoiCalculator'
 import { SkillInventory } from '@/components/sections/salesmade/SkillInventory'
@@ -379,7 +379,7 @@ export default async function SalesMadePage({ params }: PageProps) {
             </div>
             <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {formats.map((f, i) => {
-                const Icon = [Play, Headphones, CreditCard, FileText][i] ?? FileText
+                const Icon = [Play, Headphones, CreditCard, MessageCircle][i] ?? MessageCircle
                 return (
                   <div key={f.title} className="flex flex-col gap-3 rounded-2xl p-5" style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(147,184,245,0.18)' }}>
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: 'rgba(26,95,212,0.25)', color: '#93B8F5' }}>

@@ -669,8 +669,8 @@
       ]
     },
     "formatPill": {
-      "eyebrow": "In Deinem Tempo",
-      "headline": "Lernen, wo Du gerade bist — vier Formate.",
+      "eyebrow": "On the Job",
+      "headline": "Die richtigen Skills entwickeln — On the Job.",
       "formats": [
         {
           "title": "Kurze Videos",
@@ -681,12 +681,12 @@
           "body": "Jedes Modul als Podcast-Episode. Ohne Bildschirm, ohne Aufwand."
         },
         {
-          "title": "Reference Cards",
-          "body": "Eine A5-Karte pro Skill. Bauplan + die wichtigsten Fragen für das Gespräch."
+          "title": "Reference Cards & OnePager",
+          "body": "Eine A5-Karte pro Skill + ein druckbarer OnePager pro Modul. Bauplan, Beispiele, Checklisten."
         },
         {
-          "title": "OnePager",
-          "body": "Pro Modul ein druckbarer OnePager mit Modell, Beispiel und Checkliste."
+          "title": "Monatliches 1:1 Coaching",
+          "body": "60 Min. echtes Sparring zu Deinen offenen Deals. Auf Deinen Kontext zugeschnitten."
         }
       ]
     },
@@ -1450,7 +1450,11 @@
           "cta": "Jetzt bewerben",
           "note": "Nur 30 Plätze · wegen 1:1-Interaktion limitiert"
         }
-      ]
+      ],
+      "softLaunchEyebrow": "Soft Launch Special",
+      "softLaunchHeadline": "Cohort 1 — nur für die ersten 30 Teilnehmer",
+      "softLaunchBody": "Lifetime-Lock auf den Founding-Preis. Sobald die 30 voll sind, wird der nächste Preis aufgerufen.",
+      "seatsLeft": "begrenzt auf 30 Plätze"
     }
   }
 }

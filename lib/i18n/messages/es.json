@@ -669,8 +669,8 @@
       ]
     },
     "formatPill": {
-      "eyebrow": "A tu ritmo",
-      "headline": "Aprende donde estés — cuatro formatos.",
+      "eyebrow": "On the Job",
+      "headline": "Desarrolla las skills correctas — on the job.",
       "formats": [
         {
           "title": "Vídeos cortos",
@@ -681,12 +681,12 @@
           "body": "Cada módulo como episodio de podcast. Sin pantalla, sin esfuerzo."
         },
         {
-          "title": "Reference cards",
-          "body": "Una tarjeta A5 por skill. Plano + las preguntas clave para la conversación."
+          "title": "Reference cards & one-pagers",
+          "body": "Una tarjeta A5 por skill + un one-pager imprimible por módulo. Planos, ejemplos, checklists."
         },
         {
-          "title": "One-pagers",
-          "body": "Un one-pager imprimible por módulo con modelo, ejemplo y checklist."
+          "title": "Coaching 1:1 mensual",
+          "body": "60 min de sparring real sobre tus deals abiertos. Adaptado a tu contexto."
         }
       ]
     },
@@ -1450,7 +1450,11 @@
           "cta": "Solicitar plaza",
           "note": "Solo 30 plazas · limitado por interacción 1:1"
         }
-      ]
+      ],
+      "softLaunchEyebrow": "Soft Launch Special",
+      "softLaunchHeadline": "Cohort 1 — solo para los primeros 30 participantes",
+      "softLaunchBody": "Precio Founding bloqueado de por vida. Cuando se llenan las 30 plazas, el precio sube al siguiente nivel.",
+      "seatsLeft": "limitado a 30 plazas"
     }
   }
 }
