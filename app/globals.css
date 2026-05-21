@@ -82,6 +82,29 @@
     background-size: 40px 40px;
   }
 
+
+  /* SalesMade Soft-Launch confetti */
+  @keyframes salesmadeConfetti {
+    0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.55; }
+    25% { transform: translateY(-10px) rotate(90deg) scale(1.1); opacity: 1; }
+    50% { transform: translateY(2px) rotate(180deg) scale(0.9); opacity: 0.7; }
+    75% { transform: translateY(-6px) rotate(270deg) scale(1.05); opacity: 1; }
+  }
+  @keyframes salesmadeBurst {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.6); opacity: 0.85; }
+  }
+  @keyframes salesmadePulseRing {
+    0% { transform: scale(0.85); opacity: 0.8; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+  .sm-confetti { animation: salesmadeConfetti 3.6s ease-in-out infinite; }
+  .sm-burst { animation: salesmadeBurst 2.6s ease-in-out infinite; }
+  .sm-ring { animation: salesmadePulseRing 2.4s ease-out infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .sm-confetti, .sm-burst, .sm-ring { animation: none; }
+  }
+
   /* Animated number counter */
   @keyframes count-up {
     from { opacity: 0; transform: translateY(10px); }
