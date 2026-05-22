@@ -121,7 +121,7 @@ export function SalesPricing() {
                           boxShadow: '0 2px 8px rgba(240,90,26,0.35)',
                         }}
                       >
-                        <Sparkles size={9} fill="#0F1E3A" /> Cohort 1
+                        <Sparkles size={9} fill="#0F1E3A" /> {t("firstThirtyBadge")}
                       </span>
                     </div>
                     <p className="mt-1 text-sm text-gray-600">

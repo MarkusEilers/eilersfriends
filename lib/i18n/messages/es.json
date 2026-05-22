@@ -42,10 +42,11 @@
     "aboutDesc": "Nuestra historia y nuestra promesa",
     "featuredProgrammesTitle": "El soft-launch está en marcha.",
     "featuredProgrammesBody": "30 plazas Founding, precio bloqueado de por vida. Quedan pocas.",
-    "featuredProgrammesCta": "Reservar Cohort 1"
+    "featuredProgrammesCta": "Reservar tu plaza entre los primeros 30",
+    "firstThirtyBadge": "Los primeros 30"
   },
   "topbar": {
-    "message": "Cohort 1 arranca 2026 — solo 30 plazas founding · 90 días de devolución",
+    "message": "Arrancamos en 2026 — solo 30 plazas founding · 90 días de devolución",
     "link": "A la SalesMade Academy"
   },
   "hero": {
@@ -480,7 +481,7 @@
       "pills": [
         "25 años de experiencia",
         "Garantía de devolución 90 días",
-        "Cohort 1 · solo 30 plazas"
+        "Los primeros 30 · precio founding bloqueado"
       ],
       "researchHighlights": {
         "eyebrow": "Lo que muestran los estudios — y lo que esperamos para nuestro programa",
@@ -1508,9 +1509,10 @@
         }
       ],
       "softLaunchEyebrow": "Soft Launch Special",
-      "softLaunchHeadline": "Cohort 1 — solo para los primeros 30 participantes",
-      "softLaunchBody": "Precio Founding bloqueado de por vida — para la Cohort 1.",
-      "seatsLeft": "limitado a 30 plazas"
+      "softLaunchHeadline": "Solo para los primeros 30 participantes",
+      "softLaunchBody": "Precio Founding bloqueado de por vida — para los primeros 30.",
+      "seatsLeft": "limitado a 30 plazas",
+      "firstThirtyBadge": "Los primeros 30"
     }
   }
 }

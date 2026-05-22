@@ -42,10 +42,11 @@
     "aboutDesc": "Our story and our promise",
     "featuredProgrammesTitle": "Soft-launch is running.",
     "featuredProgrammesBody": "30 founding seats, lifetime price lock. A few slots remaining.",
-    "featuredProgrammesCta": "Secure Cohort 1"
+    "featuredProgrammesCta": "Get on the list of the first 30",
+    "firstThirtyBadge": "The first 30"
   },
   "topbar": {
-    "message": "Cohort 1 launches 2026 — only 30 founding seats · 90-day money-back",
+    "message": "We launch in 2026 — only 30 founding seats · 90-day money-back",
     "link": "To the SalesMade Academy"
   },
   "hero": {
@@ -480,7 +481,7 @@
       "pills": [
         "25 years of experience",
         "90-day money-back guarantee",
-        "Cohort 1 · only 30 seats"
+        "The first 30 · founding lock"
       ],
       "researchHighlights": {
         "eyebrow": "What the studies show — and what we expect from our programme",
@@ -1508,9 +1509,10 @@
         }
       ],
       "softLaunchEyebrow": "Soft Launch Special",
-      "softLaunchHeadline": "Cohort 1 — only for the first 30 participants",
-      "softLaunchBody": "Lifetime-lock on the founding price — for Cohort 1.",
-      "seatsLeft": "limited to 30 seats"
+      "softLaunchHeadline": "Only for the first 30 participants",
+      "softLaunchBody": "Lifetime-lock on the founding price — for the first 30.",
+      "seatsLeft": "limited to 30 seats",
+      "firstThirtyBadge": "The first 30"
     }
   }
 }

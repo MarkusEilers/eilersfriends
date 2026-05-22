@@ -42,10 +42,11 @@
     "aboutDesc": "Unsere Geschichte und unser Versprechen",
     "featuredProgrammesTitle": "Soft-Launch läuft.",
     "featuredProgrammesBody": "30 Founding-Plätze, Lifetime-Preis-Lock. Wenige Slots noch frei.",
-    "featuredProgrammesCta": "Cohort 1 sichern"
+    "featuredProgrammesCta": "Bei den ersten 30 dabei sein",
+    "firstThirtyBadge": "Die ersten 30"
   },
   "topbar": {
-    "message": "Cohort 1 startet 2026 — nur 30 Founding-Plätze · 90 Tage Geld-zurück",
+    "message": "Wir starten 2026 — nur 30 Founding-Plätze · 90 Tage Geld-zurück",
     "link": "Zur SalesMade Academy"
   },
   "hero": {
@@ -464,7 +465,7 @@
       "pills": [
         "25 Jahre Erfahrung",
         "90-Tage Geld-zurück-Garantie",
-        "Cohort 1 · nur 30 Plätze"
+        "Die ersten 30 · Founding-Lock"
       ],
       "researchHighlights": {
         "eyebrow": "Was die Studien zeigen — und was wir für unser Programm erwarten",
@@ -1492,9 +1493,10 @@
         }
       ],
       "softLaunchEyebrow": "Soft Launch Special",
-      "softLaunchHeadline": "Cohort 1 — nur für die ersten 30 Teilnehmer",
-      "softLaunchBody": "Lifetime-Lock auf den Founding-Preis — für die Cohort 1.",
-      "seatsLeft": "begrenzt auf 30 Plätze"
+      "softLaunchHeadline": "Nur für die ersten 30 Teilnehmer",
+      "softLaunchBody": "Lifetime-Lock auf den Founding-Preis — für die ersten 30.",
+      "seatsLeft": "begrenzt auf 30 Plätze",
+      "firstThirtyBadge": "Die ersten 30"
     }
   }
 }

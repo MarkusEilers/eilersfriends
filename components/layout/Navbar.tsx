@@ -301,7 +301,7 @@ export function Navbar({ calendlyUrl }: { calendlyUrl: string }) {
                             <div>
                               <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest"
                                 style={{ backgroundColor: 'rgba(255,255,255,0.5)', color: item.featured.accent }}>
-                                <Sparkles size={10} /> Cohort 1
+                                <Sparkles size={10} /> {t("firstThirtyBadge")}
                               </span>
                               <h4 className="mt-3 text-lg font-bold" style={{ color: '#0D0D0B' }}>
                                 {t(item.featured.titleKey)}
