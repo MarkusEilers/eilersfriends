@@ -86,7 +86,7 @@ async function ensureOfferSchema() {
   ensured = true
 }
 
-export interface OfferRow {
+export interface OfferRow extends Record<string, unknown> {
   id: string
   offer_number: string
   customer_name: string
@@ -179,4 +179,50 @@ export async function recordOfferEvent(offerId: string, eventType: string, actor
     INSERT INTO offer_events (offer_id, event_type, actor_email, metadata)
     VALUES (${offerId}, ${eventType}, ${actorEmail ?? null}, ${JSON.stringify(metadata ?? {})}::jsonb)
   `)
+}
+
+// ─── Update (admin-only, called from server actions) ─────────────────────────
+export interface OfferUpdate {
+  title?: string
+  subtitle?: string | null
+  tagline?: string | null
+  customerName?: string
+  customerCompany?: string | null
+  customerEmail?: string | null
+  understandingSection?: object
+  empathySection?: object
+  programs?: object
+  economicResults?: object
+  sectionOrder?: object
+  validUntil?: string  // ISO date
+  status?: 'draft' | 'sent' | 'viewed' | 'signed' | 'paid' | 'expired' | 'cancelled'
+}
+
+export async function updateOffer(id: string, update: OfferUpdate): Promise<void> {
+  await ensureOfferSchema()
+  // Build SET clauses dynamically using safe parameterised SQL
+  const sets: ReturnType<typeof sql>[] = []
+  if (update.title !== undefined) sets.push(sql`title = ${update.title}`)
+  if (update.subtitle !== undefined) sets.push(sql`subtitle = ${update.subtitle}`)
+  if (update.tagline !== undefined) sets.push(sql`tagline = ${update.tagline}`)
+  if (update.customerName !== undefined) sets.push(sql`customer_name = ${update.customerName}`)
+  if (update.customerCompany !== undefined) sets.push(sql`customer_company = ${update.customerCompany}`)
+  if (update.customerEmail !== undefined) sets.push(sql`customer_email = ${update.customerEmail}`)
+  if (update.understandingSection !== undefined) sets.push(sql`understanding_section = ${JSON.stringify(update.understandingSection)}::jsonb`)
+  if (update.empathySection !== undefined) sets.push(sql`empathy_section = ${JSON.stringify(update.empathySection)}::jsonb`)
+  if (update.programs !== undefined) sets.push(sql`programs = ${JSON.stringify(update.programs)}::jsonb`)
+  if (update.economicResults !== undefined) sets.push(sql`economic_results = ${JSON.stringify(update.economicResults)}::jsonb`)
+  if (update.sectionOrder !== undefined) sets.push(sql`section_order = ${JSON.stringify(update.sectionOrder)}::jsonb`)
+  if (update.validUntil !== undefined) sets.push(sql`valid_until = ${update.validUntil}`)
+  if (update.status !== undefined) sets.push(sql`status = ${update.status}::offer_status`)
+  if (!sets.length) return
+  sets.push(sql`updated_at = now()`)
+  const joined = sql.join(sets, sql`, `)
+  await db.execute(sql`UPDATE offers SET ${joined} WHERE id = ${id}`)
+}
+
+export async function getOfferById(id: string): Promise<OfferRow | null> {
+  await ensureOfferSchema()
+  const res = await db.execute<OfferRow>(sql`SELECT * FROM offers WHERE id = ${id} LIMIT 1`)
+  return res.rows[0] ?? null
 }
