@@ -34,14 +34,20 @@ export function SalesPricing() {
             boxShadow: '0 40px 100px -40px rgba(15,30,58,0.55), 0 8px 24px -12px rgba(15,30,58,0.4)',
           }}
         >
-          {/* Subtle vignette overlay to keep readability where the cards land */}
+          {/* Black readability overlay (~38%) — keeps text crisp on the firework image */}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0"
             style={{
-              background:
-                'radial-gradient(ellipse at 50% 95%, rgba(15,30,58,0.35) 0%, transparent 55%),' +
-                'linear-gradient(180deg, transparent 0%, transparent 35%, rgba(15,30,58,0.20) 100%)',
+              backgroundColor: 'rgba(0,0,0,0.38)',
+            }}
+          />
+          {/* Soft bottom vignette so the cards sit clean on a dark base */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background: 'radial-gradient(ellipse at 50% 95%, rgba(15,30,58,0.45) 0%, transparent 60%)',
             }}
           />
 
