@@ -26,11 +26,32 @@ export async function saveTrustLogoAction(formData: FormData) {
   const slug = String(formData.get('slug') || '').trim()
   const name = String(formData.get('name') || '').trim()
   const domain = String(formData.get('domain') || '').trim() || null
-  const src = String(formData.get('src') || '').trim() || null
+  let src: string | null = String(formData.get('src') || '').trim() || null
   const order = parseInt(String(formData.get('order') || '0'), 10) || 0
   const isVisible = formData.get('isVisible') === 'on' || formData.get('isVisible') === 'true'
   if (!name) throw new Error('name required')
   const finalSlug = slug || slugify(name)
+
+  // Optional file upload — overrides src if a file is supplied
+  const file = formData.get('logoFile')
+  if (file && file instanceof File && file.size > 0) {
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+    if (!blobToken) throw new Error('BLOB_READ_WRITE_TOKEN not set — cannot upload logo file')
+    const { put } = await import('@vercel/blob')
+    const ext = (file.name.split('.').pop() || 'png').toLowerCase()
+    const allowed = ['png', 'jpg', 'jpeg', 'svg', 'webp']
+    if (!allowed.includes(ext)) throw new Error(`unsupported file type .${ext}`)
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const contentType =
+      ext === 'svg' ? 'image/svg+xml' :
+      ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' :
+      ext === 'webp' ? 'image/webp' : 'image/png'
+    const blob = await put(`trust-logos/${finalSlug}-${Date.now()}.${ext}`, buffer, {
+      access: 'public', contentType, token: blobToken,
+    })
+    src = blob.url
+  }
+
   await upsertTrustLogo({
     slug: finalSlug,
     name,

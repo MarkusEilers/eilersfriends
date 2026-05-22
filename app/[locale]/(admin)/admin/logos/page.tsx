@@ -47,7 +47,7 @@ export default async function AdminLogosPage() {
                 </div>
 
                 {/* Editable form */}
-                <form action={saveTrustLogoAction} className="flex-1 grid grid-cols-12 gap-3 items-end">
+                <form action={saveTrustLogoAction} encType="multipart/form-data" className="flex-1 grid grid-cols-12 gap-3 items-end">
                   <input type="hidden" name="slug" value={logo.slug} />
                   <div className="col-span-3">
                     <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">Name</label>
@@ -105,6 +105,17 @@ export default async function AdminLogosPage() {
                       <Save size={12} />
                     </button>
                   </div>
+                  <div className="col-span-12">
+                    <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">
+                      Datei hochladen (überschreibt Source URL)
+                    </label>
+                    <input
+                      type="file"
+                      name="logoFile"
+                      accept=".png,.jpg,.jpeg,.svg,.webp,image/*"
+                      className="block w-full text-xs text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-gray-100 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
+                    />
+                  </div>
                 </form>
 
                 {/* Delete + search */}
@@ -133,7 +144,7 @@ export default async function AdminLogosPage() {
           Neue Marke hinzufügen
         </h2>
         <div className="rounded-2xl border border-gray-200 bg-white p-5">
-          <form action={saveTrustLogoAction} className="grid grid-cols-12 gap-3 items-end">
+          <form action={saveTrustLogoAction} encType="multipart/form-data" className="grid grid-cols-12 gap-3 items-end">
             <div className="col-span-4">
               <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">Name</label>
               <input
@@ -166,6 +177,17 @@ export default async function AdminLogosPage() {
                 name="order"
                 defaultValue={99}
                 className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-center"
+              />
+            </div>
+            <div className="col-span-12 -mt-1">
+              <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">
+                Logo-Datei hochladen <span className="normal-case font-normal">(optional · überschreibt Source URL · PNG / JPG / SVG / WEBP)</span>
+              </label>
+              <input
+                type="file"
+                name="logoFile"
+                accept=".png,.jpg,.jpeg,.svg,.webp,image/*"
+                className="block w-full text-xs text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-gray-100 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
               />
             </div>
             <button
