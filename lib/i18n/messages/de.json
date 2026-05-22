@@ -1057,30 +1057,37 @@
   "salesmadeExt": {
     "marketStats": {
       "eyebrow": "Die unbequeme Wahrheit",
-      "headline1": "In Europa gibt es keine echte",
-      "headline2": "Sales-Ausbildung.",
-      "subtext": "Vertrieb ist einer der anspruchsvollsten Jobs überhaupt — Menschen lesen, Vertrauen aufbauen, Einwände entwaffnen, alles unter Druck. Aber dafür bildet niemand aus. Keine Berufsschule. Kein Studium. Keine anerkannte Zertifizierung.",
-      "badgeProblem": "⚠ Problem",
-      "sourceLabel": "Quelle",
-      "cards": [
+      "headline1": "Drei von hundert",
+      "headline2": "arbeiten wie ein Profi-Team.",
+      "subtext": "Vertrieb ist einer der anspruchsvollsten Jobs überhaupt — und trotzdem werden 84 % der B2B-Seller in Europa nie professionell ausgebildet. Wir haben 33 typische Verkäufer:innen genommen und ausgerechnet, was die Studien zeigen.",
+      "crowdLabel": "Stell Dir 33 typische B2B-Verkäufer:innen vor:",
+      "clusters": [
         {
-          "headline": "haben keine professionelle Ausbildung",
-          "body": "der B2B-Seller in Europa für den Job, den sie täglich machen sollen.",
-          "source": "SalesMade Academy · DACH Industry Snapshot 2024"
+          "count": "1",
+          "of": "von 33",
+          "label": "Ausgebildet · im Sparring · misst Fortschritt",
+          "body": "Etwa 3 % arbeiten wie ein professionell ausgebildetes Sales-Team.",
+          "source": "RAIN Group · Top Performers Benchmark 2024"
         },
         {
-          "headline": "haben kein wirksames Sparring",
-          "body": "in modernen Gesprächstechniken, Social Selling oder überzeugender Präsentation.",
+          "count": "3",
+          "of": "von 33",
+          "label": "Ausgebildet, aber ohne wirksames Sparring",
+          "body": "Sie haben Grundlagen — aber keine systematische Begleitung im echten Gespräch.",
           "source": "Sales Enablement Society · State of Coaching 2024"
         },
         {
-          "headline": "arbeiten ohne vermeidbare Fehler",
-          "body": "die wichtige Deals verzögern oder verhindern. Drei Prozent. Mehr nicht.",
-          "source": "RAIN Group · Top Performers Benchmark 2024"
+          "count": "29",
+          "of": "von 33",
+          "label": "Keine professionelle Ausbildung",
+          "body": "Aufmerksamkeit gewinnen, Vertrauen aufbauen, überzeugen — alles experimenteller Freestyle.",
+          "source": "SalesMade Academy · DACH Industry Snapshot 2024"
         }
       ],
+      "badgeProblem": "⚠ Problem",
+      "sourceLabel": "Quelle",
       "footer1": "Drei Prozent",
-      "footer2": " arbeiten so, wie ein professionell ausgebildetes Sales-Team arbeiten würde. ",
+      "footer2": " arbeiten heute so, wie ein professionell ausgebildetes Sales-Team arbeiten würde. ",
       "footer3": "Siebenundneunzig Prozent",
       "footer4": " haben Hebel, die noch nicht aktiviert sind."
     },

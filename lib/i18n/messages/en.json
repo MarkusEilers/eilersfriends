@@ -1056,31 +1056,38 @@
   },
   "salesmadeExt": {
     "marketStats": {
-      "eyebrow": "The uncomfortable truth",
-      "headline1": "In Europe there is no real",
-      "headline2": "sales education.",
-      "subtext": "Sales is one of the most demanding jobs there is — reading people, building trust, disarming objections, all under pressure. But nobody trains for it. No school. No degree. No recognised certification.",
-      "badgeProblem": "⚠ Problem",
-      "sourceLabel": "Source",
-      "cards": [
+      "eyebrow": "The Uncomfortable Truth",
+      "headline1": "Three out of a hundred",
+      "headline2": "work like a pro-trained team.",
+      "subtext": "Sales is one of the most demanding jobs there is — and yet 84% of B2B sellers in Europe are never professionally trained. We took 33 typical sellers and ran the numbers from the studies.",
+      "crowdLabel": "Picture 33 typical B2B sellers:",
+      "clusters": [
         {
-          "headline": "have no professional training",
-          "body": "of B2B sellers in Europe — for the job they are expected to do every day.",
-          "source": "SalesMade Academy · DACH Industry Snapshot 2024"
+          "count": "1",
+          "of": "of 33",
+          "label": "Trained · in sparring · tracks progress",
+          "body": "About 3% work like a professionally trained sales team.",
+          "source": "RAIN Group · Top Performers Benchmark 2024"
         },
         {
-          "headline": "have no effective sparring",
-          "body": "in modern conversation techniques, social selling or convincing presentation.",
+          "count": "3",
+          "of": "of 33",
+          "label": "Trained, but no effective sparring",
+          "body": "They have the basics — but no systematic support inside the real conversation.",
           "source": "Sales Enablement Society · State of Coaching 2024"
         },
         {
-          "headline": "work without avoidable mistakes",
-          "body": "that delay or block important deals. Three percent. No more.",
-          "source": "RAIN Group · Top Performers Benchmark 2024"
+          "count": "29",
+          "of": "of 33",
+          "label": "No professional training",
+          "body": "Capturing attention, building trust, persuading — all experimental freestyle.",
+          "source": "SalesMade Academy · DACH Industry Snapshot 2024"
         }
       ],
+      "badgeProblem": "⚠ Problem",
+      "sourceLabel": "Source",
       "footer1": "Three percent",
-      "footer2": " work the way a professionally trained sales team would work. ",
+      "footer2": " of sellers work today the way a professionally trained sales team would. ",
       "footer3": "Ninety-seven percent",
       "footer4": " have levers that are not yet activated."
     },

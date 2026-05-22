@@ -1057,32 +1057,39 @@
   "salesmadeExt": {
     "marketStats": {
       "eyebrow": "La verdad incómoda",
-      "headline1": "En Europa no existe una verdadera",
-      "headline2": "formación de ventas.",
-      "subtext": "Vender es uno de los trabajos más exigentes que hay — leer a las personas, generar confianza, desarmar objeciones, todo bajo presión. Pero nadie forma para eso. Ni formación profesional. Ni estudios. Ni una certificación reconocida.",
-      "badgeProblem": "⚠ Problema",
-      "sourceLabel": "Fuente",
-      "cards": [
+      "headline1": "Tres de cada cien",
+      "headline2": "trabajan como un equipo profesional.",
+      "subtext": "Las ventas son uno de los trabajos más exigentes — y aun así, el 84 % de los vendedores B2B en Europa nunca recibe formación profesional. Cogemos 33 vendedores típicos y calculamos lo que muestran los estudios.",
+      "crowdLabel": "Imagina 33 vendedores B2B típicos:",
+      "clusters": [
         {
-          "headline": "no tiene formación profesional",
-          "body": "de los vendedores B2B en Europa — para el trabajo que se espera que hagan cada día.",
-          "source": "SalesMade Academy · DACH Industry Snapshot 2024"
+          "count": "1",
+          "of": "de 33",
+          "label": "Formado · con sparring · mide su progreso",
+          "body": "Aproximadamente el 3 % trabaja como un equipo de ventas formado profesionalmente.",
+          "source": "RAIN Group · Top Performers Benchmark 2024"
         },
         {
-          "headline": "no tiene sparring efectivo",
-          "body": "en técnicas modernas de conversación, social selling o presentación convincente.",
+          "count": "3",
+          "of": "de 33",
+          "label": "Formado, pero sin sparring efectivo",
+          "body": "Tiene las bases — pero ningún apoyo sistemático en la conversación real.",
           "source": "Sales Enablement Society · State of Coaching 2024"
         },
         {
-          "headline": "trabaja sin errores evitables",
-          "body": "que retrasan o bloquean operaciones importantes. Tres por ciento. Nada más.",
-          "source": "RAIN Group · Top Performers Benchmark 2024"
+          "count": "29",
+          "of": "de 33",
+          "label": "Sin formación profesional",
+          "body": "Captar atención, generar confianza, convencer — todo freestyle experimental.",
+          "source": "SalesMade Academy · DACH Industry Snapshot 2024"
         }
       ],
-      "footer1": "Un tres por ciento",
-      "footer2": " trabaja como lo haría un equipo de ventas con formación profesional. ",
-      "footer3": "Un noventa y siete por ciento",
-      "footer4": " tiene palancas que aún no se han activado."
+      "badgeProblem": "⚠ Problema",
+      "sourceLabel": "Fuente",
+      "footer1": "Tres por ciento",
+      "footer2": " trabaja hoy como lo haría un equipo de ventas formado profesionalmente. ",
+      "footer3": "Noventa y siete por ciento",
+      "footer4": " tiene palancas aún sin activar."
     },
     "ceoMonologue": {
       "eyebrow": "Lo que nos cuentan CEOs, founders y sales leaders",
