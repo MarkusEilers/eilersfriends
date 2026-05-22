@@ -28,9 +28,9 @@ export function SalesPricing() {
           className="relative overflow-hidden rounded-[32px] p-6 sm:p-10"
           style={{
             backgroundColor: '#0F1E3A',
-            backgroundImage: "url('/salesmade/firework-bg.svg')",
+            backgroundImage: "url('/salesmade/firework-bg.jpg')",
             backgroundSize: 'cover',
-            backgroundPosition: 'center top',
+            backgroundPosition: 'center center',
             boxShadow: '0 40px 100px -40px rgba(15,30,58,0.55), 0 8px 24px -12px rgba(15,30,58,0.4)',
           }}
         >
