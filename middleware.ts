@@ -17,6 +17,13 @@ const intlMiddleware = createMiddleware(routing)
 
 export default async function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') ?? ''
+  const pathname = request.nextUrl.pathname
+
+  // Public offer-by-secret route lives outside the localized routing tree.
+  // Skip next-intl rewriting so the URL stays /offer/<secret>.
+  if (pathname.startsWith('/offer/')) {
+    return NextResponse.next()
+  }
 
   // Check for domain rewrites (landing page domains)
   const rewritePath = DOMAIN_REWRITES[hostname]

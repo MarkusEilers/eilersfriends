@@ -13,6 +13,7 @@ import {
   ChevronRight,
   BookOpen,
   Image as ImageIcon,
+  FileSignature,
 } from 'lucide-react'
 
 const navItems = [
@@ -55,6 +56,11 @@ const navItems = [
     label: 'Programme',
     href: '/admin/programs',
     icon: FileText,
+  },
+  {
+    label: 'Angebote',
+    href: '/admin/offers',
+    icon: FileSignature,
   },
   {
     label: 'Einstellungen',

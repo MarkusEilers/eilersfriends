@@ -8,6 +8,9 @@ import {
   serial,
   uuid,
   json,
+  jsonb,
+  varchar,
+  date,
   pgEnum,
   unique,
 } from 'drizzle-orm/pg-core'
@@ -15,7 +18,7 @@ import { relations } from 'drizzle-orm'
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
-export const userRoleEnum = pgEnum('user_role', ['admin', 'coach', 'participant'])
+export const userRoleEnum = pgEnum('user_role', ['admin', 'coach', 'participant', 'client'])
 export const companySizeEnum = pgEnum('company_size', ['startup', 'scaleup', 'enterprise'])
 export const programTypeEnum = pgEnum('program_type', ['academy', 'coaching', 'training'])
 export const ctaTypeEnum = pgEnum('cta_type', ['apply', 'buy', 'waitlist', 'calendly'])
@@ -476,3 +479,121 @@ export const trustLogos = pgTable('trust_logos', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
+
+// ────────────────────────── OFFERS (Wave 2) ──────────────────────────
+export const offerStatusEnum = pgEnum('offer_status', ['draft', 'sent', 'viewed', 'signed', 'paid', 'expired', 'cancelled'])
+export const offerTrackTypeEnum = pgEnum('offer_track_type', ['main', 'parallel', 'combined'])
+export const offerPricingTypeEnum = pgEnum('offer_pricing_type', ['DIY', 'DWY', 'DFY'])
+
+export const offers = pgTable('offers', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  offerNumber: varchar('offer_number', { length: 64 }).notNull().unique(),
+  // Customer
+  customerName: varchar('customer_name', { length: 255 }).notNull(),
+  customerCompany: varchar('customer_company', { length: 255 }),
+  customerEmail: varchar('customer_email', { length: 255 }),
+  customerUserId: uuid('customer_user_id').references(() => users.id, { onDelete: 'set null' }),
+  // Secret link for public access
+  accessSalt: varchar('access_salt', { length: 64 }).notNull().unique(),
+  // Headlines
+  title: varchar('title', { length: 255 }).notNull(),
+  subtitle: text('subtitle'),
+  tagline: text('tagline'),
+  // Content blobs (mirrors offer-builder structure — all JSONB)
+  understandingSection: jsonb('understanding_section').default({}),
+  empathySection: jsonb('empathy_section').default({}),
+  introSections: jsonb('intro_sections').default([]),
+  programs: jsonb('programs').default([]),
+  partnerLogos: jsonb('partner_logos').default([]),
+  sectionOrder: jsonb('section_order').default([]),
+  // Timeline
+  timelineStartDate: date('timeline_start_date'),
+  timelineRhythmWeeks: integer('timeline_rhythm_weeks').default(2),
+  timelineBreaks: jsonb('timeline_breaks').default([]),
+  // Sweat Equity
+  sweatEquityEnabled: boolean('sweat_equity_enabled').default(false).notNull(),
+  sweatEquityPercent: integer('sweat_equity_percent'),
+  // Economic results
+  economicResults: jsonb('economic_results').default([]),
+  // Validity
+  validFrom: timestamp('valid_from', { withTimezone: true }).defaultNow().notNull(),
+  validUntil: timestamp('valid_until', { withTimezone: true }).notNull(),
+  // Status flow: draft → sent → viewed → signed → paid
+  status: offerStatusEnum('status').default('draft').notNull(),
+  // Signature
+  signedAt: timestamp('signed_at', { withTimezone: true }),
+  signedByName: varchar('signed_by_name', { length: 255 }),
+  signedByEmail: varchar('signed_by_email', { length: 255 }),
+  signatureData: text('signature_data'),
+  selectedPricingOption: varchar('selected_pricing_option', { length: 64 }),
+  // Stripe
+  stripeCheckoutSessionId: varchar('stripe_checkout_session_id', { length: 255 }),
+  stripePaymentIntentId: varchar('stripe_payment_intent_id', { length: 255 }),
+  paidAt: timestamp('paid_at', { withTimezone: true }),
+  // Versioning (parent_offer_id when client requests a revision)
+  versionNumber: integer('version_number').default(1).notNull(),
+  parentOfferId: uuid('parent_offer_id'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+// Template library — reusable building blocks (skill modules)
+export const offerBuildingBlockTemplates = pgTable('offer_building_block_templates', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  roles: jsonb('roles').default([]),  // string[]
+  inputs: jsonb('inputs').default([]),
+  outputs: jsonb('outputs').default([]),
+  durationDays: integer('duration_days').default(1),
+  sortOrder: integer('sort_order').default(0),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+// Template library — reusable phases (collections of building blocks)
+export const offerPhaseTemplates = pgTable('offer_phase_templates', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  number: integer('number').notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  color: varchar('color', { length: 32 }).default('gray'),
+  sortOrder: integer('sort_order').default(0),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+// Junction: phase ↔ building block
+export const offerPhaseBuildingBlocks = pgTable('offer_phase_building_blocks', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  phaseTemplateId: uuid('phase_template_id').references(() => offerPhaseTemplates.id, { onDelete: 'cascade' }).notNull(),
+  buildingBlockTemplateId: uuid('building_block_template_id').references(() => offerBuildingBlockTemplates.id, { onDelete: 'cascade' }).notNull(),
+  sortOrder: integer('sort_order').default(0),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+// Template library — infotainment blocks (reusable copy/image/video sections)
+export const offerInfotainmentTemplates = pgTable('offer_infotainment_templates', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  type: varchar('type', { length: 32 }).default('mixed').notNull(),  // text|image|video|mixed
+  content: text('content'),
+  imageUrl: text('image_url'),
+  videoUrl: text('video_url'),
+  layout: varchar('layout', { length: 16 }).default('left'),  // left|right|center|full
+  sortOrder: integer('sort_order').default(0),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+// Audit trail — track all offer events (sent, viewed, signed, etc.)
+export const offerEvents = pgTable('offer_events', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  offerId: uuid('offer_id').references(() => offers.id, { onDelete: 'cascade' }).notNull(),
+  eventType: varchar('event_type', { length: 32 }).notNull(),  // sent_email, viewed, signed, paid, revision_requested
+  actorEmail: varchar('actor_email', { length: 255 }),
+  metadata: jsonb('metadata').default({}),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
