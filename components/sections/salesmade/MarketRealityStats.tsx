@@ -26,27 +26,18 @@ export function MarketRealityStats() {
 
         {/* ── Compact integrated layout: crowd left, annotations right ─── */}
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] items-center">
-          {/* Crowd visualization */}
+          {/* Crowd visualization — full-bleed image, no chrome */}
           <div className="relative">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em]" style={{ color: '#6B7280' }}>
               {t('crowdLabel')}
             </p>
-            <div
-              className="rounded-3xl p-3 sm:p-4 overflow-hidden"
-              style={{
-                background: 'linear-gradient(180deg, #FFFFFF 0%, #F5F6F8 100%)',
-                border: '1px solid #E5E7EB',
-                boxShadow: '0 4px 24px rgba(15,30,58,0.05)',
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/salesmade/crowd-33-isometric.jpg"
-                alt="33 typische B2B-Verkäufer:innen — 1 voll ausgebildet, 3 ausgebildet aber ohne Sparring, 29 ohne Ausbildung"
-                className="w-full h-auto rounded-2xl"
-                loading="lazy"
-              />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/salesmade/crowd-33-isometric.jpg"
+              alt="33 typische B2B-Verkäufer:innen — 1 voll ausgebildet, 3 ausgebildet aber ohne Sparring, 29 ohne Ausbildung"
+              className="w-full h-auto"
+              loading="lazy"
+            />
           </div>
 
           {/* Cluster annotations */}
