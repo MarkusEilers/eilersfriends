@@ -25,6 +25,7 @@ interface PageProps {
 }
 
 interface CrisisCard { persona: string; number: string; label: string; description: string; source: string }
+interface ResearchHighlight { value: string; label: string; body: string }
 interface RuleCard { number: string; label: string; text: string; source: string }
 interface SystemStat { value: string; label: string }
 interface FaqItem { q: string; a: string }
@@ -47,6 +48,7 @@ export default async function SalesMadePage({ params }: PageProps) {
   const coachTags = (t.raw('coach.tags') as string[]) ?? []
   const faqItems = (t.raw('faq.items') as FaqItem[]) ?? []
   const heroPills = (t.raw('hero.pills') as string[]) ?? []
+  const researchHighlights = (t.raw('hero.researchHighlights.items') as ResearchHighlight[]) ?? []
   const antiMythProofs = (t.raw('antiMyth.proofs') as string[]) ?? []
   const formats = (t.raw('formatPill.formats') as FormatItem[]) ?? []
   const compareRows = (t.raw('coursesVsSkill.rows') as CompareRow[]) ?? []
@@ -85,6 +87,42 @@ export default async function SalesMadePage({ params }: PageProps) {
               )
             })}
           </div>
+
+          {/* Research highlights row — Confidence · Behavior · Outcome */}
+          {researchHighlights.length === 3 && (
+            <div className="mx-auto mt-10 max-w-4xl">
+              <div className="text-center text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: 'rgba(147,184,245,0.7)' }}>
+                {t('hero.researchHighlights.eyebrow')}
+              </div>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                {researchHighlights.map((h, i) => (
+                  <div
+                    key={h.label + i}
+                    className="rounded-2xl px-5 py-5 text-left"
+                    style={{
+                      backgroundColor: 'rgba(255,255,255,0.05)',
+                      border: '1px solid rgba(147,184,245,0.25)',
+                      backdropFilter: 'blur(6px)',
+                    }}
+                  >
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="text-3xl font-bold" style={{ color: accent }}>{h.value}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: '#93B8F5' }}>
+                        {h.label}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                      {h.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-center text-[10px] uppercase tracking-[0.18em]" style={{ color: 'rgba(147,184,245,0.55)' }}>
+                {t('hero.researchHighlights.sources')}
+              </p>
+            </div>
+          )}
+
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link
               href="/kontakt"

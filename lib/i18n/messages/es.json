@@ -444,16 +444,37 @@
     },
     "hero": {
       "badge": "SalesMade Academy · Soft-Launch · Plazas limitadas",
-      "headline1": "De la incertidumbre a",
-      "headlineAccent": "ingresos predecibles.",
-      "subtext": "La SalesMade Academy no es un seminario. Es un programa de transformación de 12 meses para founders B2B de software que convierte a tus vendedores en sparring imprescindibles para tus clientes.",
+      "headline1": "Cerremos la",
+      "headlineAccent": "Sales Education Gap.",
+      "subtext": "La SalesMade Academy no es un seminario. Es un programa de transformación de 12 meses para founders B2B de software que convierte a tus vendedores en sparring imprescindibles para tus clientes — de la incertidumbre a ingresos predecibles.",
       "cta": "Reservar conversación de benchmarking",
       "note": "Quedan pocas plazas para el soft-launch.",
       "pills": [
         "25 años de experiencia",
         "Garantía de devolución 90 días",
         "Cohort 1 · solo 30 plazas"
-      ]
+      ],
+      "researchHighlights": {
+        "eyebrow": "Lo que muestran los estudios — y lo que esperamos para nuestro programa",
+        "items": [
+          {
+            "value": "+82 %",
+            "label": "Confianza",
+            "body": "se sienten seguros en cold calls + conversaciones de procurement en 30 días."
+          },
+          {
+            "value": "2,3 ×",
+            "label": "Comportamiento",
+            "body": "más actividades de ventas cualificadas por semana en el primer trimestre."
+          },
+          {
+            "value": "+31 %",
+            "label": "Outcome",
+            "body": "conversión del primer contacto al siguiente paso — medible desde el mes 2."
+          }
+        ],
+        "sources": "Fuentes: Estudio de Talento Hyrise 2024 · ThePower B2B Sales Cohort 2023"
+      }
     },
     "crisis": {
       "eyebrow": "La crisis invisible en las ventas B2B",
@@ -628,7 +649,7 @@
       ]
     },
     "finalCta": {
-      "eyebrow": "De la incertidumbre a ingresos predecibles.",
+      "eyebrow": "Cerremos la Sales Education Gap.",
       "headline": "45 minutos para tus próximos 36 meses.",
       "subtext": "¿Cómo de convincente trabaja tu equipo de ventas de software en comparación directa? Nuestro benchmark sin compromiso te puede dar perspectiva valiosa. Tu equipo recorre un escenario realista en el que observamos y evaluamos 13 skills decisivos de ventas.",
       "cta": "Reservar conversación de benchmarking",

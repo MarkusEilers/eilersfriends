@@ -444,16 +444,37 @@
     },
     "hero": {
       "badge": "SalesMade Academy · Soft-Launch · Limited Seats",
-      "headline1": "Let's fill the",
-      "headlineAccent": "Sales Education Gap",
-      "subtext": "The SalesMade Academy is not a seminar. It is a 12-month transformation programme for B2B software founders that turns your sellers into indispensable sparring partners for your customers. It will take teams from uncertainty to predictable revenue.",
+      "headline1": "Let's close the",
+      "headlineAccent": "Sales Education Gap.",
+      "subtext": "The SalesMade Academy is not a seminar. It is a 12-month transformation programme for B2B software founders that turns your sellers into indispensable sparring partners for your customers — from uncertainty to predictable revenue.",
       "cta": "Book a benchmarking conversation",
       "note": "Only a few seats left in the soft-launch.",
       "pills": [
         "25 years of experience",
         "90-day money-back guarantee",
         "Cohort 1 · only 30 seats"
-      ]
+      ],
+      "researchHighlights": {
+        "eyebrow": "What the studies show — and what we expect from our programme",
+        "items": [
+          {
+            "value": "+82%",
+            "label": "Confidence",
+            "body": "feel confident in cold calls + procurement conversations within 30 days."
+          },
+          {
+            "value": "2.3×",
+            "label": "Behavior",
+            "body": "more qualified sales activities per week in the first quarter."
+          },
+          {
+            "value": "+31%",
+            "label": "Outcome",
+            "body": "conversion from first conversation to next step — measurable from month 2."
+          }
+        ],
+        "sources": "Sources: Hyrise Talents Study 2024 · ThePower B2B Sales Cohort 2023"
+      }
     },
     "crisis": {
       "eyebrow": "The Invisible Crisis in B2B Sales",
@@ -628,7 +649,7 @@
       ]
     },
     "finalCta": {
-      "eyebrow": "From uncertainty to predictable revenue.",
+      "eyebrow": "Let's close the Sales Education Gap.",
       "headline": "45 minutes for your next 36 months.",
       "subtext": "How convincingly does your software sales team work in direct comparison? Our no-obligation benchmark can give you valuable insights. Your team runs through a realistic customer scenario in which we observe and assess 13 decisive sales skills.",
       "cta": "Book a benchmarking conversation",
