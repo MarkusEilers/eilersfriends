@@ -127,7 +127,7 @@ export async function listOffersForAdmin(): Promise<OfferRow[]> {
     FROM offers
     ORDER BY created_at DESC
   `)
-  return res.rows
+  return res as unknown as OfferRow[]
 }
 
 export async function listOffersForUser(userId: string): Promise<OfferRow[]> {
@@ -140,7 +140,7 @@ export async function listOffersForUser(userId: string): Promise<OfferRow[]> {
     WHERE customer_user_id = ${userId}
     ORDER BY created_at DESC
   `)
-  return res.rows
+  return res as unknown as OfferRow[]
 }
 
 export async function getOfferBySalt(salt: string): Promise<OfferRow | null> {
@@ -148,7 +148,7 @@ export async function getOfferBySalt(salt: string): Promise<OfferRow | null> {
   const res = await db.execute<OfferRow>(sql`
     SELECT * FROM offers WHERE access_salt = ${salt} LIMIT 1
   `)
-  return res.rows[0] ?? null
+  return (res as unknown as OfferRow[])[0] ?? null
 }
 
 export async function createOffer(input: {
@@ -170,7 +170,7 @@ export async function createOffer(input: {
             ${input.subtitle ?? null}, ${input.tagline ?? null})
     RETURNING *
   `)
-  return res.rows[0]
+  return (res as unknown as OfferRow[])[0]
 }
 
 export async function recordOfferEvent(offerId: string, eventType: string, actorEmail?: string | null, metadata?: Record<string, unknown>) {
@@ -224,5 +224,5 @@ export async function updateOffer(id: string, update: OfferUpdate): Promise<void
 export async function getOfferById(id: string): Promise<OfferRow | null> {
   await ensureOfferSchema()
   const res = await db.execute<OfferRow>(sql`SELECT * FROM offers WHERE id = ${id} LIMIT 1`)
-  return res.rows[0] ?? null
+  return (res as unknown as OfferRow[])[0] ?? null
 }
