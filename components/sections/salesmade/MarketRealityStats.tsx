@@ -56,7 +56,7 @@ export function MarketRealityStats() {
                 i === 0
                   ? { dot: '#1A5FD4', bg: '#EBF1FF', border: '#BBCFF5', count: '#1A5FD4' }
                   : i === 1
-                  ? { dot: '#B07C0A', bg: '#FFF8E6', border: '#FEE3A0', count: '#B07C0A' }
+                  ? { dot: '#93B8F5', bg: '#F0F5FF', border: '#D8E4F8', count: '#5076B8' }
                   : { dot: '#C7CAD1', bg: '#F5F6F8', border: '#E5E7EB', count: '#6B7280' }
               return (
                 <div
