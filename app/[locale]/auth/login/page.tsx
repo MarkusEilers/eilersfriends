@@ -52,7 +52,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
-          <Image src="/ef-logo.png" alt="Eilers+Friends" width={140} height={36} className="h-9 w-auto" />
+          <Image src="/ef-logo.png" alt="Eilers+Friends" width={200} height={56} className="h-14 md:h-16 w-auto object-contain" priority />
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
