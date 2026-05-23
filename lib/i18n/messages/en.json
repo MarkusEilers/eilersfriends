@@ -810,6 +810,35 @@
       "verdictAccent": "If 3+ hit:",
       "verdictRest": "We turn your sales motion into a system. 12 months. Reproducible. Sparring instead of slides.",
       "scorecardCta": "Take the Discovery Call Scorecard · 60 seconds"
+    },
+    "useCases": {
+      "eyebrow": "Three paths into the Academy",
+      "headline": "Where are you right now?",
+      "subtext": "Three typical ICP axes — same methodology core, different angle of attack.",
+      "outcomeLabel": "Outcome after 12 months",
+      "items": [
+        {
+          "eyebrow": "Solo-Founder",
+          "title": "You still sell yourself.",
+          "body": "Your sales motion runs through you. You rely on instinct, you have no time for structure, and you urgently need a predictable pipeline.",
+          "outcome": "A sales system that closes deals without you.",
+          "cta": "Discuss the solo path"
+        },
+        {
+          "eyebrow": "Ramp-Up (3–8 people)",
+          "title": "First sales hire(s) made.",
+          "body": "Your team sells — but everyone differently. Onboarding drags, new hires need months, forecasts remain a guess.",
+          "outcome": "A reproducible playbook, 30-day time-to-productive.",
+          "cta": "Discuss the team path"
+        },
+        {
+          "eyebrow": "Upskill (8+ people)",
+          "title": "Established sales team.",
+          "body": "The machine runs — but win rate plateaus and new market segments need a different pitch. You need targeted leverage, not a reboot.",
+          "outcome": "Pinpoint coaching on the top 30% high-leverage skills.",
+          "cta": "Discuss the upskill path"
+        }
+      ]
     }
   },
   "kontaktPage": {

@@ -810,6 +810,35 @@
       "verdictAccent": "Wenn 3+ Punkte sitzen:",
       "verdictRest": "Wir machen aus Deinem Vertrieb ein System. 12 Monate. Reproduzierbar. Mit Sparring statt Slides.",
       "scorecardCta": "Discovery Call Scorecard machen · 60 Sekunden"
+    },
+    "useCases": {
+      "eyebrow": "Drei Wege in die Academy",
+      "headline": "Wo stehst Du gerade?",
+      "subtext": "Drei typische ICP-Achsen — gleicher Methoden-Kern, jeweils anders angesetzt.",
+      "outcomeLabel": "Outcome nach 12 Monaten",
+      "items": [
+        {
+          "eyebrow": "Solo-Founder",
+          "title": "Du verkaufst noch selbst.",
+          "body": "Dein Vertrieb läuft über Dich. Du verlässt Dich auf Intuition, hast keine Zeit für Strukturarbeit, brauchst aber dringend planbare Pipeline.",
+          "outcome": "Eigenes Sales-System, das auch ohne Dich Deals schließt.",
+          "cta": "Solo-Path besprechen"
+        },
+        {
+          "eyebrow": "Ramp-Up (3–8 Personen)",
+          "title": "Erste Sales-Hire(s) gemacht.",
+          "body": "Dein Team verkauft — aber jeder anders. Onboarding zieht sich, neue Hires brauchen Monate, Forecast bleibt Glücksspiel.",
+          "outcome": "Reproduzierbares Playbook, 30 Tage Time-to-Productive.",
+          "cta": "Team-Path besprechen"
+        },
+        {
+          "eyebrow": "Upskill (8+ Personen)",
+          "title": "Etabliertes Sales-Team.",
+          "body": "Die Maschine läuft — aber die Win-Rate plateau-t und neue Markt-Segmente brauchen einen anderen Pitch. Du brauchst gezielten Hebel, kein Reboot.",
+          "outcome": "Pinpoint-Coaching für die Top-30 % Skills mit Hebel.",
+          "cta": "Upskill-Path besprechen"
+        }
+      ]
     }
   },
   "kontaktPage": {

@@ -810,6 +810,35 @@
       "verdictAccent": "Si 3+ encajan:",
       "verdictRest": "Convertimos tu venta en sistema. 12 meses. Reproducible. Sparring en lugar de diapositivas.",
       "scorecardCta": "Hacer el Scorecard de Discovery · 60 segundos"
+    },
+    "useCases": {
+      "eyebrow": "Tres caminos hacia la Academy",
+      "headline": "¿Dónde estás ahora?",
+      "subtext": "Tres ejes ICP típicos — mismo método, diferente ángulo de aplicación.",
+      "outcomeLabel": "Resultado a 12 meses",
+      "items": [
+        {
+          "eyebrow": "Solo-Founder",
+          "title": "Aún vendes tú mismo.",
+          "body": "Las ventas pasan por ti. Vendes por instinto, sin tiempo para estructura, pero urge un pipeline predecible.",
+          "outcome": "Un sistema de ventas que cierra deals sin ti.",
+          "cta": "Hablar del camino solo"
+        },
+        {
+          "eyebrow": "Ramp-Up (3–8 personas)",
+          "title": "Primeros sales hires hechos.",
+          "body": "El equipo vende — pero cada uno a su manera. El onboarding se alarga, los nuevos tardan meses, el forecast es lotería.",
+          "outcome": "Un playbook reproducible, 30 días time-to-productive.",
+          "cta": "Hablar del camino team"
+        },
+        {
+          "eyebrow": "Upskill (8+ personas)",
+          "title": "Equipo de ventas establecido.",
+          "body": "La máquina funciona — pero la win rate hace meseta y los nuevos segmentos necesitan otro pitch. Necesitas palanca dirigida, no reset.",
+          "outcome": "Coaching dirigido en los 30 % skills de mayor palanca.",
+          "cta": "Hablar del camino upskill"
+        }
+      ]
     }
   },
   "kontaktPage": {
