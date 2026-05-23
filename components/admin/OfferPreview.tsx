@@ -2,6 +2,7 @@
 
 import { Rocket, Users, Gift, MessageCircle, Target, TrendingUp, Shield, Zap, Star, Compass } from 'lucide-react'
 import type { OfferEditorState } from './OfferEditor'
+import { DEFAULT_SECTIONS } from './SectionOrderEditor'
 
 const ICONS = { target: Target, users: Users, 'trending-up': TrendingUp, shield: Shield, zap: Zap, star: Star } as const
 
@@ -12,30 +13,9 @@ export function OfferPreview({ s }: { s: OfferEditorState }) {
   const previewGoals = goals.length ? goals : ['Ziel 1', 'Ziel 2', 'Ziel 3']
   const previewChallenges = challenges.length ? challenges : ['Herausforderung 1', 'Herausforderung 2', 'Herausforderung 3']
 
-  return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-      {/* Hero */}
-      <section className="border-b border-gray-100 px-8 pt-10 pb-12 text-center" style={{ backgroundColor: '#F9FAFB' }}>
-        <p className="text-xs font-bold uppercase tracking-[0.25em]" style={{ color: '#1A5FD4' }}>
-          Angebot · Vorschau
-        </p>
-        <h1 className="mt-5 text-3xl font-bold leading-tight" style={{ color: '#0D0D0B' }}>
-          {s.title || 'Ihr Angebots-Titel'}
-        </h1>
-        {s.subtitle && (
-          <p className="mt-2 text-base text-gray-600">{s.subtitle}</p>
-        )}
-        {!s.subtitle && <p className="mt-2 text-base text-gray-400">Untertitel des Angebots</p>}
-        {s.tagline && (
-          <p className="mt-4 text-lg font-semibold" style={{ color: '#1A5FD4' }}>{s.tagline}</p>
-        )}
-        {!s.tagline && (
-          <p className="mt-4 text-lg font-semibold" style={{ color: '#1A5FD4' }}>Ihr Weg zu mehr Kunden</p>
-        )}
-      </section>
-
-      {/* Understanding */}
-      <section className="px-8 py-10">
+  const sections: Record<string, React.ReactNode> = {
+    understanding: (
+      <section key="understanding" className="px-8 py-10">
         <h2 className="text-2xl font-bold" style={{ color: '#0D0D0B' }}>
           {s.understanding.title || 'So haben wir Euch verstanden'}
         </h2>
@@ -68,9 +48,9 @@ export function OfferPreview({ s }: { s: OfferEditorState }) {
           </div>
         </div>
       </section>
-
-      {/* Eine neue Ära */}
-      <section className="px-8 py-12 text-center" style={{ backgroundColor: '#F0F5FF' }}>
+    ),
+    newEra: (
+      <section key="newEra" className="px-8 py-12 text-center" style={{ backgroundColor: '#F0F5FF' }}>
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full" style={{ backgroundColor: '#DBE6FF', color: '#1A5FD4' }}>
           <Rocket size={22} />
         </div>
@@ -81,9 +61,9 @@ export function OfferPreview({ s }: { s: OfferEditorState }) {
           {s.empathy.successMessage || 'Besonders Vertrieb und der Umgang mit Kunden ist ein Trust- und Networking-Game. Erfolgreiche Teams nutzen das und fordern den Status Quo ihrer Branche intelligent heraus.'}
         </p>
       </section>
-
-      {/* Unsere Perspektive */}
-      <section className="px-8 py-10">
+    ),
+    empathy: (
+      <section key="empathy" className="px-8 py-10">
         <h2 className="text-2xl font-bold" style={{ color: '#0D0D0B' }}>Unsere Perspektive</h2>
         <blockquote className="mt-4 border-l-4 pl-5 italic text-gray-600" style={{ borderColor: '#1A5FD4' }}>
           {empathyStatement}
@@ -92,9 +72,9 @@ export function OfferPreview({ s }: { s: OfferEditorState }) {
           <Users size={14} /> Andere haben genau diese Herausforderungen erfolgreich gelöst.
         </p>
       </section>
-
-      {/* 3 Zutaten */}
-      <section className="px-8 py-10" style={{ backgroundColor: '#FAFAF8' }}>
+    ),
+    ingredients: (
+      <section key="ingredients" className="px-8 py-10" style={{ backgroundColor: '#FAFAF8' }}>
         <h2 className="text-center text-2xl font-bold" style={{ color: '#0D0D0B' }}>
           Wirksame Überzeugungsarbeit braucht nur 3 Zutaten
         </h2>
@@ -118,51 +98,35 @@ export function OfferPreview({ s }: { s: OfferEditorState }) {
           })}
         </div>
       </section>
-
-      {/* Programm & Timeline */}
-      {s.programs.length > 0 && (
-        <section className="px-8 py-10">
-          <h2 className="text-2xl font-bold" style={{ color: '#0D0D0B' }}>Ihr Programm & Timeline</h2>
-          <p className="mt-1 text-sm text-gray-500">Die integrierte Timeline mit allen Phasen.</p>
-          <div className="mt-5 space-y-3">
-            {(s.programs[0]?.pricing ?? []).slice(0, 3).map((p, i) => {
-              const colors = ['#0E9DDD', '#0F1E3A', '#F05A1A']
-              return (
-                <div key={i} className="flex items-center gap-4 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-white text-sm font-bold" style={{ backgroundColor: colors[i] ?? '#1A5FD4' }}>
-                    {i + 1}
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="text-sm font-bold" style={{ color: '#0D0D0B' }}>Phase {i + 1}: {p.title || 'Phase'}</h4>
-                    <p className="text-xs text-gray-500 truncate">{p.description || 'Beschreibung der Phase'}</p>
-                  </div>
+    ),
+    timeline: (
+      <section key="timeline" className="px-8 py-10">
+        <h2 className="text-2xl font-bold" style={{ color: '#0D0D0B' }}>Ihr Programm &amp; Timeline</h2>
+        <p className="mt-1 text-sm text-gray-500">Die integrierte Timeline mit allen Phasen.</p>
+        <div className="mt-5 space-y-3">
+          {(s.programs[0]?.pricing && s.programs[0].pricing.length ? s.programs[0].pricing.slice(0, 3) : [
+            { title: 'Alignment', description: 'Beschreibung der Phase' },
+            { title: 'Soft Launch', description: 'Beschreibung der Phase' },
+            { title: 'Launch', description: 'Beschreibung der Phase' },
+          ]).map((p, i) => {
+            const colors = ['#0E9DDD', '#0F1E3A', '#F05A1A']
+            return (
+              <div key={i} className="flex items-center gap-4 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-white text-sm font-bold" style={{ backgroundColor: colors[i] ?? '#1A5FD4' }}>
+                  {i + 1}
                 </div>
-              )
-            })}
-            {(!s.programs[0]?.pricing || s.programs[0].pricing.length === 0) && (
-              <>
-                {['Alignment', 'Soft Launch', 'Launch'].map((label, i) => {
-                  const colors = ['#0E9DDD', '#0F1E3A', '#F05A1A']
-                  return (
-                    <div key={i} className="flex items-center gap-4 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
-                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-white text-sm font-bold" style={{ backgroundColor: colors[i] }}>
-                        {i + 1}
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold" style={{ color: '#0D0D0B' }}>Phase {i + 1}: {label}</h4>
-                        <p className="text-xs text-gray-500">Beschreibung der Phase</p>
-                      </div>
-                    </div>
-                  )
-                })}
-              </>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* Ökonomische Ergebnisse */}
-      <section className="px-8 py-10 text-center" style={{ backgroundColor: '#FAFAF8' }}>
+                <div className="min-w-0">
+                  <h4 className="text-sm font-bold" style={{ color: '#0D0D0B' }}>Phase {i + 1}: {p.title || 'Phase'}</h4>
+                  <p className="text-xs text-gray-500 truncate">{p.description || 'Beschreibung der Phase'}</p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+    ),
+    economic: (
+      <section key="economic" className="px-8 py-10 text-center" style={{ backgroundColor: '#FAFAF8' }}>
         <h2 className="text-3xl font-bold" style={{ color: '#0D0D0B' }}>
           Ökonomische <span style={{ color: '#1A5FD4' }}>Ergebnisse</span>
         </h2>
@@ -186,6 +150,66 @@ export function OfferPreview({ s }: { s: OfferEditorState }) {
           })}
         </div>
       </section>
+    ),
+    pricing: (
+      <section key="pricing" className="px-8 py-10">
+        <h2 className="text-center text-2xl font-bold" style={{ color: '#0D0D0B' }}>
+          Preis-Optionen
+        </h2>
+        <div className="mx-auto mt-6 grid gap-4 md:grid-cols-3">
+          {((s.programs[0]?.pricing ?? []).length ? s.programs[0].pricing! : []).map((p, i) => (
+            <div key={i} className={`rounded-2xl border bg-white p-5 ${p.recommended ? 'border-blue-300 ring-2 ring-blue-100' : 'border-gray-200'}`}>
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>{p.type ?? 'OPTION'}</span>
+              <h4 className="mt-2 text-base font-bold" style={{ color: '#0D0D0B' }}>{p.title || 'Option'}</h4>
+              <p className="mt-1 text-sm text-gray-600">{p.description || ''}</p>
+              <div className="mt-3 text-2xl font-bold" style={{ color: '#0D0D0B' }}>{(p.price ?? 0).toLocaleString('de-DE')} €</div>
+              {p.monthlyDuration ? <p className="text-xs text-gray-400">über {p.monthlyDuration} Monate</p> : null}
+              <ul className="mt-3 space-y-1.5 text-xs text-gray-600">
+                {(p.features ?? []).slice(0, 6).map((f, j) => (
+                  <li key={j} className="flex items-start gap-1.5">
+                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ backgroundColor: '#1A5FD4' }} />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        {(!s.programs[0]?.pricing || s.programs[0].pricing.length === 0) && (
+          <p className="mt-4 text-center text-xs text-gray-400">Keine Preis-Optionen definiert.</p>
+        )}
+      </section>
+    ),
+    accept: null,  // The Accept-CTA is rendered separately in the public route, not in preview.
+  }
+
+  // Render order — fall back to DEFAULT_SECTIONS if no sectionOrder is set
+  const order = (s.sectionOrder && s.sectionOrder.length) ? s.sectionOrder : DEFAULT_SECTIONS
+  const visible = order.filter((sec) => sec.enabled && sections[sec.type] != null)
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+      {/* Hero is always first, not part of the sortable list */}
+      <section className="border-b border-gray-100 px-8 pt-10 pb-12 text-center" style={{ backgroundColor: '#F9FAFB' }}>
+        <p className="text-xs font-bold uppercase tracking-[0.25em]" style={{ color: '#1A5FD4' }}>
+          Angebot · Vorschau
+        </p>
+        <h1 className="mt-5 text-3xl font-bold leading-tight" style={{ color: '#0D0D0B' }}>
+          {s.title || 'Ihr Angebots-Titel'}
+        </h1>
+        {s.subtitle ? (
+          <p className="mt-2 text-base text-gray-600">{s.subtitle}</p>
+        ) : (
+          <p className="mt-2 text-base text-gray-400">Untertitel des Angebots</p>
+        )}
+        {s.tagline ? (
+          <p className="mt-4 text-lg font-semibold" style={{ color: '#1A5FD4' }}>{s.tagline}</p>
+        ) : (
+          <p className="mt-4 text-lg font-semibold" style={{ color: '#1A5FD4' }}>Ihr Weg zu mehr Kunden</p>
+        )}
+      </section>
+
+      {visible.map((sec) => sections[sec.type])}
     </div>
   )
 }

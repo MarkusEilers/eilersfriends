@@ -5,6 +5,7 @@ import { useState, useTransition } from 'react'
 import { Sparkles, Plus, X, Save, Send, Loader2, AlertCircle, EyeOff, Eye } from 'lucide-react'
 import { updateOfferAction, suggestSectionAction, setOfferStatusAction, generateOfferFromPromptAction } from '@/lib/actions/offers'
 import { OfferPreview } from './OfferPreview'
+import { SectionOrderEditor, DEFAULT_SECTIONS, type SectionOrderItem } from './SectionOrderEditor'
 
 interface Goal { v: string }
 interface UnderstandingData { title?: string; goals?: string[]; challenges?: string[] }
@@ -12,6 +13,8 @@ interface EmpathyData { title?: string; statement?: string; successMessage?: str
 interface EconomicResultData { icon?: 'target'|'users'|'trending-up'|'shield'|'zap'|'star'; title: string; description?: string }
 interface PricingOptData { type?: 'DIY'|'DWY'|'DFY'; title: string; description?: string; price: number; monthlyDuration?: number; features?: string[]; recommended?: boolean }
 interface ProgramData { id?: string; title: string; subtitle?: string; description?: string; pricing?: PricingOptData[] }
+
+export interface ProgramOption { id: string; name: string; slug: string; status: string }
 
 export interface OfferEditorState {
   id: string
@@ -25,6 +28,7 @@ export interface OfferEditorState {
   empathy: EmpathyData
   economic: EconomicResultData[]
   programs: ProgramData[]
+  sectionOrder?: SectionOrderItem[]
   status: string
   recipientRole?: string
   meetingNotes?: string
@@ -34,7 +38,7 @@ export interface OfferEditorState {
   sweatEquityPercent?: number | null
 }
 
-export function OfferEditor({ initial, accessSalt, offerNumber }: { initial: OfferEditorState; accessSalt?: string; offerNumber?: string }) {
+export function OfferEditor({ initial, accessSalt, offerNumber, programOptions = [] }: { initial: OfferEditorState; accessSalt?: string; offerNumber?: string; programOptions?: ProgramOption[] }) {
   const [s, setS] = useState<OfferEditorState>(initial)
   const [savedAt, setSavedAt] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -63,6 +67,7 @@ export function OfferEditor({ initial, accessSalt, offerNumber }: { initial: Off
           aiPrompt: s.aiPrompt ?? null,
           sweatEquityEnabled: s.sweatEquityEnabled,
           sweatEquityPercent: s.sweatEquityPercent ?? null,
+          sectionOrder: s.sectionOrder && s.sectionOrder.length ? s.sectionOrder : DEFAULT_SECTIONS,
         })
         setSavedAt(Date.now())
       } catch (e) { setError(String(e)) }
@@ -143,7 +148,19 @@ export function OfferEditor({ initial, accessSalt, offerNumber }: { initial: Off
         </div>
         <div className="grid gap-3 md:grid-cols-2">
           <Field label="Rolle des Empfängers" value={s.recipientRole ?? ''} onChange={(v) => patch('recipientRole', v)} />
-          <Field label="Empfohlenes Programm (UUID — optional)" value={s.programId ?? ''} onChange={(v) => patch('programId', v || null)} />
+          <div>
+            <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">Programm (optional)</label>
+            <select
+              value={s.programId ?? ''}
+              onChange={(e) => patch('programId', e.target.value || null)}
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
+            >
+              <option value="">— Kein Programm zuordnen —</option>
+              {programOptions.map((p) => (
+                <option key={p.id} value={p.id}>{p.name} {p.status === 'draft' ? '(Draft)' : ''}</option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="mt-3">
           <Field label="Gesprächsnotizen" value={s.meetingNotes ?? ''} onChange={(v) => patch('meetingNotes', v)} multiline />
@@ -237,6 +254,20 @@ export function OfferEditor({ initial, accessSalt, offerNumber }: { initial: Off
       <Section label="Preise · DIY · DWY · DFY" onSuggest={() => suggest('pricing')} suggesting={suggesting === 'pricing'}>
         <PricingEditor programs={s.programs} onChange={(arr) => patch('programs', arr)} />
       </Section>
+
+      {/* Abschnitte D&D */}
+      <section className="rounded-2xl border border-gray-200 bg-white p-6">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500">Abschnitte</h2>
+            <p className="mt-1 text-xs text-gray-500">Drag &amp; Drop zum Sortieren · Augen-Icon zum Aus-/Einblenden</p>
+          </div>
+        </div>
+        <SectionOrderEditor
+          items={(s.sectionOrder && s.sectionOrder.length) ? s.sectionOrder : DEFAULT_SECTIONS}
+          onChange={(next) => patch('sectionOrder', next)}
+        />
+      </section>
     </div>
   )
 

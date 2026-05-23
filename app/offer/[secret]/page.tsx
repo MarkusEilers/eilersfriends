@@ -55,6 +55,7 @@ export default async function PublicOfferPage({ params }: { params: Promise<{ se
     empathy: (offer.empathy_section as OfferEditorState['empathy']) ?? {},
     economic: ((offer.economic_results as unknown as OfferEditorState['economic']) ?? []),
     programs: ((offer.programs as unknown as OfferEditorState['programs']) ?? []),
+    sectionOrder: (((offer as unknown as { section_order?: unknown }).section_order ?? []) as OfferEditorState['sectionOrder']),
     status: offer.status,
   }
 
