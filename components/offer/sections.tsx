@@ -14,28 +14,43 @@ const ICONS: Record<string, LucideIcon> = {
 
 // ─── 1. Hero ────────────────────────────────────────────────────────────────
 export function OfferHero({
-  offerNumber, title, subtitle, tagline, customerName, validUntil,
+  offerNumber, title, subtitle, tagline, customerName, customerCompany, customerLogoUrl, validUntil,
 }: {
   offerNumber: string
   title: string
   subtitle?: string | null
   tagline?: string | null
   customerName: string
+  customerCompany?: string | null
+  customerLogoUrl?: string | null
   validUntil: Date
 }) {
   const validStr = validUntil.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })
+  const recipient = customerCompany?.trim() ? `${customerName} · ${customerCompany}` : customerName
   return (
     <section className="px-6 py-24 sm:py-32" style={{ background: 'linear-gradient(180deg, #0F1E3A 0%, #15315E 100%)' }}>
       <div className="mx-auto max-w-3xl text-center">
+        {/* Customer logo (if uploaded) — sits at the top, soft & quiet */}
+        {customerLogoUrl && (
+          <div className="mb-8 flex justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={customerLogoUrl}
+              alt={customerCompany || customerName}
+              className="h-12 w-auto opacity-80"
+              style={{ filter: 'brightness(0) invert(1)', maxWidth: 200 }}
+            />
+          </div>
+        )}
         <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em]"
           style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#FFC93C', border: '1px solid rgba(255,201,60,0.35)' }}>
-          <Sparkles size={12} /> Persönliches Angebot für {customerName}
+          <Sparkles size={12} /> Persönliches Angebot für {recipient}
         </span>
         <p className="mt-6 text-sm font-mono" style={{ color: 'rgba(255,255,255,0.5)' }}>{offerNumber}</p>
         {tagline && (
           <p className="mt-3 text-base font-semibold tracking-wide" style={{ color: '#FFC93C' }}>{tagline}</p>
         )}
-        <h1 className="mt-3 text-4xl font-bold text-white sm:text-5xl lg:text-6xl">{title}</h1>
+        <h1 className="mt-3 text-4xl font-bold text-white sm:text-5xl lg:text-6xl" style={{ fontFamily: "'DM Serif Display', serif" }}>{title}</h1>
         {subtitle && (
           <p className="mt-6 text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{subtitle}</p>
         )}

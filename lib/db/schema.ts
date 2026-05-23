@@ -495,6 +495,9 @@ export const offers = pgTable('offers', {
   customerCompany: varchar('customer_company', { length: 255 }),
   customerEmail: varchar('customer_email', { length: 255 }),
   customerUserId: uuid('customer_user_id').references(() => users.id, { onDelete: 'set null' }),
+  customerLogoUrl: text('customer_logo_url'),
+  customerLogoUrlBw: text('customer_logo_url_bw'),
+  guaranteeText: text('guarantee_text'),
   // Secret link for public access
   accessSalt: varchar('access_salt', { length: 64 }).notNull().unique(),
   // Headlines

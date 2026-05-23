@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
+import { CustomerLogoUpload } from './CustomerLogoUpload'
 import { Sparkles, Plus, X, Save, Send, Loader2, AlertCircle, EyeOff, Eye } from 'lucide-react'
 import { updateOfferAction, suggestSectionAction, setOfferStatusAction, generateOfferFromPromptAction } from '@/lib/actions/offers'
 import { OfferPreview } from './OfferPreview'
@@ -36,6 +37,9 @@ export interface OfferEditorState {
   aiPrompt?: string
   sweatEquityEnabled?: boolean
   sweatEquityPercent?: number | null
+  // Wave 2.F
+  customerLogoUrl?: string | null
+  guaranteeText?: string | null
 }
 
 export function OfferEditor({ initial, accessSalt, offerNumber, programOptions = [] }: { initial: OfferEditorState; accessSalt?: string; offerNumber?: string; programOptions?: ProgramOption[] }) {
@@ -67,6 +71,8 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           aiPrompt: s.aiPrompt ?? null,
           sweatEquityEnabled: s.sweatEquityEnabled,
           sweatEquityPercent: s.sweatEquityPercent ?? null,
+          customerLogoUrl: s.customerLogoUrl ?? null,
+          guaranteeText: s.guaranteeText ?? null,
           sectionOrder: s.sectionOrder && s.sectionOrder.length ? s.sectionOrder : DEFAULT_SECTIONS,
         })
         setSavedAt(Date.now())
@@ -138,6 +144,32 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           <Field label="Firma" value={s.customerCompany} onChange={(v) => patch('customerCompany', v)} />
           <Field label="E-Mail" value={s.customerEmail} onChange={(v) => patch('customerEmail', v)} />
         </div>
+      </Section>
+
+      {/* Customer Branding */}
+      <Section label="Kunden-Branding">
+        <p className="mb-3 text-xs text-gray-500">
+          Logo erscheint im Hero des Angebots — invertiert auf Navy. Wird automatisch in BW konvertiert.
+        </p>
+        <CustomerLogoUpload
+          offerId={s.id}
+          initialUrl={s.customerLogoUrl ?? null}
+          onUploaded={(url) => patch('customerLogoUrl', url || null)}
+        />
+      </Section>
+
+      {/* Garantie-Text */}
+      <Section label="Garantie">
+        <p className="mb-3 text-xs text-gray-500">
+          Erscheint vor dem Pricing als „Whatever-it-takes"-Box. Leer = Default-Text wird verwendet.
+        </p>
+        <textarea
+          rows={4}
+          placeholder="Wir bleiben dabei, bis es funktioniert..."
+          value={s.guaranteeText ?? ''}
+          onChange={(e) => patch('guaranteeText', e.target.value)}
+          className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-300"
+        />
       </Section>
 
       {/* KI-Assistent */}

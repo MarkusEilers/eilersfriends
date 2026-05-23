@@ -88,6 +88,10 @@ async function ensureOfferSchema() {
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS meeting_notes  TEXT`)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS program_id     UUID`)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS ai_prompt      TEXT`)
+  // Wave 2.F — Customer branding + guarantee
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS customer_logo_url    TEXT`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS customer_logo_url_bw TEXT`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS guarantee_text       TEXT`)
   ensured = true
 }
 
@@ -230,6 +234,10 @@ export interface OfferUpdate {
   aiPrompt?: string | null
   sweatEquityEnabled?: boolean
   sweatEquityPercent?: number | null
+  // Wave 2.F — Customer branding + guarantee
+  customerLogoUrl?: string | null
+  customerLogoUrlBw?: string | null
+  guaranteeText?: string | null
 }
 
 export async function updateOffer(id: string, update: OfferUpdate): Promise<void> {
@@ -255,6 +263,9 @@ export async function updateOffer(id: string, update: OfferUpdate): Promise<void
   if (update.aiPrompt !== undefined) sets.push(sql`ai_prompt = ${update.aiPrompt}`)
   if (update.sweatEquityEnabled !== undefined) sets.push(sql`sweat_equity_enabled = ${update.sweatEquityEnabled}`)
   if (update.sweatEquityPercent !== undefined) sets.push(sql`sweat_equity_percent = ${update.sweatEquityPercent}`)
+  if (update.customerLogoUrl !== undefined) sets.push(sql`customer_logo_url = ${update.customerLogoUrl}`)
+  if (update.customerLogoUrlBw !== undefined) sets.push(sql`customer_logo_url_bw = ${update.customerLogoUrlBw}`)
+  if (update.guaranteeText !== undefined) sets.push(sql`guarantee_text = ${update.guaranteeText}`)
   if (!sets.length) return
   sets.push(sql`updated_at = now()`)
   const joined = sql.join(sets, sql`, `)

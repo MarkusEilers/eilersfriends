@@ -46,6 +46,10 @@ interface UpdatePayload {
   sweatEquityEnabled?: boolean
   sweatEquityPercent?: number | null
   sectionOrder?: object
+  // Wave 2.F
+  customerLogoUrl?: string | null
+  customerLogoUrlBw?: string | null
+  guaranteeText?: string | null
 }
 
 export async function updateOfferAction(id: string, payload: UpdatePayload) {

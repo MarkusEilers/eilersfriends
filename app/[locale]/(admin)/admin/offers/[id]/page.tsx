@@ -62,6 +62,8 @@ export default async function AdminOfferEditor({ params }: { params: Promise<{ i
     aiPrompt: full.ai_prompt ?? '',
     sweatEquityEnabled: full.sweat_equity_enabled ?? false,
     sweatEquityPercent: full.sweat_equity_percent ?? null,
+    customerLogoUrl: (full.customer_logo_url as string | null) ?? null,
+    guaranteeText: (full.guarantee_text as string | null) ?? null,
   }
 
   return <OfferEditor initial={initial} accessSalt={full.access_salt} offerNumber={full.offer_number} programOptions={programs} />
