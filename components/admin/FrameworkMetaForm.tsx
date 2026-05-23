@@ -167,16 +167,28 @@ function Field({
 }
 
 function ColorField({ label, name, defaultValue }: { label: string; name: string; defaultValue: string }) {
+  // Controlled — Picker und Hex schreiben in den gleichen State,
+  // damit Drehen am Picker auch das submittete Text-Feld aktualisiert.
+  const [value, setValue] = useState(defaultValue)
+  const normalized = /^#[0-9A-Fa-f]{6}$/.test(value) ? value : '#000000'
   return (
     <div>
       <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">{label}</label>
       <div className="flex gap-1.5 items-center">
-        <input type="color" name={name + '__pick'} defaultValue={defaultValue} className="h-9 w-9 rounded border border-gray-200 cursor-pointer" />
+        <input
+          type="color"
+          value={normalized}
+          onChange={(e) => setValue(e.target.value.toUpperCase())}
+          className="h-9 w-9 rounded border border-gray-200 cursor-pointer"
+          aria-label={`${label} Color-Picker`}
+        />
         <input
           type="text"
           name={name}
-          defaultValue={defaultValue}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
           className="flex-1 rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs font-mono"
+          placeholder="#RRGGBB"
         />
       </div>
     </div>
