@@ -32,6 +32,8 @@ interface MegaLink {
   href: string
   icon: LucideIcon
   accent: string
+  /** Optional Avatar — wenn gesetzt, wird das Bild statt des Icons gezeigt. */
+  avatar?: string
 }
 
 interface MegaItem {
@@ -97,8 +99,8 @@ const NAV_ITEMS: NavItem[] = [
     eyebrowKey: 'teamEyebrow',
     headingKey: 'teamHeading',
     links: [
-      { key: 'aljona', descKey: 'aljonaDesc', href: '/aljona', icon: Sparkles, accent: '#D4192B' },
-      { key: 'markus', descKey: 'markusDesc', href: '/markus', icon: Briefcase, accent: '#1A5FD4' },
+      { key: 'aljona', descKey: 'aljonaDesc', href: '/aljona', icon: Sparkles, accent: '#D4192B', avatar: '/aljona-photo.jpg' },
+      { key: 'markus', descKey: 'markusDesc', href: '/markus', icon: Briefcase, accent: '#1A5FD4', avatar: '/markus-photo.jpg' },
       { key: 'about',  descKey: 'aboutDesc',  href: '/#coaches', icon: BookOpen, accent: '#0F1E3A' },
     ],
   },
@@ -280,10 +282,17 @@ export function Navbar({ calendlyUrl }: { calendlyUrl: string }) {
                               return (
                                 <Link key={link.key} href={link.href as '/'} onClick={() => setOpenMega(null)}
                                   className="group flex items-start gap-3 rounded-2xl p-3 transition-colors hover:bg-gray-50">
-                                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl"
-                                    style={{ backgroundColor: `${link.accent}15`, color: link.accent }}>
-                                    <Icon size={16} />
-                                  </div>
+                                  {link.avatar ? (
+                                    <div className="h-9 w-9 flex-shrink-0 overflow-hidden rounded-full" style={{ border: `2px solid ${link.accent}` }}>
+                                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                                      <img src={link.avatar} alt={link.key} className="h-full w-full object-cover" />
+                                    </div>
+                                  ) : (
+                                    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl"
+                                      style={{ backgroundColor: `${link.accent}15`, color: link.accent }}>
+                                      <Icon size={16} />
+                                    </div>
+                                  )}
                                   <div className="min-w-0">
                                     <div className="flex items-center gap-1.5 text-sm font-semibold" style={{ color: '#0D0D0B' }}>
                                       {t(link.key)}
@@ -374,7 +383,14 @@ export function Navbar({ calendlyUrl }: { calendlyUrl: string }) {
                             return (
                               <li key={sub.key}>
                                 <Link href={sub.href as '/'} className="flex items-start gap-3 py-2.5 transition-colors hover:text-blue-600" style={{ color: '#0D0D0B' }}>
-                                  <Icon size={15} className="mt-0.5 flex-shrink-0" style={{ color: sub.accent }} />
+                                  {sub.avatar ? (
+                                    <div className="h-6 w-6 flex-shrink-0 overflow-hidden rounded-full" style={{ border: `1.5px solid ${sub.accent}` }}>
+                                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                                      <img src={sub.avatar} alt={sub.key} className="h-full w-full object-cover" />
+                                    </div>
+                                  ) : (
+                                    <Icon size={15} className="mt-0.5 flex-shrink-0" style={{ color: sub.accent }} />
+                                  )}
                                   <div className="min-w-0">
                                     <span className="text-sm font-semibold">{t(sub.key)}</span>
                                     <p className="text-xs text-gray-500 mt-0.5 leading-snug">{t(sub.descKey)}</p>
