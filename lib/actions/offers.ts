@@ -45,6 +45,7 @@ interface UpdatePayload {
   aiPrompt?: string | null
   sweatEquityEnabled?: boolean
   sweatEquityPercent?: number | null
+  sectionOrder?: object
 }
 
 export async function updateOfferAction(id: string, payload: UpdatePayload) {
