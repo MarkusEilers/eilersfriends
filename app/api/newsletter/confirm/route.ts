@@ -107,6 +107,9 @@ export async function GET(request: NextRequest) {
     }
 
     // 5. Email-Sequenz triggern (doi_confirmed)
+    //    Plus: Framework-spezifisches Auto-Enrollment — wenn der Subscriber via
+    //    Framework-Download kam, wird er zusätzlich in die zum Framework gehörende
+    //    Sequenz aufgenommen (trigger_filter.framework_slug === subscriber.source).
     try {
       const activeSequences = await db
         .select()
@@ -118,7 +121,15 @@ export async function GET(request: NextRequest) {
           )
         )
 
+      const sourceSlug = subscriber.source ?? null
       for (const sequence of activeSequences) {
+        // Filter: wenn trigger_filter.framework_slug gesetzt ist, MUSS er matchen
+        const filter = (sequence.triggerFilter ?? {}) as { framework_slug?: string; source?: string }
+        const requiresFramework = typeof filter.framework_slug === 'string' && filter.framework_slug.length > 0
+        const requiresSource = typeof filter.source === 'string' && filter.source.length > 0
+        if (requiresFramework && filter.framework_slug !== sourceSlug) continue
+        if (requiresSource && filter.source !== sourceSlug) continue
+
         await db.insert(emailSequenceEnrollments).values({
           subscriberId: subscriber.id,
           sequenceId: sequence.id,
@@ -127,7 +138,9 @@ export async function GET(request: NextRequest) {
           nextSendAt: new Date(), // Schritt 0 kann sofort starten
         }).onConflictDoNothing()
       }
-    } catch (_) { /* non-fatal */ }
+    } catch (e) {
+      console.error('[doi/confirm] sequence enrollment failed', e)
+    }
 
     // 6. Weiterleitung zur Danke-Seite
     return NextResponse.redirect(`${baseUrl}/?doi=confirmed`)
