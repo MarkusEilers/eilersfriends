@@ -768,6 +768,47 @@
           "right": "Documented deal outcomes as proof"
         }
       ]
+    },
+    "selfId": {
+      "eyebrow": "Is this you?",
+      "headline": "If even 3 of these hit — the Academy is built for you.",
+      "subtext": "We’ve worked with hundreds of B2B software founders. These patterns are everywhere.",
+      "triggers": [
+        {
+          "headline": "Funnel fills. Closes don’t.",
+          "body": "Pipeline is there, close rates are a gamble — you forecast on hope."
+        },
+        {
+          "headline": "“Let me discuss internally.”",
+          "body": "Demos end friendly, then radio silence. No explicit yes, no explicit no."
+        },
+        {
+          "headline": "Discount as a Service.",
+          "body": "Every deal closes on price because the value never lands."
+        },
+        {
+          "headline": "You’re the only closer.",
+          "body": "Deals win when you personally sell. It doesn’t scale."
+        },
+        {
+          "headline": "Long cycles — no control.",
+          "body": "You wait on decisions nobody is driving. Buyers ghost, sequences die."
+        },
+        {
+          "headline": "Wrong leads soak up all the time.",
+          "body": "The team spends weeks on accounts that never buy — and misses the real buyers."
+        },
+        {
+          "headline": "Skills from YouTube and books.",
+          "body": "Nobody shows you live what actually works on your ICP — learning happens through lost deals."
+        },
+        {
+          "headline": "You lose to weaker competitors.",
+          "body": "Better product, worse sales. It eats you up."
+        }
+      ],
+      "verdictAccent": "If 3+ hit:",
+      "verdictRest": "We turn your sales motion into a system. 12 months. Reproducible. Sparring instead of slides."
     }
   },
   "kontaktPage": {

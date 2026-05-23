@@ -14,6 +14,7 @@ import { CeoMonologue } from '@/components/sections/salesmade/CeoMonologue'
 import { MethodologyTriptych } from '@/components/sections/salesmade/MethodologyTriptych'
 import { SalesFlywheel } from '@/components/sections/salesmade/SalesFlywheel'
 import { BeforeAfter } from '@/components/sections/salesmade/BeforeAfter'
+import { SelfIdentification } from '@/components/sections/salesmade/SelfIdentification'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('salesmadePage.meta')
@@ -253,6 +254,7 @@ export default async function SalesMadePage({ params }: PageProps) {
 
       <MarketRealityStats />
       <CeoMonologue />
+      <SelfIdentification />
 
       {/* ─── 4. GOOD NEWS ────────────────────────────────────────────── */}
       <section className="px-6 py-20" style={{ backgroundColor: '#EBF1FF' }}>

@@ -768,6 +768,47 @@
           "right": "Resultados documentados de operaciones como prueba"
         }
       ]
+    },
+    "selfId": {
+      "eyebrow": "¿Te ves aquí?",
+      "headline": "Si encajas en 3 de estos puntos, la Academy es para ti.",
+      "subtext": "Hemos trabajado con cientos de fundadores B2B SaaS. Estos patrones aparecen siempre.",
+      "triggers": [
+        {
+          "headline": "El funnel se llena. Los cierres no llegan.",
+          "body": "Hay pipeline, pero las tasas de cierre son lotería — forecasteas con esperanza."
+        },
+        {
+          "headline": "“Lo discutimos internamente.”",
+          "body": "Las demos terminan amistosamente y luego silencio. Ni sí ni no explícito."
+        },
+        {
+          "headline": "Descuento como servicio.",
+          "body": "Cada deal se cierra vía precio porque el valor no se entiende."
+        },
+        {
+          "headline": "Eres el único cerrador.",
+          "body": "Los deals se ganan cuando vendes tú personalmente. No escala."
+        },
+        {
+          "headline": "Ciclos largos — sin control.",
+          "body": "Esperas decisiones que nadie impulsa. Los buyers desaparecen, las secuencias mueren."
+        },
+        {
+          "headline": "Leads equivocados consumen el tiempo.",
+          "body": "El equipo pasa semanas con cuentas que nunca compran — y se pierde a los reales."
+        },
+        {
+          "headline": "Skills de YouTube y libros.",
+          "body": "Nadie te muestra en vivo qué funciona con tu ICP — aprendes con cada deal perdido."
+        },
+        {
+          "headline": "Pierdes contra competidores más débiles.",
+          "body": "Mejor producto, peor venta. Te consume."
+        }
+      ],
+      "verdictAccent": "Si 3+ encajan:",
+      "verdictRest": "Convertimos tu venta en sistema. 12 meses. Reproducible. Sparring en lugar de diapositivas."
     }
   },
   "kontaktPage": {

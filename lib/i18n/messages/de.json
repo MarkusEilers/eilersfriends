@@ -768,6 +768,47 @@
           "right": "Dokumentierte Deal-Outcomes als Beweis"
         }
       ]
+    },
+    "selfId": {
+      "eyebrow": "Bist Du das?",
+      "headline": "Wenn auch nur 3 dieser Punkte zutreffen — ist die Academy für Dich gebaut.",
+      "subtext": "Wir haben hunderte B2B-Software-Gründer:innen durchlaufen. Diese Muster ziehen sich durch alle.",
+      "triggers": [
+        {
+          "headline": "Funnel füllt sich. Closes nicht.",
+          "body": "Pipeline-Volumen ist da, Abschlussquoten bleiben Glücksspiel — Du forecastest auf Hoffnung."
+        },
+        {
+          "headline": "„Lass uns das intern besprechen.“",
+          "body": "Demos verlaufen freundlich, dann Funkstille. Niemand sagt explizit nein, niemand sagt explizit ja."
+        },
+        {
+          "headline": "Discount as a Service.",
+          "body": "Jeder Deal wird über den Preis verkauft, weil der Wert nicht klar genug wird."
+        },
+        {
+          "headline": "Du bist der/die einzige Closer:in.",
+          "body": "Deals werden gewonnen, wenn Du persönlich verkaufst. Skalierbar ist das nicht."
+        },
+        {
+          "headline": "Lange Verkaufszyklen — ohne Kontrolle.",
+          "body": "Du wartest auf Entscheidungen, die niemand triggert. Buyer ghosten, Sequenzen verlaufen ins Leere."
+        },
+        {
+          "headline": "Falsche Leads kriegen die meiste Zeit.",
+          "body": "Dein Team verbringt Wochen mit Accounts, die nie zukaufen — und übersieht die echten Buyer."
+        },
+        {
+          "headline": "Sales-Skills aus YouTube und Büchern.",
+          "body": "Niemand zeigt Dir live, was bei Deinem ICP wirklich funktioniert — Lernen passiert durch verlorene Deals."
+        },
+        {
+          "headline": "Du verlierst gegen schwächere Wettbewerber.",
+          "body": "Produkt ist besser, aber der andere verkauft überzeugender. Das frisst Dich auf."
+        }
+      ],
+      "verdictAccent": "Wenn 3+ Punkte sitzen:",
+      "verdictRest": "Wir machen aus Deinem Vertrieb ein System. 12 Monate. Reproduzierbar. Mit Sparring statt Slides."
     }
   },
   "kontaktPage": {
