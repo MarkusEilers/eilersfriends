@@ -63,6 +63,17 @@ export async function SelfIdentification() {
             {t('verdictRest')}
           </p>
         </div>
+
+        {/* Scorecard CTA */}
+        <div className="mx-auto mt-6 max-w-xl text-center">
+          <a
+            href="/salesmade/scorecard"
+            className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold transition-colors hover:bg-gray-50"
+            style={{ color: '#1A5FD4', border: '1px solid #BBCFF5' }}
+          >
+            {t('scorecardCta')} →
+          </a>
+        </div>
       </div>
     </section>
   )

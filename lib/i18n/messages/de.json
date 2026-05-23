@@ -808,7 +808,8 @@
         }
       ],
       "verdictAccent": "Wenn 3+ Punkte sitzen:",
-      "verdictRest": "Wir machen aus Deinem Vertrieb ein System. 12 Monate. Reproduzierbar. Mit Sparring statt Slides."
+      "verdictRest": "Wir machen aus Deinem Vertrieb ein System. 12 Monate. Reproduzierbar. Mit Sparring statt Slides.",
+      "scorecardCta": "Discovery Call Scorecard machen · 60 Sekunden"
     }
   },
   "kontaktPage": {
@@ -1555,5 +1556,63 @@
       "seatsLeft": "begrenzt auf 30 Plätze",
       "firstThirtyBadge": "Die ersten 30"
     }
+  },
+  "scorecard": {
+    "meta": {
+      "title": "Discovery Call Scorecard — SalesMade",
+      "description": "8 Fragen. 60 Sekunden. Sieh schwarz auf weiß, wo Deine Discovery-Calls Geld liegen lassen."
+    },
+    "eyebrow": "Kostenlose Selbst-Diagnose",
+    "headline": "Wie wirksam sind Deine Discovery-Calls?",
+    "subtext": "8 Fragen. 60 Sekunden. Sieh schwarz auf weiß, wo Deine Discovery-Calls Geld liegen lassen — und was wir mit Dir verändern würden.",
+    "questions": [
+      "Ich kenne mindestens 3 konkrete Pain-Points meines ICP — nicht nur Vermutungen.",
+      "Ich weiß für jeden Lead, warum er JETZT kaufen würde (nicht in 6 Monaten).",
+      "In meinen Discovery-Calls spreche ich weniger als 30 % der Zeit.",
+      "Ich höre vom Buyer „Es liegt im Budget\" bevor ich einen Preis nenne.",
+      "Ich kenne die internen Entscheider:innen mit Namen, bevor ich ein Angebot mache.",
+      "Ich habe ein klares „Next Step\" am Ende jedes Discovery-Calls — keine Hoffnung, kein Follow-up.",
+      "Ich kann mit einem Satz erklären, was meine Kunden NACH der Zusammenarbeit anders machen.",
+      "Ich weiß, warum mein letzter verlorener Deal verloren ging — datenbasiert, nicht aus dem Bauch."
+    ],
+    "scaleLow": "Stimme gar nicht zu",
+    "scaleHigh": "Stimme voll zu",
+    "progress": "Fortschritt",
+    "submit": "Score berechnen",
+    "yourScore": "Dein Score",
+    "maxScore": "von 40",
+    "startOver": "Neu starten",
+    "wantReport": "Den ausführlichen Report?",
+    "wantReportBody": "Wir schicken Dir per E-Mail eine 4-Seiten-Analyse Deines Scores mit konkreten Handlungsempfehlungen. Kostenlos, kein Follow-up-Spam.",
+    "emailLabel": "E-Mail",
+    "firstNameLabel": "Vorname",
+    "sendReport": "Report schicken",
+    "reportSent": "Check Deinen Posteingang — Report ist unterwegs.",
+    "tiers": [
+      {
+        "from": 8,
+        "label": "Discovery braucht Struktur",
+        "body": "Du verkaufst aus dem Bauch — und verlierst Deals, weil keiner versteht, warum die Kunden bei Dir besser fahren als beim Wettbewerb. Das ist kein Talent-Problem. Das ist ein System-Problem.",
+        "cta": "Gespräch zu unserem Discovery-System"
+      },
+      {
+        "from": 16,
+        "label": "Lücken in der Praxis",
+        "body": "Du hast Methoden gelesen, aber im Call rutschst Du in alte Muster. Discovery-Calls verlaufen freundlich, aber selten in einen klaren Next Step.",
+        "cta": "Discovery-Sparring mit Markus buchen"
+      },
+      {
+        "from": 24,
+        "label": "Solide Basis",
+        "body": "Du machst vieles richtig. Was Dir fehlt: ein Sparringspartner, der Dir live sagt, wo Du auf der Bühne den Buyer verlierst — Stelle für Stelle.",
+        "cta": "Discovery-Sparring buchen"
+      },
+      {
+        "from": 32,
+        "label": "Discovery-Master (Top 5 %)",
+        "body": "Du gehörst zu den 5 %, die Discovery beherrschen. Frage ist nur: kannst Du das anderen beibringen? Das ist der nächste Hebel — Team Enablement.",
+        "cta": "Team-Enablement-Gespräch"
+      }
+    ]
   }
 }

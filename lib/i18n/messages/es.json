@@ -808,7 +808,8 @@
         }
       ],
       "verdictAccent": "Si 3+ encajan:",
-      "verdictRest": "Convertimos tu venta en sistema. 12 meses. Reproducible. Sparring en lugar de diapositivas."
+      "verdictRest": "Convertimos tu venta en sistema. 12 meses. Reproducible. Sparring en lugar de diapositivas.",
+      "scorecardCta": "Hacer el Scorecard de Discovery · 60 segundos"
     }
   },
   "kontaktPage": {
@@ -1555,5 +1556,63 @@
       "seatsLeft": "limitado a 30 plazas",
       "firstThirtyBadge": "Los primeros 30"
     }
+  },
+  "scorecard": {
+    "meta": {
+      "title": "Scorecard de Discovery Calls — SalesMade",
+      "description": "8 preguntas. 60 segundos. Descubre dónde pierdes dinero en tus discovery calls."
+    },
+    "eyebrow": "Auto-diagnóstico gratuito",
+    "headline": "¿Qué tan efectivas son tus discovery calls?",
+    "subtext": "8 preguntas. 60 segundos. Descubre exactamente dónde tus discovery calls pierden dinero — y qué cambiaríamos contigo.",
+    "questions": [
+      "Conozco al menos 3 pain points concretos de mi ICP — no suposiciones.",
+      "Sé para cada lead por qué compraría AHORA (no en 6 meses).",
+      "En mis discovery calls hablo menos del 30 % del tiempo.",
+      "Escucho al buyer decir \"está dentro del presupuesto\" antes de nombrar un precio.",
+      "Conozco a los decision-makers internos por nombre antes de enviar una oferta.",
+      "Tengo un \"next step\" claro al final de cada discovery call — sin esperanza ni follow-up vago.",
+      "Puedo explicar en una frase qué hacen mis clientes diferente DESPUÉS de trabajar conmigo.",
+      "Sé por qué mi último deal perdido se perdió — basado en datos, no en intuición."
+    ],
+    "scaleLow": "Totalmente en desacuerdo",
+    "scaleHigh": "Totalmente de acuerdo",
+    "progress": "Progreso",
+    "submit": "Calcular score",
+    "yourScore": "Tu score",
+    "maxScore": "de 40",
+    "startOver": "Reiniciar",
+    "wantReport": "¿Quieres el reporte detallado?",
+    "wantReportBody": "Te enviamos un análisis por email de 4 páginas con recomendaciones concretas. Gratis, sin spam.",
+    "emailLabel": "Email",
+    "firstNameLabel": "Nombre",
+    "sendReport": "Enviar reporte",
+    "reportSent": "Revisa tu bandeja — el reporte está en camino.",
+    "tiers": [
+      {
+        "from": 8,
+        "label": "Discovery necesita estructura",
+        "body": "Vendes por instinto y pierdes deals porque nadie entiende por qué tu opción es mejor. Es un problema de sistema, no de talento.",
+        "cta": "Hablar sobre nuestro sistema"
+      },
+      {
+        "from": 16,
+        "label": "Fallas en la práctica",
+        "body": "Has leído los métodos, pero en la llamada vuelves a viejos patrones. Las calls terminan amistosas pero sin next step claro.",
+        "cta": "Reservar sparring"
+      },
+      {
+        "from": 24,
+        "label": "Base sólida",
+        "body": "Haces muchas cosas bien. Lo que te falta: un sparring partner que te diga en vivo dónde pierdes al buyer.",
+        "cta": "Reservar sparring"
+      },
+      {
+        "from": 32,
+        "label": "Discovery Master (Top 5 %)",
+        "body": "Estás en el 5 % que domina discovery. La pregunta: ¿puedes enseñarlo a otros? Ese es el próximo apalancamiento.",
+        "cta": "Hablar de team enablement"
+      }
+    ]
   }
 }

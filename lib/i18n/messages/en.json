@@ -808,7 +808,8 @@
         }
       ],
       "verdictAccent": "If 3+ hit:",
-      "verdictRest": "We turn your sales motion into a system. 12 months. Reproducible. Sparring instead of slides."
+      "verdictRest": "We turn your sales motion into a system. 12 months. Reproducible. Sparring instead of slides.",
+      "scorecardCta": "Take the Discovery Call Scorecard · 60 seconds"
     }
   },
   "kontaktPage": {
@@ -1555,5 +1556,63 @@
       "seatsLeft": "limited to 30 seats",
       "firstThirtyBadge": "The first 30"
     }
+  },
+  "scorecard": {
+    "meta": {
+      "title": "Discovery Call Scorecard — SalesMade",
+      "description": "8 questions. 60 seconds. See exactly where your discovery calls leak money."
+    },
+    "eyebrow": "Free Self-Diagnostic",
+    "headline": "How effective are your discovery calls?",
+    "subtext": "8 questions. 60 seconds. See exactly where your discovery calls leak money — and what we would change with you.",
+    "questions": [
+      "I know at least 3 concrete pain points of my ICP — not guesses.",
+      "For every lead, I know why they would buy NOW (not in 6 months).",
+      "In my discovery calls I talk less than 30 % of the time.",
+      "I hear the buyer say \"this is in our budget\" before I name a price.",
+      "I know the internal decision-makers by name before I send an offer.",
+      "I have a clear \"next step\" at the end of every discovery call — no hope, no follow-up.",
+      "I can explain in one sentence what my customers do differently AFTER we work together.",
+      "I know why my last lost deal was lost — data-based, not gut-feel."
+    ],
+    "scaleLow": "Strongly disagree",
+    "scaleHigh": "Strongly agree",
+    "progress": "Progress",
+    "submit": "Calculate score",
+    "yourScore": "Your score",
+    "maxScore": "of 40",
+    "startOver": "Start over",
+    "wantReport": "Want the deep-dive report?",
+    "wantReportBody": "We send a 4-page email analysis of your score with concrete recommendations. Free, no follow-up spam.",
+    "emailLabel": "Email",
+    "firstNameLabel": "First name",
+    "sendReport": "Send the report",
+    "reportSent": "Check your inbox — the report is on its way.",
+    "tiers": [
+      {
+        "from": 8,
+        "label": "Discovery needs structure",
+        "body": "You’re selling on instinct — and losing deals because no one understands why customers are better off with you. That’s a system problem, not a talent problem.",
+        "cta": "Talk about our discovery system"
+      },
+      {
+        "from": 16,
+        "label": "Gaps in practice",
+        "body": "You’ve read the methods, but in the call you slip back to old patterns. Discovery calls go friendly but rarely into a clear next step.",
+        "cta": "Book discovery sparring"
+      },
+      {
+        "from": 24,
+        "label": "Solid foundation",
+        "body": "You’re doing many things right. What’s missing: a sparring partner who tells you live where you lose the buyer — step by step.",
+        "cta": "Book discovery sparring"
+      },
+      {
+        "from": 32,
+        "label": "Discovery Master (Top 5 %)",
+        "body": "You’re in the top 5 % who master discovery. The question now: can you teach others? That’s the next leverage — team enablement.",
+        "cta": "Team enablement call"
+      }
+    ]
   }
 }
