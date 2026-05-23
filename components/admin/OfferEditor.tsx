@@ -1,8 +1,10 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
-import { Sparkles, Plus, X, Save, Send, Loader2, AlertCircle, Check } from 'lucide-react'
+import { Sparkles, Plus, X, Save, Send, Loader2, AlertCircle, EyeOff, Eye } from 'lucide-react'
 import { updateOfferAction, suggestSectionAction, setOfferStatusAction } from '@/lib/actions/offers'
+import { OfferPreview } from './OfferPreview'
 
 interface Goal { v: string }
 interface UnderstandingData { title?: string; goals?: string[]; challenges?: string[] }
@@ -26,12 +28,14 @@ export interface OfferEditorState {
   status: string
 }
 
-export function OfferEditor({ initial }: { initial: OfferEditorState }) {
+export function OfferEditor({ initial, accessSalt, offerNumber }: { initial: OfferEditorState; accessSalt?: string; offerNumber?: string }) {
   const [s, setS] = useState<OfferEditorState>(initial)
   const [savedAt, setSavedAt] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
   const [suggesting, setSuggesting] = useState<string | null>(null)
+  const [showPreview, setShowPreview] = useState(true)
+  const router = useRouter()
 
   function patch<K extends keyof OfferEditorState>(key: K, value: OfferEditorState[K]) {
     setS((prev) => ({ ...prev, [key]: value }))
@@ -88,30 +92,8 @@ export function OfferEditor({ initial }: { initial: OfferEditorState }) {
     finally { setSuggesting(null) }
   }
 
-  return (
-    <div className="space-y-8">
-      {/* Toolbar */}
-      <div className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-4 sticky top-4 z-10 shadow-sm">
-        <div className="flex items-center gap-3">
-          <button onClick={save} disabled={pending}
-            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50">
-            {pending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} Speichern
-          </button>
-          {savedAt && <span className="text-xs text-gray-500">Gespeichert {new Date(savedAt).toLocaleTimeString('de-DE')}</span>}
-          {error && <span className="inline-flex items-center gap-1 text-xs text-red-600"><AlertCircle size={12} />{error}</span>}
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] uppercase tracking-widest text-gray-400">Status</span>
-          <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-gray-700">{s.status}</span>
-          {s.status === 'draft' && (
-            <button onClick={markSent} disabled={pending}
-              className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100">
-              <Send size={11} /> Markieren als gesendet
-            </button>
-          )}
-        </div>
-      </div>
-
+  const formSections = (
+    <div className="space-y-6">
       {/* Customer */}
       <Section label="Kunde">
         <div className="grid gap-3 md:grid-cols-3">
@@ -158,6 +140,55 @@ export function OfferEditor({ initial }: { initial: OfferEditorState }) {
       <Section label="Preise · DIY · DWY · DFY" onSuggest={() => suggest('pricing')} suggesting={suggesting === 'pricing'}>
         <PricingEditor programs={s.programs} onChange={(arr) => patch('programs', arr)} />
       </Section>
+    </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      {/* Sticky Topbar */}
+      <div className="sticky top-0 z-30 -mx-6 -mt-6 mb-6 border-b border-gray-200 bg-white/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="min-w-0"><h2 className="truncate text-xl font-bold text-gray-900">{s.title || 'Neues Angebot erstellen'}</h2>{offerNumber && <p className="truncate text-xs font-mono text-gray-400">{offerNumber}{accessSalt ? " · /offer/" + accessSalt.slice(0,8) + "…" : ""}</p>}</div>
+            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-gray-700">{s.status}</span>
+            {savedAt && <span className="hidden text-xs text-gray-500 sm:inline">Gespeichert {new Date(savedAt).toLocaleTimeString('de-DE')}</span>}
+            {error && <span className="inline-flex items-center gap-1 text-xs text-red-600"><AlertCircle size={12} />{error}</span>}
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button type="button" onClick={() => setShowPreview((v) => !v)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-50">
+              {showPreview ? <><EyeOff size={13} /> Vorschau ausblenden</> : <><Eye size={13} /> Vorschau anzeigen</>}
+            </button>
+            <button type="button" onClick={() => router.push('/admin/offers')}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-50">
+              <X size={13} /> Abbrechen
+            </button>
+            {s.status === 'draft' && (
+              <button type="button" onClick={markSent} disabled={pending}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-100">
+                <Send size={11} /> Versenden
+              </button>
+            )}
+            <button type="button" onClick={save} disabled={pending}
+              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50">
+              {pending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} Speichern
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Layout */}
+      {showPreview ? (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div>{formSections}</div>
+          <aside className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
+            {/* Preview */}
+            <OfferPreview s={s} />
+          </aside>
+        </div>
+      ) : (
+        formSections
+      )}
     </div>
   )
 }
