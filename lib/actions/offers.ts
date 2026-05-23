@@ -139,3 +139,29 @@ export async function suggestSectionAction(req: SuggestRequest): Promise<{ ok: t
     return { ok: false, error: 'invalid JSON from OpenAI' }
   }
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Draft-Create — single-click "+ Neues Angebot" button.
+ * Creates an empty draft with placeholder values and redirects to the
+ * editor for filling in the real data.
+ * ────────────────────────────────────────────────────────────────────── */
+export async function createDraftOfferAction() {
+  await requireAdmin()
+  const { createOffer } = await import('@/lib/db/queries/offers')
+  const offer = await createOffer({
+    customerName: 'Neuer Kunde',
+    customerCompany: null,
+    customerEmail: null,
+    title: 'Neues Angebot',
+    subtitle: null,
+    tagline: null,
+  })
+  revalidatePath('/admin/offers')
+  redirect(`/admin/offers/${offer.id}`)
+}
+
+/* Sign-out wrapper for the admin top-bar logout icon. */
+export async function signOutAdminAction() {
+  const { signOut } = await import('@/lib/auth')
+  await signOut({ redirectTo: '/auth/login' })
+}
