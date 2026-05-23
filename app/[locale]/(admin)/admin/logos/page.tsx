@@ -47,8 +47,9 @@ export default async function AdminLogosPage() {
                   )}
                 </div>
 
-                {/* Editable form */}
-                <form action={saveTrustLogoAction} encType="multipart/form-data" className="flex-1 grid grid-cols-12 gap-3 items-end">
+                {/* Editable form + upload */}
+                <div className="flex-1 min-w-0">
+                <form action={saveTrustLogoAction} encType="multipart/form-data" className="grid grid-cols-12 gap-3 items-end">
                   <input type="hidden" name="slug" value={logo.slug} />
                   <div className="col-span-3">
                     <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">Name</label>
@@ -106,18 +107,20 @@ export default async function AdminLogosPage() {
                       <Save size={12} />
                     </button>
                   </div>
-                  <div className="col-span-12">
-                    <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">
-                      Datei hochladen (überschreibt Source URL)
-                    </label>
-                    <input
-                      type="file"
-                      name="logoFile"
-                      accept=".png,.jpg,.jpeg,.svg,.webp,image/*"
-                      className="block w-full text-xs text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-gray-100 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
-                    />
-                  </div>
                 </form>
+                <div className="mt-3">
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">
+                    Datei hochladen (überschreibt Source URL)
+                  </label>
+                  <LogoUploadDropzone
+                    compact
+                    initialSlug={logo.slug}
+                    initialName={logo.name}
+                    initialDomain={logo.domain ?? ''}
+                    initialOrder={logo.order}
+                  />
+                </div>
+                </div>
 
                 {/* Delete + search */}
                 <div className="flex flex-col gap-1 items-end">
