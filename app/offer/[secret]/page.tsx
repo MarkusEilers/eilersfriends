@@ -1,18 +1,9 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { getOfferBySalt, recordOfferEvent } from '@/lib/db/queries/offers'
-import {
-  OfferHero,
-  OfferUnderstanding,
-  OfferEmpathy,
-  OfferEconomicResults,
-  OfferPricing,
-  OfferAcceptCta,
-  type UnderstandingData,
-  type EmpathyData,
-  type EconomicResult,
-  type ProgramSummary,
-} from '@/components/offer/sections'
+import { OfferPreview } from '@/components/admin/OfferPreview'
+import { OfferAcceptCta, type UnderstandingData, type EmpathyData, type EconomicResult, type ProgramSummary } from '@/components/offer/sections'
+import type { OfferEditorState } from '@/components/admin/OfferEditor'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -31,7 +22,6 @@ interface OfferFull {
   empathy_section: EmpathyData | null
   programs: ProgramSummary[] | null
   economic_results: EconomicResult[] | null
-  section_order: Array<{ id: string; type: string; enabled: boolean }> | null
   valid_from: string
   valid_until: string
   status: string
@@ -48,47 +38,48 @@ export default async function PublicOfferPage({ params }: { params: Promise<{ se
     recordOfferEvent(offer.id, 'viewed').catch(() => {})
   }
 
-  const validUntil = new Date(offer.valid_until)
-  const understanding: UnderstandingData = offer.understanding_section ?? {}
-  const empathy: EmpathyData = offer.empathy_section ?? {}
-  const programs: ProgramSummary[] = offer.programs ?? []
-  const economic: EconomicResult[] = offer.economic_results ?? []
+  const validUntil = new Date(offer.valid_until).toLocaleDateString('de-DE', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  })
 
-  // Default section order — admin can override via offer.section_order later
-  const sectionOrder = offer.section_order && offer.section_order.length > 0
-    ? offer.section_order.filter((s) => s.enabled).map((s) => s.type)
-    : ['understanding', 'empathy', 'economic_results', 'pricing', 'accept']
-
-  const sectionMap: Record<string, React.ReactNode> = {
-    understanding:     <OfferUnderstanding data={understanding} />,
-    empathy:           <OfferEmpathy data={empathy} />,
-    economic_results:  <OfferEconomicResults results={economic} />,
-    pricing:           <OfferPricing programs={programs} selectedOption={offer.selected_pricing_option} />,
-    accept:            <OfferAcceptCta offerSecret={offer.access_salt} status={offer.status} />,
+  // Map OfferFull → OfferEditorState shape for OfferPreview
+  const state: OfferEditorState = {
+    id: offer.id,
+    title: offer.title,
+    subtitle: offer.subtitle ?? '',
+    tagline: offer.tagline ?? '',
+    customerName: offer.customer_name,
+    customerCompany: offer.customer_company ?? '',
+    customerEmail: offer.customer_email ?? '',
+    understanding: (offer.understanding_section as OfferEditorState['understanding']) ?? {},
+    empathy: (offer.empathy_section as OfferEditorState['empathy']) ?? {},
+    economic: ((offer.economic_results as unknown as OfferEditorState['economic']) ?? []),
+    programs: ((offer.programs as unknown as OfferEditorState['programs']) ?? []),
+    status: offer.status,
   }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
-      {/* Slim header — no marketing nav */}
+      {/* Slim header */}
       <header className="border-b border-gray-100 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <Image src="/ef-logo.png" alt="Eilers+Friends" width={160} height={40} className="h-10 w-auto object-contain" priority />
-          <span className="text-[10px] font-mono text-gray-400">{offer.offer_number}</span>
+          <div className="text-right">
+            <span className="block text-[10px] font-mono text-gray-400">{offer.offer_number}</span>
+            <span className="block text-[10px] text-gray-400">Gültig bis {validUntil}</span>
+          </div>
         </div>
       </header>
 
-      <OfferHero
-        offerNumber={offer.offer_number}
-        title={offer.title}
-        subtitle={offer.subtitle}
-        tagline={offer.tagline}
-        customerName={offer.customer_name}
-        validUntil={validUntil}
-      />
+      {/* Main offer preview — same component as the admin live-preview to keep
+          the WYSIWYG promise. */}
+      <main className="mx-auto max-w-5xl px-6 py-10">
+        <OfferPreview s={state} />
 
-      {sectionOrder.map((key) => (
-        <div key={key}>{sectionMap[key]}</div>
-      ))}
+        <div className="mt-10">
+          <OfferAcceptCta offerSecret={offer.access_salt} status={offer.status} />
+        </div>
+      </main>
 
       <footer className="border-t border-gray-100 bg-white py-8 text-center text-xs text-gray-400">
         Eilers+Friends · {offer.offer_number} · Vertraulich · {new Date(offer.valid_from).toLocaleDateString('de-DE')}

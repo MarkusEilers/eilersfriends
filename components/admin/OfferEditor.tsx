@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { Sparkles, Plus, X, Save, Send, Loader2, AlertCircle, EyeOff, Eye } from 'lucide-react'
-import { updateOfferAction, suggestSectionAction, setOfferStatusAction } from '@/lib/actions/offers'
+import { updateOfferAction, suggestSectionAction, setOfferStatusAction, generateOfferFromPromptAction } from '@/lib/actions/offers'
 import { OfferPreview } from './OfferPreview'
 
 interface Goal { v: string }
@@ -26,6 +26,12 @@ export interface OfferEditorState {
   economic: EconomicResultData[]
   programs: ProgramData[]
   status: string
+  recipientRole?: string
+  meetingNotes?: string
+  programId?: string | null
+  aiPrompt?: string
+  sweatEquityEnabled?: boolean
+  sweatEquityPercent?: number | null
 }
 
 export function OfferEditor({ initial, accessSalt, offerNumber }: { initial: OfferEditorState; accessSalt?: string; offerNumber?: string }) {
@@ -35,6 +41,7 @@ export function OfferEditor({ initial, accessSalt, offerNumber }: { initial: Off
   const [pending, startTransition] = useTransition()
   const [suggesting, setSuggesting] = useState<string | null>(null)
   const [showPreview, setShowPreview] = useState(true)
+  const [generating, setGenerating] = useState(false)
   const router = useRouter()
 
   function patch<K extends keyof OfferEditorState>(key: K, value: OfferEditorState[K]) {
@@ -50,6 +57,12 @@ export function OfferEditor({ initial, accessSalt, offerNumber }: { initial: Off
           customerName: s.customerName, customerCompany: s.customerCompany || null, customerEmail: s.customerEmail || null,
           understandingSection: s.understanding, empathySection: s.empathy,
           economicResults: s.economic, programs: s.programs,
+          recipientRole: s.recipientRole ?? null,
+          meetingNotes: s.meetingNotes ?? null,
+          programId: s.programId ?? null,
+          aiPrompt: s.aiPrompt ?? null,
+          sweatEquityEnabled: s.sweatEquityEnabled,
+          sweatEquityPercent: s.sweatEquityPercent ?? null,
         })
         setSavedAt(Date.now())
       } catch (e) { setError(String(e)) }
@@ -92,6 +105,25 @@ export function OfferEditor({ initial, accessSalt, offerNumber }: { initial: Off
     finally { setSuggesting(null) }
   }
 
+  async function generateOffer() {
+    setError(null); setGenerating(true)
+    try {
+      const res = await generateOfferFromPromptAction(s.id, {
+        prompt: s.aiPrompt ?? '',
+        recipientRole: s.recipientRole,
+        meetingNotes: s.meetingNotes,
+        programId: s.programId ?? null,
+      })
+      if (!res.ok) { setError(res.error); return }
+      // Reload — the action patched the DB; easiest path is hard refresh
+      router.refresh()
+    } catch (e) {
+      setError(String(e))
+    } finally {
+      setGenerating(false)
+    }
+  }
+
   const formSections = (
     <div className="space-y-6">
       {/* Customer */}
@@ -102,6 +134,40 @@ export function OfferEditor({ initial, accessSalt, offerNumber }: { initial: Off
           <Field label="E-Mail" value={s.customerEmail} onChange={(v) => patch('customerEmail', v)} />
         </div>
       </Section>
+
+      {/* KI-Assistent */}
+      <section className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/40 to-purple-50/30 p-6">
+        <div className="mb-3 flex items-center gap-2">
+          <Sparkles size={16} className="text-blue-600" />
+          <h2 className="text-sm font-bold uppercase tracking-widest text-blue-700">KI-Assistent</h2>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2">
+          <Field label="Rolle des Empfängers" value={s.recipientRole ?? ''} onChange={(v) => patch('recipientRole', v)} />
+          <Field label="Empfohlenes Programm (UUID — optional)" value={s.programId ?? ''} onChange={(v) => patch('programId', v || null)} />
+        </div>
+        <div className="mt-3">
+          <Field label="Gesprächsnotizen" value={s.meetingNotes ?? ''} onChange={(v) => patch('meetingNotes', v)} multiline />
+        </div>
+        <div className="mt-3">
+          <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">Briefing für das Angebot</label>
+          <textarea
+            value={s.aiPrompt ?? ''}
+            onChange={(e) => patch('aiPrompt', e.target.value)}
+            rows={4}
+            placeholder="Beschreiben Sie das Angebot, das Sie erstellen möchten. Z.B.: 'Erstelle ein Angebot für die Musterfirma GmbH, die ihre B2B-Kundenakquise verbessern möchte. Sie haben Probleme mit langen Verkaufszyklen und möchten mehr qualifizierte Leads generieren.'"
+            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={generateOffer}
+          disabled={generating || !s.aiPrompt?.trim()}
+          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-blue-600 hover:to-purple-600 disabled:opacity-50"
+        >
+          {generating ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+          Angebot generieren
+        </button>
+      </section>
 
       {/* Hero / Title */}
       <Section label="Hero · Titel" onSuggest={() => suggest('title')} suggesting={suggesting === 'title'}>
@@ -135,6 +201,37 @@ export function OfferEditor({ initial, accessSalt, offerNumber }: { initial: Off
       <Section label="Ergebnisse · Was Du dadurch erreichst" onSuggest={() => suggest('economic')} suggesting={suggesting === 'economic'}>
         <EconomicEditor items={s.economic} onChange={(arr) => patch('economic', arr)} />
       </Section>
+
+      {/* Sweat Equity */}
+      <section className="rounded-2xl border border-gray-200 bg-white p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500">Sweat Equity</h2>
+            <p className="mt-1 text-xs text-gray-500">Ein Teil des Auftragswertes wird in Stock Options umgewandelt</p>
+          </div>
+          <label className="inline-flex items-center cursor-pointer">
+            <input type="checkbox" checked={s.sweatEquityEnabled ?? false}
+              onChange={(e) => patch('sweatEquityEnabled', e.target.checked)}
+              className="sr-only peer" />
+            <span className="relative h-6 w-11 rounded-full bg-gray-200 peer-checked:bg-blue-600 transition-colors">
+              <span className="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5" />
+            </span>
+          </label>
+        </div>
+        {s.sweatEquityEnabled && (
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">Anteil (%)</label>
+              <input
+                type="number" min={0} max={100}
+                value={s.sweatEquityPercent ?? 0}
+                onChange={(e) => patch('sweatEquityPercent', Number(e.target.value))}
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
+              />
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* Pricing */}
       <Section label="Preise · DIY · DWY · DFY" onSuggest={() => suggest('pricing')} suggesting={suggesting === 'pricing'}>

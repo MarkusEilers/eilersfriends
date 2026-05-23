@@ -39,6 +39,12 @@ interface UpdatePayload {
   empathySection?: { title?: string; statement?: string; successMessage?: string }
   economicResults?: Array<{ icon?: string; title: string; description?: string }>
   programs?: unknown[]
+  recipientRole?: string | null
+  meetingNotes?: string | null
+  programId?: string | null
+  aiPrompt?: string | null
+  sweatEquityEnabled?: boolean
+  sweatEquityPercent?: number | null
 }
 
 export async function updateOfferAction(id: string, payload: UpdatePayload) {
@@ -164,4 +170,109 @@ export async function createDraftOfferAction() {
 export async function signOutAdminAction() {
   const { signOut } = await import('@/lib/auth')
   await signOut({ redirectTo: '/auth/login' })
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+ * KI-Assistent — Full Offer Generation
+ * Liest aktuelle Offer-Felder + Free-Text-Prompt + optional Programm-/Notiz-Kontext
+ * und generiert in EINEM Call: title/subtitle/tagline + understanding(goals/challenges)
+ * + empathy(statement/successMessage) + economic[6 tiles]. Patcht das Offer direkt.
+ * ────────────────────────────────────────────────────────────────────── */
+export async function generateOfferFromPromptAction(
+  offerId: string,
+  payload: { prompt: string; recipientRole?: string; meetingNotes?: string; programId?: string | null },
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  await requireAdmin()
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) return { ok: false, error: 'OPENAI_API_KEY missing in Vercel env' }
+
+  // Load current offer for customer context
+  const cur = await getOfferById(offerId) as Record<string, unknown> | null
+  if (!cur) return { ok: false, error: 'offer not found' }
+
+  // Persist context fields immediately (so reloads keep them)
+  await updateOffer(offerId, {
+    aiPrompt: payload.prompt,
+    recipientRole: payload.recipientRole ?? null,
+    meetingNotes: payload.meetingNotes ?? null,
+    programId: payload.programId ?? null,
+  } as never)
+
+  // Optional: load program details for richer context
+  let programContext = ''
+  if (payload.programId) {
+    try {
+      const { db } = await import('@/lib/db')
+      const { sql } = await import('drizzle-orm')
+      const rows = await db.execute(sql`SELECT name, description FROM programs WHERE id = ${payload.programId} LIMIT 1`) as unknown as Array<{ name: string; description: string | null }>
+      const p = rows[0]
+      if (p) programContext = `\nAngebotetes Programm: ${p.name}${p.description ? ' — ' + p.description : ''}`
+    } catch { /* non-fatal */ }
+  }
+
+  const customerStr = [cur.customer_name, cur.customer_company].filter(Boolean).join(' · ')
+  const sys = 'Du bist ein Senior B2B-Sales-Consultant im Stil von Markus Eilers. Du formulierst Angebote glaubwürdig, klar, ohne Hype, ohne Buzzwords. Du sprichst den Empfänger direkt an. Antworte AUSSCHLIESSLICH als JSON nach dem angegebenen Schema, kein Kommentar, kein Markdown.'
+  const schema = `{
+    "title": string,         // klarer Angebots-Titel (max 8 Worte)
+    "subtitle": string,      // Untertitel-Klammer (1 Satz)
+    "tagline": string,       // markante Tagline für den Empfänger (max 7 Worte)
+    "understanding": {
+      "title": string,       // typisch "So haben wir Euch verstanden"
+      "goals": string[],     // 3–4 konkrete Ziele aus Sicht des Empfängers
+      "challenges": string[] // 3–4 konkrete Herausforderungen
+    },
+    "empathy": {
+      "title": string,
+      "statement": string,   // "Wir verstehen, dass..." 2–3 Sätze
+      "successMessage": string  // "Nach der Zusammenarbeit werdet Ihr..."
+    },
+    "economic": [            // 4–6 messbare Ergebnis-Tiles
+      { "icon": "target"|"users"|"trending-up"|"shield"|"zap"|"star", "title": string, "description": string }
+    ]
+  }`
+
+  const userPrompt = `Empfänger: ${customerStr}
+Rolle des Empfängers: ${payload.recipientRole || '(nicht angegeben)'}${programContext}
+${payload.meetingNotes ? '\nGesprächsnotizen:\n' + payload.meetingNotes : ''}
+
+Briefing (Kern-Input vom Berater):
+${payload.prompt}
+
+Generiere ein vollständiges Angebot in JSON nach dem Schema.`
+
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: `${sys}\n\nSchema:\n${schema}` },
+        { role: 'user', content: userPrompt },
+      ],
+      response_format: { type: 'json_object' },
+      temperature: 0.7,
+    }),
+  })
+  if (!res.ok) {
+    return { ok: false, error: `OpenAI ${res.status}: ${(await res.text()).slice(0, 300)}` }
+  }
+  const data = await res.json()
+  const content = data.choices?.[0]?.message?.content
+  if (!content) return { ok: false, error: 'empty OpenAI response' }
+
+  let parsed: Record<string, unknown>
+  try { parsed = JSON.parse(content) } catch { return { ok: false, error: 'invalid JSON from OpenAI' } }
+
+  // Patch offer
+  await updateOffer(offerId, {
+    title: typeof parsed.title === 'string' ? parsed.title : undefined,
+    subtitle: typeof parsed.subtitle === 'string' ? parsed.subtitle : null,
+    tagline: typeof parsed.tagline === 'string' ? parsed.tagline : null,
+    understandingSection: parsed.understanding as object,
+    empathySection: parsed.empathy as object,
+    economicResults: Array.isArray(parsed.economic) ? parsed.economic as Array<{ icon: string; title: string; description: string }> : undefined,
+  })
+
+  revalidatePath(`/admin/offers/${offerId}`)
+  return { ok: true }
 }

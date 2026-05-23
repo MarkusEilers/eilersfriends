@@ -83,6 +83,11 @@ async function ensureOfferSchema() {
     )
   `)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS offer_events_offer_idx ON offer_events (offer_id)`)
+  // Wave 2.C — AI-Context columns
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS recipient_role TEXT`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS meeting_notes  TEXT`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS program_id     UUID`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS ai_prompt      TEXT`)
   ensured = true
 }
 
@@ -108,14 +113,36 @@ function genSalt(): string {
   return crypto.randomBytes(16).toString('hex')
 }
 
-function genOfferNumber(customerName: string): string {
-  const year = new Date().getFullYear().toString().slice(-2)
-  const slug = customerName
-    .trim().toUpperCase()
+function slugifyForOfferNumber(s: string): string {
+  return s.trim().toUpperCase()
+    .replace(/GMBH|AG|UG|KG|OHG|GBR|E\.K\.|LLC|INC|LTD|CORP/gi, '')
     .replace(/[^A-Z0-9]/g, '')
-    .slice(0, 4) || 'XXXX'
-  const ts = Math.floor(Date.now() / 1000).toString(36).toUpperCase().slice(-4)
-  return `${slug}-${year}-${ts}`
+    .slice(0, 10) || 'KUNDE'
+}
+
+/** Get next sequential counter for the current year: AN-YYYY-COMPANY-NNN */
+async function nextOfferCounter(year: number): Promise<number> {
+  try {
+    const prefix = `AN-${year}-`
+    const res = await db.execute<{ max: string | null }>(sql`
+      SELECT MAX(CAST(SPLIT_PART(offer_number, '-', 4) AS INTEGER)) AS max
+      FROM offers
+      WHERE offer_number LIKE ${prefix + '%'}
+    `)
+    const rows = res as unknown as Array<{ max: string | null }>
+    const current = rows[0]?.max ? parseInt(String(rows[0].max), 10) : 0
+    return (Number.isFinite(current) ? current : 0) + 1
+  } catch {
+    return 1
+  }
+}
+
+async function genOfferNumber(customerName: string, customerCompany?: string | null): Promise<string> {
+  const year = new Date().getFullYear()
+  const base = customerCompany?.trim() || customerName
+  const slug = slugifyForOfferNumber(base)
+  const counter = await nextOfferCounter(year)
+  return `AN-${year}-${slug}-${counter.toString().padStart(3, '0')}`
 }
 
 export async function listOffersForAdmin(): Promise<OfferRow[]> {
@@ -160,7 +187,7 @@ export async function createOffer(input: {
   tagline?: string | null
 }): Promise<OfferRow> {
   await ensureOfferSchema()
-  const offerNumber = genOfferNumber(input.customerName)
+  const offerNumber = await genOfferNumber(input.customerName, input.customerCompany)
   const accessSalt = genSalt()
   const res = await db.execute<OfferRow>(sql`
     INSERT INTO offers (offer_number, customer_name, customer_company, customer_email,
@@ -196,6 +223,13 @@ export interface OfferUpdate {
   sectionOrder?: object
   validUntil?: string  // ISO date
   status?: 'draft' | 'sent' | 'viewed' | 'signed' | 'paid' | 'expired' | 'cancelled'
+  // Wave 2.C — AI-Context
+  recipientRole?: string | null
+  meetingNotes?: string | null
+  programId?: string | null
+  aiPrompt?: string | null
+  sweatEquityEnabled?: boolean
+  sweatEquityPercent?: number | null
 }
 
 export async function updateOffer(id: string, update: OfferUpdate): Promise<void> {
@@ -215,6 +249,12 @@ export async function updateOffer(id: string, update: OfferUpdate): Promise<void
   if (update.sectionOrder !== undefined) sets.push(sql`section_order = ${JSON.stringify(update.sectionOrder)}::jsonb`)
   if (update.validUntil !== undefined) sets.push(sql`valid_until = ${update.validUntil}`)
   if (update.status !== undefined) sets.push(sql`status = ${update.status}::offer_status`)
+  if (update.recipientRole !== undefined) sets.push(sql`recipient_role = ${update.recipientRole}`)
+  if (update.meetingNotes !== undefined) sets.push(sql`meeting_notes = ${update.meetingNotes}`)
+  if (update.programId !== undefined) sets.push(sql`program_id = ${update.programId}`)
+  if (update.aiPrompt !== undefined) sets.push(sql`ai_prompt = ${update.aiPrompt}`)
+  if (update.sweatEquityEnabled !== undefined) sets.push(sql`sweat_equity_enabled = ${update.sweatEquityEnabled}`)
+  if (update.sweatEquityPercent !== undefined) sets.push(sql`sweat_equity_percent = ${update.sweatEquityPercent}`)
   if (!sets.length) return
   sets.push(sql`updated_at = now()`)
   const joined = sql.join(sets, sql`, `)
