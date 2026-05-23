@@ -9,6 +9,8 @@ interface Logo {
   src?: string
   /** BW version — shown by default if present */
   srcBw?: string
+  /** Per-logo perceptual height adjustment in % (50-150). Default 100. */
+  displayScale?: number
 }
 
 interface LogoScrollbarProps {
@@ -43,7 +45,7 @@ export function LogoScrollbar({ logos, speed = 'normal', className }: LogoScroll
         {tripled.map((logo, i) => (
           <div
             key={i}
-            className="flex h-7 items-center justify-center px-2"
+            className="flex h-12 w-[160px] items-center justify-center px-3"
           >
             <LogoItem logo={logo} />
           </div>
@@ -66,20 +68,22 @@ function LogoItem({ logo }: { logo: Logo }) {
   // If BW variant exists, stack two <img>s — BW default, color on hover.
   if (logo.srcBw) {
     return (
-      <span className="group relative inline-block h-[18px]">
+      <span className="group relative flex h-10 w-full items-center justify-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={logo.srcBw}
           alt={logo.name}
           onError={() => setFailed(true)}
-          className="h-[18px] w-auto object-contain opacity-60 transition-opacity duration-200 group-hover:opacity-0"
+          className="max-h-10 max-w-full object-contain opacity-60 transition-opacity duration-200 group-hover:opacity-0"
+          style={{ transform: `scale(${(logo.displayScale ?? 100) / 100})` }}
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={logo.src}
           alt=""
           aria-hidden="true"
-          className="absolute left-0 top-0 h-[18px] w-auto object-contain opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+          className="absolute inset-0 m-auto max-h-10 max-w-full object-contain opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+          style={{ transform: `scale(${(logo.displayScale ?? 100) / 100})` }}
         />
       </span>
     )
@@ -91,7 +95,8 @@ function LogoItem({ logo }: { logo: Logo }) {
       src={logo.src}
       alt={logo.name}
       onError={() => setFailed(true)}
-      className="h-[18px] w-auto object-contain opacity-40 grayscale transition-all hover:opacity-90 hover:grayscale-0"
+      className="max-h-10 max-w-full object-contain opacity-50 grayscale transition-all hover:opacity-90 hover:grayscale-0"
+      style={{ transform: `scale(${(logo.displayScale ?? 100) / 100})` }}
     />
   )
 }

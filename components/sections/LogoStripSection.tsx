@@ -19,7 +19,7 @@ export async function LogoStripSection() {
         </p>
       </div>
       <LogoScrollbar
-        logos={logos.map((l) => ({ name: l.name, src: l.src ?? undefined, srcBw: l.srcBw ?? undefined }))}
+        logos={logos.map((l) => ({ name: l.name, src: l.src ?? undefined, srcBw: l.srcBw ?? undefined, displayScale: l.displayScale }))}
         speed="normal"
       />
     </section>

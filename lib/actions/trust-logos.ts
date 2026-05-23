@@ -28,6 +28,8 @@ export async function saveTrustLogoAction(formData: FormData) {
   const domain = String(formData.get('domain') || '').trim() || null
   let src: string | null = String(formData.get('src') || '').trim() || null
   let srcBw: string | null = String(formData.get('srcBw') || '').trim() || null
+  const displayScaleRaw = String(formData.get('displayScale') || '100')
+  const displayScale = Math.max(50, Math.min(150, parseInt(displayScaleRaw, 10) || 100))
   const order = parseInt(String(formData.get('order') || '0'), 10) || 0
   const isVisible = formData.get('isVisible') === 'on' || formData.get('isVisible') === 'true'
   if (!name) throw new Error('name required')
@@ -59,6 +61,7 @@ export async function saveTrustLogoAction(formData: FormData) {
     domain,
     src,
     srcBw,
+    displayScale,
     alt: name,
     order,
     isVisible,

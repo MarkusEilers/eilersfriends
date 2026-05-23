@@ -42,6 +42,8 @@ export async function POST(req: NextRequest) {
   const order = parseInt(String(form.get('order') || '0'), 10) || 0
   const isVisibleRaw = form.get('isVisible')
   const isVisible = isVisibleRaw === null ? true : (isVisibleRaw === 'on' || isVisibleRaw === 'true')
+  const displayScaleRaw = form.get('displayScale')
+  const displayScale = displayScaleRaw == null ? undefined : Math.max(50, Math.min(150, parseInt(String(displayScaleRaw), 10) || 100))
 
   if (!(file instanceof File) || file.size === 0) {
     return NextResponse.json({ ok: false, error: 'no_file' }, { status: 400 })
@@ -118,6 +120,7 @@ export async function POST(req: NextRequest) {
       domain,
       src: colorUrl,
       srcBw: bwUrl,
+      displayScale,
       alt: name,
       order,
       isVisible,

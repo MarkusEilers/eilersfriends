@@ -68,12 +68,12 @@ export default async function AdminLogosPage() {
                       className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
                     />
                   </div>
-                  <div className="col-span-3">
+                  <div className="col-span-2">
                     <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">Source URL</label>
                     <input
                       name="src"
                       defaultValue={logo.src ?? ''}
-                      placeholder="/logos/<slug>.svg or https://..."
+                      placeholder="/logos/<slug>.svg or URL"
                       className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-mono text-xs"
                     />
                   </div>
@@ -84,6 +84,18 @@ export default async function AdminLogosPage() {
                       name="order"
                       defaultValue={logo.order}
                       className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-center"
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1" title="Visuelle Höhe in % (50-150). Default 100. Erhöhen für schmale Logos, senken für sehr fette.">Scale %</label>
+                    <input
+                      type="number"
+                      name="displayScale"
+                      min={50}
+                      max={150}
+                      step={5}
+                      defaultValue={logo.displayScale ?? 100}
+                      className="w-full rounded-lg border border-gray-200 bg-white px-2 py-2 text-sm text-center"
                     />
                   </div>
                   <div className="col-span-1 flex justify-center pb-2">
