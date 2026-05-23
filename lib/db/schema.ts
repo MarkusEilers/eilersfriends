@@ -473,6 +473,7 @@ export const trustLogos = pgTable('trust_logos', {
   name: text('name').notNull(),
   domain: text('domain'),
   src: text('src'),  // image URL (full path)
+  srcBw: text('src_bw'),  // BW version for default display
   alt: text('alt'),  // accessibility text
   order: integer('order').default(0).notNull(),
   isVisible: boolean('is_visible').default(true).notNull(),

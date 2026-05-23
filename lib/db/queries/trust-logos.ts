@@ -13,6 +13,7 @@ export interface TrustLogo {
   name: string
   domain: string | null
   src: string | null
+  srcBw: string | null
   alt: string | null
   order: number
   isVisible: boolean
@@ -35,6 +36,9 @@ async function ensureTable() {
         created_at timestamp NOT NULL DEFAULT now(),
         updated_at timestamp NOT NULL DEFAULT now()
       )
+    `)
+    await db.execute(sql`
+      ALTER TABLE trust_logos ADD COLUMN IF NOT EXISTS src_bw text
     `)
     tableEnsured = true
   } catch (err) {
@@ -72,6 +76,7 @@ export async function getAllTrustLogos(): Promise<TrustLogo[]> {
       name: l.name,
       domain: l.domain,
       src: l.src,
+      srcBw: null,
       alt: l.name,
       order: l.order,
       isVisible: true,
@@ -89,6 +94,7 @@ export async function upsertTrustLogo(input: {
   name: string
   domain?: string | null
   src?: string | null
+  srcBw?: string | null
   alt?: string | null
   order?: number
   isVisible?: boolean
@@ -100,6 +106,7 @@ export async function upsertTrustLogo(input: {
       name: input.name,
       domain: input.domain ?? null,
       src: input.src ?? null,
+      srcBw: input.srcBw ?? null,
       alt: input.alt ?? input.name,
       order: input.order ?? 0,
       isVisible: input.isVisible ?? true,
@@ -110,6 +117,7 @@ export async function upsertTrustLogo(input: {
         name: input.name,
         domain: input.domain ?? null,
         src: input.src ?? null,
+        srcBw: input.srcBw ?? null,
         alt: input.alt ?? input.name,
         order: input.order ?? 0,
         isVisible: input.isVisible ?? true,

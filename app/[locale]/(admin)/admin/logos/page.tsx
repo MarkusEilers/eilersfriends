@@ -1,6 +1,7 @@
 import { getAllTrustLogos } from '@/lib/db/queries/trust-logos'
 import { saveTrustLogoAction, deleteTrustLogoAction } from '@/lib/actions/trust-logos'
 import { LogoSearchPanel } from '@/components/admin/LogoSearchPanel'
+import { LogoUploadDropzone } from '@/components/admin/LogoUploadDropzone'
 import { Trash2, Save, Plus } from 'lucide-react'
 
 export default async function AdminLogosPage() {
@@ -138,11 +139,27 @@ export default async function AdminLogosPage() {
         </div>
       </section>
 
-      {/* Add new */}
+      {/* Add new — fetch-based upload mit Progress + Auto-BW */}
       <section>
         <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-gray-500">
           Neue Marke hinzufügen
         </h2>
+        <div className="rounded-2xl border border-gray-200 bg-white p-5">
+          <LogoUploadDropzone />
+          <p className="mt-3 text-xs text-gray-400">
+            Datei wird automatisch hochgeladen, BW-Version erzeugt und unter <code>&lt;slug&gt;-logo.&lt;ext&gt;</code>{' '}
+            + <code>&lt;slug&gt;-logo-bw.&lt;ext&gt;</code> in Blob abgelegt.
+          </p>
+        </div>
+      </section>
+
+      {/* Legacy add — URL-only fallback */}
+      <section className="mt-6">
+        <details>
+          <summary className="cursor-pointer text-xs font-semibold uppercase tracking-widest text-gray-400 hover:text-gray-600">
+            Alternativ · per Source-URL hinzufügen (ohne Upload)
+          </summary>
+          <div className="mt-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5">
           <form action={saveTrustLogoAction} encType="multipart/form-data" className="grid grid-cols-12 gap-3 items-end">
             <div className="col-span-4">
@@ -203,6 +220,8 @@ export default async function AdminLogosPage() {
             Domain) oder Google-Favicon als Last-Resort.
           </p>
         </div>
+          </div>
+        </details>
       </section>
     </div>
   )
