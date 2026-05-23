@@ -40,7 +40,7 @@
     "markusDesc": "Revenue Systems · B2B-Vertrieb · SalesMade",
     "about": "Über Eilers+Friends",
     "aboutDesc": "Unsere Geschichte und unser Versprechen",
-    "featuredProgrammesTitle": "Soft-Launch läuft.",
+    "featuredProgrammesTitle": "Academy Soft-Launch.",
     "featuredProgrammesBody": "30 Founding-Plätze, Lifetime-Preis-Lock. Wenige Slots noch frei.",
     "featuredProgrammesCta": "Bei den ersten 30 dabei sein",
     "firstThirtyBadge": "Die ersten 30"
@@ -473,9 +473,9 @@
     },
     "hero": {
       "badge": "SalesMade Academy · Soft-Launch · Limitierte Plätze",
-      "headline1": "Schließen wir die",
+      "headline1": "Schließen wir das",
       "headlineAccent": "Sales Education Gap.",
-      "subtext": "Die SalesMade Academy ist kein Seminar. Es ist ein 12-monatiges Transformationsprogramm für B2B-Software-Gründer:innen, das Deine Verkäufer:innen zu unverzichtbaren Sparringspartnern für Deine Kunden macht — von Unsicherheit zu planbaren Umsätzen.",
+      "subtext": "Die SalesMade Academy ist kein Seminar. Sie ist ein 12-monatiges Transformationsprogramm für B2B-Software-Gründer:innen, das Deine Verkäufer:innen zu unverzichtbaren Sparringspartnern für Deine Kunden macht — von Unsicherheit zu planbaren Umsätzen.",
       "cta": "Jetzt Benchmarking-Gespräch buchen",
       "note": "Nur noch wenige Plätze für den Soft-Launch verfügbar.",
       "pills": [
@@ -566,7 +566,7 @@
     "system": {
       "eyebrow": "Das System für planbaren Erfolg",
       "headline": "Die SalesMade Academy ist kein Seminar.",
-      "subtext": "Es ist ein 12-monatiges Transformationsprogramm, das Deine Verkäufer:innen zu unverzichtbaren Sparringspartnern für Deine Kunden macht.",
+      "subtext": "Sie ist ein 12-monatiges Transformationsprogramm, das Deine Verkäufer:innen zu unverzichtbaren Sparringspartnern für Deine Kunden macht.",
       "step1Label": "Schritt 1",
       "step1Title": "Simuliertes Kundenszenario",
       "step1Pre": "Jeder Teilnehmer durchläuft ein realistisches Kundenszenario, in dem ",
@@ -678,7 +678,7 @@
       ]
     },
     "finalCta": {
-      "eyebrow": "Schließen wir die Sales Education Gap.",
+      "eyebrow": "Schließen wir das Sales Education Gap.",
       "headline": "45 Minuten für Deine nächsten 36 Monate.",
       "subtext": "Wie überzeugend arbeitet Dein Software-Sales-Team im direkten Vergleich? Unser unverbindlicher Benchmark kann Dir wertvolle Einblicke geben. Dein Team durchläuft ein realistisches Kundenszenario, in dem wir 13 entscheidende Sales-Skills beobachten und bewerten.",
       "cta": "Jetzt Benchmarking-Gespräch buchen",

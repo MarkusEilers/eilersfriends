@@ -75,8 +75,8 @@ const NAV_ITEMS: NavItem[] = [
       bodyKey:  'featuredProgrammesBody',
       ctaKey:   'featuredProgrammesCta',
       href: '/salesmade#pricing',
-      accent: '#F05A1A',
-      bg: 'linear-gradient(135deg, #FFF1EB 0%, #FECDBB 100%)',
+      accent: '#1A5FD4',
+      bg: 'linear-gradient(135deg, #EBF1FF 0%, #BBCFF5 100%)',
     },
   },
   {
