@@ -8,7 +8,9 @@ import {
   newsletterSubscribers,
 } from '@/lib/db/schema'
 import { eq, and, lte, isNotNull } from 'drizzle-orm'
-import { sendEmail, renderTemplate } from '@/lib/email/resend'
+import { sendEmail } from '@/lib/email/resend'
+import { validateEmailParts } from '@/lib/email/validate'
+import { sql } from 'drizzle-orm'
 
 export async function GET(request: NextRequest) {
   // Vercel Cron absichern
@@ -85,20 +87,71 @@ export async function GET(request: NextRequest) {
         if (!template) continue
 
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://eilersfriends.com'
-        const variables = {
+
+        // Optional: Framework-Context aus der Sequenz holen (falls verbunden)
+        let frameworkName: string | null = null
+        let frameworkUrl: string | null = null
+        try {
+          const seqRow = await db.execute<{ trigger_filter: { framework_slug?: string; framework_name?: string } | null }>(
+            sql`SELECT trigger_filter FROM email_sequences WHERE id = ${enrollment.sequenceId} LIMIT 1`,
+          )
+          const filter = (seqRow as unknown as Array<{ trigger_filter: { framework_slug?: string; framework_name?: string } | null }>)[0]?.trigger_filter
+          if (filter?.framework_slug) {
+            frameworkUrl = `${baseUrl}/frameworks/${filter.framework_slug}`
+            frameworkName = filter.framework_name ?? filter.framework_slug
+          }
+        } catch { /* non-fatal */ }
+
+        const variables: Record<string, string> = {
           firstName: subscriber.firstName ?? '',
           email: subscriber.email,
           year: now.getFullYear().toString(),
           loginUrl: `${baseUrl}/auth/login`,
           confirmUrl: `${baseUrl}/api/newsletter/confirm?token=${subscriber.doiToken ?? ''}`,
+          framework_name: frameworkName ?? '',
+          framework_url: frameworkUrl ?? '',
         }
 
-        // Email senden
+        // Pre-Send-Validation — wenn Variablen fehlen, NICHT senden
+        const validation = validateEmailParts({
+          subject: template.subject,
+          html: template.bodyHtml,
+          text: template.bodyText ?? undefined,
+        }, variables)
+
+        if (!validation.ok) {
+          // Flag enrollment + notify admin
+          console.warn(`[cron/sequences] Enrollment ${enrollment.id} flagged — missing variables:`, validation.missing)
+          try {
+            await sendEmail({
+              to: 'markus@eilers.at',
+              subject: `⚠️ Email-Sequenz pausiert — fehlende Variablen (${validation.missing.join(', ')})`,
+              html: `<p>Enrollment <code>${enrollment.id}</code> wurde NICHT versendet.</p>
+                <p>Sequenz: <code>${enrollment.sequenceId}</code> · Step ${enrollment.currentStep}</p>
+                <p>Empfänger: ${subscriber.email}</p>
+                <p>Fehlende Variablen: <strong>${validation.missing.join(', ')}</strong></p>
+                <p>Korrigiere das Template (Subject oder Body) im Admin-Bereich, dann setze die Enrollment manuell auf 'active' fort.</p>
+                <p><a href="${baseUrl}/admin/email-templates">→ Templates bearbeiten</a></p>`,
+              fromName: 'Eilers+Friends System',
+              fromEmail: 'system@eilersfriends.com',
+            })
+          } catch (e) {
+            console.error('[cron/sequences] admin notification failed', e)
+          }
+          // Pause the enrollment so future cron-runs skip it
+          await db.update(emailSequenceEnrollments).set({
+            status: 'paused',
+          }).where(eq(emailSequenceEnrollments.id, enrollment.id))
+          errors++
+          continue
+        }
+
+        // Email senden mit voll-aufgelöstem Inhalt
         await sendEmail({
           to: subscriber.email,
-          subject: renderTemplate(template.subject, variables),
-          html: renderTemplate(template.bodyHtml, variables),
-          text: template.bodyText ? renderTemplate(template.bodyText, variables) : undefined,
+          subject: validation.rendered.subject,
+          html: validation.rendered.html,
+          text: validation.rendered.text,
           fromName: template.fromName ?? 'Eilers+Friends',
           fromEmail: template.fromEmail ?? 'hallo@eilersfriends.com',
         })

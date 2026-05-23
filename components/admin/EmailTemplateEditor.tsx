@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useTransition, ReactNode } from 'react'
-import { X, Eye, EyeOff, Loader2 } from 'lucide-react'
-import { saveEmailTemplate, deleteEmailTemplate } from '@/lib/actions/email-templates'
+import { X, Eye, EyeOff, Loader2, Sparkles } from 'lucide-react'
+import { saveEmailTemplate, deleteEmailTemplate, suggestEmailContentAction } from '@/lib/actions/email-templates'
 
 type TemplateType = 'doi_confirmation' | 'doi_welcome' | 'sequence_step' | 'transactional'
 
@@ -38,6 +38,8 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
   const [preview, setPreview] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [aiBrief, setAiBrief] = useState('')
+  const [generating, setGenerating] = useState(false)
 
   const [form, setForm] = useState({
     type: (template?.type ?? 'doi_confirmation') as TemplateType,
@@ -50,6 +52,29 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
     fromEmail: template?.fromEmail ?? 'hallo@eilersfriends.com',
     isDefault: template?.isDefault ?? false,
   })
+
+  async function runAiSuggest() {
+    if (!aiBrief.trim()) return
+    setGenerating(true); setError(null)
+    try {
+      const res = await suggestEmailContentAction({
+        brief: aiBrief,
+        audience: form.locale === 'de' ? 'B2B-Software-Gründer:innen' : 'B2B software founders',
+        templateType: form.type,
+      })
+      if (!res.ok) { setError(res.error); return }
+      setForm((p) => ({
+        ...p,
+        subject: res.subject || p.subject,
+        bodyHtml: res.bodyHtml || p.bodyHtml,
+        bodyText: res.bodyText || p.bodyText,
+      }))
+    } catch (e) {
+      setError(String(e))
+    } finally {
+      setGenerating(false)
+    }
+  }
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -211,6 +236,31 @@ export function EmailTemplateEditor({ mode, template, children }: EmailTemplateE
                           className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
                         />
                       </div>
+                    </div>
+
+
+                    {/* KI-Assistent — Suggest */}
+                    <div className="rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50/40 to-purple-50/30 p-4">
+                      <div className="mb-2 flex items-center gap-2">
+                        <Sparkles size={14} className="text-blue-600" />
+                        <p className="text-xs font-bold uppercase tracking-widest text-blue-700">KI-Assistent (HVCO Sabri-Suby / Aaron-Ross)</p>
+                      </div>
+                      <textarea
+                        value={aiBrief}
+                        onChange={(e) => setAiBrief(e.target.value)}
+                        rows={3}
+                        placeholder="Briefing für die Mail — Anlass · Audience · Outcome. z.B.: 'Nach Download des Discovery-Scorecards: zeig den 3% Top-Performern, dass sie das Sparring brauchen.'"
+                        className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={runAiSuggest}
+                        disabled={generating || !aiBrief.trim()}
+                        className="mt-2 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:from-blue-600 hover:to-purple-600 disabled:opacity-50"
+                      >
+                        {generating ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                        Subject + Body generieren
+                      </button>
                     </div>
 
                     {/* Betreff */}
