@@ -144,83 +144,182 @@ const FRAMEWORKS: FrameworkSeed[] = [
     ],
   },
 
-  // ─── 2. 8 Schritte unwiderstehliche Angebote (existiert schon — refresh) ──
+  // ─── 2. Unwiderstehliche B2B-Angebote — Bauplan (Markus-Voice, 8 Schritte) ───
   {
     slug: 'b2b-angebote',
-    title: 'Unwiderstehliche B2B-Angebote',
+    title: 'Der Bauplan für unwiderstehliche B2B-Angebote',
     metaDescription:
-      'Der komplette Bauplan für B2B-Angebote, die sich von selbst verkaufen — in 8 einfachen Schritten. Inkl. Video-Masterclass.',
+      '5× überzeugender. 37 % zufriedenere Kunden. 58 % profitabler. Der komplette Bauplan für B2B-Angebote in 8 einfachen Schritten — inkl. PDF, 12-Min-Video und AI-Wizard.',
     topic: 'revenue',
-    status: 'draft',
-    internalNote: 'Bereits aus /b2b-offers migriert. Nach Launch SM-Rockstar-Alumni unter Posts taggen.',
+    status: 'published',
+    internalNote: 'Re-Launch mit Markus-Voice-Schritten (Beef-Radar, Doppelschmerz, Sichtbarer Pfad, Phasen-Währung, Beweis-Stapel, Booster, Wort-Garantie, Die letzten 20 %). Quelle: 00_Discovery + 01_Backbone v0.3 + 8 Schritt-Anatomien (24.5.2026).',
     sections: [
       {
         type: 'hero',
         content: {
-          eyebrow: 'KOSTENLOS · SOFORT VERFÜGBAR',
-          headline: 'Unwiderstehliche B2B-Angebote in 8 einfachen Schritten.',
+          eyebrow: 'SALESMADE · PILLAR-ASSET',
+          headline: 'Der geheime Bauplan für unwiderstehliche B2B-Angebote.',
           subheadline:
-            'Der komplette Bauplan für B2B-Angebote, die sich von selbst verkaufen — inkl. Video-Masterclass von Markus Eilers.',
-          ctaLabel: 'Zum Bauplan',
+            'So einfach macht Dein Growth Team jedes B2B-Angebot unwiderstehlich. In 8 einfachen Schritten.',
+          ctaLabel: 'Sichere dir den Bauplan',
           ctaHref: '#download',
+          showEmailForm: false,
+        },
+      },
+      {
+        type: 'social_proof',
+        content: {
+          eyebrow: 'CUSTOMER-AVG ÜBER BAUPLAN-ANWENDUNGEN',
+          headline: '5× überzeugender. 37 % zufriedenere Kunden. 58 % profitabler.',
+          subheadline:
+            'Drei Zahlen, die unsere Klienten nach dem Bauplan ihren Vorständen zeigen. Acht Schritte zwischen einem Angebot, das diskutiert wird — und einem, das übernommen wird.',
+        },
+      },
+      {
+        type: 'problem',
+        content: {
+          eyebrow: 'WAS NACH DEM BAUPLAN NORMAL IST',
+          headline: 'Und heute noch wie Sci-Fi klingt.',
+          items: [
+            { title: 'Keine Rabatte vergeben', description: 'Nicht weil du stur bist — weil dein Angebot keinen mehr nötig hat.' },
+            { title: 'Keine Deals mehr, die slippen', description: 'Pfad steht. Phase 2 hat eine Währung. Slip ist weg.' },
+            { title: 'Kundengewinn ohne technische Fragen', description: 'Du sprichst die echten Schmerzen an — nicht das Feature.' },
+            { title: 'Keine Besuche aus reiner Hoffnung', description: 'Es gibt einen Plan, kein Wunsch-Denken.' },
+            { title: '5 Kunden in einer Woche', description: 'Kein Hustle. Ein Angebot, das jeder Stakeholder in 3 Min versteht.' },
+            { title: '200 % der Ziele — nicht weil mehr gearbeitet', description: 'Phasen-Währung statt Arbeits-Tagebuch.' },
+            { title: 'Verkaufen ohne hinterherzujagen', description: 'Wenn dein Angebot Substanz hat, trägt es sich selbst.' },
+            { title: 'Kunden, die ihre Worte halten', description: 'Wort-Garantie aus deinem Lieferversprechen — nicht aus dem Marketing-Lehrbuch.' },
+            { title: 'Stabil über 6-stellig verdienen', description: 'Beweise machen Preise verteidigbar. Verteidigbare Preise halten stabil.' },
+          ],
         },
       },
       {
         type: 'framework_steps',
         content: {
-          eyebrow: 'Der Bauplan',
+          eyebrow: 'DER BAUPLAN',
           headline: 'Das 8-Schritte-Framework',
-          subheadline: 'Jeder Schritt sofort umsetzbar. Beispiele aus echten B2B-Cases von 500+ Gründer:innen.',
+          subheadline:
+            'Hormozi-Stack plus drei Markus-Layer: Sichtbarer Pfad, Phasen-Währung, Doppelschmerz. Jeder Schritt eine Voice. Jede Voice ein Werkzeug, das hängenbleibt.',
           steps: [
-            { title: 'Definiere, wen du wirklich bedienst', description: 'Eng, spezifisch, mit Branche, Größe und Reife-Grad.', tip: 'Wenn dein ICP in einen Tweet passt, ist er noch nicht eng genug.' },
-            { title: 'Identifiziere den stärksten Schmerzpunkt', description: 'Nicht das Symptom, sondern die Wurzel.' },
-            { title: 'Formuliere deinen Transformation-Promise', description: 'Vom Status quo zum gewünschten Outcome in einem Satz.' },
-            { title: 'Baue deinen Proof-Stack auf', description: 'Drei Schichten: Ergebnisse (Zahlen), Stimmen (Testimonials), Autorität.', tip: 'Mach es konkret. „Mehr Umsatz" ist tot. „+48 % in 12 Monaten" lebt.' },
-            { title: 'Gestalte dein Angebot-Paket', description: 'Ein Hauptdeliverable plus Bonus-Layer.' },
-            { title: 'Entwickle deinen Preis-Anker', description: 'High-Anchor + Standard. Der Käufer fühlt das Mainpackage als Schnäppchen.', tip: 'Anker funktionieren nur, wenn sie real verkauft werden.' },
-            { title: 'Erstelle deine Angebots-Präsentation', description: 'Vom Gesprächsleitfaden zum Entscheidungs-Dokument.' },
-            { title: 'Teste und iteriere in echten Gesprächen', description: 'Niemals theoretisch optimieren.', tip: 'Wenn du nach 10 Calls dasselbe Einwand-Muster hörst, ist es ein Angebots-Bug, kein Verkaufs-Problem.' },
+            {
+              title: 'Beef-Radar · Inhalte → Value → Impact',
+              description: 'Wir gehen die Top-Bausteine deines Angebots durch — pro Baustein: direkter Effekt, Wellen-Effekt, messbarer Impact. Am Ende eine Karte mit fünf Zeilen. Dein Kunde kann sie lesen, ohne dass jemand danebensteht.',
+              example: 'Statt „professionelle Betreuung" steht „-45 Min Dokumentationszeit pro Behandlertag (Customer-Avg)". Aus Feature wird Effekt — und Effekt verkauft.',
+              tip: 'Wenn du den Effekt nicht in einem Satz sagen kannst, gehört der Baustein neu gedacht oder raus. Kürzere Angebote werden öfter unterschrieben.',
+            },
+            {
+              title: 'Doppelschmerz · Heute & Morgen',
+              description: 'Welche Probleme löst dein Angebot heute schon — und welche kommen in 12 bis 24 Monaten so sicher, dass du sie gleich mitlösen kannst? Beide kommen auf eine Seite. Heute-gelöst macht relevant. Morgen-vorausgesehen macht strategisch.',
+              example: '„Heute löst Sonia 45 Min Dokumentationszeit. Morgen verhindert sie, dass deine Praxis von der BEMA-Verschärfung 2027 überrascht wird — alle Behandlungen sind ab Tag 1 strukturiert dokumentiert."',
+              tip: 'Wenn dein Angebot nur das Heute löst, ist es ein Pflaster. Wenn es beide adressiert, ist es eine Strecke. Strecken haben einen anderen Preis als Pflaster.',
+            },
+            {
+              title: 'Sichtbarer Pfad · Bulletproof Delivery Plan',
+              description: 'Wir machen sichtbar, wie dein Angebot wirkt — als Sequenz von 3 bis 5 benannten Phasen. Sobald dein Kunde den Weg sehen kann, schrumpft die Entscheidung. Er schaut nicht mehr auf den Berg, sondern auf den ersten Schritt.',
+              example: '„Aufräumen · Aufstellen · Abliefern" (3 Phasen, 12 Wochen). Drei Wörter, gleiche Grammatik, gleiche Silbenanzahl — Pfad hängt.',
+              tip: 'Ohne Pfad muss dein Kunde dir vertrauen. Mit Pfad muss er nur den Plan vorlegen — und der Plan überzeugt weiter, wenn du nicht im Raum bist.',
+            },
+            {
+              title: 'Phasen-Währung · Currencies pro Phase',
+              description: 'Pro Phase eine Hauptwährung mit Baseline, Drei-Punkt-Korridor (Pessimist/Realist/Optimist), Mess-Zeitpunkt. Aus „wir helfen Ihnen" wird „in Phase 2 verschieben wir die Annahmequote um 12 Punkte".',
+              example: 'Phase 2 Aufstellen (Wo 4-8) · Hauptwährung: Annahmequote · Baseline 28 % · Realist +15 Pkt · Mess Wo 8 Review.',
+              tip: 'Pricing wird gegen Realist verteidigt. Garantie wird gegen Pessimist geschrieben. Optimist ist Up-Side, nicht Versprechen.',
+            },
+            {
+              title: 'Beweis-Stapel · ROI-Hypothesen oder Beweise',
+              description: '3 bis 7 Beweise nach Klassen: Named Customer (Klasse A), Customer-Avg (B), Hypothese mit Methodik (C), Branchen-Benchmark (D), Testimonial-Quote (E). Mindestens 2 aus A oder B im Top-3. „Spart bis zu 22.500 €/Jahr" ist keine Marketing-Lautstärke — es ist die Spur, die dein Kunde zur Vorstandstür mitnimmt.',
+              example: 'GMG (Druckindustrie): 22.500 €/Jahr eingespart. NFON: +24 % Profit. ionder: +28 % Produktivität, 12 Min/Meeting. Belegt, dokumentiert, datiert.',
+              tip: 'Eine Hypothese ohne Methodik ist eine Marketing-Floskel mit Zahl. Eine Hypothese mit Methodik („3 FTE × 4h/Wo × 47 Wo × 90 €/h = 50.760 €") wird im Vorstand übernommen.',
+            },
+            {
+              title: 'Booster · Adjacent Pain, mit Anker',
+              description: '1 bis 3 Booster, die ein angrenzendes Problem lösen, das der Kunde nicht im Pitch hatte. Echter Lieferaufwand ≤ 20 % des wahrgenommenen Werts. Bonus ist nicht „mehr für gleichen Preis" — Bonus ist „zweites Problem gelöst, mit €-Anker und Margin-Schutz".',
+              example: 'Discovery-Call-Scorecard im Wert von 1.997 € · echter Aufwand 0 € (einmal gebaut). Margin-Schutz 0 %. Aktiviert im Pitch.',
+              tip: 'Wenn jemand „geht da nicht was am Preis?" fragt, antwortest du nicht mit %, sondern mit „Wir machen Y mit drauf — den Wert dazu kannst du in der Tabelle sehen."',
+            },
+            {
+              title: 'Wort-Garantie · Verteidigbare Garantie',
+              description: 'Eine Garantie, die du beim Espresso aussprechen kannst, weil dein Lieferversprechen sie trägt. Typ + Trigger-Bedingung + Konsequenz + Liefer-Anker (Phase aus Schritt 3 + Währung aus Schritt 4) + Espresso-Test bestanden.',
+              example: '„Wenn dein Team nach 12 Wochen die ersten 5 Pitches nicht mit dem neuen Bauplan durchgeführt hat — 8 Wochen Office-Hours kostenfrei dran." Konkret. Datiert. An Phase und Währung gebunden.',
+              tip: '„100 % Zufriedenheits-Garantie" ist ein Marketing-Schwur. Eine Wort-Garantie ist ein Verkäufer-Versprechen. Der Unterschied schlägt sich in der Pricing-Power nieder.',
+            },
+            {
+              title: 'Die letzten 20 % · Name + Headline + CTA',
+              description: 'Cooler Name, geniale Headline, klarer CTA — drei Mikro-Entscheidungen, die das Angebot lesbar machen oder verkleben. Zum Schluss, nicht am Anfang. Weil sie aus den ersten sieben Schritten gespeist werden — nicht aus dem Marketing-Lehrbuch.',
+              example: '„Der Wachstumsmotor für den Maschinenbau" — Stil „[Substantiv] für [Branche]". Im Slack-Chat teilbar, im Espresso aussprechbar, in 3 Sekunden einsortierbar.',
+              tip: 'Espresso-Test (Slack, Espresso, Google, Domain, 3-Jahre) muss mindestens 4/5 bestehen. Sonst weiter iterieren — Naming ist Ringen, kein Genie-Blitz.',
+            },
           ],
         },
       },
       {
         type: 'lead_magnet',
         content: {
-          eyebrow: 'Hol dir den Bauplan',
-          headline: 'B2B-Angebote · Bauplan + Workbook + Video-Masterclass',
+          eyebrow: 'HOL DIR DEN BAUPLAN',
+          headline: 'Der 8-Schritte-Bauplan · PDF + 12-Min-Video + AI-Wizard',
           subheadline:
-            'Trag deine Email ein, bekomm das PDF mit allen 8 Schritten + Workbook + 47-Min Video-Masterclass.',
-          format: 'PDF + Video',
-          size: '~4.2 MB',
+            'Email eintragen, sofort runterladen, sofort starten. Acht Schritte. Vier Stunden. Ein unwiderstehliches Angebot.',
+          format: 'PDF + Video + Web-App',
+          size: '~6 MB · sofort verfügbar',
           benefits: [
-            '40-seitiges PDF mit allen 8 Schritten + Beispielen',
-            'Workbook mit Vorlagen + Übungen',
-            '47-Min Video-Masterclass von Markus Eilers',
-            'Bonus: Angebots-Template als Google-Doc',
+            '24-seitiges PDF mit allen 8 Schritten + Templates + Frame-Strukturen',
+            '12-Min Walkthrough mit Markus — jeder Schritt mit Live-Case (Eilers+Friends · HubSpot · Sonia.so)',
+            'AI-Wizard: dein Begleiter durch alle 8 Schritte, generiert dein Angebot am Ende',
+            'Roadmap-Generator: dein Sichtbarer Pfad als visuelle SVG (verzahnt mit bulletproof-delivery-builder)',
           ],
-          ctaLabel: 'Jetzt kostenlos holen',
-          privacyNote: 'Kein Spam. 1× Newsletter pro Woche. Abmeldung mit einem Klick.',
+          ctaLabel: 'Jetzt holen — sofort verfügbar',
+          privacyNote: 'Kein Spam. Donnerstag-Newsletter mit Coaching-Lehren der Woche. Abmeldung mit einem Klick.',
         },
       },
       MARKUS_BIO,
       {
         type: 'faq',
         content: {
-          headline: 'Häufige Fragen',
+          eyebrow: 'HÄUFIGE FRAGEN',
+          headline: 'Was du wissen willst, bevor du startest.',
           items: [
-            { q: 'Ist der Bauplan wirklich kostenlos?', a: 'Ja, 100 %. Email gegen PDF + Workbook + Video.' },
-            { q: 'Für wen ist das Framework geeignet?', a: 'B2B-Founder, CEOs, Sales-Verantwortliche. Besonders im Umsatzbereich €500k–€10M.' },
-            { q: 'Wie lange dauert die Umsetzung?', a: '6–10 Stunden für den ersten Durchlauf. Iterieren über 2–3 Wochen.' },
-            { q: 'Was unterscheidet diesen Bauplan von Standard-Methoden?', a: 'ICP-First, Proof-Stack als 3-Schichten-Modell, Anker-Pricing statt 3-Tier-Misch-Mix.' },
+            {
+              q: 'Funktioniert das auch ohne Markus?',
+              a: 'Ja. Genau das ist der Punkt. Der Bauplan ist Methodik, nicht Magie. Sobald dein Growth Team ihn einmal durchläuft, kann es ihn das zweite Mal alleine. Wenn ein Angebot später wirklich verklemmt: prüfe es mit drei Fragen — Beef-Radar? Phasen-Währung? Beweis-Stapel?',
+            },
+            {
+              q: 'Wie lange dauert es, ein Angebot durchzubauen?',
+              a: 'Erstes Angebot mit dem Wizard: 3-4 Stunden konzentriert. Zweites: 90 Min. Drittes: 45 Min. Du machst nicht weniger Substanzarbeit — du machst sie schneller, weil du den Pfad schon kennst.',
+            },
+            {
+              q: 'Wir sind kein Mid-Market-DACH — passt das trotzdem?',
+              a: 'Wenn du im B2B verkaufst, dein Sales-Cycle länger als ein Tag dauert, dein Angebot mehr als ein SKU ist — ja. Die Beispiele sind aus DACH (Maschinenbau, IT, SaaS-Mid-Market). Die Mechanik ist branchenneutral.',
+            },
+            {
+              q: '„Unwiderstehlich" — ist das nicht Marketing-Übertreibung?',
+              a: 'Wir messen es nicht mit „Begeisterung". Wir messen mit Annahmequote (28 % → 53 %), Sales-Cycle (unter 3 Monaten), 5× wahrgenommener Überzeugungskraft, 58 % höhere Profitabilität. Unwiderstehlich heißt: Die richtigen sagen schneller Ja, die falschen früher Nein.',
+            },
+            {
+              q: 'Wir haben schon Hormozi gelesen — was ist hier neu?',
+              a: 'Drei Layer, die im $100M-Offers-Buch nicht systematisch sind: (1) Sichtbarer Pfad als visualisierbare Methodik. (2) Phasen-Währung pro Phase, nicht nur ROI am Ende. (3) Doppelschmerz mit Zukunfts-Layer. Plus: DACH-Mittelstand kalibriert, nicht US-Coaching-Markt.',
+            },
+            {
+              q: 'Wo ist die Garantie?',
+              a: 'In Schritt 7. Ironisch, oder? Auf das PDF: 30-Tage-Refund-Window ohne Begründung. Auf den Wizard: erste 5 Tage testen, Cancel ohne Begründung. Praktiziere, was du predigst.',
+            },
+            {
+              q: 'Funktioniert der AI-Begleiter, wenn ich kein KI-Profi bin?',
+              a: 'Genau dafür ist er gebaut. Der Wizard stellt dir keine technischen Fragen — er stellt die richtigen Fragen, die ich im Coaching auch stelle. Wenn du eine Floskel tippst, hält er dich an. Wenn du substanziell antwortest, gibt er dir das nächste Kompliment und Punkte.',
+            },
+            {
+              q: 'Was passiert, wenn ich nach Schritt 4 hängen bleibe?',
+              a: 'Pause-und-Resume (Wizard speichert), Beispiele anschauen (pro Schritt 3 gute + 1 schlechtes), oder Office-Hours buchen (Academy/Founding-30). Schritt 4 ist statistisch der häufigste Hänger — Phasen-Währung braucht Baseline-Daten, die du oft erst recherchieren musst. Plan ein, nicht Versagen.',
+            },
           ],
         },
       },
       {
         type: 'cta',
         content: {
-          headline: 'Bereit für unwiderstehliche Angebote?',
-          body: 'Spar dir die Trial-and-Error-Phase.',
-          ctaLabel: 'Jetzt holen',
+          eyebrow: 'BEREIT?',
+          headline: 'Acht Schritte zwischen „wir gucken\'s uns an" und „wo unterschreiben wir?"',
+          body: 'Sichere dir den Bauplan. Heute Abend hast du dein nächstes Angebot durchgespielt — wiederholbar, ohne Marketing-Lehrbuch, ohne Talent-Lotterie.',
+          ctaLabel: 'Bauplan jetzt holen',
           ctaHref: '#download',
         },
       },

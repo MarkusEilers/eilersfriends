@@ -57,13 +57,14 @@ export const DEFAULT_CARD_META: Record<string, CardMeta> = {
   'b2b-angebote': {
     posterTitle: 'UNWIDERSTEHLICHE\nANGEBOTE',
     posterSubtitle: 'Der 8-Schritte-Bauplan',
-    tagline: '8-Schritte-Bauplan',
-    agentLabel: 'PDF + Video',
-    tone: { from: '#0F1E3A', to: '#0A2851', accent: '#FFD37A' },
+    tagline: '5× überzeugender · 58% profitabler',
+    agentLabel: 'PDF · Video · Wizard',
+    tone: { from: '#0A1428', to: '#1B2F4D', accent: '#00B4D8' },
     deliverables: [
-      { icon: 'FileDown', label: '40-S. PDF: 8 Schritte zum unwiderstehlichen Angebot' },
-      { icon: 'Video', label: '47-Min Video-Masterclass von Markus Eilers' },
-      { icon: 'ClipboardList', label: 'Bonus: Angebots-Template als Google-Doc' },
+      { icon: 'FileDown', label: '24-S. PDF: 8-Schritte-Bauplan mit Templates' },
+      { icon: 'Video', label: '12-Min Walkthrough mit Markus — jeder Schritt mit Live-Case' },
+      { icon: 'Sparkles', label: 'AI-Wizard: Begleiter durch alle 8 Schritte' },
+      { icon: 'ClipboardList', label: 'Roadmap-Generator: dein sichtbarer Pfad als SVG' },
     ],
   },
   'hailiom': {
