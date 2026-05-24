@@ -602,3 +602,90 @@ export const offerEvents = pgTable('offer_events', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
+
+// ─── Wave 9: Event-API Layer ───────────────────────────────────────────────
+// Append-only domain events. Source-of-truth für alles, was nach draussen oder
+// nach drinnen über die Webhook-Layer kommuniziert wird.
+
+export const eventCategoryEnum = pgEnum('event_category', [
+  'subscriber',   // newsletter DOI / unsubscribe / list_change
+  'framework',   // wizard started / step_completed / completed
+  'offer',       // sent / viewed / signed / paid / expired
+  'member',      // signup / level_up / tier_changed
+  'community',   // post_published / comment_added / like_added
+  'system',      // user_login / admin_change_proposed / admin_change_applied
+])
+
+export const events = pgTable('events', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  category: eventCategoryEnum('category').notNull(),
+  /** e.g. 'subscriber.confirmed', 'framework.step_completed', 'offer.paid' */
+  type: varchar('type', { length: 64 }).notNull(),
+  /** Free-form JSON payload — contains everything an external consumer needs. */
+  payload: jsonb('payload').default({}).notNull(),
+  /** Which subsystem generated this event ('newsletter-api','stripe-webhook','wizard-ui',...) */
+  source: varchar('source', { length: 64 }).notNull(),
+  /** Optional links for joins */
+  actorUserId: uuid('actor_user_id'),
+  frameworkSlug: varchar('framework_slug', { length: 64 }),
+  offerId: uuid('offer_id'),
+  companyId: uuid('company_id'),
+  /** Idempotency key — same key = same logical event, dedupe on insert */
+  idempotencyKey: varchar('idempotency_key', { length: 128 }).unique(),
+  occurredAt: timestamp('occurred_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+// Outgoing webhook subscriptions — eines pro externe Integration (Zapier, Make, HubSpot…)
+export const webhookSubscriptions = pgTable('webhook_subscriptions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: varchar('name', { length: 128 }).notNull(),
+  url: text('url').notNull(),
+  /** Welche event types diese Subscription empfängt — '*' für alle */
+  eventTypes: jsonb('event_types').default([]).notNull(),
+  /** HMAC-SHA256-Secret für Signature-Verifikation */
+  secret: varchar('secret', { length: 64 }).notNull(),
+  /** Pause via UI ohne löschen */
+  active: boolean('active').default(true).notNull(),
+  /** Letzte Lieferung */
+  lastDeliveryAt: timestamp('last_delivery_at', { withTimezone: true }),
+  lastDeliveryStatus: varchar('last_delivery_status', { length: 16 }),  // 'ok'|'fail'|'retry'
+  /** Per-Subscription Counter zum Debuggen */
+  totalDelivered: integer('total_delivered').default(0).notNull(),
+  totalFailed: integer('total_failed').default(0).notNull(),
+  notes: text('notes'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+// Webhook delivery log — pro Versuch eine Row, für Audit + Debugging
+export const webhookDeliveries = pgTable('webhook_deliveries', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  subscriptionId: uuid('subscription_id').references(() => webhookSubscriptions.id, { onDelete: 'cascade' }).notNull(),
+  eventId: uuid('event_id').references(() => events.id, { onDelete: 'cascade' }).notNull(),
+  /** HTTP-Response */
+  statusCode: integer('status_code'),
+  responseBody: text('response_body'),
+  responseTimeMs: integer('response_time_ms'),
+  attemptNumber: integer('attempt_number').default(1).notNull(),
+  /** 'ok' bei 2xx, 'retry' bei 5xx, 'fail' bei 4xx oder max-retries erreicht */
+  result: varchar('result', { length: 16 }).notNull(),
+  errorMessage: text('error_message'),
+  deliveredAt: timestamp('delivered_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+// API-Keys — Bearer-Token-Auth für Public REST API + MCP
+export const apiKeys = pgTable('api_keys', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: varchar('name', { length: 128 }).notNull(),
+  /** Token-Prefix für UI ('ef_live_abc...') — der volle Token wird nur einmal beim Anlegen gezeigt */
+  prefix: varchar('prefix', { length: 16 }).notNull().unique(),
+  /** sha256-Hash des vollen Tokens, kein Plaintext-Storage */
+  tokenHash: varchar('token_hash', { length: 64 }).notNull(),
+  /** Comma-separated scope-strings: 'subscribers:read','offers:write','events:read','*' */
+  scopes: jsonb('scopes').default([]).notNull(),
+  active: boolean('active').default(true).notNull(),
+  lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
+  createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }),
+})

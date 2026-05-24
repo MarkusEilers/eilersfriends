@@ -205,6 +205,19 @@ export async function createOffer(input: {
 }
 
 export async function recordOfferEvent(offerId: string, eventType: string, actorEmail?: string | null, metadata?: Record<string, unknown>) {
+  // Also emit a global Wave-9 event for webhook subscribers and MCP consumers
+  try {
+    const { emitAsync } = await import('@/lib/events/emit')
+    emitAsync({
+      category: 'offer',
+      type: `offer.${eventType.replace(/_/g, '.')}`,
+      payload: { offerId, actorEmail, metadata },
+      source: 'offers-query',
+      offerId,
+      idempotencyKey: `offer:${offerId}:${eventType}:${Date.now()}`,
+    })
+  } catch {}
+
   await ensureOfferSchema()
   await db.execute(sql`
     INSERT INTO offer_events (offer_id, event_type, actor_email, metadata)

@@ -42,6 +42,23 @@ export async function GET(request: NextRequest) {
       })
       .where(eq(newsletterSubscribers.id, subscriber.id))
 
+    // Wave 9 — Event-Emit für CRM/Newsletter/Community-Sync
+    try {
+      const { emitAsync } = await import('@/lib/events/emit')
+      emitAsync({
+        category: 'subscriber',
+        type: 'subscriber.confirmed',
+        payload: {
+          email: subscriber.email,
+          firstName: subscriber.firstName ?? null,
+          source: subscriber.source ?? null,
+          subscriberId: subscriber.id,
+        },
+        source: 'newsletter-api',
+        idempotencyKey: `subscriber.confirmed:${subscriber.id}`,
+      })
+    } catch { /* non-fatal */ }
+
     // 3. Beehiiv-Status auf active setzen (falls vorhanden)
     if (subscriber.beehiivId) {
       const apiKey = process.env.BEEHIIV_API_KEY
