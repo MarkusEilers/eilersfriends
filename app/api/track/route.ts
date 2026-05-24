@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { createHash } from 'crypto'
 import { db } from '@/lib/db'
 import { pageViews } from '@/lib/db/schema'
 import { ensureAnalyticsTables } from '@/lib/db/self-heal'
-import { createHash } from 'crypto'
 
 const schema = z.object({
   path: z.string().min(1).max(500),
@@ -17,17 +17,9 @@ const schema = z.object({
 
 function parseReferrerHost(ref?: string): string | null {
   if (!ref) return null
-  try {
-    return new URL(ref).host
-  } catch {
-    return null
-  }
+  try { return new URL(ref).host } catch { return null }
 }
 
-/**
- * Anonymizes the visitor: SHA-256 over (IP + UA + day-of-year + secret).
- * Resets every day so we can do "unique visitors today" without storing IPs.
- */
 function sessionHash(request: Request): string {
   const fwd = request.headers.get('x-forwarded-for') ?? ''
   const ip = fwd.split(',')[0]?.trim() ?? 'unknown'
@@ -39,24 +31,18 @@ function sessionHash(request: Request): string {
 
 export async function POST(request: Request) {
   try {
-    // Hard gate: only track when explicit analyse-consent was given.
-    // The browser sends X-EF-Consent based on the cookie banner state.
-    const consent = request.headers.get('x-ef-consent')
-    if (consent !== 'accepted') {
+    const consent = request.headers.get('x-ef-analytics-consent')
+    if (consent !== '1') {
       return NextResponse.json({ ok: true, recorded: false, reason: 'no-consent' })
     }
-
     const body = await request.json().catch(() => ({}))
     const parsed = schema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json({ ok: false, error: 'invalid payload' }, { status: 400 })
     }
-
     await ensureAnalyticsTables()
-
     const country = request.headers.get('x-vercel-ip-country') ?? null
     const data = parsed.data
-
     await db.insert(pageViews).values({
       path: data.path,
       locale: data.locale,
@@ -68,11 +54,9 @@ export async function POST(request: Request) {
       utmMedium: data.utmMedium ?? null,
       utmCampaign: data.utmCampaign ?? null,
     })
-
     return NextResponse.json({ ok: true, recorded: true })
   } catch (err) {
     console.error('[/api/track] error:', err)
-    // Never block the user — tracking is best-effort.
     return NextResponse.json({ ok: true, recorded: false }, { status: 200 })
   }
 }

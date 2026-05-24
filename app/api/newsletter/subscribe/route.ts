@@ -5,12 +5,42 @@ import { db } from '@/lib/db'
 import { newsletterSubscribers, emailTemplates } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { sendEmail, renderTemplate } from '@/lib/email/resend'
+import { sql } from 'drizzle-orm'
 import {
   getDefaultDoiHtml,
   getDefaultDoiText,
   DEFAULT_DOI_SUBJECT,
 } from '@/lib/email/doi-template'
-import { logEventAsync } from '@/lib/analytics/track'
+
+/**
+ * Ensures every column the route reads/writes actually exists in the live
+ * newsletter_subscribers table. Idempotent — IF NOT EXISTS guards mean it
+ * compiles down to a no-op once columns are present. Cheap to call on every
+ * request (single round-trip per missing column at worst, none after first
+ * successful sync).
+ */
+let _schemaEnsured = false
+async function ensureSubscriberSchema() {
+  if (_schemaEnsured) return
+  const stmts = [
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "first_name" TEXT;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "source" TEXT;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "lists" JSONB;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "consent_given" BOOLEAN NOT NULL DEFAULT false;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "consent_at" TIMESTAMP;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_token" TEXT;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_sent_at" TIMESTAMP;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "doi_confirmed_at" TIMESTAMP;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "beehiiv_id" TEXT;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "beehiiv_synced_at" TIMESTAMP;`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "created_at" TIMESTAMP NOT NULL DEFAULT NOW();`,
+    `ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "updated_at" TIMESTAMP NOT NULL DEFAULT NOW();`,
+  ]
+  for (const stmt of stmts) {
+    try { await db.execute(sql.raw(stmt)) } catch (_) { /* ignore */ }
+  }
+  _schemaEnsured = true
+}
 
 const schema = z.object({
   email: z.string().email(),
@@ -18,12 +48,14 @@ const schema = z.object({
   source: z.string().optional().default('website'),
   locale: z.string().optional().default('de'),
   consentGiven: z.boolean().optional().default(true),
+  question: z.string().max(2000).optional(),
 })
 
 export async function POST(request: Request) {
   try {
+    await ensureSubscriberSchema()
     const body = await request.json()
-    const { email, firstName, source, locale, consentGiven } = schema.parse(body)
+    const { email, firstName, source, locale, consentGiven, question } = schema.parse(body)
 
     // ── 1. Save / upsert into our DB ──────────────────────────────────────────
     let subscriberId: string | null = null
@@ -51,7 +83,7 @@ export async function POST(request: Request) {
             firstName: firstName ?? null,
             source,
             status: 'pending',
-            lists: ['general'],
+            lists: question ? [source ?? 'general', `q:${question.slice(0, 1500)}`] : [source ?? 'general'],
             consentGiven,
             consentAt: consentGiven ? new Date() : null,
             doiToken,
@@ -60,17 +92,19 @@ export async function POST(request: Request) {
           .returning({ id: newsletterSubscribers.id })
         subscriberId = inserted[0]?.id ?? null
         isNew = true
-        if (subscriberId) {
-          logEventAsync({
+
+        // Wave 9 — emit subscriber.signed_up event (vor DOI-Confirm-Schritt)
+        try {
+          const { emitAsync } = await import('@/lib/events/emit')
+          emitAsync({
             category: 'subscriber',
-            eventType: 'signup',
-            title: 'Neue Newsletter-Anmeldung',
-            summary: `${email}${source ? ` · ${source}` : ''}`,
-            refType: 'newsletter_subscriber',
-            refId: subscriberId,
-            metadata: { source, locale, firstName: firstName ?? null },
+            type: 'subscriber.signed_up',
+            payload: { email, firstName: firstName ?? null, source: source ?? null, consentGiven, subscriberId },
+            source: 'newsletter-api',
+            frameworkSlug: source?.startsWith('framework-') ? source.slice('framework-'.length) : null,
+            idempotencyKey: subscriberId ? `subscriber.signed_up:${subscriberId}` : undefined,
           })
-        }
+        } catch { /* non-fatal */ }
       } else if (existing[0].status === 'unsubscribed') {
         // Explizit abgemeldete Subscriber nicht neu aufnehmen
         return NextResponse.json({ success: true, resubscribe: false })
@@ -89,7 +123,10 @@ export async function POST(request: Request) {
       }
     } catch (dbErr) {
       console.error('DB error:', dbErr)
-      return NextResponse.json({ error: 'Database error' }, { status: 500 })
+      return NextResponse.json(
+        { error: 'Database error', detail: String(dbErr) },
+        { status: 500 },
+      )
     }
 
     // ── 2. DOI-Email via Resend senden ────────────────────────────────────────
