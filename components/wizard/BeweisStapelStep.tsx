@@ -1,68 +1,114 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, X, Award } from 'lucide-react'
-import { StepShell, callSuggest, callSave } from './StepShell'
+import { Loader2, Sparkles, Plus, X, Save, CheckCircle2 } from 'lucide-react'
 
-interface Proof { class: 'A' | 'B' | 'C' | 'D' | 'E'; text: string; source: string; methodology?: string }
-interface Answers { proofs: Proof[] }
+type Item = Record<string, string>
+interface Answers extends Record<string, unknown> { proofs?: Item[] }
 
-const CLASS_META = {
-  A: { label: 'A — Named Customer', color: '#1A5FD4' },
-  B: { label: 'B — Customer-Avg', color: '#3B82F6' },
-  C: { label: 'C — Hypothese + Methode', color: '#B07C0A' },
-  D: { label: 'D — Branchen-Benchmark', color: '#6B7280' },
-  E: { label: 'E — Testimonial', color: '#10B981' },
-} as const
+interface Props { initialAnswers?: Answers; onSaved?: (p: number) => void }
 
-export function BeweisStapelStep({ initialAnswers, prevContext, onSaved }: {
-  initialAnswers?: Answers; prevContext?: unknown; onSaved?: (p: number) => void
-}) {
-  const [proofs, setProofs] = useState<Proof[]>(initialAnswers?.proofs ?? [])
+export function BeweisStapelStep({ initialAnswers, onSaved }: Props) {
+  const [contextInput, setContextInput] = useState(initialAnswers?.contextInput ?? '')
+  const [items, setItems] = useState<Item[]>((initialAnswers?.proofs as Item[] | undefined) ?? [])
+  const [status, setStatus] = useState<'idle' | 'suggesting' | 'saving' | 'saved' | 'error'>('idle')
+  const [error, setError] = useState<string | null>(null)
 
-  function update(i: number, patch: Partial<Proof>) {
-    setProofs(proofs.map((p, j) => j === i ? { ...p, ...patch } : p))
+  async function suggest() {
+    setStatus('suggesting'); setError(null)
+    try {
+      const res = await fetch('/api/wizard/b2b-angebote/step/05-beweis-stapel/suggest', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contextInput  }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.result) { setError(data.error || 'Suggest fehlgeschlagen'); setStatus('error'); return }
+      const result = data.result as Answers
+      if (Array.isArray(result.proofs)) setItems(result.proofs as Item[])
+      setStatus('idle')
+    } catch (e) { setError(String(e)); setStatus('error') }
   }
 
+  async function save() {
+    setStatus('saving'); setError(null)
+    try {
+      const res = await fetch('/api/wizard/b2b-angebote/step/05-beweis-stapel/save', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ proofs: items, contextInput }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setError(data.error || 'Save fehlgeschlagen'); setStatus('error'); return }
+      setStatus('saved')
+      if (onSaved) onSaved(data.progress ?? 0)
+      setTimeout(() => setStatus('idle'), 2500)
+    } catch (e) { setError(String(e)); setStatus('error') }
+  }
+
+  function updateItem(i: number, patch: Partial<Item>) { setItems(items.map((x, j) => j === i ? { ...x, ...patch } : x)) }
+  function removeItem(i: number) { setItems(items.filter((_, j) => j !== i)) }
+  function addItem() { setItems([...items, { class: 'C', text: '', source: '', methodology: '' }]) }
+
   return (
-    <StepShell stepKey="05-beweis-stapel" voiceName="Beweis-Stapel"
-      title="ROI-Beweise — Klassen A-E"
-      why="3 bis 7 Beweise. Mindestens 2 aus A oder B im Top-3. Hypothese braucht Methodik, sonst Marketing-Floskel."
-      canSuggest
-      canSave={proofs.length >= 3}
-      onSuggest={async () => callSuggest('05-beweis-stapel', prevContext ?? {})}
-      onResult={(r) => { const x = r as Answers; if (x.proofs) setProofs(x.proofs) }}
-      onSave={async () => callSave('05-beweis-stapel', { proofs })}
-      onSaved={onSaved}
-    >
-      <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-gray-700">Beweise ({proofs.length}/7)</p>
-        <button onClick={() => setProofs([...proofs, { class: 'C', text: '', source: '' }])} className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800">
-          <Plus size={12} /> Beweis hinzufügen
-        </button>
+    <div className="space-y-6">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6">
+        <div className="mb-4">
+          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Beweis-Stapel</p>
+          <h2 className="mt-1 text-xl font-bold text-gray-900">ROI-Beweise (A-E)</h2>
+          <p className="mt-1 text-sm text-gray-500">3-7 Beweise. Klassen A=Named Customer, B=Customer-Avg, C=Hypothese+Methode, D=Branche, E=Testimonial.</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5">Kontext für AI (Phasen, Currencies, Customer-Cases)</label>
+          <textarea value={contextInput} onChange={(e) => setContextInput(e.target.value)}
+            rows={3} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-blue-400 focus:outline-none"
+            placeholder="Optional: alles was Dir hilft, gute Beweise zu finden" />
+        </div>
+        </div>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <button onClick={suggest} disabled={status === 'suggesting'}
+            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
+            {status === 'suggesting' ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+            AI: Vorschlagen
+          </button>
+          {error && <span className="text-xs text-red-600">{error}</span>}
+        </div>
       </div>
 
-      <div className="space-y-2">
-        {proofs.map((p, i) => {
-          const meta = CLASS_META[p.class]
-          return (
-            <div key={i} className="rounded-xl border border-gray-200 bg-white p-3">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6">
+        <div className="mb-3 flex items-center justify-between">
+          <p className="text-xs font-semibold text-gray-700">Einträge ({items.length})</p>
+          <button onClick={addItem} className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800">
+            <Plus size={12} /> Hinzufügen
+          </button>
+        </div>
+        <ul className="space-y-2">
+          {items.map((item, i) => (
+            <li key={i} className="rounded-xl border border-gray-200 bg-white p-3">
               <div className="flex items-start gap-2">
-                <select value={p.class} onChange={(e) => update(i, { class: e.target.value as Proof['class'] })} className="rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-[11px] font-semibold focus:outline-none" style={{ color: meta.color }}>
-                  {Object.entries(CLASS_META).map(([k, m]) => <option key={k} value={k}>{m.label}</option>)}
-                </select>
-                <Award size={14} className="mt-1.5" style={{ color: meta.color }} />
-                <button onClick={() => setProofs(proofs.filter((_, j) => j !== i))} className="ml-auto mt-1 text-gray-400 hover:text-red-500"><X size={12} /></button>
+                <div className="flex-1 space-y-2">
+                  <input value={item.class ?? ''} onChange={(e) => updateItem(i, { class: e.target.value })}
+                    placeholder="Klasse (A/B/C/D/E)" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
+                  <input value={item.text ?? ''} onChange={(e) => updateItem(i, { text: e.target.value })}
+                    placeholder="Beweis-Text" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
+                  <input value={item.source ?? ''} onChange={(e) => updateItem(i, { source: e.target.value })}
+                    placeholder="Source" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
+                  <input value={item.methodology ?? ''} onChange={(e) => updateItem(i, { methodology: e.target.value })}
+                    placeholder="Methodik" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
+                </div>
+                <button onClick={() => removeItem(i)} className="text-gray-400 hover:text-red-500 mt-1"><X size={12} /></button>
               </div>
-              <input value={p.text} onChange={(e) => update(i, { text: e.target.value })} placeholder={'Beweis (z.B. „22.500 €/Jahr eingespart")'} className="mt-2 w-full rounded-lg border border-gray-100 bg-gray-50 px-2.5 py-1.5 text-xs font-semibold focus:outline-none" />
-              <div className="grid gap-2 sm:grid-cols-2 mt-2">
-                <input value={p.source} onChange={(e) => update(i, { source: e.target.value })} placeholder={'Source (z.B. „GMG-Case")'} className="rounded-lg border border-gray-100 bg-gray-50 px-2.5 py-1.5 text-[11px] focus:outline-none" />
-                <input value={p.methodology ?? ''} onChange={(e) => update(i, { methodology: e.target.value })} placeholder={'Methodik (z.B. „3 FTE × 4h/Wo × …")'} className="rounded-lg border border-gray-100 bg-gray-50 px-2.5 py-1.5 text-[11px] focus:outline-none" />
-              </div>
-            </div>
-          )
-        })}
+            </li>
+          ))}
+          {items.length === 0 && <li className="text-xs italic text-gray-400">Noch keine Einträge — AI: Vorschlagen oder + drücken.</li>}
+        </ul>
+        <div className="mt-5 flex items-center gap-3">
+          <button onClick={save} disabled={status === 'saving' || items.length === 0}
+            className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
+            {status === 'saving' ? <Loader2 size={14} className="animate-spin" /> : status === 'saved' ? <CheckCircle2 size={14} /> : <Save size={14} />}
+            {status === 'saved' ? 'Gespeichert' : 'Schritt speichern'}
+          </button>
+        </div>
       </div>
-    </StepShell>
+    </div>
   )
 }

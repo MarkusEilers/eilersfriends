@@ -1,68 +1,121 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, X, ArrowRight } from 'lucide-react'
-import { StepShell, callSuggest, callSave, StepEditField } from './StepShell'
+import { Loader2, Sparkles, Plus, X, Save, CheckCircle2 } from 'lucide-react'
 
-interface Phase { name: string; input: string; output: string; durationWeeks: number; steps: string[] }
-interface Answers { phases: Phase[]; startingPain?: string; endGoal?: string; offerDescription?: string }
+type Item = Record<string, string>
+interface Answers extends Record<string, unknown> { phases?: Item[] }
 
-export function SichtbarerPfadStep({ initialAnswers, onSaved }: { initialAnswers?: Answers; onSaved?: (p: number) => void }) {
+interface Props { initialAnswers?: Answers; onSaved?: (p: number) => void }
+
+export function SichtbarerPfadStep({ initialAnswers, onSaved }: Props) {
   const [offerDescription, setOfferDescription] = useState(initialAnswers?.offerDescription ?? '')
   const [startingPain, setStartingPain] = useState(initialAnswers?.startingPain ?? '')
-  const [endGoal, setEndGoal] = useState(initialAnswers?.endGoal ?? '')
-  const [phases, setPhases] = useState<Phase[]>(initialAnswers?.phases ?? [])
+  const [items, setItems] = useState<Item[]>((initialAnswers?.phases as Item[] | undefined) ?? [])
+  const [status, setStatus] = useState<'idle' | 'suggesting' | 'saving' | 'saved' | 'error'>('idle')
+  const [error, setError] = useState<string | null>(null)
 
-  function update(i: number, patch: Partial<Phase>) {
-    setPhases(phases.map((p, j) => j === i ? { ...p, ...patch } : p))
+  async function suggest() {
+    setStatus('suggesting'); setError(null)
+    try {
+      const res = await fetch('/api/wizard/b2b-angebote/step/03-sichtbarer-pfad/suggest', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ offerDescription, startingPain  }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.result) { setError(data.error || 'Suggest fehlgeschlagen'); setStatus('error'); return }
+      const result = data.result as Answers
+      if (Array.isArray(result.phases)) setItems(result.phases as Item[])
+      setStatus('idle')
+    } catch (e) { setError(String(e)); setStatus('error') }
   }
 
+  async function save() {
+    setStatus('saving'); setError(null)
+    try {
+      const res = await fetch('/api/wizard/b2b-angebote/step/03-sichtbarer-pfad/save', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phases: items, offerDescription, startingPain }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setError(data.error || 'Save fehlgeschlagen'); setStatus('error'); return }
+      setStatus('saved')
+      if (onSaved) onSaved(data.progress ?? 0)
+      setTimeout(() => setStatus('idle'), 2500)
+    } catch (e) { setError(String(e)); setStatus('error') }
+  }
+
+  function updateItem(i: number, patch: Partial<Item>) { setItems(items.map((x, j) => j === i ? { ...x, ...patch } : x)) }
+  function removeItem(i: number) { setItems(items.filter((_, j) => j !== i)) }
+  function addItem() { setItems([...items, { name: '', input: '', output: '', durationWeeks: '4' }]) }
+
   return (
-    <StepShell stepKey="03-sichtbarer-pfad" voiceName="Sichtbarer Pfad"
-      title="Bulletproof Delivery Plan"
-      why="3 bis 5 benannte Phasen. Gleiche Grammatik, gleiche Silbenanzahl. „Aufräumen · Aufstellen · Abliefern"."
-      canSuggest={!!offerDescription.trim()}
-      canSave={phases.length >= 3}
-      onSuggest={async () => callSuggest('03-sichtbarer-pfad', { offerDescription, startingPain, endGoal })}
-      onResult={(r) => { const x = r as Answers; if (x.phases) setPhases(x.phases) }}
-      onSave={async () => callSave('03-sichtbarer-pfad', { phases, offerDescription, startingPain, endGoal })}
-      onSaved={onSaved}
-    >
-      <StepEditField label="Angebots-Beschreibung" value={offerDescription} onChange={setOfferDescription} multiline placeholder={'Was tut Dein Angebot?" />
-      <div className='}grid gap-3 sm:grid-cols-2">
-        <StepEditField label="Starting Pain (wo der Kunde heute steht)" value={startingPain} onChange={setStartingPain} placeholder={'„Wir haben kein klares Reporting"'} />
-        <StepEditField label="End Goal (wo er hin will)" value={endGoal} onChange={setEndGoal} placeholder={'„Wöchentlicher Forecast mit 90% Genauigkeit"'} />
-      </div>
-
-      <div className="flex items-center justify-between mt-3">
-        <p className="text-xs font-semibold text-gray-700">Phasen ({phases.length}/5)</p>
-        {phases.length < 5 && (
-          <button onClick={() => setPhases([...phases, { name: '', input: '', output: '', durationWeeks: 4, steps: [] }])} className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800">
-            <Plus size={12} /> Phase hinzufügen
+    <div className="space-y-6">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6">
+        <div className="mb-4">
+          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Sichtbarer Pfad</p>
+          <h2 className="mt-1 text-xl font-bold text-gray-900">Bulletproof Delivery Plan</h2>
+          <p className="mt-1 text-sm text-gray-500">3 bis 5 Phasen. Gleiche Grammatik, gleiche Silbenanzahl. Aufräumen · Aufstellen · Abliefern.</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5">Angebots-Beschreibung</label>
+          <textarea value={offerDescription} onChange={(e) => setOfferDescription(e.target.value)}
+            rows={3} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-blue-400 focus:outline-none"
+            placeholder="Was tut Dein Angebot?" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5">Starting Pain</label>
+          <textarea value={startingPain} onChange={(e) => setStartingPain(e.target.value)}
+            rows={3} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-blue-400 focus:outline-none"
+            placeholder="Wo der Kunde heute steht" />
+        </div>
+        </div>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <button onClick={suggest} disabled={status === 'suggesting'}
+            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
+            {status === 'suggesting' ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+            AI: Vorschlagen
           </button>
-        )}
+          {error && <span className="text-xs text-red-600">{error}</span>}
+        </div>
       </div>
 
-      <div className="space-y-3">
-        {phases.map((ph, i) => (
-          <div key={i} className="rounded-xl border border-blue-200 bg-blue-50/30 p-3">
-            <div className="flex items-start gap-2 mb-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 text-xs font-bold text-white">{i + 1}</span>
-              <input value={ph.name} onChange={(e) => update(i, { name: e.target.value })} placeholder={'Phase-Name (1 Wort)" className='}flex-1 rounded-lg border border-blue-100 bg-white px-2.5 py-1.5 text-sm font-bold focus:border-blue-400 focus:outline-none" />
-              <input type="number" value={ph.durationWeeks} onChange={(e) => update(i, { durationWeeks: parseInt(e.target.value, 10) || 0 })} className="w-16 rounded-lg border border-blue-100 bg-white px-2 py-1.5 text-xs focus:outline-none" />
-              <span className="text-[10px] text-gray-500 mt-2">Wo</span>
-              <button onClick={() => setPhases(phases.filter((_, j) => j !== i))} className="mt-1.5 text-gray-400 hover:text-red-500"><X size={12} /></button>
-            </div>
-            <div className="grid gap-2 sm:grid-cols-2">
-              <input value={ph.input} onChange={(e) => update(i, { input: e.target.value })} placeholder={'Input (was kommt rein)" className='}rounded-lg border border-blue-100 bg-white px-2 py-1.5 text-[11px] focus:outline-none" />
-              <input value={ph.output} onChange={(e) => update(i, { output: e.target.value })} placeholder={'Output (was kommt raus)" className='}rounded-lg border border-blue-100 bg-white px-2 py-1.5 text-[11px] focus:outline-none" />
-            </div>
-            <div className="mt-2">
-              <input value={(ph.steps ?? []).join(' · ')} onChange={(e) => update(i, { steps: e.target.value.split(/\s*·\s*/).filter(Boolean) })} placeholder={'Steps (mit · trennen)" className='}w-full rounded-lg border border-blue-100 bg-white px-2 py-1.5 text-[11px] focus:outline-none" />
-            </div>
-          </div>
-        ))}
+      <div className="rounded-2xl border border-gray-200 bg-white p-6">
+        <div className="mb-3 flex items-center justify-between">
+          <p className="text-xs font-semibold text-gray-700">Einträge ({items.length})</p>
+          <button onClick={addItem} className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800">
+            <Plus size={12} /> Hinzufügen
+          </button>
+        </div>
+        <ul className="space-y-2">
+          {items.map((item, i) => (
+            <li key={i} className="rounded-xl border border-gray-200 bg-white p-3">
+              <div className="flex items-start gap-2">
+                <div className="flex-1 space-y-2">
+                  <input value={item.name ?? ''} onChange={(e) => updateItem(i, { name: e.target.value })}
+                    placeholder="Phase-Name (1 Wort)" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
+                  <input value={item.input ?? ''} onChange={(e) => updateItem(i, { input: e.target.value })}
+                    placeholder="Input" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
+                  <input value={item.output ?? ''} onChange={(e) => updateItem(i, { output: e.target.value })}
+                    placeholder="Output" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
+                  <input value={item.durationWeeks ?? ''} onChange={(e) => updateItem(i, { durationWeeks: e.target.value })}
+                    placeholder="Dauer (Wo)" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
+                </div>
+                <button onClick={() => removeItem(i)} className="text-gray-400 hover:text-red-500 mt-1"><X size={12} /></button>
+              </div>
+            </li>
+          ))}
+          {items.length === 0 && <li className="text-xs italic text-gray-400">Noch keine Einträge — AI: Vorschlagen oder + drücken.</li>}
+        </ul>
+        <div className="mt-5 flex items-center gap-3">
+          <button onClick={save} disabled={status === 'saving' || items.length === 0}
+            className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
+            {status === 'saving' ? <Loader2 size={14} className="animate-spin" /> : status === 'saved' ? <CheckCircle2 size={14} /> : <Save size={14} />}
+            {status === 'saved' ? 'Gespeichert' : 'Schritt speichern'}
+          </button>
+        </div>
       </div>
-    </StepShell>
+    </div>
   )
 }

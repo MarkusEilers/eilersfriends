@@ -1,93 +1,117 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, X, Clock, Calendar } from 'lucide-react'
-import { StepShell, callSuggest, callSave, StepEditField } from './StepShell'
+import { Loader2, Sparkles, Plus, X, Save, CheckCircle2 } from 'lucide-react'
 
-interface PainToday { topic: string; reality: string }
-interface PainTomorrow { topic: string; trigger: string; timeframe: string }
-interface Answers { today: PainToday[]; tomorrow: PainTomorrow[]; offerDescription?: string; industryContext?: string }
+type Item = Record<string, string>
+interface Answers extends Record<string, unknown> { today?: Item[] }
 
-export function DoppelschmerzStep({ initialAnswers, onSaved }: { initialAnswers?: Answers; onSaved?: (p: number) => void }) {
+interface Props { initialAnswers?: Answers; onSaved?: (p: number) => void }
+
+export function DoppelschmerzStep({ initialAnswers, onSaved }: Props) {
   const [offerDescription, setOfferDescription] = useState(initialAnswers?.offerDescription ?? '')
   const [industryContext, setIndustryContext] = useState(initialAnswers?.industryContext ?? '')
-  const [today, setToday] = useState<PainToday[]>(initialAnswers?.today ?? [])
-  const [tomorrow, setTomorrow] = useState<PainTomorrow[]>(initialAnswers?.tomorrow ?? [])
+  const [items, setItems] = useState<Item[]>((initialAnswers?.today as Item[] | undefined) ?? [])
+  const [status, setStatus] = useState<'idle' | 'suggesting' | 'saving' | 'saved' | 'error'>('idle')
+  const [error, setError] = useState<string | null>(null)
+
+  async function suggest() {
+    setStatus('suggesting'); setError(null)
+    try {
+      const res = await fetch('/api/wizard/b2b-angebote/step/02-doppelschmerz/suggest', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ offerDescription, industryContext  }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.result) { setError(data.error || 'Suggest fehlgeschlagen'); setStatus('error'); return }
+      const result = data.result as Answers
+      if (Array.isArray(result.today)) setItems(result.today as Item[])
+      setStatus('idle')
+    } catch (e) { setError(String(e)); setStatus('error') }
+  }
+
+  async function save() {
+    setStatus('saving'); setError(null)
+    try {
+      const res = await fetch('/api/wizard/b2b-angebote/step/02-doppelschmerz/save', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ today: items, offerDescription, industryContext }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setError(data.error || 'Save fehlgeschlagen'); setStatus('error'); return }
+      setStatus('saved')
+      if (onSaved) onSaved(data.progress ?? 0)
+      setTimeout(() => setStatus('idle'), 2500)
+    } catch (e) { setError(String(e)); setStatus('error') }
+  }
+
+  function updateItem(i: number, patch: Partial<Item>) { setItems(items.map((x, j) => j === i ? { ...x, ...patch } : x)) }
+  function removeItem(i: number) { setItems(items.filter((_, j) => j !== i)) }
+  function addItem() { setItems([...items, { topic: '', reality: '' }]) }
 
   return (
-    <StepShell stepKey="02-doppelschmerz" voiceName="Doppelschmerz"
-      title="Heute & Morgen — Pflaster + Strecke"
-      why="Heute-gelöst macht relevant. Morgen-vorausgesehen macht strategisch."
-      canSuggest={!!offerDescription.trim()}
-      canSave={today.length > 0 || tomorrow.length > 0}
-      onSuggest={async () => callSuggest('02-doppelschmerz', { offerDescription, industryContext })}
-      onResult={(r) => {
-        const x = r as Answers
-        if (x.today) setToday(x.today)
-        if (x.tomorrow) setTomorrow(x.tomorrow)
-      }}
-      onSave={async () => callSave('02-doppelschmerz', { today, tomorrow, offerDescription, industryContext })}
-      onSaved={onSaved}
-    >
-      <div className="grid gap-3 sm:grid-cols-2">
-        <StepEditField label="Angebots-Beschreibung" value={offerDescription} onChange={setOfferDescription} placeholder={'Was tut Dein Angebot heute schon?" multiline />
-        <StepEditField label='}Branchen-Kontext (optional)" value={industryContext} onChange={setIndustryContext} placeholder={'Regulatorik, Marktentwicklung, Tech-Shift" multiline />
-      </div>
-
-      <div className='}grid gap-4 lg:grid-cols-2 mt-4">
-        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Clock size={14} className="text-blue-600" />
-              <span className="text-xs font-bold uppercase tracking-widest text-blue-700">Heute · Pflaster</span>
-            </div>
-            <button onClick={() => setToday([...today, { topic: '', reality: '' }])} className="rounded-full bg-white p-1 hover:bg-blue-100">
-              <Plus size={12} className="text-blue-700" />
-            </button>
-          </div>
-          <ul className="space-y-2">
-            {today.map((p, i) => (
-              <li key={i} className="rounded-lg bg-white p-2.5 border border-blue-200/40">
-                <div className="flex items-start gap-2">
-                  <div className="flex-1 space-y-1">
-                    <input value={p.topic} onChange={(e) => setToday(today.map((x, j) => j === i ? { ...x, topic: e.target.value } : x))} placeholder={'Topic" className='}w-full bg-transparent text-xs font-semibold focus:outline-none" />
-                    <input value={p.reality} onChange={(e) => setToday(today.map((x, j) => j === i ? { ...x, reality: e.target.value } : x))} placeholder={'Reality heute" className='}w-full bg-transparent text-[11px] text-gray-600 focus:outline-none" />
-                  </div>
-                  <button onClick={() => setToday(today.filter((_, j) => j !== i))} className="text-gray-400 hover:text-red-500"><X size={10} /></button>
-                </div>
-              </li>
-            ))}
-            {today.length === 0 && <li className="text-xs italic text-blue-400">Noch keine — AI: Vorschlagen klicken oder + drücken.</li>}
-          </ul>
+    <div className="space-y-6">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6">
+        <div className="mb-4">
+          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Doppelschmerz</p>
+          <h2 className="mt-1 text-xl font-bold text-gray-900">Heute (Pflaster) und Morgen (Strecke)</h2>
+          <p className="mt-1 text-sm text-gray-500">3-5 Heute-Pains + 3-5 Morgen-Pains. AI baut beide Listen. Hier ist die Heute-Liste; die Morgen-Liste kannst Du nach demselben Pattern editieren.</p>
         </div>
-
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Calendar size={14} className="text-amber-700" />
-              <span className="text-xs font-bold uppercase tracking-widest text-amber-800">Morgen · Strecke</span>
-            </div>
-            <button onClick={() => setTomorrow([...tomorrow, { topic: '', trigger: '', timeframe: '' }])} className="rounded-full bg-white p-1 hover:bg-amber-100">
-              <Plus size={12} className="text-amber-800" />
-            </button>
-          </div>
-          <ul className="space-y-2">
-            {tomorrow.map((p, i) => (
-              <li key={i} className="rounded-lg bg-white p-2.5 border border-amber-200/40">
-                <div className="flex items-start gap-2">
-                  <div className="flex-1 space-y-1">
-                    <input value={p.topic} onChange={(e) => setTomorrow(tomorrow.map((x, j) => j === i ? { ...x, topic: e.target.value } : x))} placeholder={'Topic" className='}w-full bg-transparent text-xs font-semibold focus:outline-none" />
-                    <input value={p.trigger} onChange={(e) => setTomorrow(tomorrow.map((x, j) => j === i ? { ...x, trigger: e.target.value } : x))} placeholder={'Trigger (z.B. BEMA 2027)" className='}w-full bg-transparent text-[11px] text-gray-600 focus:outline-none" />
-                    <input value={p.timeframe} onChange={(e) => setTomorrow(tomorrow.map((x, j) => j === i ? { ...x, timeframe: e.target.value } : x))} placeholder={'Timeframe (12-24 Mo)" className='}w-full bg-transparent text-[11px] text-gray-500 focus:outline-none" />
-                  </div>
-                  <button onClick={() => setTomorrow(tomorrow.filter((_, j) => j !== i))} className="text-gray-400 hover:text-red-500"><X size={10} /></button>
-                </div>
-              </li>
-            ))}
-            {tomorrow.length === 0 && <li className="text-xs italic text-amber-400">Noch keine.</li>}
-          </ul>
+        <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5">Angebots-Beschreibung</label>
+          <textarea value={offerDescription} onChange={(e) => setOfferDescription(e.target.value)}
+            rows={3} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-blue-400 focus:outline-none"
+            placeholder="Was tut Dein Angebot heute?" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5">Branchen-Kontext (optional)</label>
+          <textarea value={industryContext} onChange={(e) => setIndustryContext(e.target.value)}
+            rows={3} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-blue-400 focus:outline-none"
+            placeholder="Regulatorik, Marktentwicklung, Tech-Shift" />
+        </div>
+        </div>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <button onClick={suggest} disabled={status === 'suggesting'}
+            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
+            {status === 'suggesting' ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+            AI: Vorschlagen
+          </button>
+          {error && <span className="text-xs text-red-600">{error}</span>}
         </div>
       </div>
-    </StepShell>
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-6">
+        <div className="mb-3 flex items-center justify-between">
+          <p className="text-xs font-semibold text-gray-700">Einträge ({items.length})</p>
+          <button onClick={addItem} className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800">
+            <Plus size={12} /> Hinzufügen
+          </button>
+        </div>
+        <ul className="space-y-2">
+          {items.map((item, i) => (
+            <li key={i} className="rounded-xl border border-gray-200 bg-white p-3">
+              <div className="flex items-start gap-2">
+                <div className="flex-1 space-y-2">
+                  <input value={item.topic ?? ''} onChange={(e) => updateItem(i, { topic: e.target.value })}
+                    placeholder="Topic" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
+                  <input value={item.reality ?? ''} onChange={(e) => updateItem(i, { reality: e.target.value })}
+                    placeholder="Reality heute" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
+                </div>
+                <button onClick={() => removeItem(i)} className="text-gray-400 hover:text-red-500 mt-1"><X size={12} /></button>
+              </div>
+            </li>
+          ))}
+          {items.length === 0 && <li className="text-xs italic text-gray-400">Noch keine Einträge — AI: Vorschlagen oder + drücken.</li>}
+        </ul>
+        <div className="mt-5 flex items-center gap-3">
+          <button onClick={save} disabled={status === 'saving' || items.length === 0}
+            className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
+            {status === 'saving' ? <Loader2 size={14} className="animate-spin" /> : status === 'saved' ? <CheckCircle2 size={14} /> : <Save size={14} />}
+            {status === 'saved' ? 'Gespeichert' : 'Schritt speichern'}
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
