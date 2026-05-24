@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { signOutAdminAction } from '@/lib/actions/offers'
 import {
   LayoutDashboard, Mail, LayoutTemplate, ListOrdered, Users, FileText, Settings,
-  BookOpen, Image as ImageIcon, FileSignature, LogOut, Menu, X, Webhook,
+  BookOpen, Image as ImageIcon, FileSignature, LogOut, Menu, X, Webhook, UserCircle,
 } from 'lucide-react'
 
 type NavGroup = {
@@ -110,6 +110,16 @@ export function AdminSidebar({ userName, userRole }: AdminSidebarProps) {
           </div>
         ))}
       </nav>
+
+      {/* Switch to Customer Portal */}
+      <Link
+        href={'/dashboard' as '/'}
+        onClick={() => setOpen(false)}
+        className="mx-3 mb-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-gray-500 hover:bg-blue-50 hover:text-blue-700 transition-colors border border-dashed border-gray-300"
+      >
+        <UserCircle size={13} className="text-blue-500" />
+        Zum Kundenbereich
+      </Link>
 
       {/* User + Logout */}
       <div className="border-t border-gray-200 px-4 py-3">

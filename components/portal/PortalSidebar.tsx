@@ -4,12 +4,14 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { signOutAdminAction } from '@/lib/actions/offers'
-import { LayoutDashboard, FileSignature, User, Menu, X, LogOut } from 'lucide-react'
+import { LayoutDashboard, FileSignature, User, Menu, X, LogOut, BookOpen, GraduationCap, Shield } from 'lucide-react'
 
 const PORTAL_NAV = [
-  { label: 'Dashboard', href: '/dashboard',  icon: LayoutDashboard },
-  { label: 'Angebote',  href: '/clients',    icon: FileSignature },
-  { label: 'Profil',    href: '/dashboard/profile', icon: User },
+  { label: 'Dashboard',        href: '/dashboard',            icon: LayoutDashboard },
+  { label: 'Meine Frameworks', href: '/dashboard/frameworks', icon: BookOpen },
+  { label: 'Meine Programme',  href: '/dashboard/programs',   icon: GraduationCap },
+  { label: 'Angebote',         href: '/clients',              icon: FileSignature },
+  { label: 'Profil',           href: '/dashboard/profile',    icon: User },
 ]
 
 interface PortalSidebarProps {
@@ -58,6 +60,16 @@ export function PortalSidebar({ userName, userRole }: PortalSidebarProps) {
           )
         })}
       </nav>
+      {(userRole === 'admin' || userRole === 'coach') && (
+        <Link
+          href={'/admin' as '/'}
+          onClick={() => setOpen(false)}
+          className="mx-3 mb-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-gray-500 hover:bg-purple-50 hover:text-purple-700 transition-colors border border-dashed border-gray-300"
+        >
+          <Shield size={13} className="text-purple-500" />
+          Zum Admin-Panel
+        </Link>
+      )}
       <div className="border-t border-gray-200 px-4 py-3">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
