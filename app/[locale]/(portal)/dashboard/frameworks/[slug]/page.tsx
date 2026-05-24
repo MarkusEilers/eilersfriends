@@ -4,7 +4,7 @@ import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { ensureWizardTables } from '@/lib/db/self-heal'
 import Link from 'next/link'
-import { ArrowLeft, Clock } from 'lucide-react'
+import { ArrowLeft, Clock, ShieldCheck } from 'lucide-react'
 import { WizardAccordion } from '@/components/wizard/WizardAccordion'
 
 export const dynamic = 'force-dynamic'
@@ -26,8 +26,14 @@ export default async function FrameworkWizardPage({ params }: { params: Promise<
   if (!session?.user?.id) redirect('/auth/login')
   if (slug !== 'b2b-angebote') notFound()
 
+  const role = session.user.role
+  const isAdmin = role === 'admin' || role === 'coach'
+
   await ensureWizardTables()
   const userId = session.user.id
+
+  // For admin/coach: always upsert so they can use the wizard without prior signup.
+  // For regular users: also upsert (they might land here via direct link before DOI auto-enroll ran).
   await db.execute(sql`
     INSERT INTO user_framework_state (user_id, framework_slug, current_step, progress, status)
     VALUES (${userId}, ${slug}, 0, 0, 'active')
@@ -54,11 +60,23 @@ export default async function FrameworkWizardPage({ params }: { params: Promise<
 
       <header className="mb-6">
         <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>SalesMade · Pillar-Asset</p>
-        <h1 className="mt-1 text-2xl font-bold text-gray-900">Der Bauplan für unwiderstehliche B2B-Angebote</h1>
+        <h1 className="mt-1 text-2xl font-bold text-gray-900">Der Bauplan fuer unwiderstehliche B2B-Angebote</h1>
         <p className="mt-1 text-sm text-gray-600">
           Acht Schritte, vier Stunden, ein verteidigbares B2B-Angebot. Pausieren und weitermachen jederzeit.
         </p>
       </header>
+
+      {isAdmin && (
+        <div className="mb-6 rounded-2xl border border-purple-200 bg-purple-50 p-4">
+          <div className="flex items-start gap-3">
+            <ShieldCheck size={16} className="mt-0.5 text-purple-700 flex-shrink-0" />
+            <p className="text-sm text-purple-900">
+              <strong className="font-bold">Admin-View:</strong> Du siehst die App so, wie sie ein Subscriber sieht.
+              Alle Eingaben werden unter Deinem Admin-Account gespeichert und koennen jederzeit zurueckgesetzt werden.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="mb-6 rounded-2xl border border-blue-100 bg-blue-50 p-5">
         <div className="flex items-center justify-between gap-4">

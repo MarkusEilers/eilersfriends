@@ -92,17 +92,27 @@ export async function GET(request: NextRequest) {
         const { sql: dsql } = await import('drizzle-orm')
         await ensureWizardTables()
         // Look up an existing user with the same email, or create one
-        const userRows = await db.execute(dsql`
+        function rowsOf<T>(r: unknown): T[] {
+          if (Array.isArray(r)) return r as T[]
+          if (r && typeof r === 'object' && 'rows' in r) {
+            const x = (r as { rows: unknown }).rows
+            if (Array.isArray(x)) return x as T[]
+          }
+          return []
+        }
+        const userRowsRes = await db.execute(dsql`
           SELECT id FROM users WHERE email = ${subscriber.email} LIMIT 1
-        `) as unknown as { id: string }[]
+        `)
+        const userRows = rowsOf<{ id: string }>(userRowsRes)
         let userId: string | null = userRows[0]?.id ?? null
         if (!userId) {
-          const created = await db.execute(dsql`
+          const createdRes = await db.execute(dsql`
             INSERT INTO users (email, full_name, role, email_verified)
             VALUES (${subscriber.email}, ${subscriber.firstName ?? subscriber.email}, 'participant', now())
             ON CONFLICT (email) DO UPDATE SET email_verified = now()
             RETURNING id
-          `) as unknown as { id: string }[]
+          `)
+          const created = rowsOf<{ id: string }>(createdRes)
           userId = created[0]?.id ?? null
         }
         if (userId) {
