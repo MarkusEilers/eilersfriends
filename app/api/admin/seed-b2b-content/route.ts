@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { landingPages, landingPageSections } from '@/lib/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { sql, eq, and } from 'drizzle-orm'
 import { auth } from '@/lib/auth'
 
 /**
