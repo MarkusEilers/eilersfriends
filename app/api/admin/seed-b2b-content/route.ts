@@ -161,6 +161,40 @@ const FAQ_FULL = {
 ],
 }
 
+const SITUATION = {
+  "tone": "negative",
+  "eyebrow": "WO DU GERADE STEHST",
+  "headline": "Klingt das vertraut?",
+  "subheadline": "Sechs Beobachtungen aus über 100 B2B-Coaching-Gespraechen. Wenn drei oder mehr passen, hast Du kein Sales-Problem. Du hast ein Beef-Problem.",
+  "items": [
+    {
+      "title": "Dein Team produziert Angebote ad hoc, in unterschiedlicher Qualitaet",
+      "description": "Du rettest jeden zweiten Pitch persoenlich — und merkst, dass das System nicht skaliert."
+    },
+    {
+      "title": "Sales-Cycles ziehen sich, Annahmequoten stagnieren",
+      "description": "Die richtigen Leute sagen zu langsam Ja. Die falschen sagen zu spaet Nein. Beides kostet."
+    },
+    {
+      "title": "Wettbewerber-Angebote machen Eure Loesung vergleichbar",
+      "description": "Du landest in Excel-Tabellen, in denen nur der Preis zaehlt. Marge erodiert, ohne dass jemand es merkt."
+    },
+    {
+      "title": "Eure Angebote sind zu voll — und gleichzeitig zu duenn",
+      "description": "Je hoeher der Preis, desto voller die Schachtel. Das hilft weder Euch noch dem Kunden. 14 Features, kein Effekt-Satz."
+    },
+    {
+      "title": "Die Sprache passt nicht zum Entscheider",
+      "description": "Was Ihr koennt, kommt im Vorstandsraum nicht an. Der Champion kann es nicht weitererzaehlen — die Methodik fehlt."
+    },
+    {
+      "title": "Du ahnst, dass das Angebot selbst der Engpass ist",
+      "description": "Nicht der Vertrieb. Nicht das Pitch-Talent. Du bist muede von noch-mehr-Sales-Coaching und willst Substanz im Angebot."
+    }
+  ],
+  "body": "Wenn das sitzt: Du brauchst keinen neuen Verkaufstrick. Du brauchst einen Bauplan. Acht Schritte, vier Stunden — damit Dein Team jedes Angebot wiederholbar unwiderstehlich macht, ohne dass Du jeden Pitch persoenlich rettest."
+}
+
 export async function POST(request: Request) {
   // Auth: admin session OR a one-time bearer token via SEED_TOKEN env
   const session = await auth().catch(() => null)
@@ -192,7 +226,7 @@ export async function POST(request: Request) {
       const c = (s.content ?? {}) as Record<string, unknown>
       let next: Record<string, unknown> | null = null
       if (s.type === 'hero') next = { ...c, ...HERO }
-      else if (s.type === 'problem') next = SCI_FI
+      else if (s.type === 'problem' && (((s.content ?? {}) as Record<string, unknown>).eyebrow !== 'WO DU GERADE STEHST')) next = SCI_FI
       else if (s.type === 'origin_story') next = ORIGIN
       else if (s.type === 'framework_steps') next = { ...c, ...STEPS_GRID_LAYOUT_AND_RESULT, steps: STEPS_FULL }
       else if (s.type === 'faq') next = FAQ_FULL
@@ -205,7 +239,52 @@ export async function POST(request: Request) {
       }
     }
 
+
+    // Insert Situation-Section if not present (before existing positive 'problem' section)
+    try {
+      const existingTypes = sections.map((s) => s.type)
+      const hasSituation = sections.some((s) => {
+        const c = (s.content ?? {}) as Record<string, unknown>
+        return c.eyebrow === 'WO DU GERADE STEHST'
+      })
+      if (!hasSituation) {
+        // Find existing 'problem' section order
+        const problemSection = sections.find((s) => s.type === 'problem')
+        const insertAt = problemSection ? problemSection.order : 2
+        // Shift orders of sections at or after insertAt by +1
+        await db.execute(sql`
+          UPDATE landing_page_sections
+          SET "order" = "order" + 1
+          WHERE landing_page_id = ${page.id} AND "order" >= ${insertAt}
+        `)
+        // Insert new problem section with SITUATION content
+        await db.insert(landingPageSections).values({
+          landingPageId: page.id,
+          type: 'problem',
+          order: insertAt,
+          isVisible: true,
+          content: SITUATION,
+        })
+        updated++
+      } else {
+        // Update existing situation content
+        const target = sections.find((s) => {
+          const c = (s.content ?? {}) as Record<string, unknown>
+          return c.eyebrow === 'WO DU GERADE STEHST'
+        })
+        if (target) {
+          await db.update(landingPageSections)
+            .set({ content: SITUATION, updatedAt: new Date() })
+            .where(eq(landingPageSections.id, target.id))
+          updated++
+        }
+      }
+    } catch (err) {
+      console.error('[seed-b2b] situation insert failed:', err)
+    }
+
     return NextResponse.json({ ok: true, updated, slug: SLUG })
+
   } catch (err) {
     console.error('[seed-b2b-content] error:', err)
     return NextResponse.json({ error: String(err) }, { status: 500 })
