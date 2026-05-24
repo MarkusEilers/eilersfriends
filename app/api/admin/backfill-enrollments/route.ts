@@ -4,11 +4,6 @@ import { sql } from 'drizzle-orm'
 import { auth } from '@/lib/auth'
 import { ensureWizardTables } from '@/lib/db/self-heal'
 
-const SOURCE_TO_FRAMEWORK: Record<string, string> = {
-  'framework-b2b-angebote': 'b2b-angebote',
-  'b2b-angebote': 'b2b-angebote',
-}
-
 function rowsOf<T>(r: unknown): T[] {
   if (Array.isArray(r)) return r as T[]
   if (r && typeof r === 'object' && 'rows' in r) {
@@ -18,42 +13,47 @@ function rowsOf<T>(r: unknown): T[] {
   return []
 }
 
+function sourceToFramework(source: string | null | undefined): string | null {
+  if (!source) return null
+  const s = source.toLowerCase()
+  if (s === 'framework-b2b-angebote' || s === 'b2b-angebote') return 'b2b-angebote'
+  if (s.includes('b2b') || s.includes('angebote') || s.includes('bauplan')) return 'b2b-angebote'
+  return null
+}
+
 export async function POST(request: Request) {
-  // Auth: admin session OR SEED_TOKEN bearer
   const session = await auth().catch(() => null)
   const authHeader = request.headers.get('authorization')
   const seedToken = process.env.SEED_TOKEN
   const role = session?.user?.role
   const okSession = role === 'admin' || role === 'coach'
   const okBearer = seedToken && authHeader === `Bearer ${seedToken}`
-  if (!okSession && !okBearer) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!okSession && !okBearer) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   await ensureWizardTables()
 
-  // Find all confirmed subscribers with a framework-* source
-  const subs = rowsOf<{ id: string; email: string; first_name: string | null; source: string | null }>(
+  // ALL subscribers (we'll handle pending too — they get a user, just no enrollment yet)
+  const subs = rowsOf<{ id: string; email: string; first_name: string | null; source: string | null; doi_confirmed_at: string | Date | null; status: string }>(
     await db.execute(sql`
-      SELECT id::text, email, first_name, source
+      SELECT id::text, email, first_name, source, doi_confirmed_at, status::text AS status
       FROM newsletter_subscribers
-      WHERE doi_confirmed_at IS NOT NULL
-        AND status != 'unsubscribed'
-        AND source IS NOT NULL
-        AND source IN ('framework-b2b-angebote', 'b2b-angebote')
+      WHERE status != 'unsubscribed'
     `)
   )
 
   let usersCreated = 0
   let enrollmentsCreated = 0
+  let skippedPending = 0
   const issues: string[] = []
+  const matches: { email: string; source: string | null; fwSlug: string | null; confirmed: boolean }[] = []
 
   for (const sub of subs) {
-    const fwSlug = sub.source ? SOURCE_TO_FRAMEWORK[sub.source] : null
+    const fwSlug = sourceToFramework(sub.source)
+    const confirmed = !!sub.doi_confirmed_at
+    matches.push({ email: sub.email, source: sub.source, fwSlug, confirmed })
     if (!fwSlug) continue
 
     try {
-      // Find or create user
       let userId: string | null = null
       const userRes = rowsOf<{ id: string }>(
         await db.execute(sql`SELECT id::text FROM users WHERE email = ${sub.email} LIMIT 1`)
@@ -64,8 +64,8 @@ export async function POST(request: Request) {
         const createRes = rowsOf<{ id: string }>(
           await db.execute(sql`
             INSERT INTO users (email, full_name, role, email_verified)
-            VALUES (${sub.email}, ${sub.first_name ?? sub.email}, 'participant', now())
-            ON CONFLICT (email) DO UPDATE SET email_verified = now()
+            VALUES (${sub.email}, ${sub.first_name ?? sub.email}, 'participant', ${confirmed ? sql`now()` : sql`NULL`})
+            ON CONFLICT (email) DO UPDATE SET email_verified = COALESCE(users.email_verified, ${confirmed ? sql`now()` : sql`NULL`})
             RETURNING id::text
           `)
         )
@@ -73,11 +73,15 @@ export async function POST(request: Request) {
         if (userId) usersCreated++
       }
       if (!userId) {
-        issues.push(`could not create/find user for ${sub.email}`)
+        issues.push(`no user for ${sub.email}`)
         continue
       }
 
-      // Insert enrollment (idempotent)
+      if (!confirmed) {
+        skippedPending++
+        continue  // User exists, but no enrollment until DOI confirms
+      }
+
       const before = rowsOf<{ id: string }>(
         await db.execute(sql`
           SELECT id::text FROM user_framework_state
@@ -101,8 +105,11 @@ export async function POST(request: Request) {
   return NextResponse.json({
     ok: true,
     processed: subs.length,
+    matched: matches.filter((m) => m.fwSlug).length,
     usersCreated,
     enrollmentsCreated,
+    skippedPending,
     issues: issues.slice(0, 20),
+    sampleMatches: matches.slice(0, 10),
   })
 }
