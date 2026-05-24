@@ -30,11 +30,11 @@ export function DoppelschmerzStep({ initialAnswers, onSaved }: { initialAnswers?
       onSaved={onSaved}
     >
       <div className="grid gap-3 sm:grid-cols-2">
-        <StepEditField label="Angebots-Beschreibung" value={offerDescription} onChange={setOfferDescription} placeholder="Was tut Dein Angebot heute schon?" multiline />
-        <StepEditField label="Branchen-Kontext (optional)" value={industryContext} onChange={setIndustryContext} placeholder="Regulatorik, Marktentwicklung, Tech-Shift" multiline />
+        <StepEditField label="Angebots-Beschreibung" value={offerDescription} onChange={setOfferDescription} placeholder={'Was tut Dein Angebot heute schon?" multiline />
+        <StepEditField label='}Branchen-Kontext (optional)" value={industryContext} onChange={setIndustryContext} placeholder={'Regulatorik, Marktentwicklung, Tech-Shift" multiline />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 mt-4">
+      <div className='}grid gap-4 lg:grid-cols-2 mt-4">
         <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -50,8 +50,8 @@ export function DoppelschmerzStep({ initialAnswers, onSaved }: { initialAnswers?
               <li key={i} className="rounded-lg bg-white p-2.5 border border-blue-200/40">
                 <div className="flex items-start gap-2">
                   <div className="flex-1 space-y-1">
-                    <input value={p.topic} onChange={(e) => setToday(today.map((x, j) => j === i ? { ...x, topic: e.target.value } : x))} placeholder="Topic" className="w-full bg-transparent text-xs font-semibold focus:outline-none" />
-                    <input value={p.reality} onChange={(e) => setToday(today.map((x, j) => j === i ? { ...x, reality: e.target.value } : x))} placeholder="Reality heute" className="w-full bg-transparent text-[11px] text-gray-600 focus:outline-none" />
+                    <input value={p.topic} onChange={(e) => setToday(today.map((x, j) => j === i ? { ...x, topic: e.target.value } : x))} placeholder={'Topic" className='}w-full bg-transparent text-xs font-semibold focus:outline-none" />
+                    <input value={p.reality} onChange={(e) => setToday(today.map((x, j) => j === i ? { ...x, reality: e.target.value } : x))} placeholder={'Reality heute" className='}w-full bg-transparent text-[11px] text-gray-600 focus:outline-none" />
                   </div>
                   <button onClick={() => setToday(today.filter((_, j) => j !== i))} className="text-gray-400 hover:text-red-500"><X size={10} /></button>
                 </div>
@@ -76,9 +76,9 @@ export function DoppelschmerzStep({ initialAnswers, onSaved }: { initialAnswers?
               <li key={i} className="rounded-lg bg-white p-2.5 border border-amber-200/40">
                 <div className="flex items-start gap-2">
                   <div className="flex-1 space-y-1">
-                    <input value={p.topic} onChange={(e) => setTomorrow(tomorrow.map((x, j) => j === i ? { ...x, topic: e.target.value } : x))} placeholder="Topic" className="w-full bg-transparent text-xs font-semibold focus:outline-none" />
-                    <input value={p.trigger} onChange={(e) => setTomorrow(tomorrow.map((x, j) => j === i ? { ...x, trigger: e.target.value } : x))} placeholder="Trigger (z.B. BEMA 2027)" className="w-full bg-transparent text-[11px] text-gray-600 focus:outline-none" />
-                    <input value={p.timeframe} onChange={(e) => setTomorrow(tomorrow.map((x, j) => j === i ? { ...x, timeframe: e.target.value } : x))} placeholder="Timeframe (12-24 Mo)" className="w-full bg-transparent text-[11px] text-gray-500 focus:outline-none" />
+                    <input value={p.topic} onChange={(e) => setTomorrow(tomorrow.map((x, j) => j === i ? { ...x, topic: e.target.value } : x))} placeholder={'Topic" className='}w-full bg-transparent text-xs font-semibold focus:outline-none" />
+                    <input value={p.trigger} onChange={(e) => setTomorrow(tomorrow.map((x, j) => j === i ? { ...x, trigger: e.target.value } : x))} placeholder={'Trigger (z.B. BEMA 2027)" className='}w-full bg-transparent text-[11px] text-gray-600 focus:outline-none" />
+                    <input value={p.timeframe} onChange={(e) => setTomorrow(tomorrow.map((x, j) => j === i ? { ...x, timeframe: e.target.value } : x))} placeholder={'Timeframe (12-24 Mo)" className='}w-full bg-transparent text-[11px] text-gray-500 focus:outline-none" />
                   </div>
                   <button onClick={() => setTomorrow(tomorrow.filter((_, j) => j !== i))} className="text-gray-400 hover:text-red-500"><X size={10} /></button>
                 </div>

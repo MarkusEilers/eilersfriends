@@ -54,10 +54,10 @@ export function BeweisStapelStep({ initialAnswers, prevContext, onSaved }: {
                 <Award size={14} className="mt-1.5" style={{ color: meta.color }} />
                 <button onClick={() => setProofs(proofs.filter((_, j) => j !== i))} className="ml-auto mt-1 text-gray-400 hover:text-red-500"><X size={12} /></button>
               </div>
-              <input value={p.text} onChange={(e) => update(i, { text: e.target.value })} placeholder="Beweis (z.B. „22.500 €/Jahr eingespart")" className="mt-2 w-full rounded-lg border border-gray-100 bg-gray-50 px-2.5 py-1.5 text-xs font-semibold focus:outline-none" />
+              <input value={p.text} onChange={(e) => update(i, { text: e.target.value })} placeholder={'Beweis (z.B. „22.500 €/Jahr eingespart")'} className="mt-2 w-full rounded-lg border border-gray-100 bg-gray-50 px-2.5 py-1.5 text-xs font-semibold focus:outline-none" />
               <div className="grid gap-2 sm:grid-cols-2 mt-2">
-                <input value={p.source} onChange={(e) => update(i, { source: e.target.value })} placeholder="Source (z.B. „GMG-Case")" className="rounded-lg border border-gray-100 bg-gray-50 px-2.5 py-1.5 text-[11px] focus:outline-none" />
-                <input value={p.methodology ?? ''} onChange={(e) => update(i, { methodology: e.target.value })} placeholder="Methodik (z.B. „3 FTE × 4h/Wo × …")" className="rounded-lg border border-gray-100 bg-gray-50 px-2.5 py-1.5 text-[11px] focus:outline-none" />
+                <input value={p.source} onChange={(e) => update(i, { source: e.target.value })} placeholder={'Source (z.B. „GMG-Case")'} className="rounded-lg border border-gray-100 bg-gray-50 px-2.5 py-1.5 text-[11px] focus:outline-none" />
+                <input value={p.methodology ?? ''} onChange={(e) => update(i, { methodology: e.target.value })} placeholder={'Methodik (z.B. „3 FTE × 4h/Wo × …")'} className="rounded-lg border border-gray-100 bg-gray-50 px-2.5 py-1.5 text-[11px] focus:outline-none" />
               </div>
             </div>
           )

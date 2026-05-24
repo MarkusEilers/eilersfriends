@@ -42,13 +42,13 @@ export function BoosterStep({ initialAnswers, onSaved }: { initialAnswers?: Answ
           <div key={i} className="rounded-xl border border-amber-200 bg-amber-50/40 p-3">
             <div className="flex items-start gap-2 mb-2">
               <Zap size={14} className="text-amber-700 mt-1.5" />
-              <input value={b.name} onChange={(e) => update(i, { name: e.target.value })} placeholder="Booster-Name" className="flex-1 rounded-lg border border-amber-100 bg-white px-2.5 py-1.5 text-xs font-bold focus:outline-none" />
+              <input value={b.name} onChange={(e) => update(i, { name: e.target.value })} placeholder={'Booster-Name" className='}flex-1 rounded-lg border border-amber-100 bg-white px-2.5 py-1.5 text-xs font-bold focus:outline-none" />
               <button onClick={() => setBoosters(boosters.filter((_, j) => j !== i))} className="mt-1.5 text-gray-400 hover:text-red-500"><X size={12} /></button>
             </div>
             <div className="grid gap-2 sm:grid-cols-3">
-              <input value={b.valueLabel} onChange={(e) => update(i, { valueLabel: e.target.value })} placeholder="Wert (z.B. 1.997 €)" className="rounded-lg border border-amber-100 bg-white px-2 py-1.5 text-[11px] focus:outline-none" />
-              <input value={b.deliveryCost} onChange={(e) => update(i, { deliveryCost: e.target.value })} placeholder="Lieferaufwand (0 € einmal gebaut)" className="rounded-lg border border-amber-100 bg-white px-2 py-1.5 text-[11px] focus:outline-none" />
-              <input value={b.anchor} onChange={(e) => update(i, { anchor: e.target.value })} placeholder="Anker (z.B. „aktiviert im Pitch")" className="rounded-lg border border-amber-100 bg-white px-2 py-1.5 text-[11px] focus:outline-none" />
+              <input value={b.valueLabel} onChange={(e) => update(i, { valueLabel: e.target.value })} placeholder={'Wert (z.B. 1.997 €)" className='}rounded-lg border border-amber-100 bg-white px-2 py-1.5 text-[11px] focus:outline-none" />
+              <input value={b.deliveryCost} onChange={(e) => update(i, { deliveryCost: e.target.value })} placeholder={'Lieferaufwand (0 € einmal gebaut)" className='}rounded-lg border border-amber-100 bg-white px-2 py-1.5 text-[11px] focus:outline-none" />
+              <input value={b.anchor} onChange={(e) => update(i, { anchor: e.target.value })} placeholder={'Anker (z.B. „aktiviert im Pitch")'} className="rounded-lg border border-amber-100 bg-white px-2 py-1.5 text-[11px] focus:outline-none" />
             </div>
           </div>
         ))}

@@ -40,8 +40,8 @@ export function Letzten20Step({ initialAnswers, prevContext, onSaved }: {
         {names.map((n, i) => (
           <div key={i} className={`rounded-lg border bg-white p-2 ${n.recommended ? 'border-blue-400 shadow-sm' : 'border-gray-100'}`}>
             <div className="flex items-start gap-2">
-              <input value={n.name} onChange={(e) => set('nameOptions', names.map((x, j) => j === i ? { ...x, name: e.target.value } : x))} placeholder="Name" className="flex-1 bg-transparent text-sm font-bold focus:outline-none" />
-              <input value={n.style} onChange={(e) => set('nameOptions', names.map((x, j) => j === i ? { ...x, style: e.target.value } : x))} placeholder="Stil" className="w-32 bg-transparent text-[11px] text-gray-500 focus:outline-none" />
+              <input value={n.name} onChange={(e) => set('nameOptions', names.map((x, j) => j === i ? { ...x, name: e.target.value } : x))} placeholder={'Name" className='}flex-1 bg-transparent text-sm font-bold focus:outline-none" />
+              <input value={n.style} onChange={(e) => set('nameOptions', names.map((x, j) => j === i ? { ...x, style: e.target.value } : x))} placeholder={'Stil" className='}w-32 bg-transparent text-[11px] text-gray-500 focus:outline-none" />
               <input type="number" min={0} max={5} value={n.espressoTestScore} onChange={(e) => set('nameOptions', names.map((x, j) => j === i ? { ...x, espressoTestScore: parseInt(e.target.value, 10) || 0 } : x))} className="w-10 bg-transparent text-xs text-center focus:outline-none" />
               <label className="text-[10px] font-bold text-blue-700 flex items-center gap-1">
                 <input type="checkbox" checked={n.recommended} onChange={(e) => set('nameOptions', names.map((x, j) => j === i ? { ...x, recommended: e.target.checked } : x))} /> Empf
@@ -59,13 +59,13 @@ export function Letzten20Step({ initialAnswers, prevContext, onSaved }: {
         </div>
         {heads.map((h, i) => (
           <div key={i} className="flex gap-1">
-            <input value={h} onChange={(e) => set('headlineOptions', heads.map((x, j) => j === i ? e.target.value : x))} className="flex-1 rounded-lg border border-gray-100 bg-white px-2 py-1.5 text-xs focus:outline-none" placeholder="Headline" />
-            <button onClick={() => set('headlineOptions', heads.filter((_, j) => j !== i))} className="text-gray-400 hover:text-red-500"><X size={12} /></button>
+            <input value={h} onChange={(e) => set('headlineOptions', heads.map((x, j) => j === i ? e.target.value : x))} className="flex-1 rounded-lg border border-gray-100 bg-white px-2 py-1.5 text-xs focus:outline-none" placeholder={'Headline" />
+            <button onClick={() => set(\'headlineOptions\', heads.filter((_, j) => j !== i))} className='}text-gray-400 hover:text-red-500"><X size={12} /></button>
           </div>
         ))}
       </div>
 
-      <StepEditField label="CTA (Button-Text)" value={a.cta ?? ''} onChange={(v) => set('cta', v)} placeholder="z.B. „Bauplan jetzt holen"" />
+      <StepEditField label="CTA (Button-Text)" value={a.cta ?? ''} onChange={(v) => set('cta', v)} placeholder={'z.B. „Bauplan jetzt holen"'} />
     </StepShell>
   )
 }
