@@ -4,9 +4,11 @@ import { useState, useRef } from 'react'
 import { ChevronDown, ChevronUp, CheckCircle2, Lock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { BeefRadarStep } from './BeefRadarStep'
+import { WelcomeStep } from './WelcomeStep'
 import { StepCompanion } from './StepCompanion'
 
 const STEPS = [
+  { key: '00-welcome', voice: 'Welcome', title: 'Set up your organisation', why: '', live: true },
   { key: '01-beef-radar', voice: 'Beef-Radar', title: 'Inhalte → Value → Impact', why: 'WAS · WIE · WARUM pro Baustein.', live: true },
   { key: '02-doppelschmerz', voice: 'Doppelschmerz', title: 'Heute & Morgen', why: 'Heute löst, morgen vorausgesehen.', live: false },
   { key: '03-sichtbarer-pfad', voice: 'Sichtbarer Pfad', title: 'Bulletproof Delivery Plan', why: '3-5 Phasen mit Input/Output/Dauer.', live: false },
@@ -50,6 +52,7 @@ export function WizardAccordion({ answers, stepsCompleted }: Props) {
             </button>
             {isOpen && (
               <div className="px-5 pb-5">
+                {s.key === '00-welcome' && <WelcomeStep />}
                 {s.key === '01-beef-radar' && <BeefRadarStep initialAnswers={stepAnswers as Parameters<typeof BeefRadarStep>[0]['initialAnswers']} onSaved={handleSaved} />}
                 {!s.live && (
                   <>

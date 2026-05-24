@@ -4,6 +4,7 @@ import { db } from './index'
 let healedAnalytics = false
 let healedWizard = false
 let healedPrompts = false
+let healedCompany = false
 
 export async function ensureAnalyticsTables(): Promise<void> {
   if (healedAnalytics) return
@@ -75,4 +76,35 @@ export async function ensurePromptTables(): Promise<void> {
     await db.execute(sql`CREATE INDEX IF NOT EXISTS "fsp_slug_key_idx" ON "framework_step_prompts" ("framework_slug", "step_key");`)
     healedPrompts = true
   } catch (err) { console.error('[self-heal] prompts failed:', err) }
+}
+
+/** GoToMarket data area — reused across frameworks/skills */
+export async function ensureCompanyProfile(): Promise<void> {
+  if (healedCompany) return
+  try {
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS "company_profile" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        "user_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+        "organisation_name" text,
+        "website" text,
+        "summary" text,
+        "value_proposition" text,
+        "target_audience" text,
+        "tone" text,
+        "keywords" json DEFAULT '[]'::json,
+        "brand_color" text,
+        "accent_color" text,
+        "logo_url" text,
+        "industry" text,
+        "products" json DEFAULT '[]'::json,
+        "last_analysed_at" timestamp,
+        "created_at" timestamp DEFAULT now() NOT NULL,
+        "updated_at" timestamp DEFAULT now() NOT NULL,
+        CONSTRAINT company_profile_user_unique UNIQUE ("user_id")
+      );
+    `)
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS "cp_user_idx" ON "company_profile" ("user_id");`)
+    healedCompany = true
+  } catch (err) { console.error('[self-heal] company_profile failed:', err) }
 }
