@@ -50,7 +50,7 @@ const ORIGIN = {
     'Er konnte es nicht in einem Satz sagen.',
     'Das war der Tag, an dem das Beef-Radar entstanden ist. Die Regel ist seitdem: Wenn ich bei einem Baustein nicht in einem Satz sagen kann, was er beim Kunden auslöst, gehört er entweder neu gedacht — oder raus.',
     'Über die folgenden Jahre haben wir den Bauplan in Dutzenden B2B-Unternehmen getestet — Systemhäuser, Software-Hersteller, Hardware-Hersteller, Beratungen, SaaS, Telekommunikation. Wir haben ihn in unseren eigenen Angeboten geschliffen, bevor wir ihn weitergegeben haben. Jede Iteration hatte denselben Anspruch: das Angebot muss so gut erklärt und so klar verpackt sein, dass der Käufer es kaum erwarten kann, zuzugreifen — auch im B2B. Besonders im B2B.',
-    'Acht Schritte sind übrig geblieben. Drei davon sind unsere eigenen Layer, die wir in keinem anderen Verkaufs-Framework systematisch gefunden haben: Sichtbarer Pfad, Phasen-Währung, Doppelschmerz mit Zukunfts-Ebene. Heute nutzen 500+ Gründer:innen den Bauplan — und die ersten Vorstände bei unseren Klienten haben angefangen, ihn als interne Methodik einzuziehen.',
+    'Acht Schritte sind übrig geblieben. Drei davon sind unsere eigenen Layer, die wir in keinem anderen Verkaufs-Framework systematisch gefunden haben: Sichtbarer Pfad, Phasen-Währung, Hürden entfernen mit Zukunfts-Ebene. Heute nutzen 500+ Gründer:innen den Bauplan — und die ersten Vorstände bei unseren Klienten haben angefangen, ihn als interne Methodik einzuziehen.',
   ],
 }
 
@@ -79,7 +79,7 @@ const STEPS_FULL = [
     "tip": "Wenn du den Effekt nicht in einem Satz sagen kannst, gehört der Baustein neu gedacht oder raus. Kürzere Angebote werden öfter unterschrieben."
   },
   {
-    "title": "Doppelschmerz · Heute & Morgen",
+    "title": "Hürden entfernen · Heute & Morgen",
     "description": "Welche Probleme löst dein Angebot heute schon — und welche kommen in 12 bis 24 Monaten so sicher, dass du sie gleich mit-adressierst? Heute-gelöst macht relevant. Morgen-vorausgesehen macht strategisch. Strategische Angebote verkaufen sich teurer und länger.",
     "example": "„Heute löst Sonia 45 Min Dokumentationszeit pro Behandlertag. Morgen verhindert sie, dass deine Praxis von der BEMA-Verschärfung 2027 überrascht wird — alle Behandlungen sind ab Tag 1 strukturiert dokumentiert.“ Heute + Morgen, eine Brücke, ein Angebot.",
     "tip": "Wenn dein Angebot nur das Heute löst, ist es ein Pflaster. Wenn es beide adressiert, ist es eine Strecke. Strecken haben einen anderen Preis als Pflaster."
@@ -144,7 +144,7 @@ const FAQ_FULL = {
   },
   {
     "q": "Wir haben schon zu Offer-Design gelesen — was ist hier neu?",
-    "a": "Drei Layer, die in den meisten Standard-Modellen nicht systematisch sind: (1) Sichtbarer Pfad als visualisierbare Methodik mit Phasen-Architektur — kein Wischiwaschi. (2) Phasen-Währung pro Phase, nicht nur ROI am Ende. Der Markus-Unterschied. (3) Doppelschmerz mit Zukunfts-Layer — heute UND morgen. Plus: Wir sind im DACH-Mittelstand kalibriert. Sprache, Pitch-Kultur, Vorstands-Rituale — alles anders als im US-Coaching-Markt."
+    "a": "Drei Layer, die in den meisten Standard-Modellen nicht systematisch sind: (1) Sichtbarer Pfad als visualisierbare Methodik mit Phasen-Architektur — kein Wischiwaschi. (2) Phasen-Währung pro Phase, nicht nur ROI am Ende. Der Markus-Unterschied. (3) Hürden entfernen mit Zukunfts-Layer — heute UND morgen. Plus: Wir sind im DACH-Mittelstand kalibriert. Sprache, Pitch-Kultur, Vorstands-Rituale — alles anders als im US-Coaching-Markt."
   },
   {
     "q": "Wo ist die Garantie?",

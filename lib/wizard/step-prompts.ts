@@ -8,7 +8,7 @@
 
 export interface StepPromptDef {
   stepKey: string
-  voiceName: string            // human-readable voice ('Beef-Radar', 'Doppelschmerz', ...)
+  voiceName: string            // human-readable voice ('Beef-Radar', 'Hürden entfernen', ...)
   systemPrompt: string         // base prompt; will be enriched with voice + framework
   voice?: string               // e.g. 'markus' (loads from lib/wizard/voices/markus.md snippet)
   framework?: string           // e.g. 'beef-radar-anatomy'
@@ -69,9 +69,9 @@ WICHTIG:
 
 const DOPPELSCHMERZ: StepPromptDef = {
   stepKey: '02-doppelschmerz',
-  voiceName: 'Doppelschmerz',
+  voiceName: 'Hürden entfernen',
   voice: 'markus',
-  systemPrompt: `Du bist Markus Eilers. Hilf dem User, das Doppelschmerz-Frame seines Angebots zu schärfen: heute (Pflaster) + morgen (Strecke).
+  systemPrompt: `Du bist Markus Eilers. Hilf dem User, das Hürden-entfernen-Frame seines Angebots zu schärfen: heute (Pflaster) + morgen (Strecke).
 
 HEUTE: Welche Probleme löst das Angebot HEUTE konkret? Das macht es relevant.
 MORGEN: Welche Probleme kommen in 12-24 Monaten so sicher, dass man sie gleich mitlöst? Das macht es strategisch. Strategische Angebote verkaufen sich teurer und länger.

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Loader2, Sparkles, Plus, X, Save, CheckCircle2 } from 'lucide-react'
+import { Loader2, Sparkles, Plus, X, Save, CheckCircle2, PlusCircle } from 'lucide-react'
 
 interface Card { column: 'what' | 'how' | 'why'; text: string; detail?: string }
 
@@ -10,10 +10,26 @@ interface Props {
   onSaved?: (progress: number) => void
 }
 
+// WAS = grau (neutral, Substanz). WIE = blau (Bewegung, Wirkung). WARUM = orange (hirnaktiv, Konsequenz).
 const COLUMN_META = {
-  what: { color: '#1A5FD4', bg: '#EBF1FF', label: 'WAS' },
-  how: { color: '#B07C0A', bg: '#FFF8E6', label: 'WIE' },
+  what: { color: '#4B5563', bg: '#F3F4F6', label: 'WAS' },
+  how: { color: '#1A5FD4', bg: '#EBF1FF', label: 'WIE' },
   why: { color: '#F05A1A', bg: '#FFF1EB', label: 'WARUM' },
+}
+
+function dedupeAppend(existing: Card[], incoming: Card[]): Card[] {
+  // Normalize for compare
+  const norm = (t: string) => t.trim().toLowerCase().replace(/\s+/g, ' ')
+  const seen = new Set(existing.map((c) => `${c.column}::${norm(c.text)}`))
+  const newOnes: Card[] = []
+  for (const c of incoming) {
+    const key = `${c.column}::${norm(c.text)}`
+    if (!seen.has(key) && c.text.trim()) {
+      seen.add(key)
+      newOnes.push(c)
+    }
+  }
+  return [...existing, ...newOnes]
 }
 
 export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
@@ -22,28 +38,53 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
   const [pricingRange, setPricingRange] = useState(initialAnswers?.pricingRange ?? '')
   const [cards, setCards] = useState<Card[]>(initialAnswers?.cards ?? [])
   const [notes, setNotes] = useState<string>('')
-  const [status, setStatus] = useState<'idle' | 'suggesting' | 'saving' | 'saved' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'suggesting' | 'appending' | 'saving' | 'saved' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
+  const [lastAppended, setLastAppended] = useState<number | null>(null)
 
-  async function suggest() {
+  async function callSuggest(): Promise<{ ok: boolean; result?: { cards?: Card[]; notes?: string }; error?: string }> {
     if (!offerDescription.trim()) {
-      setError('Bitte beschreib Dein Angebot in mindestens einem Satz.')
-      return
+      return { ok: false, error: 'Bitte beschreib Dein Angebot in mindestens einem Satz.' }
     }
-    setStatus('suggesting'); setError(null)
     try {
       const res = await fetch('/api/wizard/b2b-angebote/step/01-beef-radar/suggest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ offerDescription, icpSnapshot, pricingRange }),
+        body: JSON.stringify({ offerDescription, icpSnapshot, pricingRange, existingCards: cards }),
       })
       const data = await res.json()
-      if (!res.ok || !data.result) { setError(data.error || 'Suggest fehlgeschlagen.'); setStatus('error'); return }
-      const result = data.result as { cards?: Card[]; notes?: string }
-      setCards(result.cards ?? [])
-      setNotes(result.notes ?? '')
-      setStatus('idle')
-    } catch (e) { setError(String(e)); setStatus('error') }
+      if (!res.ok || !data.result) return { ok: false, error: data.error || 'Suggest fehlgeschlagen.' }
+      return { ok: true, result: data.result }
+    } catch (e) {
+      return { ok: false, error: String(e) }
+    }
+  }
+
+  async function initialSuggest() {
+    setStatus('suggesting'); setError(null); setLastAppended(null)
+    const r = await callSuggest()
+    if (!r.ok) { setError(r.error || 'Suggest fehlgeschlagen'); setStatus('error'); return }
+    // Initial suggest only fills if cards are empty — never overwrites user input.
+    if (cards.length === 0) {
+      setCards(r.result?.cards ?? [])
+    } else {
+      const merged = dedupeAppend(cards, r.result?.cards ?? [])
+      setLastAppended(merged.length - cards.length)
+      setCards(merged)
+    }
+    setNotes(r.result?.notes ?? '')
+    setStatus('idle')
+  }
+
+  async function suggestMore() {
+    setStatus('appending'); setError(null); setLastAppended(null)
+    const r = await callSuggest()
+    if (!r.ok) { setError(r.error || 'Suggest fehlgeschlagen'); setStatus('error'); return }
+    const merged = dedupeAppend(cards, r.result?.cards ?? [])
+    setLastAppended(merged.length - cards.length)
+    setCards(merged)
+    setNotes(r.result?.notes ?? '')
+    setStatus('idle')
   }
 
   async function save() {
@@ -96,13 +137,31 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
           </div>
         </div>
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          <button onClick={suggest} disabled={status === 'suggesting' || !offerDescription.trim()}
+          <button onClick={initialSuggest} disabled={status === 'suggesting' || status === 'appending' || !offerDescription.trim()}
             className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
             {status === 'suggesting' ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-            {cards.length > 0 ? 'AI: Neu vorschlagen' : 'AI: Karten vorschlagen'}
+            {cards.length === 0 ? 'AI: Karten vorschlagen' : 'AI: Erneut vorschlagen'}
           </button>
+          {cards.length > 0 && (
+            <button onClick={suggestMore} disabled={status === 'suggesting' || status === 'appending' || !offerDescription.trim()}
+              className="inline-flex items-center gap-2 rounded-full border-2 border-blue-600 px-5 py-2.5 text-sm font-bold text-blue-700 hover:bg-blue-50 disabled:opacity-50">
+              {status === 'appending' ? <Loader2 size={14} className="animate-spin" /> : <PlusCircle size={14} />}
+              Suggest More
+            </button>
+          )}
           {error && <span className="text-xs text-red-600">{error}</span>}
+          {lastAppended !== null && lastAppended > 0 && (
+            <span className="text-xs font-semibold text-green-700">
+              +{lastAppended} neue Karte{lastAppended === 1 ? '' : 'n'} hinzugefuegt
+            </span>
+          )}
+          {lastAppended === 0 && (
+            <span className="text-xs italic text-gray-500">Keine neuen Karten — AI hat nichts gefunden, was nicht schon da war.</span>
+          )}
         </div>
+        <p className="mt-3 text-[11px] italic text-gray-500">
+          Tipp: Die AI ueberschreibt nie Deine Eingaben. Erneut/Suggest More fuegt neue Karten hinzu — Deine bleiben unberuehrt.
+        </p>
       </div>
 
       {cards.length > 0 && (
