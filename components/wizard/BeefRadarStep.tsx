@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Loader2, Sparkles, Plus, X, Save, CheckCircle2, PlusCircle } from 'lucide-react'
+import { StepCompanion } from './StepCompanion'
 
 interface Card { column: 'what' | 'how' | 'why'; text: string; detail?: string }
 
@@ -112,6 +113,7 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
 
   return (
     <div className="space-y-6">
+      <StepCompanion stepKey="01-beef-radar" />
       <div className="rounded-2xl border border-gray-200 bg-white p-6">
         <div className="mb-4">
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Schritt 1 · Beef-Radar</p>

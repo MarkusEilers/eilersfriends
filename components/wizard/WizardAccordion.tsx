@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import { ChevronDown, ChevronUp, CheckCircle2, Lock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { BeefRadarStep } from './BeefRadarStep'
+import { StepCompanion } from './StepCompanion'
 
 const STEPS = [
   { key: '01-beef-radar', voice: 'Beef-Radar', title: 'Inhalte → Value → Impact', why: 'WAS · WIE · WARUM pro Baustein.', live: true },
@@ -51,7 +52,9 @@ export function WizardAccordion({ answers, stepsCompleted }: Props) {
               <div className="px-5 pb-5">
                 {s.key === '01-beef-radar' && <BeefRadarStep initialAnswers={stepAnswers as Parameters<typeof BeefRadarStep>[0]['initialAnswers']} onSaved={handleSaved} />}
                 {!s.live && (
-                  <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+                  <>
+                    <StepCompanion stepKey={s.key} />
+                    <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-5">
                     <p className="text-xs font-bold uppercase tracking-widest text-amber-800">Naechste Welle</p>
                     <h4 className="mt-1 text-sm font-bold text-amber-900">{s.title}</h4>
                     <p className="mt-1 text-xs text-amber-800">{s.why}</p>
@@ -60,7 +63,8 @@ export function WizardAccordion({ answers, stepsCompleted }: Props) {
                       Schema). Die interaktive UI fuer diesen Step rollen wir im naechsten Update frei — Beef-Radar oben ist der
                       Stencil.
                     </p>
-                  </div>
+                    </div>
+                  </>
                 )}
               </div>
             )}
