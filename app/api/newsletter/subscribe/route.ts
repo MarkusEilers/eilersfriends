@@ -92,6 +92,19 @@ export async function POST(request: Request) {
           .returning({ id: newsletterSubscribers.id })
         subscriberId = inserted[0]?.id ?? null
         isNew = true
+
+        // Wave 9 — emit subscriber.signed_up event (vor DOI-Confirm-Schritt)
+        try {
+          const { emitAsync } = await import('@/lib/events/emit')
+          emitAsync({
+            category: 'subscriber',
+            type: 'subscriber.signed_up',
+            payload: { email, firstName: firstName ?? null, source: source ?? null, consentGiven, subscriberId },
+            source: 'newsletter-api',
+            frameworkSlug: source?.startsWith('framework-') ? source.slice('framework-'.length) : null,
+            idempotencyKey: subscriberId ? `subscriber.signed_up:${subscriberId}` : undefined,
+          })
+        } catch { /* non-fatal */ }
       } else if (existing[0].status === 'unsubscribed') {
         // Explizit abgemeldete Subscriber nicht neu aufnehmen
         return NextResponse.json({ success: true, resubscribe: false })

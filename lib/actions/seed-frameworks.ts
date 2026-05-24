@@ -194,6 +194,41 @@ const FRAMEWORKS: FrameworkSeed[] = [
         },
       },
       {
+        type: 'origin_story',
+        content: {
+          eyebrow: 'WIE DER BAUPLAN ENTSTANDEN IST',
+          headline: 'Vom 14-Features-Pitch zum Bauplan.',
+          paragraphs: [
+            'In den ersten zehn Jahren in seinem Systemhaus hat Markus Angebote mit vierzehn Features geschrieben. Jedes Feature war stolz erkämpft, jedes hatte seinen Platz. Bis ein Kunde, mit dem er gerade unterschrieb, ihm am Tisch sagte: „Markus, jetzt mal ehrlich — was bedeutet das alles für meine Firma? Konkret?"',
+            'Er konnte es nicht in einem Satz sagen.',
+            'Das war der Tag, an dem das Beef-Radar entstanden ist. Die Regel ist seitdem: Wenn ich bei einem Baustein nicht in einem Satz sagen kann, was er beim Kunden auslöst, gehört er entweder neu gedacht — oder raus.',
+            'Daraus wurde über die letzten Jahre ein 8-Schritte-Bauplan, der heute von 500+ Gründer:innen genutzt wird. Hormozi-Stack plus drei Layer, die im $100M-Offers-Buch nicht systematisch sind: Sichtbarer Pfad, Phasen-Währung, Doppelschmerz mit Zukunfts-Ebene.',
+          ],
+        },
+      },
+      {
+        type: 'features',
+        content: {
+          eyebrow: 'DREI MARKUS-LAYER',
+          headline: 'Was am Bauplan neu ist vs. Hormozi.',
+          subheadline: 'Hormozi macht den Value-Stack. Markus macht den Stack messbar — und gibt ihm einen Pfad und einen Zukunfts-Layer.',
+          items: [
+            {
+              title: 'Sichtbarer Pfad',
+              description: 'Bulletproof Delivery Plan als visualisierbare Methodik. 3-5 benannte Phasen, jede mit Input/Output/Dauer. Aus „Sie kommen vorbei, machen Magie" wird ein Glashaus, das der Kunde im Vorstand verteidigen kann.',
+            },
+            {
+              title: 'Phasen-Währung',
+              description: 'Pro Phase eine messbare Verschiebung — mit Drei-Punkt-Korridor (Pessimist / Realist / Optimist) und Mess-Zeitpunkt. Pricing wird gegen Realist verteidigt. Garantie wird gegen Pessimist geschrieben. Optimist ist Up-Side, nicht Versprechen.',
+            },
+            {
+              title: 'Doppelschmerz Heute & Morgen',
+              description: 'Probleme heute UND morgen. Heute-gelöst macht relevant. Morgen-vorausgesehen macht strategisch. Strategische Angebote verkaufen sich teurer — und länger. Du verkaufst nicht einmal — du baust eine Strecke.',
+            },
+          ],
+        },
+      },
+      {
         type: 'framework_steps',
         content: {
           eyebrow: 'DER BAUPLAN',
@@ -272,6 +307,43 @@ const FRAMEWORKS: FrameworkSeed[] = [
         },
       },
       MARKUS_BIO,
+      {
+        type: 'tweet_wall',
+        content: {
+          eyebrow: 'CUSTOMER-STIMMEN',
+          headline: 'Was Kunden nach dem Bauplan sagen.',
+          quotes: [
+            {
+              text: 'Sie verkaufen sich Ihr Zeug hier ja selbst.',
+              author: 'Mid-Market-Käufer nach Sichtung des Bauplan-Angebots',
+              context: 'B2B-DACH, 2022',
+            },
+            {
+              text: 'Das nehme ich heute Abend mit zu meinem CFO.',
+              author: 'VP Customer Success eines SaaS-Mid-Market',
+              context: '6 Wochen Sales-Cycle statt 14, 2024',
+            },
+            {
+              text: 'Bei 200 MA sind das 2 Mio €/Jahr — selbst im Pessimist-Korridor noch 800k.',
+              author: 'CFO einer Industrie-Holding',
+              context: 'five9s-Case, IT-Security, 10.000 €/MA/Jahr-Beweis',
+            },
+            {
+              text: 'Wir konnten unsere Annahmequote von 28 % auf 53 % heben — in 12 Wochen.',
+              author: 'Sales-Lead eines DACH-Mittelständlers',
+              context: 'Arman-Customer-Case, Jahr 1',
+            },
+          ],
+        },
+      },
+      {
+        type: 'risk_reversal',
+        content: {
+          eyebrow: 'UNSERE GARANTIE',
+          headline: 'Whatever it takes.',
+          body: 'Auf das PDF gilt: 30-Tage-Refund-Window, voller Refund, ohne Begründung. Auf den Wizard: erste 5 Tage testen, Cancel ohne Begründung. Auf die Academy (1.997 €): Wenn dein Team nach 12 Wochen die ersten 5 Pitches nicht mit dem Bauplan durchgeführt hat, läuft die Office-Hours-Begleitung 8 Wochen länger kostenfrei. Wir praktizieren, was wir predigen — Wort-Garantie ist Schritt 7.',
+        },
+      },
       {
         type: 'faq',
         content: {

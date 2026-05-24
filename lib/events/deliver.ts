@@ -91,8 +91,13 @@ export async function deliverPendingWebhooks(opts: { maxBatch?: number } = {}): 
   let delivered = 0
   let failed = 0
 
+  // Backoff in Minuten: 1m, 5m, 25m, 2h, 12h. Bei >= 5 versuchen wird als 'fail' markiert.
+  const RETRY_BACKOFF_MIN = [1, 5, 25, 120, 720]
+  const MAX_ATTEMPTS = RETRY_BACKOFF_MIN.length + 1   // 6 attempts total before giving up
+
   for (const sub of subscriptions) {
-    const eventsRes = await db.execute<PendingEvent>(sql`
+    // 1) Neue Events ohne irgendeinen Delivery-Versuch
+    const newRes = await db.execute<PendingEvent>(sql`
       SELECT e.id, e.category, e.type, e.payload, e.source, e.occurred_at::text as occurred_at
       FROM events e
       WHERE NOT EXISTS (
@@ -102,7 +107,36 @@ export async function deliverPendingWebhooks(opts: { maxBatch?: number } = {}): 
       ORDER BY e.occurred_at ASC
       LIMIT ${maxBatch}
     `)
-    const pending = eventsRes as unknown as PendingEvent[]
+
+    // 2) Retry-Kandidaten: letzte Delivery war 'retry' UND Backoff-Zeit ist um
+    const retryRes = await db.execute<PendingEvent & { last_attempt: number; last_delivered_at: string }>(sql`
+      SELECT e.id, e.category, e.type, e.payload, e.source, e.occurred_at::text as occurred_at,
+             d.attempt_number as last_attempt, d.delivered_at::text as last_delivered_at
+      FROM webhook_deliveries d
+      JOIN events e ON e.id = d.event_id
+      WHERE d.subscription_id = ${sub.id}
+        AND d.result = 'retry'
+        AND d.attempt_number < ${MAX_ATTEMPTS}
+        AND d.id = (
+          SELECT id FROM webhook_deliveries
+          WHERE subscription_id = ${sub.id} AND event_id = e.id
+          ORDER BY attempt_number DESC LIMIT 1
+        )
+      ORDER BY d.delivered_at ASC
+      LIMIT 25
+    `)
+    const retryRaw = retryRes as unknown as (PendingEvent & { last_attempt: number; last_delivered_at: string })[]
+    const now = Date.now()
+    const retries = retryRaw.filter((r) => {
+      const backoffMin = RETRY_BACKOFF_MIN[Math.min(r.last_attempt - 1, RETRY_BACKOFF_MIN.length - 1)] ?? 720
+      const elapsed = (now - new Date(r.last_delivered_at).getTime()) / 60_000
+      return elapsed >= backoffMin
+    })
+
+    const pending: (PendingEvent & { _attempt?: number })[] = [
+      ...(newRes as unknown as PendingEvent[]),
+      ...retries.map((r) => ({ ...r, _attempt: r.last_attempt + 1 })),
+    ]
 
     for (const event of pending) {
       if (!matchesTypes(sub.event_types, event.type)) {
@@ -113,15 +147,18 @@ export async function deliverPendingWebhooks(opts: { maxBatch?: number } = {}): 
         `)
         continue
       }
+      const attemptNumber = (event as PendingEvent & { _attempt?: number })._attempt ?? 1
       const res = await deliverOne(sub, event)
-      const result = res.ok ? 'ok' : (res.status && res.status >= 500 ? 'retry' : 'fail')
+      const isRetryable = !res.ok && (res.status && res.status >= 500 || !res.status)
+      const reachedMaxAttempts = attemptNumber >= MAX_ATTEMPTS
+      const result = res.ok ? 'ok' : (isRetryable && !reachedMaxAttempts ? 'retry' : 'fail')
       await db.execute(sql`
         INSERT INTO webhook_deliveries (
           subscription_id, event_id, status_code, response_body, response_time_ms,
           attempt_number, result, error_message
         ) VALUES (
           ${sub.id}, ${event.id}, ${res.status ?? null}, ${res.body ?? null}, ${res.ms},
-          1, ${result}, ${res.err ?? null}
+          ${attemptNumber}, ${result}, ${res.err ?? null}
         )
       `)
       // Update subscription counters

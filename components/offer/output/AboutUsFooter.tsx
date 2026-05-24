@@ -33,7 +33,7 @@ export function AboutUsFooter({
             name="Markus Eilers"
             role="Revenue Systems · B2B-Vertrieb"
             photo="/markus-photo.jpg"
-            bio="Sales-Generalist mit 25 Jahren Erfahrung im B2B-Vertrieb. Hat über 500 Gründer:innen geholfen, planbares Umsatzwachstum aufzubauen."
+            bio="Kundengewinnungs-Profi mit 25 Jahren Erfahrung im B2B-Vertrieb. Hat über 500 Gründer:innen geholfen, planbares Umsatzwachstum aufzubauen."
             calendlyUrl={markusCalendly}
             accent="#1A5FD4"
           />
@@ -41,7 +41,7 @@ export function AboutUsFooter({
             name="Aljona Eilers"
             role="Liquid Leadership"
             photo="/aljona-photo.jpg"
-            bio="Master Coach mit Stanford-Hintergrund. Transformational Leadership für Gründer:innen, die ihr Team und sich selbst neu definieren wollen."
+            bio="TEDx Speaker, WSJ Bestseller-Autorin und ehemalige Bolshoi-Ballerina. Hat 500+ Führungskräfte als Leadership & Culture Coach begleitet — Transformational Leadership für Gründer:innen, die ihre nächste Stufe erreichen wollen."
             calendlyUrl={aljonaCalendly}
             accent="#D4192B"
           />

@@ -1,0 +1,35 @@
+# Eilers+Friends — LLM-friendly Site Index
+
+> Coaching & Training für Gründer:innen. Revenue Systems (Markus Eilers) + Transformational Leadership (Aljona Eilers).
+
+## Brand
+- Markus Eilers — Sales / Revenue Systems / B2B Vertrieb / 25+ Jahre Erfahrung
+- Aljona Eilers — Liquid Leadership / TEDx Speaker / WSJ Bestseller-Autorin / 500+ Führungskräfte begleitet
+
+## Frameworks (kostenlose Lead-Magnets mit PDF + Video + Wizard)
+- /frameworks/b2b-angebote — Der Bauplan für unwiderstehliche B2B-Angebote (8 Schritte)
+- /frameworks/beef-radar — Vom Merkmal zum Financial Impact
+- /frameworks/hailiom — 9-Step AI Content Foundation
+- /frameworks/instant-influence — Kunden im ersten Gespräch gewinnen
+- /frameworks/core-messages — Die 11 Botschaften jedes Unternehmers
+- /frameworks/strategic-preparation — 18 Min vor jedem Pitch
+- /frameworks/recommendation-pitch — Käufer:in im Driver-Seat
+
+## Programme
+- /salesmade — SalesMade Academy (1.997 €/Jahr, Soft-Launch)
+- /salesmade/founding-30 — Founding-30 Premium-Tier (5.485 €, lifetime locked)
+- /aljona — Liquid Leadership Coaching
+
+## Newsletter
+- Donnerstag-Briefing von Markus mit Coaching-Lehren der Woche — kein Marketing-Lehrbuch
+
+## Public API
+- OpenAPI Spec: /api/openapi
+- MCP-Endpoint für AI-Tools: /api/mcp
+- REST: /api/v1/events, /api/v1/subscribers, /api/v1/frameworks, /api/v1/offers
+- Auth: Bearer-Token im Admin-Panel anlegen
+
+## Kontakt
+- Markus: https://calendly.com/markuseilers/kennenlernen
+- Aljona: https://calendly.com/eilersjung/kennenlernsession
+- Email: markus@eilers.at
