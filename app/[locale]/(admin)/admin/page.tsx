@@ -1,15 +1,31 @@
 import { auth } from '@/lib/auth'
+import { getDashboardStats } from '@/lib/analytics/dashboard'
+import { DashboardOverview } from '@/components/admin/DashboardOverview'
+
+// Don't pre-render — stats must be fresh on every visit.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function AdminDashboardPage() {
   const session = await auth()
+  const stats = await getDashboardStats().catch((err) => {
+    console.error('[admin/page] getDashboardStats failed:', err)
+    return {
+      subscribers: { today: 0, last7d: 0, last30d: 0, total: 0 },
+      sequenceSends: { today: 0, last7d: 0, last30d: 0, total: 0 },
+      pageViews: { today: 0, last7d: 0, last30d: 0, total: 0 },
+      uniqueVisitors: { today: 0, last7d: 0, last30d: 0, total: 0 },
+      topPaths: [],
+      topReferrers: [],
+      recentEvents: [],
+    }
+  })
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900">Coach Backend</h1>
-      <p className="mt-2 text-gray-600">Angemeldet als {session?.user?.name} ({session?.user?.role})</p>
-      <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6">
-        <p className="text-sm text-gray-500">Das Admin-Backend wird gerade aufgebaut.</p>
-      </div>
-    </div>
+    <DashboardOverview
+      stats={stats}
+      userName={session?.user?.name ?? 'Coach'}
+      userRole={session?.user?.role ?? 'admin'}
+    />
   )
 }

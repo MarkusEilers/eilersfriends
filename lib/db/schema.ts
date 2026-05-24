@@ -8,9 +8,6 @@ import {
   serial,
   uuid,
   json,
-  jsonb,
-  varchar,
-  date,
   pgEnum,
   unique,
 } from 'drizzle-orm/pg-core'
@@ -18,7 +15,7 @@ import { relations } from 'drizzle-orm'
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
-export const userRoleEnum = pgEnum('user_role', ['admin', 'coach', 'participant', 'client'])
+export const userRoleEnum = pgEnum('user_role', ['admin', 'coach', 'participant'])
 export const companySizeEnum = pgEnum('company_size', ['startup', 'scaleup', 'enterprise'])
 export const programTypeEnum = pgEnum('program_type', ['academy', 'coaching', 'training'])
 export const ctaTypeEnum = pgEnum('cta_type', ['apply', 'buy', 'waitlist', 'calendly'])
@@ -29,226 +26,217 @@ export const lessonStatusEnum = pgEnum('lesson_status', ['locked', 'available', 
 export const assessmentTypeEnum = pgEnum('assessment_type', ['initial', 'periodic', 'final'])
 export const assessmentStatusEnum = pgEnum('assessment_status', ['pending', 'in_progress', 'completed'])
 export const answerTypeEnum = pgEnum('answer_type', ['scale_1_5', 'multiple_choice', 'text'])
-export const recommendationReasonEnum = pgEnum('recommendation_reason', ['high_poorest_skill', 'low_improvement', 'program_prereq', 'manual'])
+export const recommendationReasonEnum = pgEnum('recommendation_reason', ['low_wissen', 'low_koennen', 'low_machen'])
+export const recommendationStatusEnum = pgEnum('recommendation_status', ['pending', 'accepted', 'dismissed'])
 export const hvcoTypeEnum = pgEnum('hvco_type', ['pdf', 'tool', 'video', 'newsletter'])
 export const hvcoDeliveryEnum = pgEnum('hvco_delivery', ['email', 'unlock', 'redirect'])
 export const sessionTypeEnum = pgEnum('session_type', ['sparring', 'group_qa', 'training'])
 export const newsletterStatusEnum = pgEnum('newsletter_status', ['pending', 'active', 'unsubscribed', 'bounced'])
-export const emailTemplateTypeEnum = pgEnum('email_template_type', [
-  'doi_confirmation',   // Double Opt-In Bestätigung
-  'doi_welcome',        // Welcome nach DOI-Bestätigung
-  'sequence_step',      // Für Email-Sequenz-Schritte
-  'transactional',      // Einzelne Transaktions-Mails
-])
-export const landingPageStatusEnum = pgEnum('landing_page_status', ['draft', 'published', 'archived'])
-export const landingPageSectionTypeEnum = pgEnum('landing_page_section_type', [
-  'hero',                // Headline + Subtext + CTA / Email-Form
-  'video',               // VSL oder Erklär-Video
-  'social_proof',        // Logos, Zahlen, "Wie bekannt aus"
-  'problem',             // Problem-Agitation
-  'origin_story',        // Long-form Narrative (Welsh: 'Once upon a time...')
-  'solution',            // Lösung / Was du bekommst
-  'features',            // Feature-Liste mit Icons
-  'how_it_works',        // Schritt-für-Schritt
-  'curriculum',          // Kapitel-/Modul-Liste mit Beschreibungen (NEW)
-  'bonus_deliverables',  // 'More than just theory' — Bonus-Materialien (NEW)
-  'fit_check',           // 'Good fit / Not good fit' 2-Spalten (NEW)
-  'testimonials',        // Kunden-Stimmen
-  'tweet_wall',          // Social-Proof-Wand mit kurzen Quotes / Tweets (NEW)
-  'framework_steps',     // Numerierte Schritte mit Beispielen, Tipps, Bonus-Hinweisen (NEW)
-  'lead_magnet',         // Email-Gated Download (PDF/Video) mit Promise + Benefits (NEW)
-  'offer',               // Angebot / Preis-Box
-  'pricing_card',        // Single-Tier-Pricing mit Deliverables-Liste (NEW)
-  'risk_reversal',       // 'Why I'm not offering refunds' / Garantie-Erklärung (NEW)
-  'faq',                 // FAQ Accordion
-  'email_capture',       // Standalone Email-Formular / Lead-Magnet
-  'cta',                 // Finaler Call-to-Action
-  'coach_bio',           // Coach/Instructor-Vorstellung
-  'spacer',              // Abstandhalter
-])
-export const emailSequenceTriggerEnum = pgEnum('email_sequence_trigger', [
-  'newsletter_signup',       // Nach Newsletter-Aneldung
-  'doi_confirmed',           // Nach DOI-Bestätigung
-  'landing_page_signup',     // Nach Landing-Page-Formular
-  'program_enrollment',      // Nach Programm-Buchung
-  'manual',                   // Manuell ausgelöst
-])
 
-// ─── Users ──────────────────────────────────────────────────────────────────
-
-export const users = pgTable('users', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  email: text('email').notNull().unique(),
-  name: text('name').notNull(),
-  passwordHash: text('password_hash').notNull(),
-  role: userRoleEnum('role').default('participant').notNull(),
-  companyId: uuid('company_id'),
-  avatarUrl: text('avatar_url'),
-  locale: text('locale').default('de').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-})
-
-// ─── Companies ─────────────────────────────────────────────────────────────────
+// ─── Companies ────────────────────────────────────────────────────────────────
 
 export const companies = pgTable('companies', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
   industry: text('industry'),
   size: companySizeEnum('size'),
+  contractStart: timestamp('contract_start'),
   website: text('website'),
+  notes: text('notes'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
+
+// ─── Users ────────────────────────────────────────────────────────────────────
+
+export const users = pgTable('users', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  email: text('email').notNull().unique(),
+  fullName: text('full_name').notNull(),
+  passwordHash: text('password_hash'),
+  role: userRoleEnum('role').default('participant').notNull(),
+  companyId: uuid('company_id').references(() => companies.id, { onDelete: 'set null' }),
+  emailVerified: timestamp('email_verified'),
+  avatarUrl: text('avatar_url'),
+  linkedinUrl: text('linkedin_url'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
 // ─── Programs ─────────────────────────────────────────────────────────────────
 
 export const programs = pgTable('programs', {
   id: uuid('id').defaultRandom().primaryKey(),
-  coachId: uuid('coach_id').notNull().references(() => users.id),
-  name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
-  description: text('description'),
   type: programTypeEnum('type').notNull(),
-  ctaType: ctaTypeEnum('cta_type').default('apply'),
-  status: text('status').default('draft').notNull(),
-  price: real('price'),
-  maxParticipants: integer('max_participants'),
-  locale: text('locale').default('de').notNull(),
+  heroHeadline: text('hero_headline').notNull(),
+  tagline: text('tagline'),
+  heroSubtext: text('hero_subtext'),
+  introVideoUrl: text('intro_video_url'),
+  problemStatements: json('problem_statements').$type<string[]>(),
+  statHighlights: json('stat_highlights').$type<{ value: string; label: string; color: string }[]>(),
+  criteriaJson: json('criteria_json').$type<string[]>(),
+  ctaType: ctaTypeEnum('cta_type').default('apply').notNull(),
+  ctaLabel: text('cta_label'),
+  ctaTargetUrl: text('cta_target_url'),
+  spotsTotal: integer('spots_total'),
+  spotsTaken: integer('spots_taken').default(0),
+  isPublished: boolean('is_published').default(false).notNull(),
+  coachId: uuid('coach_id').references(() => users.id, { onDelete: 'set null' }),
+  accentColor: text('accent_color').default('orange'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
-// ─── Signature Solutions ─────────────────────────────────────────────────────
+// ─── Signature Solution ───────────────────────────────────────────────────────
 
 export const signatureSolutions = pgTable('signature_solutions', {
   id: uuid('id').defaultRandom().primaryKey(),
-  programId: uuid('program_id').notNull().references(() => programs.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  description: text('description'),
-  outcome: text('outcome'),
-  overviewHtml: text('overview_html'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  programId: uuid('program_id').notNull().references(() => programs.id, { onDelete: 'cascade' }).unique(),
+  badPlaceTitle: text('bad_place_title').notNull(),
+  badPlaceDescription: text('bad_place_description'),
+  happyPlaceTitle: text('happy_place_title').notNull(),
+  happyPlaceDescription: text('happy_place_description'),
+  solutionName: text('solution_name').notNull(),
+  solutionTagline: text('solution_tagline'),
 })
-
-// ─── Solution Phases ────────────────────────────────────────────────────────
 
 export const solutionPhases = pgTable('solution_phases', {
   id: uuid('id').defaultRandom().primaryKey(),
   solutionId: uuid('solution_id').notNull().references(() => signatureSolutions.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  order: integer('order').notNull(),
-  durationWeeks: integer('duration_weeks'),
+  position: integer('position').notNull(),
+  title: text('title').notNull(),
+  subtitle: text('subtitle'),
+  outcome: text('outcome'),
+  colorKey: text('color_key'),
 })
 
 export const solutionSteps = pgTable('solution_steps', {
   id: uuid('id').defaultRandom().primaryKey(),
   phaseId: uuid('phase_id').notNull().references(() => solutionPhases.id, { onDelete: 'cascade' }),
+  position: integer('position').notNull(),
+  theme: text('theme'),
   title: text('title').notNull(),
-  description: text('description'),
-  order: integer('order').notNull(),
+  microTransformation: text('micro_transformation'),
+  linkedLessonId: uuid('linked_lesson_id'),
+  linkedSkillId: uuid('linked_skill_id'),
 })
 
-// ─── Modules — Lessons ─────────────────────────────────────────────────────────
+// ─── Modules & Lessons ────────────────────────────────────────────────────────
 
 export const modules = pgTable('modules', {
   id: uuid('id').defaultRandom().primaryKey(),
   programId: uuid('program_id').notNull().references(() => programs.id, { onDelete: 'cascade' }),
   title: text('title').notNull(),
-  order: integer('order').notNull(),
-  unlockAfterDays: integer('unlock_after_days').default(0),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  position: integer('position').notNull(),
+  dripDelayDays: integer('drip_delay_days').default(0),
 })
 
 export const lessons = pgTable('lessons', {
   id: uuid('id').defaultRandom().primaryKey(),
   moduleId: uuid('module_id').notNull().references(() => modules.id, { onDelete: 'cascade' }),
   title: text('title').notNull(),
-  contentType: contentTypeEnum('content_type').notNull(),
+  position: integer('position').notNull(),
+  contentType: contentTypeEnum('content_type').default('video').notNull(),
   videoUrl: text('video_url'),
-  contentHtml: text('content_html'),
-  durationMin: integer('duration_min'),
-  order: integer('order').notNull(),
-  status: lessonStatusEnum('status').default('locked').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  body: text('body'),
+  durationMinutes: integer('duration_minutes'),
+  primarySkillId: uuid('primary_skill_id'),
+  skillDimension: skillDimensionEnum('skill_dimension'),
 })
 
-// ─── Enrollments — Progress ──────────────────────────────────────────────────────
+// ─── Enrollments ──────────────────────────────────────────────────────────────
 
 export const enrollments = pgTable('enrollments', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: uuid('user_id').notNull().references(() => users.id),
-  programId: uuid('program_id').notNull().references(() => programs.id),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  programId: uuid('program_id').notNull().references(() => programs.id, { onDelete: 'cascade' }),
+  assignedBy: uuid('assigned_by').references(() => users.id, { onDelete: 'set null' }),
   status: enrollmentStatusEnum('status').default('pending').notNull(),
-  enrolledAt: timestamp('enrolled_at').defaultNow().notNull(),
+  goal: text('goal'),
+  assessmentIntervalDays: integer('assessment_interval_days').default(30),
+  nextAssessmentAt: timestamp('next_assessment_at'),
+  startedAt: timestamp('started_at'),
   completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
 export const lessonProgress = pgTable('lesson_progress', {
   id: uuid('id').defaultRandom().primaryKey(),
   enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
-  lessonId: uuid('lesson_id').notNull().references(() => lessons.id),
+  lessonId: uuid('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
   status: lessonStatusEnum('status').default('locked').notNull(),
-  startedAt: timestamp('started_at'),
   completedAt: timestamp('completed_at'),
-})
+}, (table) => [
+  unique().on(table.enrollmentId, table.lessonId),
+])
 
-// ─── Skills ──────────────────────────────────────────────────────────────────
+// ─── Skills ───────────────────────────────────────────────────────────────────
 
 export const skills = pgTable('skills', {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name').notNull(),
-  dimension: skillDimensionEnum('dimension').notNull(),
-  programId: uuid('program_id').references(() => programs.id),
+  title: text('title').notNull(),
+  slug: text('slug').notNull().unique(),
+  category: text('category'),
+  icon: text('icon'),
+  sortOrder: integer('sort_order').default(0),
 })
 
 export const assessmentQuestions = pgTable('assessment_questions', {
   id: uuid('id').defaultRandom().primaryKey(),
-  skillId: uuid('skill_id').notNull().references(() => skills.id),
-  question: text('question').notNull(),
-  type: answerTypeEnum('type').notNull(),
-  options: json('options').$type<string[]>(),
-  order: integer('order').notNull(),
+  skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
+  dimension: skillDimensionEnum('dimension').notNull(),
+  questionText: text('question_text').notNull(),
+  answerType: answerTypeEnum('answer_type').default('scale_1_5').notNull(),
+  weight: real('weight').default(1.0),
 })
+
+// ─── Assessments ──────────────────────────────────────────────────────────────
 
 export const assessments = pgTable('assessments', {
   id: uuid('id').defaultRandom().primaryKey(),
   enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
   type: assessmentTypeEnum('type').notNull(),
   status: assessmentStatusEnum('status').default('pending').notNull(),
-  startedAt: timestamp('started_at'),
+  dueAt: timestamp('due_at'),
   completedAt: timestamp('completed_at'),
-  score: real('score'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
 export const assessmentAnswers = pgTable('assessment_answers', {
   id: uuid('id').defaultRandom().primaryKey(),
   assessmentId: uuid('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
-  questionId: uuid('question_id').notNull().references(() => assessmentQuestions.id),
-  answer: text('answer').notNull(),
-  score: real('score'),
+  questionId: uuid('question_id').notNull().references(() => assessmentQuestions.id, { onDelete: 'cascade' }),
+  answerValue: text('answer_value').notNull(),
+  scoreRaw: real('score_raw'),
 })
 
-// ─── Skill Scores ────────────────────────────────────────────────────────────
+// ─── Skill Scores (append-only!) ──────────────────────────────────────────────
 
 export const skillScores = pgTable('skill_scores', {
   id: uuid('id').defaultRandom().primaryKey(),
   enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
-  skillId: uuid('skill_id').notNull().references(() => skills.id),
-  assessmentId: uuid('assessment_id').references(() => assessments.id),
-  score: real('score').notNull(),
-  scoredAt: timestamp('scored_at').defaultNow().notNull(),
+  skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
+  assessmentId: uuid('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
+  wissen: real('wissen').notNull(),
+  koennen: real('koennen').notNull(),
+  machen: real('machen').notNull(),
+  overall: real('overall').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
 export const skillRecommendations = pgTable('skill_recommendations', {
   id: uuid('id').defaultRandom().primaryKey(),
   enrollmentId: uuid('enrollment_id').notNull().references(() => enrollments.id, { onDelete: 'cascade' }),
-  skillId: uuid('skill_id').notNull().references(() => skills.id),
+  skillId: uuid('skill_id').notNull().references(() => skills.id, { onDelete: 'cascade' }),
+  contentType: text('content_type'),
+  contentId: uuid('content_id'),
   reason: recommendationReasonEnum('reason').notNull(),
-  note: text('note'),
+  status: recommendationStatusEnum('status').default('pending').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-// ─── Resources / HVCO ─────────────────────────────────────────────────
+// ─── HVCO Resources ───────────────────────────────────────────────────────────
 
 export const programHvcos = pgTable('program_hvcos', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -336,6 +324,13 @@ export const newsletterSubscribers = pgTable('newsletter_subscribers', {
 
 // ─── Email Templates ──────────────────────────────────────────────────────────
 
+export const emailTemplateTypeEnum = pgEnum('email_template_type', [
+  'doi_confirmation',   // Double Opt-In Bestätigung
+  'doi_welcome',        // Welcome nach DOI-Bestätigung
+  'sequence_step',      // Für Email-Sequenz-Schritte
+  'transactional',      // Einzelne Transaktions-Mails
+])
+
 export const emailTemplates = pgTable('email_templates', {
   id: uuid('id').defaultRandom().primaryKey(),
   type: emailTemplateTypeEnum('type').notNull(),
@@ -354,6 +349,25 @@ export const emailTemplates = pgTable('email_templates', {
 
 // ─── Landing Pages ────────────────────────────────────────────────────────────
 
+export const landingPageStatusEnum = pgEnum('landing_page_status', ['draft', 'published', 'archived'])
+
+export const landingPageSectionTypeEnum = pgEnum('landing_page_section_type', [
+  'hero',           // Headline + Subtext + CTA / Email-Form
+  'video',          // VSL oder Erklär-Video
+  'social_proof',   // Logos, Zahlen, "Wie bekannt aus"
+  'problem',        // Problem-Agitation
+  'solution',       // Lösung / Was du bekommst
+  'features',       // Feature-Liste mit Icons
+  'how_it_works',   // Schritt-für-Schritt
+  'testimonials',   // Kunden-Stimmen
+  'offer',          // Angebot / Preis-Box
+  'faq',            // FAQ Accordion
+  'email_capture',  // Standalone Email-Formular / Lead-Magnet
+  'cta',            // Finaler Call-to-Action
+  'coach_bio',      // Coach-Vorstellung
+  'spacer',         // Abstandhalter
+])
+
 export const landingPages = pgTable('landing_pages', {
   id: uuid('id').defaultRandom().primaryKey(),
   slug: text('slug').notNull().unique(),          // URL: /lp/salesmade-bootcamp
@@ -369,9 +383,6 @@ export const landingPages = pgTable('landing_pages', {
   locale: text('locale').default('de').notNull(),
   // Design-Overrides
   accentColor: text('accent_color'),              // z.B. '#1A5FD4' für SalesMade
-  templateKey: text('template_key'),              // z.B. 'program-welsh', 'newsletter-welsh', 'framework-leadmagnet'
-  // Card / Poster meta — edited via /admin/frameworks/[id]
-  cardMeta: json('card_meta').$type<Record<string, unknown>>(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
@@ -383,11 +394,25 @@ export const landingPageSections = pgTable('landing_page_sections', {
   order: integer('order').notNull().default(0),
   isVisible: boolean('is_visible').default(true).notNull(),
   content: json('content').$type<Record<string, unknown>>().notNull().default({}),
+  // Inhalt ist typ-abhängiges JSON, z.B.:
+  // hero: { headline, subheadline, ctaLabel, ctaHref, backgroundImage, showEmailForm }
+  // video: { embedUrl, posterUrl, headline }
+  // features: { headline, items: [{icon, title, text}] }
+  // testimonials: { items: [{name, role, text, avatar, rating}] }
+  // faq: { headline, items: [{question, answer}] }
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
-// ─── Email Sequenzen ────────────────────────────────────────────────────────────
+// ─── Email Sequenzen ──────────────────────────────────────────────────────────
+
+export const emailSequenceTriggerEnum = pgEnum('email_sequence_trigger', [
+  'newsletter_signup',       // Nach Newsletter-Anmeldung
+  'doi_confirmed',           // Nach DOI-Bestätigung
+  'landing_page_signup',     // Nach Landing-Page-Formular
+  'program_enrollment',      // Nach Programm-Buchung
+  'manual',                  // Manuell ausgelöst
+])
 
 export const emailSequences = pgTable('email_sequences', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -395,7 +420,7 @@ export const emailSequences = pgTable('email_sequences', {
   description: text('description'),
   trigger: emailSequenceTriggerEnum('trigger').notNull(),
   triggerFilter: json('trigger_filter').$type<Record<string, unknown>>().default({}),
-  // z.B. { source: 'salesmade' } —"nur für SalesMade-Signups
+  // z.B. { source: 'salesmade' } — nur für SalesMade-Signups
   isActive: boolean('is_active').default(false).notNull(),
   locale: text('locale').default('de').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -423,6 +448,37 @@ export const emailSequenceEnrollments = pgTable('email_sequence_enrollments', {
   nextSendAt: timestamp('next_send_at'),
   lastSentAt: timestamp('last_sent_at'),
   completedAt: timestamp('completed_at'),
+})
+
+// ─── Page Views (Cookie-Consent gated) ────────────────────────────────────────
+// Wird NUR befüllt wenn der Nutzer "Analyse"-Cookies akzeptiert hat.
+export const pageViews = pgTable('page_views', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  path: text('path').notNull(),                  // z.B. /salesmade, /blog/post-x
+  locale: text('locale').default('de').notNull(),
+  sessionHash: text('session_hash'),             // anonymer 1st-party Session-Hash (kein User-ID)
+  referrerHost: text('referrer_host'),           // nur Host, kein Querystring (DSGVO)
+  uaClass: text('ua_class'),                     // 'desktop' | 'mobile' | 'tablet' | 'bot'
+  country: text('country'),                      // ISO-Code aus Cloudflare/Vercel-Header (falls verfügbar)
+  utmSource: text('utm_source'),
+  utmMedium: text('utm_medium'),
+  utmCampaign: text('utm_campaign'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+// ─── Site Events (Audit-Trail für "Gesamt-Briefing") ──────────────────────────
+// Generischer Event-Log: subscriber.confirmed, sequence.sent, content.published, ...
+export const siteEvents = pgTable('site_events', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  category: text('category').notNull(),          // 'subscriber' | 'sequence' | 'content' | 'offer' | 'system'
+  eventType: text('event_type').notNull(),       // 'created' | 'updated' | 'sent' | 'confirmed' | 'published' ...
+  title: text('title').notNull(),                // "Neuer Subscriber" / "Email versendet" / "Framework geupdated"
+  summary: text('summary'),                      // freie Zusammenfassung für das Briefing
+  refType: text('ref_type'),                     // 'newsletter_subscriber' | 'email_sequence' | 'landing_page'
+  refId: uuid('ref_id'),
+  actorId: uuid('actor_id'),                     // Wer hat es ausgelöst (User-ID), null wenn System
+  metadata: json('metadata').$type<Record<string, unknown>>().default({}),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
 // ─── Relations ────────────────────────────────────────────────────────────────
@@ -457,235 +513,3 @@ export const enrollmentsRelations = relations(enrollments, ({ one, many }) => ({
   sessions: many(sessions),
   certificate: one(certificates),
 }))
-
-// ─── Site Settings (key-value, admin-editable) ────────────────────────────────
-export const siteSettings = pgTable('site_settings', {
-  key: text('key').primaryKey(),
-  value: text('value').notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-})
-
-
-// ─── Trust Logos (admin-editable logo strip) ──────────────────────────────────
-export const trustLogos = pgTable('trust_logos', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  slug: text('slug').notNull().unique(),
-  name: text('name').notNull(),
-  domain: text('domain'),
-  src: text('src'),  // image URL (full path)
-  srcBw: text('src_bw'),  // BW version for default display
-  displayScale: integer('display_scale').notNull().default(100),  // Per-logo perceptual height adjustment (50-150)
-  alt: text('alt'),  // accessibility text
-  order: integer('order').default(0).notNull(),
-  isVisible: boolean('is_visible').default(true).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-})
-
-// ────────────────────────── OFFERS (Wave 2) ──────────────────────────
-export const offerStatusEnum = pgEnum('offer_status', ['draft', 'sent', 'viewed', 'signed', 'paid', 'expired', 'cancelled'])
-export const offerTrackTypeEnum = pgEnum('offer_track_type', ['main', 'parallel', 'combined'])
-export const offerPricingTypeEnum = pgEnum('offer_pricing_type', ['DIY', 'DWY', 'DFY'])
-
-export const offers = pgTable('offers', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  offerNumber: varchar('offer_number', { length: 64 }).notNull().unique(),
-  // Customer
-  customerName: varchar('customer_name', { length: 255 }).notNull(),
-  customerCompany: varchar('customer_company', { length: 255 }),
-  customerEmail: varchar('customer_email', { length: 255 }),
-  customerUserId: uuid('customer_user_id').references(() => users.id, { onDelete: 'set null' }),
-  customerLogoUrl: text('customer_logo_url'),
-  customerLogoUrlBw: text('customer_logo_url_bw'),
-  guaranteeText: text('guarantee_text'),
-  // Secret link for public access
-  accessSalt: varchar('access_salt', { length: 64 }).notNull().unique(),
-  // Headlines
-  title: varchar('title', { length: 255 }).notNull(),
-  subtitle: text('subtitle'),
-  tagline: text('tagline'),
-  // Content blobs (mirrors offer-builder structure — all JSONB)
-  understandingSection: jsonb('understanding_section').default({}),
-  empathySection: jsonb('empathy_section').default({}),
-  introSections: jsonb('intro_sections').default([]),
-  programs: jsonb('programs').default([]),
-  partnerLogos: jsonb('partner_logos').default([]),
-  sectionOrder: jsonb('section_order').default([]),
-  // Timeline
-  timelineStartDate: date('timeline_start_date'),
-  timelineRhythmWeeks: integer('timeline_rhythm_weeks').default(2),
-  timelineBreaks: jsonb('timeline_breaks').default([]),
-  // Sweat Equity
-  sweatEquityEnabled: boolean('sweat_equity_enabled').default(false).notNull(),
-  sweatEquityPercent: integer('sweat_equity_percent'),
-  // Economic results
-  economicResults: jsonb('economic_results').default([]),
-  // Validity
-  validFrom: timestamp('valid_from', { withTimezone: true }).defaultNow().notNull(),
-  validUntil: timestamp('valid_until', { withTimezone: true }).notNull(),
-  // Status flow: draft → sent → viewed → signed → paid
-  status: offerStatusEnum('status').default('draft').notNull(),
-  // Signature
-  signedAt: timestamp('signed_at', { withTimezone: true }),
-  signedByName: varchar('signed_by_name', { length: 255 }),
-  signedByEmail: varchar('signed_by_email', { length: 255 }),
-  signatureData: text('signature_data'),
-  selectedPricingOption: varchar('selected_pricing_option', { length: 64 }),
-  // Stripe
-  stripeCheckoutSessionId: varchar('stripe_checkout_session_id', { length: 255 }),
-  stripePaymentIntentId: varchar('stripe_payment_intent_id', { length: 255 }),
-  paidAt: timestamp('paid_at', { withTimezone: true }),
-  // Versioning (parent_offer_id when client requests a revision)
-  versionNumber: integer('version_number').default(1).notNull(),
-  parentOfferId: uuid('parent_offer_id'),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-})
-
-// Template library — reusable building blocks (skill modules)
-export const offerBuildingBlockTemplates = pgTable('offer_building_block_templates', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  title: varchar('title', { length: 255 }).notNull(),
-  description: text('description'),
-  roles: jsonb('roles').default([]),  // string[]
-  inputs: jsonb('inputs').default([]),
-  outputs: jsonb('outputs').default([]),
-  durationDays: integer('duration_days').default(1),
-  sortOrder: integer('sort_order').default(0),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-})
-
-// Template library — reusable phases (collections of building blocks)
-export const offerPhaseTemplates = pgTable('offer_phase_templates', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  number: integer('number').notNull(),
-  title: varchar('title', { length: 255 }).notNull(),
-  description: text('description'),
-  color: varchar('color', { length: 32 }).default('gray'),
-  sortOrder: integer('sort_order').default(0),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-})
-
-// Junction: phase ↔ building block
-export const offerPhaseBuildingBlocks = pgTable('offer_phase_building_blocks', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  phaseTemplateId: uuid('phase_template_id').references(() => offerPhaseTemplates.id, { onDelete: 'cascade' }).notNull(),
-  buildingBlockTemplateId: uuid('building_block_template_id').references(() => offerBuildingBlockTemplates.id, { onDelete: 'cascade' }).notNull(),
-  sortOrder: integer('sort_order').default(0),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-})
-
-// Template library — infotainment blocks (reusable copy/image/video sections)
-export const offerInfotainmentTemplates = pgTable('offer_infotainment_templates', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  title: varchar('title', { length: 255 }).notNull(),
-  type: varchar('type', { length: 32 }).default('mixed').notNull(),  // text|image|video|mixed
-  content: text('content'),
-  imageUrl: text('image_url'),
-  videoUrl: text('video_url'),
-  layout: varchar('layout', { length: 16 }).default('left'),  // left|right|center|full
-  sortOrder: integer('sort_order').default(0),
-  isActive: boolean('is_active').default(true).notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-})
-
-// Audit trail — track all offer events (sent, viewed, signed, etc.)
-export const offerEvents = pgTable('offer_events', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  offerId: uuid('offer_id').references(() => offers.id, { onDelete: 'cascade' }).notNull(),
-  eventType: varchar('event_type', { length: 32 }).notNull(),  // sent_email, viewed, signed, paid, revision_requested
-  actorEmail: varchar('actor_email', { length: 255 }),
-  metadata: jsonb('metadata').default({}),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-})
-
-
-// ─── Wave 9: Event-API Layer ───────────────────────────────────────────────
-// Append-only domain events. Source-of-truth für alles, was nach draussen oder
-// nach drinnen über die Webhook-Layer kommuniziert wird.
-
-export const eventCategoryEnum = pgEnum('event_category', [
-  'subscriber',   // newsletter DOI / unsubscribe / list_change
-  'framework',   // wizard started / step_completed / completed
-  'offer',       // sent / viewed / signed / paid / expired
-  'member',      // signup / level_up / tier_changed
-  'community',   // post_published / comment_added / like_added
-  'system',      // user_login / admin_change_proposed / admin_change_applied
-])
-
-export const events = pgTable('events', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  category: eventCategoryEnum('category').notNull(),
-  /** e.g. 'subscriber.confirmed', 'framework.step_completed', 'offer.paid' */
-  type: varchar('type', { length: 64 }).notNull(),
-  /** Free-form JSON payload — contains everything an external consumer needs. */
-  payload: jsonb('payload').default({}).notNull(),
-  /** Which subsystem generated this event ('newsletter-api','stripe-webhook','wizard-ui',...) */
-  source: varchar('source', { length: 64 }).notNull(),
-  /** Optional links for joins */
-  actorUserId: uuid('actor_user_id'),
-  frameworkSlug: varchar('framework_slug', { length: 64 }),
-  offerId: uuid('offer_id'),
-  companyId: uuid('company_id'),
-  /** Idempotency key — same key = same logical event, dedupe on insert */
-  idempotencyKey: varchar('idempotency_key', { length: 128 }).unique(),
-  occurredAt: timestamp('occurred_at', { withTimezone: true }).defaultNow().notNull(),
-})
-
-// Outgoing webhook subscriptions — eines pro externe Integration (Zapier, Make, HubSpot…)
-export const webhookSubscriptions = pgTable('webhook_subscriptions', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  name: varchar('name', { length: 128 }).notNull(),
-  url: text('url').notNull(),
-  /** Welche event types diese Subscription empfängt — '*' für alle */
-  eventTypes: jsonb('event_types').default([]).notNull(),
-  /** HMAC-SHA256-Secret für Signature-Verifikation */
-  secret: varchar('secret', { length: 64 }).notNull(),
-  /** Pause via UI ohne löschen */
-  active: boolean('active').default(true).notNull(),
-  /** Letzte Lieferung */
-  lastDeliveryAt: timestamp('last_delivery_at', { withTimezone: true }),
-  lastDeliveryStatus: varchar('last_delivery_status', { length: 16 }),  // 'ok'|'fail'|'retry'
-  /** Per-Subscription Counter zum Debuggen */
-  totalDelivered: integer('total_delivered').default(0).notNull(),
-  totalFailed: integer('total_failed').default(0).notNull(),
-  notes: text('notes'),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-})
-
-// Webhook delivery log — pro Versuch eine Row, für Audit + Debugging
-export const webhookDeliveries = pgTable('webhook_deliveries', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  subscriptionId: uuid('subscription_id').references(() => webhookSubscriptions.id, { onDelete: 'cascade' }).notNull(),
-  eventId: uuid('event_id').references(() => events.id, { onDelete: 'cascade' }).notNull(),
-  /** HTTP-Response */
-  statusCode: integer('status_code'),
-  responseBody: text('response_body'),
-  responseTimeMs: integer('response_time_ms'),
-  attemptNumber: integer('attempt_number').default(1).notNull(),
-  /** 'ok' bei 2xx, 'retry' bei 5xx, 'fail' bei 4xx oder max-retries erreicht */
-  result: varchar('result', { length: 16 }).notNull(),
-  errorMessage: text('error_message'),
-  deliveredAt: timestamp('delivered_at', { withTimezone: true }).defaultNow().notNull(),
-})
-
-// API-Keys — Bearer-Token-Auth für Public REST API + MCP
-export const apiKeys = pgTable('api_keys', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  name: varchar('name', { length: 128 }).notNull(),
-  /** Token-Prefix für UI ('ef_live_abc...') — der volle Token wird nur einmal beim Anlegen gezeigt */
-  prefix: varchar('prefix', { length: 16 }).notNull().unique(),
-  /** sha256-Hash des vollen Tokens, kein Plaintext-Storage */
-  tokenHash: varchar('token_hash', { length: 64 }).notNull(),
-  /** Comma-separated scope-strings: 'subscribers:read','offers:write','events:read','*' */
-  scopes: jsonb('scopes').default([]).notNull(),
-  active: boolean('active').default(true).notNull(),
-  lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
-  createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  expiresAt: timestamp('expires_at', { withTimezone: true }),
-})

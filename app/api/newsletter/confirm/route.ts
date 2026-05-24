@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { newsletterSubscribers, emailTemplates, emailSequences, emailSequenceEnrollments } from '@/lib/db/schema'
 import { eq, and, isNull } from 'drizzle-orm'
 import { sendEmail, renderTemplate } from '@/lib/email/resend'
+import { logEventAsync } from '@/lib/analytics/track'
 
 export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get('token')
@@ -42,22 +43,15 @@ export async function GET(request: NextRequest) {
       })
       .where(eq(newsletterSubscribers.id, subscriber.id))
 
-    // Wave 9 — Event-Emit für CRM/Newsletter/Community-Sync
-    try {
-      const { emitAsync } = await import('@/lib/events/emit')
-      emitAsync({
-        category: 'subscriber',
-        type: 'subscriber.confirmed',
-        payload: {
-          email: subscriber.email,
-          firstName: subscriber.firstName ?? null,
-          source: subscriber.source ?? null,
-          subscriberId: subscriber.id,
-        },
-        source: 'newsletter-api',
-        idempotencyKey: `subscriber.confirmed:${subscriber.id}`,
-      })
-    } catch { /* non-fatal */ }
+    logEventAsync({
+      category: 'subscriber',
+      eventType: 'confirmed',
+      title: 'Newsletter-Anmeldung bestätigt',
+      summary: `${subscriber.email}${subscriber.source ? ` · ${subscriber.source}` : ''}`,
+      refType: 'newsletter_subscriber',
+      refId: subscriber.id,
+      metadata: { source: subscriber.source, firstName: subscriber.firstName },
+    })
 
     // 3. Beehiiv-Status auf active setzen (falls vorhanden)
     if (subscriber.beehiivId) {
@@ -124,9 +118,6 @@ export async function GET(request: NextRequest) {
     }
 
     // 5. Email-Sequenz triggern (doi_confirmed)
-    //    Plus: Framework-spezifisches Auto-Enrollment — wenn der Subscriber via
-    //    Framework-Download kam, wird er zusätzlich in die zum Framework gehörende
-    //    Sequenz aufgenommen (trigger_filter.framework_slug === subscriber.source).
     try {
       const activeSequences = await db
         .select()
@@ -138,15 +129,7 @@ export async function GET(request: NextRequest) {
           )
         )
 
-      const sourceSlug = subscriber.source ?? null
       for (const sequence of activeSequences) {
-        // Filter: wenn trigger_filter.framework_slug gesetzt ist, MUSS er matchen
-        const filter = (sequence.triggerFilter ?? {}) as { framework_slug?: string; source?: string }
-        const requiresFramework = typeof filter.framework_slug === 'string' && filter.framework_slug.length > 0
-        const requiresSource = typeof filter.source === 'string' && filter.source.length > 0
-        if (requiresFramework && filter.framework_slug !== sourceSlug) continue
-        if (requiresSource && filter.source !== sourceSlug) continue
-
         await db.insert(emailSequenceEnrollments).values({
           subscriberId: subscriber.id,
           sequenceId: sequence.id,
@@ -155,9 +138,7 @@ export async function GET(request: NextRequest) {
           nextSendAt: new Date(), // Schritt 0 kann sofort starten
         }).onConflictDoNothing()
       }
-    } catch (e) {
-      console.error('[doi/confirm] sequence enrollment failed', e)
-    }
+    } catch (_) { /* non-fatal */ }
 
     // 6. Weiterleitung zur Danke-Seite
     return NextResponse.redirect(`${baseUrl}/?doi=confirmed`)
@@ -188,7 +169,7 @@ function getDefaultWelcomeHtml(variables: {
     .wrapper { max-width: 560px; margin: 40px auto; background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb; }
     .header { background: #0A0D14; padding: 32px 40px; text-align: center; }
     .logo { color: #ffffff; font-size: 20px; font-weight: 700; }
-    .logo span { color: #1A5FD4; }
+    .logo span { color: #F05A1A; }
     .body { padding: 40px; }
     .body h1 { margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0D0D0B; }
     .body p { margin: 0 0 20px; font-size: 15px; line-height: 1.7; color: #4b5563; }
@@ -202,7 +183,7 @@ function getDefaultWelcomeHtml(variables: {
       <div class="logo">Eilers<span>+</span>Friends</div>
     </div>
     <div class="body">
-      <h1>${greeting} Du bist dabei!🎉</h1>
+      <h1>${greeting} Du bist dabei 🎉</h1>
       <p>
         Deine Email-Adresse ist bestätigt — willkommen in unserer Community
         für ambitionierte Gründer:innen und Führungskräfte.
