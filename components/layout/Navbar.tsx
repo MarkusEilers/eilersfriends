@@ -90,7 +90,7 @@ const NAV_ITEMS: NavItem[] = [
       { key: 'frameworksHub',      descKey: 'frameworksHubDesc',      href: '/frameworks',         icon: LayoutGrid,    accent: '#1A5FD4' },
       { key: 'salesmadeFramework', descKey: 'salesmadeFrameworkDesc', href: '/frameworks',          icon: Briefcase,     accent: '#1A5FD4' },
       { key: 'discoveryScorecard', descKey: 'discoveryScorecardDesc', href: '/frameworks',          icon: ClipboardCheck, accent: '#0F1E3A' },
-      { key: 'blog',               descKey: 'blogDesc',               href: '/#ergebnisse',        icon: Newspaper,     accent: '#6B5CE7' },
+      { key: 'blog',               descKey: 'blogDesc',               href: '/blog',               icon: Newspaper,     accent: '#6B5CE7' },
     ],
   },
   {
