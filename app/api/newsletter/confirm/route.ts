@@ -80,6 +80,43 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // 4b. Auto-enroll user in framework wizard if source maps to one
+    try {
+      const SOURCE_TO_FRAMEWORK: Record<string, string> = {
+        'framework-b2b-angebote': 'b2b-angebote',
+        'b2b-angebote': 'b2b-angebote',
+      }
+      const fwSlug = subscriber.source ? SOURCE_TO_FRAMEWORK[subscriber.source] : null
+      if (fwSlug) {
+        const { ensureWizardTables } = await import('@/lib/db/self-heal')
+        const { sql: dsql } = await import('drizzle-orm')
+        await ensureWizardTables()
+        // Look up an existing user with the same email, or create one
+        const userRows = await db.execute(dsql`
+          SELECT id FROM users WHERE email = ${subscriber.email} LIMIT 1
+        `) as unknown as { id: string }[]
+        let userId: string | null = userRows[0]?.id ?? null
+        if (!userId) {
+          const created = await db.execute(dsql`
+            INSERT INTO users (email, full_name, role, email_verified)
+            VALUES (${subscriber.email}, ${subscriber.firstName ?? subscriber.email}, 'participant', now())
+            ON CONFLICT (email) DO UPDATE SET email_verified = now()
+            RETURNING id
+          `) as unknown as { id: string }[]
+          userId = created[0]?.id ?? null
+        }
+        if (userId) {
+          await db.execute(dsql`
+            INSERT INTO user_framework_state (user_id, framework_slug, current_step, progress, status)
+            VALUES (${userId}, ${fwSlug}, 0, 0, 'active')
+            ON CONFLICT (user_id, framework_slug) DO NOTHING
+          `)
+        }
+      }
+    } catch (enrollErr) {
+      console.error('[doi/confirm] framework auto-enroll failed:', enrollErr)
+    }
+
     // 4. Welcome-Email senden
     try {
       const locale = 'de' // TODO: aus Subscriber-Daten ableiten

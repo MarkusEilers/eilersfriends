@@ -705,3 +705,23 @@ export const pageViews = pgTable('page_views', {
   utmCampaign: text('utm_campaign'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
+
+// ─── User Framework State (Wave 8 Wizard Foundation) ──────────────────────
+// Pro User+Framework eine Row; speichert Wizard-Progress und Step-Antworten.
+export const userFrameworkState = pgTable('user_framework_state', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  frameworkSlug: text('framework_slug').notNull(),
+  /** Welcher Schritt 0..7 (8 Schritte) ist aktuell aktiv */
+  currentStep: integer('current_step').default(0).notNull(),
+  /** Beantwortete Schritte als JSON-Map { "0": {...}, "1": {...} } */
+  stepAnswers: json('step_answers').$type<Record<string, unknown>>().default({}),
+  /** Fortschritt 0..100 */
+  progress: integer('progress').default(0).notNull(),
+  status: text('status').default('active').notNull(), // 'active' | 'completed' | 'paused'
+  startedAt: timestamp('started_at').defaultNow().notNull(),
+  completedAt: timestamp('completed_at'),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => [
+  unique().on(table.userId, table.frameworkSlug),
+])

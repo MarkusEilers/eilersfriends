@@ -1,14 +1,11 @@
 import { sql } from 'drizzle-orm'
 import { db } from './index'
 
-let healed = false
+let healedAnalytics = false
+let healedWizard = false
 
-/**
- * Idempotent table creation for page_views. The events table is handled by
- * lib/events/emit.ts (Wave 9). Safe to call from API routes.
- */
 export async function ensureAnalyticsTables(): Promise<void> {
-  if (healed) return
+  if (healedAnalytics) return
   try {
     await db.execute(sql`
       CREATE TABLE IF NOT EXISTS "page_views" (
@@ -27,8 +24,29 @@ export async function ensureAnalyticsTables(): Promise<void> {
     `)
     await db.execute(sql`CREATE INDEX IF NOT EXISTS "page_views_created_at_idx" ON "page_views" ("created_at" DESC);`)
     await db.execute(sql`CREATE INDEX IF NOT EXISTS "page_views_path_idx" ON "page_views" ("path");`)
-    healed = true
-  } catch (err) {
-    console.error('[self-heal] ensureAnalyticsTables failed:', err)
-  }
+    healedAnalytics = true
+  } catch (err) { console.error('[self-heal] analytics failed:', err) }
+}
+
+export async function ensureWizardTables(): Promise<void> {
+  if (healedWizard) return
+  try {
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS "user_framework_state" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        "user_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+        "framework_slug" text NOT NULL,
+        "current_step" integer DEFAULT 0 NOT NULL,
+        "step_answers" json DEFAULT '{}'::json,
+        "progress" integer DEFAULT 0 NOT NULL,
+        "status" text DEFAULT 'active' NOT NULL,
+        "started_at" timestamp DEFAULT now() NOT NULL,
+        "completed_at" timestamp,
+        "updated_at" timestamp DEFAULT now() NOT NULL,
+        CONSTRAINT user_framework_unique UNIQUE ("user_id", "framework_slug")
+      );
+    `)
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS "ufs_user_slug_idx" ON "user_framework_state" ("user_id", "framework_slug");`)
+    healedWizard = true
+  } catch (err) { console.error('[self-heal] wizard failed:', err) }
 }

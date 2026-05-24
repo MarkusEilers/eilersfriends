@@ -1,11 +1,36 @@
 import Link from 'next/link'
 import { BookOpen, ArrowRight, Sparkles } from 'lucide-react'
+import { auth } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { sql } from 'drizzle-orm'
+import { ensureWizardTables } from '@/lib/db/self-heal'
 
 export const dynamic = 'force-dynamic'
 
+interface UFSRow extends Record<string, unknown> {
+  framework_slug: string
+  progress: number
+  status: string
+  updated_at: Date
+}
+
+const SLUG_TO_TITLE: Record<string, string> = {
+  'b2b-angebote': 'Der Bauplan für unwiderstehliche B2B-Angebote',
+}
+
 export default async function MyFrameworksPage() {
-  // TODO Wave 8: lade aus user_framework_state die abonnierten Frameworks
-  const subscribed: { slug: string; title: string; progress: number; updatedAt: string }[] = []
+  const session = await auth()
+  await ensureWizardTables()
+
+  let subscribed: UFSRow[] = []
+  if (session?.user?.id) {
+    subscribed = (await db.execute(sql`
+      SELECT framework_slug, progress, status, updated_at
+      FROM user_framework_state
+      WHERE user_id = ${session.user.id}
+      ORDER BY updated_at DESC
+    `)) as unknown as UFSRow[]
+  }
 
   return (
     <div>
@@ -24,7 +49,7 @@ export default async function MyFrameworksPage() {
           </div>
           <h2 className="text-lg font-bold text-gray-900">Noch kein Framework gestartet</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-gray-500">
-            Stöbere durch unsere Bauplä​ne, Tools und Inspirationen — jedes mit PDF, Video und AI-Wizard.
+            Stöbere durch unsere Baupläne, Tools und Inspirationen — jedes mit PDF, Video und AI-Wizard.
           </p>
           <Link
             href={'/frameworks' as '/'}
@@ -36,10 +61,19 @@ export default async function MyFrameworksPage() {
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2">
           {subscribed.map((fw) => (
-            <li key={fw.slug} className="rounded-2xl border border-gray-200 bg-white p-5">
-              <h3 className="text-base font-bold">{fw.title}</h3>
-              <p className="mt-1 text-xs text-gray-500">Fortschritt: {fw.progress}%</p>
-              <Link href={`/frameworks/${fw.slug}` as '/'} className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-blue-600">
+            <li key={fw.framework_slug} className="rounded-2xl border border-gray-200 bg-white p-5">
+              <p className="text-xs font-bold uppercase tracking-widest text-blue-700">SalesMade</p>
+              <h3 className="mt-1 text-base font-bold text-gray-900">
+                {SLUG_TO_TITLE[fw.framework_slug] ?? fw.framework_slug}
+              </h3>
+              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+                <div className="h-full rounded-full bg-blue-600" style={{ width: `${fw.progress}%` }} />
+              </div>
+              <p className="mt-2 text-xs text-gray-500">{fw.progress}% · {fw.status}</p>
+              <Link
+                href={`/dashboard/frameworks/${fw.framework_slug}` as '/'}
+                className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-600"
+              >
                 Weitermachen <ArrowRight size={12} />
               </Link>
             </li>

@@ -49,6 +49,23 @@ export function LpHero({ content, accent, emailList }: LpHeroProps) {
       )}
 
       <div className="relative mx-auto max-w-3xl text-center">
+                {Array.isArray(content.pills) && content.pills.length > 0 && (
+          <div className="mb-6 flex flex-wrap justify-center gap-2">
+            {(content.pills as string[]).map((p, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center rounded-full border px-3.5 py-1.5 text-xs font-semibold backdrop-blur-sm"
+                style={{
+                  borderColor: content.backgroundImage ? 'rgba(255,255,255,0.4)' : `${accent}40`,
+                  backgroundColor: content.backgroundImage ? 'rgba(255,255,255,0.15)' : `${accent}10`,
+                  color: content.backgroundImage ? 'white' : accent,
+                }}
+              >
+                {p}
+              </span>
+            ))}
+          </div>
+        )}
         <h1
           className="text-4xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-6xl"
           style={{ color: content.backgroundImage ? 'white' : '#0D0D0B' }}
