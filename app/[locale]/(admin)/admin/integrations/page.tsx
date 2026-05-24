@@ -4,7 +4,7 @@ import { IntegrationsManager } from '@/components/admin/IntegrationsManager'
 
 export const dynamic = 'force-dynamic'
 
-interface WebhookRow {
+interface WebhookRow extends Record<string, unknown> {
   id: string
   name: string
   url: string
@@ -16,7 +16,7 @@ interface WebhookRow {
   total_failed: number
   notes: string | null
 }
-interface ApiKeyRow {
+interface ApiKeyRow extends Record<string, unknown> {
   id: string
   name: string
   prefix: string
@@ -26,7 +26,7 @@ interface ApiKeyRow {
   created_at: string
   expires_at: string | null
 }
-interface EventRow {
+interface EventRow extends Record<string, unknown> {
   id: string
   category: string
   type: string
