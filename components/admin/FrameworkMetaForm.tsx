@@ -284,13 +284,21 @@ function ColorField({ label, name, value, onChange }: { label: string; name: str
     <div>
       <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">{label}</label>
       <div className="flex gap-1.5 items-center">
-        <input
-          type="color"
-          value={normalized}
-          onChange={(e) => onChange(e.target.value.toUpperCase())}
-          className="h-9 w-9 rounded border border-gray-200 cursor-pointer"
-          aria-label={`${label} Color-Picker`}
-        />
+        <div className="relative h-9 w-9 flex-shrink-0">
+          <div
+            className="h-9 w-9 rounded-lg border border-gray-200 shadow-sm"
+            style={{ backgroundColor: normalized }}
+            aria-hidden
+          />
+          <input
+            type="color"
+            value={normalized}
+            onChange={(e) => onChange(e.target.value.toUpperCase())}
+            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+            aria-label={`${label} Color-Picker`}
+            title={`${label} ändern`}
+          />
+        </div>
         <input
           type="text"
           name={name}
