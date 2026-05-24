@@ -17,8 +17,9 @@ interface Props {
 }
 
 export function StepSummary({ stepKey, answers, onEdit }: Props) {
+  const a = answers ?? {}
+
   if (stepKey === '00-welcome') {
-    const a = answers as Record<string, unknown>
     return (
       <div className="space-y-4 max-w-prose">
         <DoneHeader onEdit={onEdit} />
@@ -32,8 +33,8 @@ export function StepSummary({ stepKey, answers, onEdit }: Props) {
         </div>
         {Array.isArray(a.keywords) && a.keywords.length > 0 && (
           <div className="flex flex-wrap gap-2 pt-1">
-            {(a.keywords as string[]).map((k) => (
-              <span key={k} className="rounded-full px-3 py-1 text-xs font-medium" style={{ backgroundColor: '#FFF1EB', color: '#F05A1A' }}>{k}</span>
+            {a.keywords.map((k, i) => (
+              <span key={String(k) + '-' + i} className="rounded-full px-3 py-1 text-xs font-medium" style={{ backgroundColor: '#FFF1EB', color: '#F05A1A' }}>{String(k)}</span>
             ))}
           </div>
         )}
@@ -42,17 +43,17 @@ export function StepSummary({ stepKey, answers, onEdit }: Props) {
   }
 
   if (stepKey === '01-beef-radar') {
-    const cards = (answers.cards as Card[] | undefined) ?? []
+    const cards = (Array.isArray(a.cards) ? a.cards : []) as Card[]
     const grouped: Record<'what' | 'how' | 'why', Card[]> = { what: [], how: [], why: [] }
-    cards.forEach((c) => grouped[c.column].push(c))
+    cards.forEach((c) => { if (c.column) grouped[c.column].push(c) })
     return (
-      <div className="space-y-5 max-w-3xl print-friendly">
+      <div className="space-y-5 max-w-3xl">
         <DoneHeader onEdit={onEdit} />
-        {answers.offerDescription ? (
+        {a.offerDescription && (
           <p className="text-sm italic text-gray-600 leading-relaxed border-l-2 border-gray-200 pl-3">
-            {String(answers.offerDescription)}
+            {String(a.offerDescription)}
           </p>
-        ) : null}
+        )}
         <div className="grid gap-6 sm:grid-cols-3">
           {(['what','how','why'] as const).map((col) => (
             <div key={col}>
@@ -75,11 +76,10 @@ export function StepSummary({ stepKey, answers, onEdit }: Props) {
     )
   }
 
-  // Generic fallback — raw answers as definition list
   return (
     <div className="space-y-3 max-w-prose">
       <DoneHeader onEdit={onEdit} />
-      <pre className="text-xs leading-relaxed text-gray-700 bg-gray-50 rounded p-3 overflow-x-auto">{JSON.stringify(answers, null, 2)}</pre>
+      <pre className="text-xs leading-relaxed text-gray-700 bg-gray-50 rounded p-3 overflow-x-auto">{JSON.stringify(a, null, 2)}</pre>
     </div>
   )
 }
