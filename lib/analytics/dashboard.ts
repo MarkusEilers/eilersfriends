@@ -30,16 +30,33 @@ export interface BriefingItem {
   createdAt: Date
 }
 
-type SqlRow = Record<string, string | number | null>
+type SqlRow = Record<string, unknown>
 
-function asNum(v: string | number | null | undefined): number {
+function asNum(v: unknown): number {
   if (v == null) return 0
-  return typeof v === 'number' ? v : parseInt(v, 10) || 0
+  if (typeof v === 'number') return v
+  if (typeof v === 'string') return parseInt(v, 10) || 0
+  if (typeof v === 'bigint') return Number(v)
+  return 0
+}
+
+/**
+ * Drizzle's db.execute(sql.raw(...)) returns different shapes depending on
+ * the driver version: either a plain Array<Row> (older postgres-js) or
+ * { rows: Array<Row> } (newer). This helper normalises both.
+ */
+function rowsOf(result: unknown): SqlRow[] {
+  if (Array.isArray(result)) return result as SqlRow[]
+  if (result && typeof result === 'object' && 'rows' in result) {
+    const r = (result as { rows: unknown }).rows
+    if (Array.isArray(r)) return r as SqlRow[]
+  }
+  return []
 }
 
 async function rangeCount(table: string, column: string, where?: string): Promise<RangeCount> {
   const whereClause = where ? `WHERE ${where}` : ''
-  const rows = (await db.execute(sql.raw(`
+  const result = await db.execute(sql.raw(`
     SELECT
       COUNT(*) FILTER (WHERE ${column} >= now() - INTERVAL '1 day') AS today,
       COUNT(*) FILTER (WHERE ${column} >= now() - INTERVAL '7 days') AS last7d,
@@ -47,8 +64,8 @@ async function rangeCount(table: string, column: string, where?: string): Promis
       COUNT(*) AS total
     FROM "${table}"
     ${whereClause}
-  `))) as unknown as SqlRow[]
-  const r = rows[0] ?? {}
+  `))
+  const r = rowsOf(result)[0] ?? {}
   return {
     today: asNum(r.today), last7d: asNum(r.last7d),
     last30d: asNum(r.last30d), total: asNum(r.total),
@@ -56,15 +73,15 @@ async function rangeCount(table: string, column: string, where?: string): Promis
 }
 
 async function uniqueVisitorsRange(): Promise<RangeCount> {
-  const rows = (await db.execute(sql.raw(`
+  const result = await db.execute(sql.raw(`
     SELECT
       COUNT(DISTINCT session_hash) FILTER (WHERE created_at >= now() - INTERVAL '1 day') AS today,
       COUNT(DISTINCT session_hash) FILTER (WHERE created_at >= now() - INTERVAL '7 days') AS last7d,
       COUNT(DISTINCT session_hash) FILTER (WHERE created_at >= now() - INTERVAL '30 days') AS last30d,
       COUNT(DISTINCT session_hash) AS total
     FROM "page_views" WHERE session_hash IS NOT NULL
-  `))) as unknown as SqlRow[]
-  const r = rows[0] ?? {}
+  `))
+  const r = rowsOf(result)[0] ?? {}
   return {
     today: asNum(r.today), last7d: asNum(r.last7d),
     last30d: asNum(r.last30d), total: asNum(r.total),
@@ -72,8 +89,9 @@ async function uniqueVisitorsRange(): Promise<RangeCount> {
 }
 
 async function tableExists(name: string): Promise<boolean> {
-  const rows = (await db.execute(sql.raw(`SELECT to_regclass('public."${name}"') AS reg`))) as unknown as SqlRow[]
-  return Boolean(rows[0]?.reg)
+  const result = await db.execute(sql.raw(`SELECT to_regclass('public."${name}"') AS reg`))
+  const r = rowsOf(result)[0]
+  return Boolean(r?.reg)
 }
 
 const EVENT_TITLES: Record<string, string> = {
@@ -98,14 +116,14 @@ async function recentContentChanges(limit = 15): Promise<BriefingItem[]> {
   const items: BriefingItem[] = []
 
   if (await tableExists('events')) {
-    const rows = (await db.execute(sql.raw(`
-      SELECT id::text, category::text, type, payload, source, occurred_at
+    const result = await db.execute(sql.raw(`
+      SELECT id::text AS id, category::text AS category, type, payload, source, occurred_at
       FROM events
       ORDER BY occurred_at DESC
       LIMIT ${limit}
-    `))) as unknown as Array<Record<string, unknown>>
-    for (const r of rows) {
-      const ts = r.occurred_at as Date | null
+    `))
+    for (const r of rowsOf(result)) {
+      const ts = r.occurred_at as Date | string | null
       if (!ts) continue
       const type = String(r.type ?? '')
       const payload = (r.payload ?? {}) as Record<string, unknown>
@@ -121,25 +139,26 @@ async function recentContentChanges(limit = 15): Promise<BriefingItem[]> {
         eventType: type,
         title: EVENT_TITLES[type] ?? type,
         summary,
-        refType: String(r.source ?? '') || null,
+        refType: r.source ? String(r.source) : null,
         refId: null,
-        createdAt: ts instanceof Date ? ts : new Date(ts as unknown as string),
+        createdAt: ts instanceof Date ? ts : new Date(ts as string),
       })
     }
   }
 
   if (await tableExists('landing_pages')) {
-    const rows = (await db.execute(sql.raw(`
-      SELECT id::text, title, slug, updated_at, created_at
+    const result = await db.execute(sql.raw(`
+      SELECT id::text AS id, title, slug, updated_at, created_at
       FROM landing_pages
       ORDER BY updated_at DESC
       LIMIT ${Math.min(limit, 10)}
-    `))) as unknown as Array<Record<string, string | Date | null>>
-    for (const r of rows) {
-      const ts = (r.updated_at ?? r.created_at) as Date | null
+    `))
+    for (const r of rowsOf(result)) {
+      const ts = (r.updated_at ?? r.created_at) as Date | string | null
       if (!ts) continue
-      const isNew = r.updated_at && r.created_at &&
-        Math.abs((r.updated_at as Date).getTime() - (r.created_at as Date).getTime()) < 1000
+      const dt = ts instanceof Date ? ts : new Date(ts as string)
+      const ct = r.created_at instanceof Date ? r.created_at : (r.created_at ? new Date(r.created_at as string) : null)
+      const isNew = ct && Math.abs(dt.getTime() - ct.getTime()) < 1000
       items.push({
         id: `lp-${r.id}`,
         category: 'content',
@@ -148,21 +167,22 @@ async function recentContentChanges(limit = 15): Promise<BriefingItem[]> {
         summary: `${r.title} · /lp/${r.slug}`,
         refType: 'landing_page',
         refId: String(r.id),
-        createdAt: ts instanceof Date ? ts : new Date(ts as unknown as string),
+        createdAt: dt,
       })
     }
   }
 
   if (await tableExists('programs')) {
-    const rows = (await db.execute(sql.raw(`
-      SELECT id::text, slug, hero_headline, updated_at, created_at, is_published
+    const result = await db.execute(sql.raw(`
+      SELECT id::text AS id, slug, hero_headline, updated_at, created_at, is_published
       FROM programs
       ORDER BY updated_at DESC
       LIMIT ${Math.min(limit, 10)}
-    `))) as unknown as Array<Record<string, string | Date | null | boolean>>
-    for (const r of rows) {
-      const ts = (r.updated_at ?? r.created_at) as Date | null
+    `))
+    for (const r of rowsOf(result)) {
+      const ts = (r.updated_at ?? r.created_at) as Date | string | null
       if (!ts) continue
+      const dt = ts instanceof Date ? ts : new Date(ts as string)
       items.push({
         id: `prog-${r.id}`,
         category: 'content',
@@ -171,7 +191,7 @@ async function recentContentChanges(limit = 15): Promise<BriefingItem[]> {
         summary: `${r.hero_headline ?? r.slug} · ${r.is_published ? 'published' : 'draft'}`,
         refType: 'program',
         refId: String(r.id),
-        createdAt: ts instanceof Date ? ts : new Date(ts as unknown as string),
+        createdAt: dt,
       })
     }
   }
@@ -182,27 +202,27 @@ async function recentContentChanges(limit = 15): Promise<BriefingItem[]> {
 
 async function topPaths(limit = 8): Promise<{ path: string; views: number }[]> {
   if (!(await tableExists('page_views'))) return []
-  const rows = (await db.execute(sql.raw(`
+  const result = await db.execute(sql.raw(`
     SELECT path, COUNT(*)::int AS views
     FROM page_views
     WHERE created_at >= now() - INTERVAL '30 days'
     GROUP BY path ORDER BY views DESC LIMIT ${limit}
-  `))) as unknown as Array<{ path: string; views: number }>
-  return rows.map((r) => ({ path: r.path, views: asNum(r.views as unknown as number) }))
+  `))
+  return rowsOf(result).map((r) => ({ path: String(r.path), views: asNum(r.views) }))
 }
 
 async function topReferrers(limit = 6): Promise<{ host: string; views: number }[]> {
   if (!(await tableExists('page_views'))) return []
-  const rows = (await db.execute(sql.raw(`
+  const result = await db.execute(sql.raw(`
     SELECT referrer_host AS host, COUNT(*)::int AS views
     FROM page_views
     WHERE created_at >= now() - INTERVAL '30 days'
       AND referrer_host IS NOT NULL AND referrer_host != ''
     GROUP BY referrer_host ORDER BY views DESC LIMIT ${limit}
-  `))) as unknown as Array<{ host: string | null; views: number }>
-  return rows
-    .map((r) => ({ host: r.host ?? '—', views: asNum(r.views as unknown as number) }))
-    .filter((r) => r.host)
+  `))
+  return rowsOf(result)
+    .map((r) => ({ host: r.host ? String(r.host) : '—', views: asNum(r.views) }))
+    .filter((r) => r.host && r.host !== '—')
 }
 
 export async function getDashboardStats(): Promise<DashboardStats> {
