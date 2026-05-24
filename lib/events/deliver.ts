@@ -10,7 +10,7 @@ import crypto from 'crypto'
  * Signatur-Format: 'X-EF-Signature: sha256=<hex>' — kompatibel mit GitHub/Stripe-Style.
  */
 
-interface Subscription {
+interface Subscription extends Record<string, unknown> {
   id: string
   name: string
   url: string
@@ -19,7 +19,7 @@ interface Subscription {
   active: boolean
 }
 
-interface PendingEvent {
+interface PendingEvent extends Record<string, unknown> {
   id: string
   category: string
   type: string
