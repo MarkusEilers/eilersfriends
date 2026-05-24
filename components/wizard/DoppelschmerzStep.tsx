@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Loader2, Sparkles, Plus, X, Save, CheckCircle2 } from 'lucide-react'
 
-type Item = Record<string, string>
+type Item = Record<string, unknown>
 interface Answers extends Record<string, unknown> { today?: Item[] }
 
 interface Props { initialAnswers?: Answers; onSaved?: (p: number) => void }
@@ -93,9 +93,9 @@ export function DoppelschmerzStep({ initialAnswers, onSaved }: Props) {
             <li key={i} className="rounded-xl border border-gray-200 bg-white p-3">
               <div className="flex items-start gap-2">
                 <div className="flex-1 space-y-2">
-                  <input value={item.topic ?? ''} onChange={(e) => updateItem(i, { topic: e.target.value })}
+                  <input value={String(item.topic ?? '')} onChange={(e) => updateItem(i, { topic: e.target.value })}
                     placeholder="Topic" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.reality ?? ''} onChange={(e) => updateItem(i, { reality: e.target.value })}
+                  <input value={String(item.reality ?? '')} onChange={(e) => updateItem(i, { reality: e.target.value })}
                     placeholder="Reality heute" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
                 </div>
                 <button onClick={() => removeItem(i)} className="text-gray-400 hover:text-red-500 mt-1"><X size={12} /></button>

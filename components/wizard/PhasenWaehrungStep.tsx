@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import { Loader2, Sparkles, Plus, X, Save, CheckCircle2 } from 'lucide-react'
 
-type Item = Record<string, string>
+type Item = Record<string, unknown>
 interface Answers extends Record<string, unknown> { currencies?: Item[] }
 
 interface Props { initialAnswers?: Answers; onSaved?: (p: number) => void }
 
-export function PhasenWährungStep({ initialAnswers, onSaved }: Props) {
+export function PhasenWaehrungStep({ initialAnswers, onSaved }: Props) {
   const [phasesContext, setPhasesContext] = useState(initialAnswers?.phasesContext ?? '')
   const [items, setItems] = useState<Item[]>((initialAnswers?.currencies as Item[] | undefined) ?? [])
   const [status, setStatus] = useState<'idle' | 'suggesting' | 'saving' | 'saved' | 'error'>('idle')
@@ -86,19 +86,19 @@ export function PhasenWährungStep({ initialAnswers, onSaved }: Props) {
             <li key={i} className="rounded-xl border border-gray-200 bg-white p-3">
               <div className="flex items-start gap-2">
                 <div className="flex-1 space-y-2">
-                  <input value={item.phaseName ?? ''} onChange={(e) => updateItem(i, { phaseName: e.target.value })}
+                  <input value={String(item.phaseName ?? '')} onChange={(e) => updateItem(i, { phaseName: e.target.value })}
                     placeholder="Phase" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.metric ?? ''} onChange={(e) => updateItem(i, { metric: e.target.value })}
+                  <input value={String(item.metric ?? '')} onChange={(e) => updateItem(i, { metric: e.target.value })}
                     placeholder="Metric" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.baseline ?? ''} onChange={(e) => updateItem(i, { baseline: e.target.value })}
+                  <input value={String(item.baseline ?? '')} onChange={(e) => updateItem(i, { baseline: e.target.value })}
                     placeholder="Baseline" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.pessimist ?? ''} onChange={(e) => updateItem(i, { pessimist: e.target.value })}
+                  <input value={String(item.pessimist ?? '')} onChange={(e) => updateItem(i, { pessimist: e.target.value })}
                     placeholder="Pessimist" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.realist ?? ''} onChange={(e) => updateItem(i, { realist: e.target.value })}
+                  <input value={String(item.realist ?? '')} onChange={(e) => updateItem(i, { realist: e.target.value })}
                     placeholder="Realist" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.optimist ?? ''} onChange={(e) => updateItem(i, { optimist: e.target.value })}
+                  <input value={String(item.optimist ?? '')} onChange={(e) => updateItem(i, { optimist: e.target.value })}
                     placeholder="Optimist" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.measureAt ?? ''} onChange={(e) => updateItem(i, { measureAt: e.target.value })}
+                  <input value={String(item.measureAt ?? '')} onChange={(e) => updateItem(i, { measureAt: e.target.value })}
                     placeholder="Mess-Zeitpunkt" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
                 </div>
                 <button onClick={() => removeItem(i)} className="text-gray-400 hover:text-red-500 mt-1"><X size={12} /></button>

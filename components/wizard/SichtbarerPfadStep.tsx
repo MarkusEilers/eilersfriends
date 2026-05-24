@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Loader2, Sparkles, Plus, X, Save, CheckCircle2 } from 'lucide-react'
 
-type Item = Record<string, string>
+type Item = Record<string, unknown>
 interface Answers extends Record<string, unknown> { phases?: Item[] }
 
 interface Props { initialAnswers?: Answers; onSaved?: (p: number) => void }
@@ -93,13 +93,13 @@ export function SichtbarerPfadStep({ initialAnswers, onSaved }: Props) {
             <li key={i} className="rounded-xl border border-gray-200 bg-white p-3">
               <div className="flex items-start gap-2">
                 <div className="flex-1 space-y-2">
-                  <input value={item.name ?? ''} onChange={(e) => updateItem(i, { name: e.target.value })}
+                  <input value={String(item.name ?? '')} onChange={(e) => updateItem(i, { name: e.target.value })}
                     placeholder="Phase-Name (1 Wort)" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.input ?? ''} onChange={(e) => updateItem(i, { input: e.target.value })}
+                  <input value={String(item.input ?? '')} onChange={(e) => updateItem(i, { input: e.target.value })}
                     placeholder="Input" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.output ?? ''} onChange={(e) => updateItem(i, { output: e.target.value })}
+                  <input value={String(item.output ?? '')} onChange={(e) => updateItem(i, { output: e.target.value })}
                     placeholder="Output" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.durationWeeks ?? ''} onChange={(e) => updateItem(i, { durationWeeks: e.target.value })}
+                  <input value={String(item.durationWeeks ?? '')} onChange={(e) => updateItem(i, { durationWeeks: e.target.value })}
                     placeholder="Dauer (Wo)" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
                 </div>
                 <button onClick={() => removeItem(i)} className="text-gray-400 hover:text-red-500 mt-1"><X size={12} /></button>

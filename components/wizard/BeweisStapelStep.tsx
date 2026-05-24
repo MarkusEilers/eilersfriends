@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Loader2, Sparkles, Plus, X, Save, CheckCircle2 } from 'lucide-react'
 
-type Item = Record<string, string>
+type Item = Record<string, unknown>
 interface Answers extends Record<string, unknown> { proofs?: Item[] }
 
 interface Props { initialAnswers?: Answers; onSaved?: (p: number) => void }
@@ -86,13 +86,13 @@ export function BeweisStapelStep({ initialAnswers, onSaved }: Props) {
             <li key={i} className="rounded-xl border border-gray-200 bg-white p-3">
               <div className="flex items-start gap-2">
                 <div className="flex-1 space-y-2">
-                  <input value={item.class ?? ''} onChange={(e) => updateItem(i, { class: e.target.value })}
+                  <input value={String(item.class ?? '')} onChange={(e) => updateItem(i, { class: e.target.value })}
                     placeholder="Klasse (A/B/C/D/E)" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.text ?? ''} onChange={(e) => updateItem(i, { text: e.target.value })}
+                  <input value={String(item.text ?? '')} onChange={(e) => updateItem(i, { text: e.target.value })}
                     placeholder="Beweis-Text" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.source ?? ''} onChange={(e) => updateItem(i, { source: e.target.value })}
+                  <input value={String(item.source ?? '')} onChange={(e) => updateItem(i, { source: e.target.value })}
                     placeholder="Source" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
-                  <input value={item.methodology ?? ''} onChange={(e) => updateItem(i, { methodology: e.target.value })}
+                  <input value={String(item.methodology ?? '')} onChange={(e) => updateItem(i, { methodology: e.target.value })}
                     placeholder="Methodik" className="w-full rounded-lg border border-gray-100 bg-white px-2.5 py-1.5 text-xs focus:outline-none" />
                 </div>
                 <button onClick={() => removeItem(i)} className="text-gray-400 hover:text-red-500 mt-1"><X size={12} /></button>
