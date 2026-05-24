@@ -18,9 +18,12 @@ export type ResolvedFrameworkMeta = CardMeta & { title?: string; metaDescription
 
 /**
  * Resolve a Framework's display meta in this priority:
- *   1) lib/i18n/messages/<locale>.json :: frameworks.<slug>  (i18n source of truth)
- *   2) DB landing_pages.card_meta                            (admin-edited override)
- *   3) DEFAULT_CARD_META in framework-meta.ts                (hardcoded fallback)
+ *   1) DB landing_pages.card_meta                            (admin-edited — SIEGT)
+ *   2) lib/i18n/messages/<locale>.json :: frameworks.<slug>  (i18n fallback für Lokalisierung)
+ *   3) DEFAULT_CARD_META in framework-meta.ts                (hardcoded letzte Rettung)
+ *
+ * Pro Feld: wenn DB einen non-empty Wert hat → DB. Sonst i18n. Sonst Default.
+ * Das ist der "Admin-Edits gewinnen immer"-Garantie, die wir der UI versprechen.
  */
 export async function resolveFrameworkMeta(
   slug: string,
@@ -28,17 +31,29 @@ export async function resolveFrameworkMeta(
 ): Promise<ResolvedFrameworkMeta> {
   const locale = await getLocale()
   const fromMessages = MESSAGE_FRAMEWORKS[locale]?.[slug] ?? MESSAGE_FRAMEWORKS['de']?.[slug]
-  const base = mergedMeta(slug, dbMeta)
-  if (!fromMessages) return base
+  const merged = mergedMeta(slug, dbMeta)            // DEFAULT × DB
+
+  // Helper: take dbVal if non-empty, else i18nVal, else mergedVal (which has default)
+  function pick<T>(dbVal: T | undefined, i18nVal: T | undefined, mergedVal: T | undefined): T | undefined {
+    if (dbVal !== undefined && dbVal !== null && dbVal !== '') return dbVal
+    if (i18nVal !== undefined && i18nVal !== null) return i18nVal
+    return mergedVal
+  }
+
+  const db = dbMeta ?? {} as CardMeta
+  const i18n = (fromMessages ?? {}) as Record<string, unknown>
 
   return {
-    ...base,
-    posterTitle: (fromMessages.posterTitle as string) ?? base.posterTitle,
-    posterSubtitle: (fromMessages.posterSubtitle as string) ?? base.posterSubtitle,
-    tagline: (fromMessages.tagline as string) ?? base.tagline,
-    agentLabel: (fromMessages.agentLabel as string) ?? base.agentLabel,
-    deliverables: (fromMessages.deliverables as Deliverable[]) ?? base.deliverables,
-    title: fromMessages.title as string | undefined,
-    metaDescription: fromMessages.metaDescription as string | undefined,
+    ...merged,
+    posterTitle:    pick<string>(db.posterTitle,    i18n.posterTitle    as string | undefined, merged.posterTitle),
+    posterSubtitle: pick<string>(db.posterSubtitle, i18n.posterSubtitle as string | undefined, merged.posterSubtitle),
+    tagline:        pick<string>(db.tagline,        i18n.tagline        as string | undefined, merged.tagline),
+    agentLabel:     pick<string>(db.agentLabel,     i18n.agentLabel     as string | undefined, merged.agentLabel),
+    tone:           db.tone ?? merged.tone,
+    deliverables:   (db.deliverables && db.deliverables.length > 0)
+                      ? db.deliverables
+                      : (i18n.deliverables as Deliverable[] | undefined) ?? merged.deliverables,
+    title:          (i18n.title          as string | undefined),
+    metaDescription:(i18n.metaDescription as string | undefined),
   }
 }
