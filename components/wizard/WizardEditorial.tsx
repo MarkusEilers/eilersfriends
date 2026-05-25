@@ -77,8 +77,8 @@ export function WizardEditorial({ answers, stepsCompleted }: Props) {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-10">
-        <div className="grid gap-10 lg:grid-cols-[180px_1fr_240px]">
+      <div className="mx-auto max-w-screen-2xl px-4 py-10">
+        <div className="grid gap-10 lg:grid-cols-[200px_1fr_280px] xl:grid-cols-[220px_1fr_300px]">
           <aside className="hidden lg:block">
             <div className="sticky top-20">
               <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">Sprungmarken</p>
@@ -108,7 +108,7 @@ export function WizardEditorial({ answers, stepsCompleted }: Props) {
             </div>
           </aside>
 
-          <main className="min-w-0 max-w-3xl mx-auto w-full space-y-20">
+          <main className="min-w-0 max-w-4xl w-full space-y-20">
             <header>
               <p className="text-[11px] font-bold uppercase tracking-widest text-gray-500">SalesMade · Bauplan</p>
               <h1 className="mt-1 text-4xl sm:text-5xl leading-[1.1] tracking-tight" style={{ fontFamily: 'var(--font-serif)', color: '#0D0D0B' }}>

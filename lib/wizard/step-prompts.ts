@@ -29,7 +29,16 @@ Regeln:
 - Konkret statt Floskel. „Setup-Workshop" statt „Beratung". „Playbook-Bibliothek" statt „Unterstuetzung".
 - Wenn der User existierende Bausteine hat (existingItems), liefere NUR Bausteine die noch fehlen oder schaerfen.
 - Anti-Pattern: „Beratung", „Begleitung", „Unterstuetzung", „Coaching" (zu allgemein).
-- Output strikt als JSON-Objekt mit Schluessel "items": [{name, description}].`,
+- Output strikt als JSON-Objekt mit Schluessel "items": [{name, description}].
+
+WICHTIGSTE REGEL — KEINE HALLUZINATION:
+- Nutze ausschliesslich Informationen aus dem COMPANY PROFILE (Welcome-Step) und den Vorherigen-Wizard-Antworten.
+- Erfinde NIEMALS Bausteine, Features, Produkte oder Beispiele, die nicht im COMPANY PROFILE belegt sind.
+- Wenn das COMPANY PROFILE zu duenn ist: gib eine LEERE items/cards-Liste zurueck und schreib im notes-Feld eine Klaerungsfrage an den User (z.B. "Welche konkreten Bausteine hat dein Angebot?").
+- Wenn der User vorhandene Eingaben hat (existingItems/existingCards): schlag nur Dinge vor, die zu DIESEM Angebot passen, nicht zu einem generischen Beispiel.
+- Lieber 3 belegte Bausteine als 5 erfundene.
+- Wenn die Branche des Profiles "Coaching/Vertrieb/Software" ist, schlag NICHT plötzlich "Patientenfeedback-Tool" o.ä. vor.
+`,
   inputSchema: {
     type: 'object',
     properties: {
@@ -74,7 +83,16 @@ WICHTIG:
 - Pro WHAT mindestens ein HOW und mindestens ein WHY (3:3:3-Setup als Idealfall, 2:3:4 erlaubt).
 - WHY ist immer mit einer Zahl. "Verbessert Effizienz" ist NICHT WHY. "−45 Min Dokumentation pro Behandlertag" IST WHY.
 - Sprache: kurz, präzise. Keine Marketing-Floskeln ("nahtlos", "innovativ", "ganzheitlich"). Keine "ehrliche Rechnung"-Phrasen.
-- Wenn der Input zu vage ist, frag im notes-Feld eine Klärungsfrage statt zu raten.`,
+- Wenn der Input zu vage ist, frag im notes-Feld eine Klärungsfrage statt zu raten.
+
+WICHTIGSTE REGEL — KEINE HALLUZINATION:
+- Nutze ausschliesslich Informationen aus dem COMPANY PROFILE (Welcome-Step) und den Vorherigen-Wizard-Antworten.
+- Erfinde NIEMALS Bausteine, Features, Produkte oder Beispiele, die nicht im COMPANY PROFILE belegt sind.
+- Wenn das COMPANY PROFILE zu duenn ist: gib eine LEERE items/cards-Liste zurueck und schreib im notes-Feld eine Klaerungsfrage an den User (z.B. "Welche konkreten Bausteine hat dein Angebot?").
+- Wenn der User vorhandene Eingaben hat (existingItems/existingCards): schlag nur Dinge vor, die zu DIESEM Angebot passen, nicht zu einem generischen Beispiel.
+- Lieber 3 belegte Bausteine als 5 erfundene.
+- Wenn die Branche des Profiles "Coaching/Vertrieb/Software" ist, schlag NICHT plötzlich "Patientenfeedback-Tool" o.ä. vor.
+`,
   inputSchema: {
     type: 'object',
     properties: {
@@ -117,7 +135,16 @@ const DOPPELSCHMERZ: StepPromptDef = {
 HEUTE: Welche Probleme löst das Angebot HEUTE konkret? Das macht es relevant.
 MORGEN: Welche Probleme kommen in 12-24 Monaten so sicher, dass man sie gleich mitlöst? Das macht es strategisch. Strategische Angebote verkaufen sich teurer und länger.
 
-Output je 3-5 Items pro Seite mit Topic + Reality (heute) bzw. Topic + Trigger (morgen, z.B. Regulatorik, Marktentwicklung, Tech-Shift).`,
+Output je 3-5 Items pro Seite mit Topic + Reality (heute) bzw. Topic + Trigger (morgen, z.B. Regulatorik, Marktentwicklung, Tech-Shift).
+
+WICHTIGSTE REGEL — KEINE HALLUZINATION:
+- Nutze ausschliesslich Informationen aus dem COMPANY PROFILE (Welcome-Step) und den Vorherigen-Wizard-Antworten.
+- Erfinde NIEMALS Bausteine, Features, Produkte oder Beispiele, die nicht im COMPANY PROFILE belegt sind.
+- Wenn das COMPANY PROFILE zu duenn ist: gib eine LEERE items/cards-Liste zurueck und schreib im notes-Feld eine Klaerungsfrage an den User (z.B. "Welche konkreten Bausteine hat dein Angebot?").
+- Wenn der User vorhandene Eingaben hat (existingItems/existingCards): schlag nur Dinge vor, die zu DIESEM Angebot passen, nicht zu einem generischen Beispiel.
+- Lieber 3 belegte Bausteine als 5 erfundene.
+- Wenn die Branche des Profiles "Coaching/Vertrieb/Software" ist, schlag NICHT plötzlich "Patientenfeedback-Tool" o.ä. vor.
+`,
   inputSchema: {
     type: 'object',
     properties: {
@@ -146,7 +173,16 @@ const SICHTBARER_PFAD: StepPromptDef = {
 
 Ziel: Sobald der Kunde den Weg sehen kann, schrumpft die Entscheidung.
 
-Naming-Regel: gleiche Grammatik, gleiche Silbenanzahl, hängt im Slack-Chat. Beispiel: "Aufräumen · Aufstellen · Abliefern".`,
+Naming-Regel: gleiche Grammatik, gleiche Silbenanzahl, hängt im Slack-Chat. Beispiel: "Aufräumen · Aufstellen · Abliefern".
+
+WICHTIGSTE REGEL — KEINE HALLUZINATION:
+- Nutze ausschliesslich Informationen aus dem COMPANY PROFILE (Welcome-Step) und den Vorherigen-Wizard-Antworten.
+- Erfinde NIEMALS Bausteine, Features, Produkte oder Beispiele, die nicht im COMPANY PROFILE belegt sind.
+- Wenn das COMPANY PROFILE zu duenn ist: gib eine LEERE items/cards-Liste zurueck und schreib im notes-Feld eine Klaerungsfrage an den User (z.B. "Welche konkreten Bausteine hat dein Angebot?").
+- Wenn der User vorhandene Eingaben hat (existingItems/existingCards): schlag nur Dinge vor, die zu DIESEM Angebot passen, nicht zu einem generischen Beispiel.
+- Lieber 3 belegte Bausteine als 5 erfundene.
+- Wenn die Branche des Profiles "Coaching/Vertrieb/Software" ist, schlag NICHT plötzlich "Patientenfeedback-Tool" o.ä. vor.
+`,
   inputSchema: {
     type: 'object',
     properties: {
@@ -186,7 +222,16 @@ const PHASEN_WAEHRUNG: StepPromptDef = {
   voice: 'markus',
   systemPrompt: `Pro Phase aus Step 3 eine Hauptwährung definieren: Baseline + Drei-Punkt-Korridor (Pessimist/Realist/Optimist) + Mess-Zeitpunkt.
 
-Pricing wird gegen Realist verteidigt. Garantie gegen Pessimist. Optimist ist Up-Side, nicht Versprechen.`,
+Pricing wird gegen Realist verteidigt. Garantie gegen Pessimist. Optimist ist Up-Side, nicht Versprechen.
+
+WICHTIGSTE REGEL — KEINE HALLUZINATION:
+- Nutze ausschliesslich Informationen aus dem COMPANY PROFILE (Welcome-Step) und den Vorherigen-Wizard-Antworten.
+- Erfinde NIEMALS Bausteine, Features, Produkte oder Beispiele, die nicht im COMPANY PROFILE belegt sind.
+- Wenn das COMPANY PROFILE zu duenn ist: gib eine LEERE items/cards-Liste zurueck und schreib im notes-Feld eine Klaerungsfrage an den User (z.B. "Welche konkreten Bausteine hat dein Angebot?").
+- Wenn der User vorhandene Eingaben hat (existingItems/existingCards): schlag nur Dinge vor, die zu DIESEM Angebot passen, nicht zu einem generischen Beispiel.
+- Lieber 3 belegte Bausteine als 5 erfundene.
+- Wenn die Branche des Profiles "Coaching/Vertrieb/Software" ist, schlag NICHT plötzlich "Patientenfeedback-Tool" o.ä. vor.
+`,
   inputSchema: {
     type: 'object',
     properties: { phases: { type: 'array' }, currentBaselines: { type: 'object' } },
@@ -214,7 +259,16 @@ const BEWEIS_STAPEL: StepPromptDef = {
   voice: 'markus',
   systemPrompt: `3 bis 7 Beweise nach Klassen: A=Named Customer, B=Customer-Avg, C=Hypothese mit Methodik, D=Branchen-Benchmark, E=Testimonial-Quote. Mindestens 2 aus A oder B im Top-3.
 
-Eine Hypothese ohne Methodik ist eine Marketing-Floskel mit Zahl. Mit Methodik wird sie im Vorstand übernommen.`,
+Eine Hypothese ohne Methodik ist eine Marketing-Floskel mit Zahl. Mit Methodik wird sie im Vorstand übernommen.
+
+WICHTIGSTE REGEL — KEINE HALLUZINATION:
+- Nutze ausschliesslich Informationen aus dem COMPANY PROFILE (Welcome-Step) und den Vorherigen-Wizard-Antworten.
+- Erfinde NIEMALS Bausteine, Features, Produkte oder Beispiele, die nicht im COMPANY PROFILE belegt sind.
+- Wenn das COMPANY PROFILE zu duenn ist: gib eine LEERE items/cards-Liste zurueck und schreib im notes-Feld eine Klaerungsfrage an den User (z.B. "Welche konkreten Bausteine hat dein Angebot?").
+- Wenn der User vorhandene Eingaben hat (existingItems/existingCards): schlag nur Dinge vor, die zu DIESEM Angebot passen, nicht zu einem generischen Beispiel.
+- Lieber 3 belegte Bausteine als 5 erfundene.
+- Wenn die Branche des Profiles "Coaching/Vertrieb/Software" ist, schlag NICHT plötzlich "Patientenfeedback-Tool" o.ä. vor.
+`,
   inputSchema: {
     type: 'object',
     properties: { phases: { type: 'array' }, currencies: { type: 'array' }, customerCases: { type: 'array' } },
@@ -236,7 +290,16 @@ const BOOSTER: StepPromptDef = {
   voice: 'markus',
   systemPrompt: `1-3 Booster, die ein angrenzendes Problem lösen. Echter Lieferaufwand ≤ 20 % des wahrgenommenen Werts.
 
-Bonus ist NICHT "mehr für gleichen Preis". Bonus ist "zweites Problem gelöst, mit €-Anker und Margin-Schutz".`,
+Bonus ist NICHT "mehr für gleichen Preis". Bonus ist "zweites Problem gelöst, mit €-Anker und Margin-Schutz".
+
+WICHTIGSTE REGEL — KEINE HALLUZINATION:
+- Nutze ausschliesslich Informationen aus dem COMPANY PROFILE (Welcome-Step) und den Vorherigen-Wizard-Antworten.
+- Erfinde NIEMALS Bausteine, Features, Produkte oder Beispiele, die nicht im COMPANY PROFILE belegt sind.
+- Wenn das COMPANY PROFILE zu duenn ist: gib eine LEERE items/cards-Liste zurueck und schreib im notes-Feld eine Klaerungsfrage an den User (z.B. "Welche konkreten Bausteine hat dein Angebot?").
+- Wenn der User vorhandene Eingaben hat (existingItems/existingCards): schlag nur Dinge vor, die zu DIESEM Angebot passen, nicht zu einem generischen Beispiel.
+- Lieber 3 belegte Bausteine als 5 erfundene.
+- Wenn die Branche des Profiles "Coaching/Vertrieb/Software" ist, schlag NICHT plötzlich "Patientenfeedback-Tool" o.ä. vor.
+`,
   inputSchema: {
     type: 'object',
     properties: { offerDescription: { type: 'string' }, adjacentPains: { type: 'array' } },
@@ -258,7 +321,16 @@ const WORT_GARANTIE: StepPromptDef = {
   voice: 'markus',
   systemPrompt: `Eine Garantie, die du beim Espresso aussprechen kannst. Typ + Trigger-Bedingung + Konsequenz + Liefer-Anker (Phase aus Step 3 + Währung aus Step 4) + Espresso-Test bestanden.
 
-"100 % Zufriedenheits-Garantie" ist ein Marketing-Schwur. Eine Wort-Garantie ist ein Verkäufer-Versprechen.`,
+"100 % Zufriedenheits-Garantie" ist ein Marketing-Schwur. Eine Wort-Garantie ist ein Verkäufer-Versprechen.
+
+WICHTIGSTE REGEL — KEINE HALLUZINATION:
+- Nutze ausschliesslich Informationen aus dem COMPANY PROFILE (Welcome-Step) und den Vorherigen-Wizard-Antworten.
+- Erfinde NIEMALS Bausteine, Features, Produkte oder Beispiele, die nicht im COMPANY PROFILE belegt sind.
+- Wenn das COMPANY PROFILE zu duenn ist: gib eine LEERE items/cards-Liste zurueck und schreib im notes-Feld eine Klaerungsfrage an den User (z.B. "Welche konkreten Bausteine hat dein Angebot?").
+- Wenn der User vorhandene Eingaben hat (existingItems/existingCards): schlag nur Dinge vor, die zu DIESEM Angebot passen, nicht zu einem generischen Beispiel.
+- Lieber 3 belegte Bausteine als 5 erfundene.
+- Wenn die Branche des Profiles "Coaching/Vertrieb/Software" ist, schlag NICHT plötzlich "Patientenfeedback-Tool" o.ä. vor.
+`,
   inputSchema: {
     type: 'object',
     properties: { phases: { type: 'array' }, currencies: { type: 'array' } },
@@ -284,7 +356,16 @@ const LETZTEN_20: StepPromptDef = {
 
 Espresso-Test (Slack, Espresso, Google, Domain, 3-Jahre) muss mindestens 4/5 bestehen.
 
-Naming-Stile: "[Substantiv] für [Branche]", "[Verb]-[Substantiv]", "[Adjektiv] [Substantiv]". Drei Vorschläge, einer mit Empfehlung.`,
+Naming-Stile: "[Substantiv] für [Branche]", "[Verb]-[Substantiv]", "[Adjektiv] [Substantiv]". Drei Vorschläge, einer mit Empfehlung.
+
+WICHTIGSTE REGEL — KEINE HALLUZINATION:
+- Nutze ausschliesslich Informationen aus dem COMPANY PROFILE (Welcome-Step) und den Vorherigen-Wizard-Antworten.
+- Erfinde NIEMALS Bausteine, Features, Produkte oder Beispiele, die nicht im COMPANY PROFILE belegt sind.
+- Wenn das COMPANY PROFILE zu duenn ist: gib eine LEERE items/cards-Liste zurueck und schreib im notes-Feld eine Klaerungsfrage an den User (z.B. "Welche konkreten Bausteine hat dein Angebot?").
+- Wenn der User vorhandene Eingaben hat (existingItems/existingCards): schlag nur Dinge vor, die zu DIESEM Angebot passen, nicht zu einem generischen Beispiel.
+- Lieber 3 belegte Bausteine als 5 erfundene.
+- Wenn die Branche des Profiles "Coaching/Vertrieb/Software" ist, schlag NICHT plötzlich "Patientenfeedback-Tool" o.ä. vor.
+`,
   inputSchema: {
     type: 'object',
     properties: { offerDescription: { type: 'string' }, allPreviousSteps: { type: 'object' } },

@@ -13,6 +13,13 @@ export interface StepCompanion {
 }
 
 export const STEP_COMPANIONS: Record<string, StepCompanion> = {
+  '01-was-in-die-box': {
+      "key": "01-was-in-die-box",
+      "hook": "Fuenf. Nicht vierzehn. Fuenf Bausteine, die das Angebot tragen. Drei werden gemerkt, fuenf gehen, sieben ist die Schmerzgrenze.",
+      "why": "Typische B2B-Angebote sammeln vierzehn Features. Was im Pitch der Top 5 nicht ueberlebt, gehoert nicht ins Hauptangebot — sondern in den Nachschlag, oder raus. Die Liste der Fuenf ist die erste Substanzpruefung: wenn die Schaerfe hier fehlt, wird sie in jedem folgenden Schritt fehlen.",
+      "how": "Top 5 Bausteine, Services oder Lizenzen. Pro Eintrag: Name (max 4 Worte) + Beschreibung was er LEISTET, nicht was er IST. Workshop, Audit, Library, Channel, Review — konkret. Nicht \"Beratung\", \"Begleitung\", \"Unterstuetzung\".",
+      "ai": "Die AI nimmt das Welcome-Profile (Summary, Value Proposition, Audience) und schlaegt Bausteine vor — ausschliesslich auf Basis der echten Angebots-Beschreibung, nie generisch. Wenn das Profile zu duenn ist, fragt die AI nach statt zu raten."
+  },
   '01-beef-radar': {
       "key": "01-beef-radar",
       "hook": "Typische B2B-Angebote verkaufen Features. Kunden kaufen Effekte. Beef-Radar übersetzt das eine ins andere — auf einer Karte mit fünf Zeilen.",

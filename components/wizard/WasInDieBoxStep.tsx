@@ -91,7 +91,7 @@ export function WasInDieBoxStep({ initialAnswers, onSaved }: Props) {
         Sieben ist die Schmerzgrenze. Wenn Du nicht auf fünf kommst, fehlt nicht Material — fehlt Schärfe.
       </p>
 
-      <StepCompanion stepKey="01-beef-radar" />
+      <StepCompanion stepKey="01-was-in-die-box" />
 
       {/* Markus quote */}
       <section className="max-w-prose">
