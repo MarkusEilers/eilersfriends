@@ -39,9 +39,8 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
   const [lastAppended, setLastAppended] = useState<number | null>(null)
 
   async function callSuggest() {
-    // offerDescription replaced by welcome-context
     try {
-      const res = await fetch('/api/wizard/b2b-angebote/step/01-beef-radar/suggest', {
+      const res = await fetch('/api/wizard/b2b-angebote/step/02-beef-radar/suggest', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ icpSnapshot, pricingRange, existingCards: cards }),
       })
@@ -72,7 +71,7 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
   async function save() {
     setStatus('saving'); setError(null)
     try {
-      const res = await fetch('/api/wizard/b2b-angebote/step/01-beef-radar/save', {
+      const res = await fetch('/api/wizard/b2b-angebote/step/02-beef-radar/save', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cards, icpSnapshot, pricingRange, notes }),
       })
@@ -93,16 +92,14 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
 
   return (
     <div className="space-y-10">
-      {/* Drop-cap editorial intro */}
       <p className="text-base leading-relaxed text-gray-800 max-w-prose">
         <span className="float-left mr-3 mt-1 text-6xl font-bold leading-none" style={{ fontFamily: 'var(--font-serif)', color: '#7A1F1F' }}>W</span>
-        ir gehen die Top-Bausteine Deines Angebots durch — und fragen für jeden, was er wirklich ausloest. Nicht das Feature.
+        ir gehen die Top-Bausteine durch — und fragen für jeden, was er wirklich auslöst. Nicht das Feature.
         Nicht den Marketing-Effekt. Den Wellen-Effekt, der dem Kunden den nächsten Dienstag verändert.
       </p>
 
       <StepCompanion stepKey="01-beef-radar" />
 
-      {/* Markus quote — editorial */}
       <section className="max-w-prose">
         <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Markus&apos; Stimme</h3>
         <blockquote className="border-l-2 border-red-900 pl-4 text-base italic leading-relaxed text-gray-800" style={{ fontFamily: 'var(--font-serif)' }}>
@@ -110,7 +107,6 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
         </blockquote>
       </section>
 
-      {/* Examples — light blue box */}
       <section className="rounded-lg border border-blue-200 bg-blue-50 p-5 max-w-3xl">
         <h3 className="text-[10px] font-bold uppercase tracking-widest text-blue-800 mb-3 inline-flex items-center gap-1.5">
           <BookOpen size={11} /> Konkrete Beispiele
@@ -118,27 +114,21 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
         <div className="space-y-3 text-sm leading-relaxed text-gray-800">
           <p>
             <strong className="font-semibold">Statt</strong> <em className="text-gray-600">„professionelle Betreuung"</em>{' '}
-            <strong className="font-semibold">steht</strong> <em className="text-blue-900">„−45 Min Dokumentationszeit pro Behandlertag (Customer-Avg, Sonia.so 2024)"</em>.
+            <strong className="font-semibold">steht</strong> <em className="text-blue-900">„−45 Min Dokumentationszeit pro Behandlertag"</em>.
             Aus Feature wird Effekt — und Effekt verkauft.
           </p>
-          <p>
-            Wenn ein CFO in die Runde fragt <em className="text-gray-600">„Was bringt uns das konkret?"</em>, hast Du eine Zeile, die Dein Champion auswendig weiss.
-            Genau die Spur, die er zur Vorstandstür mitnimmt.
-          </p>
           <p className="text-xs text-blue-800 border-l-2 border-blue-300 pl-3 italic">
-            Anti-Pattern: <em>„umfassende Lösung"</em>, <em>„nachhaltige Optimierung"</em>, <em>„ganzheitlich"</em> — wenn der Effekt nicht in einem Satz sagbar ist, gehoert der Baustein neu gedacht oder raus.
+            Anti-Pattern: „umfassende Lösung", „nachhaltige Optimierung", „ganzheitlich" — wenn der Effekt nicht in einem Satz sagbar ist, gehört der Baustein neu gedacht oder raus.
           </p>
         </div>
       </section>
 
-      {/* Software input — white box with border only */}
       <section className="rounded-lg border border-gray-200 bg-white p-5 max-w-3xl">
         <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-4">Deine Eingabe · Beef-Radar</h3>
 
-        <label className="block text-[10px] font-semibold uppercase tracking-widest text-gray-500 mb-1">Angebots-Beschreibung *</label>
-        <textarea value={offerDescription} onChange={(e) => setOfferDescription(e.target.value)} rows={3}
-          className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
-          placeholder="Was tut Dein Angebot? Welches Problem loest es?" />
+        <WelcomeContextBadge />
+
+        <p className="mt-3 text-[11px] text-gray-600">Optional kannst Du ICP und Preisspanne unten präzisieren — die AI nutzt das zusätzlich zum Welcome-Profile.</p>
 
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <div>
@@ -161,23 +151,22 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
             {status === 'suggesting' ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
             {cards.length === 0 ? 'AI vorschlagen' : 'Erneut vorschlagen'}
           </button>
-          {cards.length > 0 && (
+          {cards.length > 0 ? (
             <button onClick={suggestMore} disabled={status === 'suggesting' || status === 'appending'}
               className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-50">
               {status === 'appending' ? <Loader2 size={12} className="animate-spin" /> : <PlusCircle size={12} />}
               Suggest More
             </button>
-          )}
+          ) : null}
         </div>
-        {error && <p className="mt-2 text-[11px] text-red-600">{error}</p>}
-        {lastAppended !== null && lastAppended > 0 && (
-          <p className="mt-2 text-[11px] font-semibold text-green-700">+{lastAppended} neue Karte{lastAppended === 1 ? '' : 'n'} hinzugefuegt</p>
-        )}
+        {error ? <p className="mt-2 text-[11px] text-red-600">{error}</p> : null}
+        {lastAppended !== null && lastAppended > 0 ? (
+          <p className="mt-2 text-[11px] font-semibold text-green-700">+{lastAppended} neue Karte{lastAppended === 1 ? '' : 'n'} hinzugefügt</p>
+        ) : null}
         <p className="mt-2 text-[10px] italic text-gray-500">Die AI überschreibt nie Deine Eingaben.</p>
       </section>
 
-      {/* Cards output — white box, border only */}
-      {cards.length > 0 && (
+      {cards.length > 0 ? (
         <section className="rounded-lg border border-gray-200 bg-white p-5 max-w-3xl">
           <div className="flex items-baseline justify-between mb-4">
             <div>
@@ -199,7 +188,7 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
                     <button onClick={() => addCard(col)} className="rounded-full p-1 hover:bg-gray-50"><Plus size={11} style={{ color: meta.color }} /></button>
                   </div>
                   <ul className="pt-2 space-y-1.5">
-                    {items.length === 0 && <li className="text-[11px] text-gray-400 italic">Noch keine Karte.</li>}
+                    {items.length === 0 ? <li className="text-[11px] text-gray-400 italic">Noch keine Karte.</li> : null}
                     {items.map(({ card, idx }) => (
                       <li key={idx} className="rounded border border-gray-100 bg-white p-2">
                         <div className="flex items-start gap-1.5">
@@ -217,12 +206,12 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
             })}
           </div>
 
-          {notes && (
+          {notes ? (
             <div className="mt-4 rounded border-l-2 border-amber-400 bg-amber-50 px-3 py-2">
               <p className="text-[10px] font-bold uppercase tracking-widest text-amber-800">AI-Hinweis</p>
               <p className="mt-1 text-xs text-amber-900">{notes}</p>
             </div>
-          )}
+          ) : null}
 
           <div className="mt-5">
             <button onClick={save} disabled={status === 'saving' || cards.length === 0}
@@ -232,7 +221,7 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
             </button>
           </div>
         </section>
-      )}
+      ) : null}
     </div>
   )
 }
