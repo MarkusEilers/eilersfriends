@@ -57,14 +57,20 @@ const ORIGIN = {
 const STEPS_GRID_LAYOUT_AND_RESULT = {
   layout: 'grid',
   resultTile: {
-    eyebrow: 'Was am Ende rauskommt',
-    headline: 'Ein Angebot, das verteidigbar ist — vom Espresso-Test bis zum CFO-Tisch.',
-    body: 'Acht Schritte, vier Stunden, ein unwiderstehliches B2B-Angebot. Wiederholbar, ohne Marketing-Lehrbuch, ohne Talent-Lotterie.',
-    metrics: [
-      { value: '5×', label: 'überzeugender' },
-      { value: '+58 %', label: 'profitabler' },
-    ],
-  },
+  "eyebrow": "Was am Ende rauskommt",
+  "headline": "Ein unwiderstehliches Angebot, bei dem Kunden sich blöd vorkommen, es nicht anzunehmen.",
+  "body": "Acht Schritte, vier Stunden, ein verteidigbares B2B-Angebot. Wiederholbar, ohne Marketing-Lehrbuch, ohne Talent-Lotterie.",
+  "metrics": [
+    {
+      "value": "5×",
+      "label": "überzeugender"
+    },
+    {
+      "value": "+58 %",
+      "label": "profitabler"
+    }
+  ]
+},
 }
 
 const LEAD_MAGNET_IMAGE = {
@@ -163,36 +169,68 @@ const FAQ_FULL = {
 
 const SITUATION = {
   "tone": "negative",
-  "eyebrow": "WO DU GERADE STEHST",
-  "headline": "Klingt das vertraut?",
-  "subheadline": "Sechs Beobachtungen aus über 100 B2B-Coaching-Gespraechen. Wenn drei oder mehr passen, hast Du kein Sales-Problem. Du hast ein Beef-Problem.",
+  "eyebrow": "TYPISCHE B2B-ANGEBOTE",
+  "headline": "Sechs Muster, die wir aus über 100 Coaching-Gesprächen kennen.",
+  "subheadline": "Beobachtungen, keine Vorwürfe. Wenn drei oder mehr Muster bekannt vorkommen, ist das selten ein Sales-Problem — häufiger ein Beef-Problem.",
   "items": [
     {
-      "title": "Dein Team produziert Angebote ad hoc, in unterschiedlicher Qualitaet",
-      "description": "Du rettest jeden zweiten Pitch persoenlich — und merkst, dass das System nicht skaliert."
+      "title": "Angebote entstehen ad hoc, in unterschiedlicher Qualität",
+      "description": "Wer im Team gerade Kapazität hat, schreibt. Die Substanz schwankt — die Annahmequote auch."
     },
     {
-      "title": "Sales-Cycles ziehen sich, Annahmequoten stagnieren",
-      "description": "Die richtigen Leute sagen zu langsam Ja. Die falschen sagen zu spaet Nein. Beides kostet."
+      "title": "Sales-Cycles ziehen sich, Annahmequoten verharren auf einem Plateau",
+      "description": "Die richtigen Leute sagen langsam Ja. Die falschen sagen spät Nein. Beides kostet Zeit."
     },
     {
-      "title": "Wettbewerber-Angebote machen Eure Loesung vergleichbar",
-      "description": "Du landest in Excel-Tabellen, in denen nur der Preis zaehlt. Marge erodiert, ohne dass jemand es merkt."
+      "title": "Wettbewerber-Angebote drücken die eigene Lösung in Excel-Vergleichbarkeit",
+      "description": "Wer dort landet, kämpft um den Preis. Marge erodiert, ohne dass jemand es bemerkt."
     },
     {
-      "title": "Eure Angebote sind zu voll — und gleichzeitig zu duenn",
-      "description": "Je hoeher der Preis, desto voller die Schachtel. Das hilft weder Euch noch dem Kunden. 14 Features, kein Effekt-Satz."
+      "title": "Die Schachtel wird voller, je höher der Preis",
+      "description": "Vierzehn Features, kein klarer Effekt-Satz. Das hilft selten — weder dem Käufer noch dem Anbieter."
     },
     {
-      "title": "Die Sprache passt nicht zum Entscheider",
-      "description": "Was Ihr koennt, kommt im Vorstandsraum nicht an. Der Champion kann es nicht weitererzaehlen — die Methodik fehlt."
+      "title": "Was im Vorstand ankommen müsste, kommt nicht an",
+      "description": "Der Champion findet die Worte nicht. Die Methodik fehlt, mit der er das Angebot ohne den Anbieter verteidigen kann."
     },
     {
-      "title": "Du ahnst, dass das Angebot selbst der Engpass ist",
-      "description": "Nicht der Vertrieb. Nicht das Pitch-Talent. Du bist muede von noch-mehr-Sales-Coaching und willst Substanz im Angebot."
+      "title": "Das Pitch-Talent wird verantwortlich gemacht, das Angebot bleibt unberührt",
+      "description": "Schulungen, Trainings, Coaching — das Pitch-Talent wächst. Die Substanz im Angebot bleibt gleich."
     }
   ],
-  "body": "Wenn das sitzt: Du brauchst keinen neuen Verkaufstrick. Du brauchst einen Bauplan. Acht Schritte, vier Stunden — damit Dein Team jedes Angebot wiederholbar unwiderstehlich macht, ohne dass Du jeden Pitch persoenlich rettest."
+  "body": "Wenn das vertraut klingt: Selten ein neuer Sales-Trick. Häufiger ein Bauplan. Acht Schritte, vier Stunden — damit jedes Angebot wiederholbar unwiderstehlich wird, ohne dass jeder Pitch persönlich gerettet werden muss."
+}
+
+const SOCIAL_PROOF_LOGOS = {
+  "eyebrow": "KUNDEN, DIE DEN BAUPLAN NUTZEN",
+  "headline": "",
+  "subheadline": "",
+  "logos": [
+    {
+      "name": "forwerts",
+      "src": "/logos/forwerts.svg"
+    },
+    {
+      "name": "NavVis",
+      "src": "/logos/navvis.svg"
+    },
+    {
+      "name": "Starmind",
+      "src": "/logos/starmind.svg"
+    },
+    {
+      "name": "Cancom",
+      "src": "/logos/cancom.svg"
+    },
+    {
+      "name": "Telekom",
+      "src": "/logos/telekom.svg"
+    },
+    {
+      "name": "KnowUnity",
+      "src": "/logos/knowunity.svg"
+    }
+  ]
 }
 
 export async function POST(request: Request) {
@@ -226,6 +264,7 @@ export async function POST(request: Request) {
       const c = (s.content ?? {}) as Record<string, unknown>
       let next: Record<string, unknown> | null = null
       if (s.type === 'hero') next = { ...c, ...HERO }
+      else if (s.type === 'social_proof') next = SOCIAL_PROOF_LOGOS
       else if (s.type === 'problem' && (((s.content ?? {}) as Record<string, unknown>).eyebrow !== 'WO DU GERADE STEHST')) next = SCI_FI
       else if (s.type === 'origin_story') next = ORIGIN
       else if (s.type === 'framework_steps') next = { ...c, ...STEPS_GRID_LAYOUT_AND_RESULT, steps: STEPS_FULL }

@@ -87,8 +87,8 @@ export function WasInDieBoxStep({ initialAnswers, onSaved }: Props) {
       {/* Editorial drop-cap intro */}
       <p className="text-base leading-relaxed text-gray-800 max-w-prose">
         <span className="float-left mr-3 mt-1 text-6xl font-bold leading-none" style={{ fontFamily: 'var(--font-serif)', color: '#7A1F1F' }}>F</span>
-        uenf. Nicht vierzehn. Fuenf Bausteine, Services oder Lizenzen, die Dein Angebot tragen. Dein Kunde merkt sich keine vierzehn. Er merkt sich drei.
-        Sieben ist die Schmerzgrenze. Wenn Du nicht auf fuenf kommst, fehlt nicht Material — fehlt Schaerfe.
+        uenf. Nicht vierzehn. Fünf Bausteine, Services oder Lizenzen, die Dein Angebot tragen. Dein Kunde merkt sich keine vierzehn. Er merkt sich drei.
+        Sieben ist die Schmerzgrenze. Wenn Du nicht auf fünf kommst, fehlt nicht Material — fehlt Schärfe.
       </p>
 
       <StepCompanion stepKey="01-beef-radar" />
@@ -142,7 +142,7 @@ export function WasInDieBoxStep({ initialAnswers, onSaved }: Props) {
         {lastAppended !== null && lastAppended > 0 ? (
           <p className="mt-2 text-[11px] font-semibold text-green-700">+{lastAppended} neue Baustein{lastAppended === 1 ? '' : 'e'} hinzugefuegt</p>
         ) : null}
-        <p className="mt-2 text-[10px] italic text-gray-500">Die AI ueberschreibt nie Deine Eingaben.</p>
+        <p className="mt-2 text-[10px] italic text-gray-500">Die AI überschreibt nie Deine Eingaben.</p>
       </section>
 
       {/* Items list — white box, numbered */}
@@ -192,7 +192,7 @@ export function WasInDieBoxStep({ initialAnswers, onSaved }: Props) {
 
         {items.length > 0 && items.length < 5 ? (
           <p className="mt-3 text-[11px] italic text-amber-700">
-            Tipp: Wenn Du unter 5 bleibst, prueft die AI im naechsten Schritt nochmal, ob nicht ein wichtiger Baustein fehlt.
+            Tipp: Wenn Du unter 5 bleibst, prüft die AI im nächsten Schritt nochmal, ob nicht ein wichtiger Baustein fehlt.
           </p>
         ) : null}
       </section>

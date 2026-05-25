@@ -16,20 +16,20 @@ interface Step { key: string; nav: string; navSub: string; live: boolean; compan
 // Pre   · Welcome — Organisation & Produkt kennenlernen
 // 01    · Was soll in die Box?              — Top 5 Bausteine/Services/Lizenzen
 // 02    · Beef-Radar                        — Was kann der Kunde damit erreichen (Merkmale→Effekte→Wellen)
-// 03    · Messbare Effekte + Highlight      — Effekt/Betrag/Einheit + wichtigster fuer den Kunden
-// 04    · Scarcity                          — Einschraenkungen (limitiert, geht bald los, nur fuer VIP...)
+// 03    · Messbare Effekte + Highlight      — Effekt/Betrag/Einheit + wichtigster für den Kunden
+// 04    · Scarcity                          — Einschraenkungen (limitiert, geht bald los, nur für VIP...)
 // 05    · Garantien                         — Welche Garantien geben wir, um die Entscheidung zu stuetzen
 // 06    · Preis                             — Preis am Markt testen (nie glatte Zahlen)
-// 07    · Titel                             — Vorschlaege fuer den Programm-Titel
+// 07    · Titel                             — Vorschlaege für den Programm-Titel
 // 08    · Untertitel / Claim                — Subline / Big Promise
 const STEPS: Step[] = [
   { key: '00-welcome', nav: 'Welcome', navSub: 'Organisation & Produkt kennenlernen', live: true },
   { key: '01-was-in-die-box', nav: 'Was soll in die Box?', navSub: 'Top 5 Bausteine, Services, Lizenzen', live: true },
   { key: '02-beef-radar', nav: 'Beef-Radar', navSub: 'Bausteine → Effekte → Wellen-Effekte', live: true, companionKey: '01-beef-radar' },
-  { key: '03-messbare-effekte', nav: 'Messbare Effekte', navSub: 'Effekt · Betrag · Einheit · Highlight', live: false, companionKey: '04-phasen-waehrung' },
+  { key: '03-messbare-effekte', nav: 'Messbare Effekte', navSub: 'Effekt · Betrag · Einheit · Highlight', live: false, companionKey: '04-phasen-währung' },
   { key: '04-scarcity', nav: 'Scarcity', navSub: 'Was macht es besonders und weniger verfügbar?', live: false, companionKey: '06-booster' },
   { key: '05-garantien', nav: 'Garantien', navSub: 'Bedingt / Ergebnis / Dauer / Geld zurück', live: false, companionKey: '07-wort-garantie' },
-  { key: '06-preis', nav: 'Preis', navSub: 'Marktest-Preis, nie glatt', live: false, companionKey: '04-phasen-waehrung' },
+  { key: '06-preis', nav: 'Preis', navSub: 'Marktest-Preis, nie glatt', live: false, companionKey: '04-phasen-währung' },
   { key: '07-titel', nav: 'Titel', navSub: '3 Optionen mit Espresso-Test', live: false, companionKey: '08-letzten-20-prozent' },
   { key: '08-untertitel-claim', nav: 'Untertitel · Claim', navSub: 'In X Schritten zu Y, ohne Z', live: false, companionKey: '08-letzten-20-prozent' },
 ]
@@ -158,9 +158,9 @@ export function WizardEditorial({ answers, stepsCompleted }: Props) {
                         <div className="space-y-5">
                           {s.companionKey && <StepCompanion stepKey={s.companionKey} />}
                           <div className="rounded-lg border border-amber-200 bg-amber-50 p-5 max-w-prose">
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-amber-800">Naechste Welle</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-amber-800">Nächste Welle</p>
                             <p className="mt-2 text-xs leading-relaxed text-amber-900">
-                              Die interaktive Eingabe fuer „{s.nav}" rollen wir im naechsten Update frei. Edge-Route + Prompt sind angelegt.
+                              Die interaktive Eingabe für „{s.nav}" rollen wir im nächsten Update frei. Edge-Route + Prompt sind angelegt.
                               Beef-Radar oben ist der Stencil.
                             </p>
                           </div>
@@ -209,7 +209,7 @@ export function WizardEditorial({ answers, stepsCompleted }: Props) {
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1.5">Hilfe</p>
                 <p className="text-[11px] leading-snug text-gray-600">
-                  Stecken? Druck <kbd className="rounded border border-gray-300 bg-white px-1 font-mono text-[10px]">?</kbd> fuer die Markus-Lehre.
+                  Stecken? Druck <kbd className="rounded border border-gray-300 bg-white px-1 font-mono text-[10px]">?</kbd> für die Markus-Lehre.
                 </p>
               </div>
 

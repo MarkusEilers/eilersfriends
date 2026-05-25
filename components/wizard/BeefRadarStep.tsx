@@ -96,8 +96,8 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
       {/* Drop-cap editorial intro */}
       <p className="text-base leading-relaxed text-gray-800 max-w-prose">
         <span className="float-left mr-3 mt-1 text-6xl font-bold leading-none" style={{ fontFamily: 'var(--font-serif)', color: '#7A1F1F' }}>W</span>
-        ir gehen die Top-Bausteine Deines Angebots durch — und fragen fuer jeden, was er wirklich ausloest. Nicht das Feature.
-        Nicht den Marketing-Effekt. Den Wellen-Effekt, der dem Kunden den naechsten Dienstag veraendert.
+        ir gehen die Top-Bausteine Deines Angebots durch — und fragen für jeden, was er wirklich ausloest. Nicht das Feature.
+        Nicht den Marketing-Effekt. Den Wellen-Effekt, der dem Kunden den nächsten Dienstag verändert.
       </p>
 
       <StepCompanion stepKey="01-beef-radar" />
@@ -123,10 +123,10 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
           </p>
           <p>
             Wenn ein CFO in die Runde fragt <em className="text-gray-600">„Was bringt uns das konkret?"</em>, hast Du eine Zeile, die Dein Champion auswendig weiss.
-            Genau die Spur, die er zur Vorstandstuer mitnimmt.
+            Genau die Spur, die er zur Vorstandstür mitnimmt.
           </p>
           <p className="text-xs text-blue-800 border-l-2 border-blue-300 pl-3 italic">
-            Anti-Pattern: <em>„umfassende Loesung"</em>, <em>„nachhaltige Optimierung"</em>, <em>„ganzheitlich"</em> — wenn der Effekt nicht in einem Satz sagbar ist, gehoert der Baustein neu gedacht oder raus.
+            Anti-Pattern: <em>„umfassende Lösung"</em>, <em>„nachhaltige Optimierung"</em>, <em>„ganzheitlich"</em> — wenn der Effekt nicht in einem Satz sagbar ist, gehoert der Baustein neu gedacht oder raus.
           </p>
         </div>
       </section>
@@ -173,7 +173,7 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
         {lastAppended !== null && lastAppended > 0 && (
           <p className="mt-2 text-[11px] font-semibold text-green-700">+{lastAppended} neue Karte{lastAppended === 1 ? '' : 'n'} hinzugefuegt</p>
         )}
-        <p className="mt-2 text-[10px] italic text-gray-500">Die AI ueberschreibt nie Deine Eingaben.</p>
+        <p className="mt-2 text-[10px] italic text-gray-500">Die AI überschreibt nie Deine Eingaben.</p>
       </section>
 
       {/* Cards output — white box, border only */}

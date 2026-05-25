@@ -173,7 +173,7 @@ export function WelcomeStep({ onCompleted }: Props) {
           <h2 className="text-xl font-bold text-gray-900">Lass uns Dein Unternehmen verstehen</h2>
           <p className="mt-1 text-sm leading-relaxed text-gray-600 max-w-2xl">
             Wenn Du magst, kann ich ein paar Informationen recherchieren, die wir brauchen — dann musst Du
-            weniger eintippen. Gib mir die URL Eurer Website, und ich waerme den AI-Kontext fuer den Rest
+            weniger eintippen. Gib mir die URL Eurer Website, und ich waerme den AI-Kontext für den Rest
             Deiner GTM-Strategie auf.
           </p>
         </div>

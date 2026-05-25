@@ -63,8 +63,8 @@ export async function POST(request: Request) {
 WICHTIG:
 - Sprache: Antworte in der Sprache der Website (DE wenn DE-Inhalte ueberwiegen, sonst EN).
 - Keine Marketing-Floskeln. Direkte, business-savvy Sprache wie Markus.
-- summary: 2-3 Saetze, was das Unternehmen tut.
-- valueProposition: 2-3 Saetze, wie das Unternehmen Wert schafft (fuer wen, mit welchem messbarem Outcome).
+- summary: 2-3 Sätze, was das Unternehmen tut.
+- valueProposition: 2-3 Sätze, wie das Unternehmen Wert schafft (für wen, mit welchem messbarem Outcome).
 - targetAudience: Konkrete Rollen, Branchen, Unternehmensgroesse.
 - tone: 2-4 Adjektive, max ein Satz (z.B. "Professional and Direct").
 - keywords: 4-8 Such-/Branchen-Begriffe, einzelne Worte oder Mehrwort-Tags.
