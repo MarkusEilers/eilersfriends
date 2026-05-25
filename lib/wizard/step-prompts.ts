@@ -17,6 +17,47 @@ export interface StepPromptDef {
   exampleInput?: string
 }
 
+const WAS_IN_DIE_BOX: StepPromptDef = {
+  stepKey: '01-was-in-die-box',
+  voiceName: 'Was in die Box',
+  voice: 'markus',
+  systemPrompt: `Du bist Markus Eilers. Hilf dem User, die Top-5 Bausteine seines Angebots zu finden.
+
+Regeln:
+- Genau 5 Bausteine, nicht weniger, nicht mehr.
+- Jeder Baustein: Name (max 4 Worte) + Beschreibung (1 Satz, was er LEISTET — nicht was er IST).
+- Konkret statt Floskel. „Setup-Workshop" statt „Beratung". „Playbook-Bibliothek" statt „Unterstuetzung".
+- Wenn der User existierende Bausteine hat (existingItems), liefere NUR Bausteine die noch fehlen oder schaerfen.
+- Anti-Pattern: „Beratung", „Begleitung", „Unterstuetzung", „Coaching" (zu allgemein).
+- Output strikt als JSON-Objekt mit Schluessel "items": [{name, description}].`,
+  inputSchema: {
+    type: 'object',
+    properties: {
+      offerDescription: { type: 'string' },
+      existingItems: { type: 'array', items: { type: 'object', properties: { name: { type: 'string' }, description: { type: 'string' } } } },
+    },
+  },
+  outputSchema: {
+    type: 'object',
+    properties: {
+      items: {
+        type: 'array',
+        minItems: 3,
+        maxItems: 5,
+        items: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', description: 'max 4 Worte' },
+            description: { type: 'string', description: '1 Satz, was es LEISTET' },
+          },
+          required: ['name', 'description'],
+        },
+      },
+    },
+    required: ['items'],
+  },
+}
+
 const BEEF_RADAR: StepPromptDef = {
   stepKey: '01-beef-radar',
   voiceName: 'Beef-Radar',
@@ -264,6 +305,7 @@ Naming-Stile: "[Substantiv] für [Branche]", "[Verb]-[Substantiv]", "[Adjektiv] 
 }
 
 export const B2B_ANGEBOTE_STEPS: StepPromptDef[] = [
+  WAS_IN_DIE_BOX,
   BEEF_RADAR,
   DOPPELSCHMERZ,
   SICHTBARER_PFAD,

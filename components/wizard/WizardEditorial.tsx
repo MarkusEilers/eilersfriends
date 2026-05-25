@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Check } from 'lucide-react'
 import { WelcomeStep } from './WelcomeStep'
 import { BeefRadarStep } from './BeefRadarStep'
+import { WasInDieBoxStep } from './WasInDieBoxStep'
 import { StepCompanion } from './StepCompanion'
 import { StepSummary } from './StepSummary'
 
@@ -23,7 +24,7 @@ interface Step { key: string; nav: string; navSub: string; live: boolean; compan
 // 08    · Untertitel / Claim                — Subline / Big Promise
 const STEPS: Step[] = [
   { key: '00-welcome', nav: 'Welcome', navSub: 'Organisation & Produkt kennenlernen', live: true },
-  { key: '01-was-in-die-box', nav: 'Was soll in die Box?', navSub: 'Top 5 Bausteine, Services, Lizenzen', live: false, companionKey: '01-beef-radar' },
+  { key: '01-was-in-die-box', nav: 'Was soll in die Box?', navSub: 'Top 5 Bausteine, Services, Lizenzen', live: true },
   { key: '02-beef-radar', nav: 'Beef-Radar', navSub: 'Bausteine → Effekte → Wellen-Effekte', live: true, companionKey: '01-beef-radar' },
   { key: '03-messbare-effekte', nav: 'Messbare Effekte', navSub: 'Effekt · Betrag · Einheit · Highlight', live: false, companionKey: '04-phasen-waehrung' },
   { key: '04-scarcity', nav: 'Scarcity', navSub: 'Was macht es besonders und weniger verfügbar?', live: false, companionKey: '06-booster' },
@@ -141,6 +142,12 @@ export function WizardEditorial({ answers, stepsCompleted }: Props) {
                   {renderEditor && (
                     <div className="space-y-10">
                       {s.key === '00-welcome' && <WelcomeStep onCompleted={() => { setEditingKey(null); handleSaved() }} />}
+                      {s.key === '01-was-in-die-box' && (
+                        <WasInDieBoxStep
+                          initialAnswers={answers['01-was-in-die-box'] as Parameters<typeof WasInDieBoxStep>[0]['initialAnswers']}
+                          onSaved={() => { setEditingKey(null); handleSaved() }}
+                        />
+                      )}
                       {s.key === '02-beef-radar' && (
                         <BeefRadarStep
                           initialAnswers={answers['02-beef-radar'] as Parameters<typeof BeefRadarStep>[0]['initialAnswers']}

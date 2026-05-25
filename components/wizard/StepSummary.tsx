@@ -51,6 +51,26 @@ export function StepSummary({ stepKey, answers, onEdit }: Props) {
     )
   }
 
+  if (stepKey === '01-was-in-die-box') {
+    const list = (Array.isArray(a.items) ? a.items : []) as { name: string; description: string }[]
+    return (
+      <div className="space-y-4 max-w-prose">
+        <DoneHeader onEdit={onEdit} />
+        <ol className="space-y-3">
+          {list.map((item, i) => (
+            <li key={i} className="flex items-start gap-3">
+              <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gray-900 text-[11px] font-bold text-white">{i + 1}</span>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-900">{item.name}</p>
+                {item.description ? <p className="text-[11px] text-gray-600 mt-0.5">{item.description}</p> : null}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    )
+  }
+
   if (stepKey === '02-beef-radar' || stepKey === '01-beef-radar') {
     const cards = (Array.isArray(a.cards) ? a.cards : []) as Card[]
     const grouped: Record<'what' | 'how' | 'why', Card[]> = { what: [], how: [], why: [] }
