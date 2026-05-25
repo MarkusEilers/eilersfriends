@@ -3,11 +3,12 @@
 import { useState } from 'react'
 import { Loader2, Sparkles, Plus, X, Save, CheckCircle2, PlusCircle, BookOpen } from 'lucide-react'
 import { StepCompanion } from './StepCompanion'
+import { WelcomeContextBadge } from './WelcomeContextBadge'
 
 interface Card { column: 'what' | 'how' | 'why'; text: string; detail?: string }
 
 interface Props {
-  initialAnswers?: { cards?: Card[]; offerDescription?: string; icpSnapshot?: string; pricingRange?: string }
+  initialAnswers?: { cards?: Card[]; icpSnapshot?: string; pricingRange?: string }
   onSaved?: (progress: number) => void
 }
 
@@ -29,7 +30,6 @@ function dedupeAppend(existing: Card[], incoming: Card[]): Card[] {
 }
 
 export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
-  const [offerDescription, setOfferDescription] = useState(initialAnswers?.offerDescription ?? '')
   const [icpSnapshot, setIcpSnapshot] = useState(initialAnswers?.icpSnapshot ?? '')
   const [pricingRange, setPricingRange] = useState(initialAnswers?.pricingRange ?? '')
   const [cards, setCards] = useState<Card[]>(initialAnswers?.cards ?? [])
@@ -39,11 +39,11 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
   const [lastAppended, setLastAppended] = useState<number | null>(null)
 
   async function callSuggest() {
-    if (!offerDescription.trim()) return { ok: false, error: 'Bitte beschreib Dein Angebot in mindestens einem Satz.' }
+    // offerDescription replaced by welcome-context
     try {
       const res = await fetch('/api/wizard/b2b-angebote/step/01-beef-radar/suggest', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ offerDescription, icpSnapshot, pricingRange, existingCards: cards }),
+        body: JSON.stringify({ icpSnapshot, pricingRange, existingCards: cards }),
       })
       const data = await res.json()
       if (!res.ok || !data.result) return { ok: false, error: data.error || 'Suggest fehlgeschlagen.' }
@@ -74,7 +74,7 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
     try {
       const res = await fetch('/api/wizard/b2b-angebote/step/01-beef-radar/save', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cards, offerDescription, icpSnapshot, pricingRange, notes }),
+        body: JSON.stringify({ cards, icpSnapshot, pricingRange, notes }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Save fehlgeschlagen'); setStatus('error'); return }
@@ -156,13 +156,13 @@ export function BeefRadarStep({ initialAnswers, onSaved }: Props) {
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <button onClick={initialSuggest} disabled={status === 'suggesting' || status === 'appending' || !offerDescription.trim()}
+          <button onClick={initialSuggest} disabled={status === 'suggesting' || status === 'appending'}
             className="inline-flex items-center gap-1.5 rounded-full bg-gray-900 px-4 py-2 text-xs font-bold text-white hover:opacity-90 disabled:opacity-50">
             {status === 'suggesting' ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
             {cards.length === 0 ? 'AI vorschlagen' : 'Erneut vorschlagen'}
           </button>
           {cards.length > 0 && (
-            <button onClick={suggestMore} disabled={status === 'suggesting' || status === 'appending' || !offerDescription.trim()}
+            <button onClick={suggestMore} disabled={status === 'suggesting' || status === 'appending'}
               className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-50">
               {status === 'appending' ? <Loader2 size={12} className="animate-spin" /> : <PlusCircle size={12} />}
               Suggest More

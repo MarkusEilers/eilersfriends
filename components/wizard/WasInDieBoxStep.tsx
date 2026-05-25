@@ -3,11 +3,12 @@
 import { useState } from 'react'
 import { Loader2, Sparkles, Plus, X, Save, CheckCircle2, PlusCircle, Package, BookOpen } from 'lucide-react'
 import { StepCompanion } from './StepCompanion'
+import { WelcomeContextBadge } from './WelcomeContextBadge'
 
 interface Item { name: string; description: string }
 
 interface Props {
-  initialAnswers?: { items?: Item[]; offerDescription?: string }
+  initialAnswers?: { items?: Item[] }
   onSaved?: (progress: number) => void
 }
 
@@ -23,20 +24,19 @@ function dedupeAppend(existing: Item[], incoming: Item[]): Item[] {
 }
 
 export function WasInDieBoxStep({ initialAnswers, onSaved }: Props) {
-  const [offerDescription, setOfferDescription] = useState(initialAnswers?.offerDescription ?? '')
   const [items, setItems] = useState<Item[]>(initialAnswers?.items ?? [])
   const [status, setStatus] = useState<'idle' | 'suggesting' | 'appending' | 'saving' | 'saved' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
   const [lastAppended, setLastAppended] = useState<number | null>(null)
 
   async function callSuggest() {
-    if (!offerDescription.trim() && items.length === 0) {
+    if (items.length === 0 && false) {  // welcome-context replaces requirement
       return { ok: false, error: 'Beschreib Dein Angebot kurz — dann find ich die Bausteine.' }
     }
     try {
       const res = await fetch('/api/wizard/b2b-angebote/step/01-was-in-die-box/suggest', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ offerDescription, existingItems: items }),
+        body: JSON.stringify({ existingItems: items }),
       })
       const data = await res.json()
       if (!res.ok || !data.result) return { ok: false, error: data.error || 'Suggest fehlgeschlagen.' }
@@ -68,7 +68,7 @@ export function WasInDieBoxStep({ initialAnswers, onSaved }: Props) {
     try {
       const res = await fetch('/api/wizard/b2b-angebote/step/01-was-in-die-box/save', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items, offerDescription }),
+        body: JSON.stringify({ items }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Save fehlgeschlagen'); setStatus('error'); return }
