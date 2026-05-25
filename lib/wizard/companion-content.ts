@@ -15,10 +15,10 @@ export interface StepCompanion {
 export const STEP_COMPANIONS: Record<string, StepCompanion> = {
   '01-was-in-die-box': {
       "key": "01-was-in-die-box",
-      "hook": "Fuenf. Nicht vierzehn. Fuenf Bausteine, die das Angebot tragen. Drei werden gemerkt, fuenf gehen, sieben ist die Schmerzgrenze.",
-      "why": "Typische B2B-Angebote sammeln vierzehn Features. Was im Pitch der Top 5 nicht ueberlebt, gehoert nicht ins Hauptangebot — sondern in den Nachschlag, oder raus. Die Liste der Fuenf ist die erste Substanzpruefung: wenn die Schaerfe hier fehlt, wird sie in jedem folgenden Schritt fehlen.",
-      "how": "Top 5 Bausteine, Services oder Lizenzen. Pro Eintrag: Name (max 4 Worte) + Beschreibung was er LEISTET, nicht was er IST. Workshop, Audit, Library, Channel, Review — konkret. Nicht \"Beratung\", \"Begleitung\", \"Unterstuetzung\".",
-      "ai": "Die AI nimmt das Welcome-Profile (Summary, Value Proposition, Audience) und schlaegt Bausteine vor — ausschliesslich auf Basis der echten Angebots-Beschreibung, nie generisch. Wenn das Profile zu duenn ist, fragt die AI nach statt zu raten."
+      "hook": "Fünf. Nicht vierzehn. Fünf Bausteine, die das Angebot tragen. Drei werden gemerkt, fünf gehen, sieben ist die Schmerzgrenze.",
+      "why": "Typische B2B-Angebote sammeln vierzehn Features. Was im Pitch der Top 5 nicht überlebt, gehört nicht ins Hauptangebot — sondern in den Nachschlag, oder raus. Die Liste der Fünf ist die erste Substanzprüfung: wenn die Schärfe hier fehlt, wird sie in jedem folgenden Schritt fehlen.",
+      "how": "Top 5 Bausteine, Services oder Lizenzen. Pro Eintrag: Name (max 4 Worte) + Beschreibung was er LEISTET, nicht was er IST. Workshop, Audit, Library, Channel, Review — konkret. Nicht \"Beratung\", \"Begleitung\", \"Unterstützung\".",
+      "ai": "Die AI nimmt das Welcome-Profile (Summary, Value Proposition, Audience) und schlägt Bausteine vor — ausschließlich auf Basis der echten Angebots-Beschreibung, nie generisch. Wenn das Profile zu dünn ist, fragt die AI nach statt zu raten."
   },
   '01-beef-radar': {
       "key": "01-beef-radar",
@@ -41,8 +41,8 @@ export const STEP_COMPANIONS: Record<string, StepCompanion> = {
       "how": "3 bis 5 benannte Phasen, jede mit Input, Output, Dauer in Wochen. Naming-Regel: gleiche Grammatik, gleiche Silbenanzahl, im Slack-Chat teilbar — „Aufräumen · Aufstellen · Abliefern\". Drei Wörter, eine Reise.",
       "ai": "Die AI nimmt das Welcome-Profile + Starting-Pain + End-Goal und schlägt Phasen-Namen mit gleicher Grammatik vor. Die Phasen-Namen sind der wichtigste Hebel — werden oft mehrfach iteriert."
   },
-  '04-phasen-waehrung': {
-      "key": "04-phasen-waehrung",
+  '04-phasen-währung': {
+      "key": "04-phasen-währung",
       "hook": "Pricing wird gegen Realist verteidigt. Garantie gegen Pessimist. Optimist ist Up-Side, kein Versprechen. Drei Zahlen pro Phase, eine Tabelle.",
       "why": "Aus „wir helfen Ihnen\" wird „in Phase 2 verschieben wir die Annahmequote um 12 Punkte — gemessen Woche 8\". Der Unterschied ist nicht Marketing — der Unterschied ist Verteidigbarkeit. Verteidigbare Zahlen werden im Vorstand übernommen. Marketing-Zahlen werden vom CFO zerlegt.",
       "how": "Pro Phase aus Schritt 3 eine Hauptwährung. Baseline (wo der Kunde heute steht) + Drei-Punkt-Korridor (Pessimist / Realist / Optimist) + Mess-Zeitpunkt (Woche X Review). Optional 1-2 Sekundär-Währungen pro Phase.",

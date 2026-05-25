@@ -68,7 +68,7 @@ export function WizardEditorial({ answers, stepsCompleted }: Props) {
               {STEPS.map((s) => (
                 <button key={s.key} type="button" onClick={() => scrollTo(s.key)}
                   className="h-0.5 w-6 rounded-full transition-colors"
-                  style={{ backgroundColor: isDone(s.key) ? '#7A1F1F' : '#D6D2C9' }}
+                  style={{ backgroundColor: isDone(s.key) ? '#1A5FD4' : '#D6D2C9' }}
                   aria-label={s.nav} />
               ))}
             </div>
@@ -185,13 +185,13 @@ export function WizardEditorial({ answers, stepsCompleted }: Props) {
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1.5">Fortschritt</p>
                 <p className="text-xs text-gray-700">Bausteine erfasst <span className="float-right font-mono tabular-nums">{Math.round((stepsCompleted / totalSteps) * 100)}%</span></p>
                 <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
-                  <div className="h-full rounded-full" style={{ width: `${Math.round((stepsCompleted / totalSteps) * 100)}%`, backgroundColor: '#7A1F1F' }} />
+                  <div className="h-full rounded-full" style={{ width: `${Math.round((stepsCompleted / totalSteps) * 100)}%`, backgroundColor: '#1A5FD4' }} />
                 </div>
               </div>
 
-              <div className="rounded-lg border border-red-200 bg-red-50/40 p-3.5">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-red-900 mb-1.5">Markus&apos; Notiz</p>
-                <p className="text-[11px] italic leading-snug text-red-900" style={{ fontFamily: 'var(--font-serif)' }}>
+              <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-3.5">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-blue-900 mb-1.5">Markus&apos; Notiz</p>
+                <p className="text-[11px] italic leading-snug text-blue-900" style={{ fontFamily: 'var(--font-serif)' }}>
                   „Pro Baustein ein Satz, der den Effekt beschreibt. Wenn der Satz hakt, hakt das Angebot."
                 </p>
               </div>
@@ -229,7 +229,7 @@ export function WizardEditorial({ answers, stepsCompleted }: Props) {
 function PointRow({ points, label, highlight }: { points: number; label: string; highlight?: boolean }) {
   return (
     <li className={`flex items-center gap-2 rounded ${highlight ? 'bg-gray-900 text-white px-2 py-1' : ''}`}>
-      <span className={`font-mono tabular-nums text-[11px] font-bold ${highlight ? 'text-white' : 'text-red-900'}`}>+{points}</span>
+      <span className={`font-mono tabular-nums text-[11px] font-bold ${highlight ? 'text-white' : 'text-blue-900'}`}>+{points}</span>
       <span className={`flex-1 text-[11px] leading-tight ${highlight ? 'text-white' : 'text-gray-700'}`}>{label}</span>
       <span className={`font-mono tabular-nums text-[10px] ${highlight ? 'text-white/70' : 'text-gray-500'}`}>{points} pts</span>
     </li>

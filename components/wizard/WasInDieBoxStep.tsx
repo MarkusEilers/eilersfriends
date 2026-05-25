@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Loader2, Sparkles, Plus, X, Save, CheckCircle2, PlusCircle, BookOpen } from 'lucide-react'
 import { StepCompanion } from './StepCompanion'
 import { WelcomeContextBadge } from './WelcomeContextBadge'
@@ -28,6 +28,23 @@ export function WasInDieBoxStep({ initialAnswers, onSaved }: Props) {
   const [status, setStatus] = useState<'idle' | 'suggesting' | 'appending' | 'saving' | 'saved' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
   const [lastAppended, setLastAppended] = useState<number | null>(null)
+  const [autoTried, setAutoTried] = useState(false)
+
+  useEffect(() => {
+    if (autoTried || items.length > 0) return
+    setAutoTried(true)
+    // Try once on mount — Welcome-Profile required, suggest API returns empty + clarifying note if too thin
+    setStatus('suggesting'); setError(null)
+    void (async () => {
+      const r = await callSuggest()
+      if (!r.ok) { setStatus('idle'); return } // silent fail — user can click button manually
+      const incoming = r.result?.items ?? []
+      if (incoming.length > 0) setItems(incoming.slice(0, 5))
+      setStatus('idle')
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
 
   async function callSuggest() {
     try {
@@ -82,7 +99,7 @@ export function WasInDieBoxStep({ initialAnswers, onSaved }: Props) {
   return (
     <div className="space-y-10">
       <p className="text-base leading-relaxed text-gray-800 max-w-prose">
-        <span className="float-left mr-3 mt-1 text-6xl font-bold leading-none" style={{ fontFamily: 'var(--font-serif)', color: '#7A1F1F' }}>F</span>
+        <span className="float-left mr-3 mt-1 text-6xl font-bold leading-none" style={{ fontFamily: 'var(--font-serif)', color: '#1A5FD4' }}>F</span>
         ünf. Nicht vierzehn. Fünf Bausteine, Services oder Lizenzen, die das Angebot tragen. Drei werden gemerkt,
         fünf gehen, sieben ist die Schmerzgrenze. Wenn die Liste unter fünf bleibt, fehlt nicht Material — fehlt Schärfe.
       </p>
@@ -91,7 +108,7 @@ export function WasInDieBoxStep({ initialAnswers, onSaved }: Props) {
 
       <section className="max-w-prose">
         <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Markus&apos; Stimme</h3>
-        <blockquote className="border-l-2 border-red-900 pl-4 text-base italic leading-relaxed text-gray-800" style={{ fontFamily: 'var(--font-serif)' }}>
+        <blockquote className="border-l-2 border-blue-700 pl-4 text-base italic leading-relaxed text-gray-800" style={{ fontFamily: 'var(--font-serif)' }}>
           „Was nicht im Pitch der Top 5 überlebt, gehört nicht ins Angebot — gehört in den Nachschlag."
         </blockquote>
       </section>

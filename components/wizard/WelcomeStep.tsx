@@ -19,7 +19,7 @@ interface Props {
   onCompleted?: () => void
 }
 
-const ORANGE = '#F05A1A'
+const ORANGE = '#1A5FD4'
 
 export function WelcomeStep({ onCompleted }: Props) {
   const [profile, setProfile] = useState<Profile>({})
@@ -153,7 +153,7 @@ export function WelcomeStep({ onCompleted }: Props) {
         {profile.keywords && profile.keywords.length > 0 && (
           <div className="flex flex-wrap gap-2 pt-2">
             {profile.keywords.map((k) => (
-              <span key={k} className="rounded-full px-3 py-1 text-xs font-medium" style={{ backgroundColor: '#FFF1EB', color: ORANGE }}>{k}</span>
+              <span key={k} className="rounded-full px-3 py-1 text-xs font-medium" style={{ backgroundColor: '#EBF1FF', color: ORANGE }}>{k}</span>
             ))}
           </div>
         )}
@@ -166,7 +166,7 @@ export function WelcomeStep({ onCompleted }: Props) {
     <div className="space-y-8">
       {/* Journalistic intro */}
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl" style={{ backgroundColor: '#FFF1EB' }}>
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl" style={{ backgroundColor: '#EBF1FF' }}>
           <Building2 size={18} style={{ color: ORANGE }} />
         </div>
         <div>
