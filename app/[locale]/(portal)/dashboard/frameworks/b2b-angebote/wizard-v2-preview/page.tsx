@@ -7,8 +7,10 @@ import { ensureCompanyProfile } from '@/lib/db/self-heal'
 import { WizardV2Layout } from '@/components/wizard-v2/WizardV2Layout'
 import { WelcomeStepV2 } from '@/components/wizard-v2/WelcomeStepV2'
 import { Step01BusinessProductBlocks } from '@/components/wizard-v2/Step01BusinessProductBlocks'
+import { Step02ICP } from '@/components/wizard-v2/Step02ICP'
+import { Step03ChallengesOutcomes } from '@/components/wizard-v2/Step03ChallengesOutcomes'
 import { Step04BeefRadar } from '@/components/wizard-v2/Step04BeefRadar'
-import type { BusinessContext, ProductOrService, BuildingBlock, BeefRadarCard } from '@/lib/wizard-v2/types'
+import type { BusinessContext, ProductOrService, BuildingBlock, BeefRadarCard, ICP, ChallengeOrOutcome } from '@/lib/wizard-v2/types'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -51,7 +53,7 @@ export default async function WizardV2PreviewPage() {
   )
   const profile = profileRows[0] ?? null
 
-  // Step 01 data
+  // Step 01
   const bcRows = rowsOf<Record<string, unknown>>(
     await db.execute(sql`SELECT market_position, target_market, business_model, business_model_free_text, competitive_positioning FROM bauplan_business_context WHERE bauplan_id = ${draftId} LIMIT 1`)
   )
@@ -60,6 +62,21 @@ export default async function WizardV2PreviewPage() {
   )
   const blockRows = rowsOf<Record<string, unknown>>(
     await db.execute(sql`SELECT id, name, description, is_bonus, "order" FROM bauplan_building_blocks WHERE bauplan_id = ${draftId} ORDER BY is_bonus ASC, "order" ASC`)
+  )
+
+  // Step 02
+  const icpRows = rowsOf<Record<string, unknown>>(
+    await db.execute(sql`SELECT demographics, currencies, pains_gains, interview_contacts FROM bauplan_icp WHERE bauplan_id = ${draftId} LIMIT 1`)
+  )
+
+  // Step 03
+  const challengeRows = rowsOf<Record<string, unknown>>(
+    await db.execute(sql`SELECT id, type, topic, reality, economic_impact, kpi, "order" FROM bauplan_challenges WHERE bauplan_id = ${draftId} ORDER BY type ASC, "order" ASC`)
+  )
+
+  // Step 04
+  const cardRows = rowsOf<Record<string, unknown>>(
+    await db.execute(sql`SELECT id, building_block_id, "column", text FROM bauplan_beef_radar_cards WHERE bauplan_id = ${draftId}`)
   )
 
   const businessContext: BusinessContext | null = bcRows[0]
@@ -71,6 +88,7 @@ export default async function WizardV2PreviewPage() {
         competitivePositioning: (bcRows[0].competitive_positioning as string) ?? '',
       }
     : null
+
   const product: ProductOrService | null = productRows[0]
     ? {
         productName: (productRows[0].product_name as string) ?? '',
@@ -80,6 +98,7 @@ export default async function WizardV2PreviewPage() {
         productStage: ((productRows[0].product_stage as ProductOrService['productStage']) ?? 'pilot'),
       }
     : null
+
   const blocks: BuildingBlock[] = blockRows.map((r) => ({
     id: r.id as string,
     name: r.name as string,
@@ -88,10 +107,26 @@ export default async function WizardV2PreviewPage() {
     order: (r.order as number) ?? 0,
   }))
 
-  // Step 04 data
-  const cardRows = rowsOf<Record<string, unknown>>(
-    await db.execute(sql`SELECT id, building_block_id, "column", text FROM bauplan_beef_radar_cards WHERE bauplan_id = ${draftId}`)
-  )
+  const icp: ICP | null = icpRows[0]
+    ? {
+        demographics: (icpRows[0].demographics ?? {}) as ICP['demographics'],
+        currencies: (icpRows[0].currencies ?? []) as ICP['currencies'],
+        painsGains: (icpRows[0].pains_gains ?? []) as ICP['painsGains'],
+        interviewContacts: (icpRows[0].interview_contacts ?? []) as ICP['interviewContacts'],
+      }
+    : null
+
+  const challengesOutcomes: ChallengeOrOutcome[] = challengeRows.map((r) => ({
+    id: r.id as string,
+    type: r.type as ChallengeOrOutcome['type'],
+    topic: r.topic as string,
+    reality: (r.reality as string) ?? '',
+    economicImpact: (r.economic_impact as string) ?? '',
+    kpi: (r.kpi as string) ?? '',
+    order: (r.order as number) ?? 0,
+    createdBy: 'user',
+  }))
+
   const beefCards: BeefRadarCard[] = cardRows.map((r) => ({
     id: r.id as string,
     buildingBlockId: r.building_block_id as string,
@@ -106,44 +141,19 @@ export default async function WizardV2PreviewPage() {
 
   return (
     <WizardV2Layout stepsCompleted={stepsCompleted} currentStepKey={draft.current_step_key as string}>
-      <WelcomeStepV2
-        draftId={draftId}
-        initialOrgName={(profile?.organisation_name as string) ?? ''}
-        initialWebsite={(profile?.website as string) ?? ''}
-      />
-
-      <Step01BusinessProductBlocks
-        draftId={draftId}
-        initialBusinessContext={businessContext}
-        initialProduct={product}
-        initialBlocks={blocks}
-      />
-
-      {/* Step 02 + 03 placeholder section */}
-      <section className="bg-white px-6 py-16 border-t border-gray-100">
-        <div className="mx-auto max-w-3xl text-center">
-          <span className="mb-4 inline-block rounded-full bg-amber-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber">
-            Step 02 + 03 in Arbeit
-          </span>
-          <p className="mt-4 text-sm leading-relaxed text-muted">
-            ICP-Pills (Step 02) und Herausforderungen + Ergebnisse (Step 03) liegen als Mockup vor — Komponente kommt in den nächsten Commits. Beef-Radar unten funktioniert schon ohne sie, nutzt aber dann ICP-Pains und Schmerz-Vektoren als zusätzlichen Anker.
-          </p>
-        </div>
-      </section>
-
-      <Step04BeefRadar
-        draftId={draftId}
-        buildingBlocks={blocks}
-        initialCards={beefCards}
-      />
+      <WelcomeStepV2 draftId={draftId} initialOrgName={(profile?.organisation_name as string) ?? ''} initialWebsite={(profile?.website as string) ?? ''} />
+      <Step01BusinessProductBlocks draftId={draftId} initialBusinessContext={businessContext} initialProduct={product} initialBlocks={blocks} />
+      <Step02ICP draftId={draftId} initialICP={icp} />
+      <Step03ChallengesOutcomes draftId={draftId} initialItems={challengesOutcomes} />
+      <Step04BeefRadar draftId={draftId} buildingBlocks={blocks} initialCards={beefCards} />
 
       <section className="bg-cream px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
           <span className="mb-4 inline-block rounded-full bg-amber-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber">
-            v2-Preview · Welcome + Step 01 + Step 04 live · 9 weitere Steps in Arbeit
+            v2-Preview · Welcome + Step 01-04 live · 8 weitere Steps in Arbeit
           </span>
           <p className="mt-4 text-base leading-relaxed text-muted">
-            Step 02 ICP, 03 Herausforderungen+Ergebnisse, 05 Future Problems, 06 Wirtschaftliche Bewertung, 07 Bulletproof Plan, 08 Currencies pro Phase, 09 Preis, 10 Scarcity, 11 Risk-Reversal, 12 Name+Headline — kommen in den nächsten Commits.
+            Step 05 Future Problems, 06 Wirtschaftliche Bewertung, 07 Bulletproof Plan, 08 Currencies pro Phase, 09 Preis, 10 Scarcity, 11 Risk-Reversal, 12 Name+Headline — kommen in den nächsten Commits.
           </p>
         </div>
       </section>
