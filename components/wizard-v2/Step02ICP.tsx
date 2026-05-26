@@ -25,13 +25,21 @@ interface Props {
 
 const EMPTY_DEMO: ICPDemographics = {
   name: '',
-  role: '',
+  roles: [],
   responsibilities: '',
   whereToMeet: [],
 }
 
 export function Step02ICP({ draftId, initialICP, onSaved }: Props) {
-  const [demographics, setDemographics] = useState<ICPDemographics>(initialICP?.demographics ?? EMPTY_DEMO)
+  const [demographics, setDemographics] = useState<ICPDemographics>(() => {
+    const d = initialICP?.demographics
+    if (!d) return EMPTY_DEMO
+    // Legacy migration: if d.role exists and d.roles is empty, promote role → roles[0]
+    if ((!d.roles || d.roles.length === 0) && d.role) {
+      return { ...EMPTY_DEMO, ...d, roles: [d.role], role: undefined }
+    }
+    return { ...EMPTY_DEMO, ...d, roles: d.roles ?? [] }
+  })
   const [currencies, setCurrencies] = useState<ICPCurrency[]>(initialICP?.currencies ?? [])
   const [painsGains, setPainsGains] = useState<ICPPainGain[]>(initialICP?.painsGains ?? [])
 
@@ -62,8 +70,11 @@ export function Step02ICP({ draftId, initialICP, onSaved }: Props) {
   }
 
   function acceptRolePill(p: PillSuggestion) {
-    setDemographics((d) => ({ ...d, role: p.text }))
+    setDemographics((d) => ({ ...d, roles: [...(d.roles ?? []), p.text] }))
     setPills((s) => ({ ...s, roles: s.roles.filter((x) => x.text !== p.text) }))
+  }
+  function removeRole(idx: number) {
+    setDemographics((d) => ({ ...d, roles: (d.roles ?? []).filter((_, i) => i !== idx) }))
   }
   function acceptWhereToMeetPill(p: PillSuggestion) {
     setDemographics((d) => ({ ...d, whereToMeet: [...(d.whereToMeet ?? []), p.text] }))
@@ -170,8 +181,33 @@ export function Step02ICP({ draftId, initialICP, onSaved }: Props) {
           <Field label="Persona-Name (optional)">
             <input type="text" value={demographics.name ?? ''} onChange={(e) => setDemographics({ ...demographics, name: e.target.value })} placeholder={'z.B. „Lena, die Pipeline-Pragmatikerin“'} className="input-base" />
           </Field>
-          <Field label="Rolle / Job-Titel" help="Konkrete Rolle, nicht „Sales-Leader“.">
-            <input type="text" value={demographics.role} onChange={(e) => setDemographics({ ...demographics, role: e.target.value })} placeholder={'z.B. „VP Sales B2B SaaS“'} className="input-base" />
+          <Field label="Rollen / Job-Titel" help="Eine oder mehrere konkrete Rollen, die dieses Angebot adressiert. Erste = Hauptrolle.">
+            <div className="flex flex-wrap gap-2 rounded-xl border border-gray-200 bg-white p-2 min-h-[44px]">
+              {(demographics.roles ?? []).map((r, i) => (
+                <span key={i} className={
+                  'inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs ' +
+                  (i === 0 ? 'bg-blue text-white font-semibold' : 'bg-blue-bg text-blue')
+                }>
+                  {i === 0 && <span className="text-[9px] opacity-70">HAUPT</span>}
+                  {r}
+                  <button type="button" onClick={() => removeRole(i)} className="opacity-60 hover:opacity-100">
+                    <X size={10} />
+                  </button>
+                </span>
+              ))}
+              <input
+                type="text"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                    const v = e.currentTarget.value.trim()
+                    setDemographics((d) => ({ ...d, roles: [...(d.roles ?? []), v] }))
+                    e.currentTarget.value = ''
+                  }
+                }}
+                placeholder={(demographics.roles ?? []).length === 0 ? 'z.B. „VP Sales B2B SaaS" — Enter zum Hinzufügen' : '+ weitere Rolle'}
+                className="flex-1 min-w-[200px] border-0 bg-transparent text-sm focus:outline-none"
+              />
+            </div>
           </Field>
           {pills.roles.length > 0 && (
             <PillRow label="AI-Vorschläge für Rolle" pills={pills.roles} onAccept={acceptRolePill} />

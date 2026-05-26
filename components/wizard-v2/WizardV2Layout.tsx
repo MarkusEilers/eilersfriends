@@ -36,14 +36,13 @@ export function WizardV2Layout({ children, stepsCompleted, totalSteps = STEPS.le
   return (
     <div className="min-h-screen bg-white">
       {/* Sticky Topbar — eilersfriends Layout-Pattern */}
-      <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/90 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur-md">
+        <div className="flex w-full items-center justify-between px-6 py-3">
           <div className="flex items-center gap-3 min-w-0">
-            <Link href={'/dashboard/frameworks' as '/'} className="flex items-center gap-2 text-sm font-bold text-ink hover:opacity-70">
-              <span className="inline-block h-6 w-6 rounded-full bg-orange" />
-              <span className="hidden sm:inline">Eilers+Friends</span>
-              <span className="ml-2 text-xs font-medium text-muted">· Bauplan-Wizard</span>
+            <Link href={'/dashboard/frameworks' as '/'} className="text-xs font-semibold uppercase tracking-widest text-muted hover:text-ink">
+              ← Meine Frameworks
             </Link>
+            <span className="hidden text-xs font-bold uppercase tracking-widest text-ink sm:inline">Bauplan-Wizard</span>
           </div>
           <div className="hidden items-center gap-6 md:flex">
             <span className="text-xs font-semibold uppercase tracking-widest text-muted">{stepsCompleted} / {totalSteps} fertig</span>
@@ -67,7 +66,7 @@ export function WizardV2Layout({ children, stepsCompleted, totalSteps = STEPS.le
         </div>
       </header>
 
-      <main>{children}</main>
+      <main className="pt-14">{children}</main>
     </div>
   )
 }

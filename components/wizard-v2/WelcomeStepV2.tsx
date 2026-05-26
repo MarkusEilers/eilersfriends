@@ -89,13 +89,15 @@ export function WelcomeStepV2({ draftId, initialOrgName = '', initialWebsite = '
               SalesMade · Der Bauplan
             </span>
           </div>
-          <h1 className="text-center text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-[4rem]">
-            Dein Angebot ist der größte Hebel,
-            <br />
-            <span className="text-blue">den Du gerade nicht ziehst.</span>
+          <h1 className="text-center font-serif leading-[1.05] tracking-tight text-ink" style={{ fontSize: 'clamp(48px, 7vw, 88px)' }}>
+            BOOM.<br />
+            <span className="text-blue">Schön Dich zu sehen.</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-center text-base leading-relaxed text-muted sm:text-lg">
-            In dreizehn Schritten machen wir Dein B2B-Angebot so verteidigbar, dass es sich verkauft, wenn Du nicht im Raum bist. Vier Stunden Tiefenarbeit, ein Angebot, das Dein Team wieder und wieder verwenden kann.
+          <p className="mx-auto mt-8 max-w-3xl text-center text-lg leading-relaxed text-ink sm:text-xl">
+            Viele Unternehmen, die glauben, sie haben ein Sales-Problem, haben mindestens auch ein Angebotsproblem. Möchten wir nicht alle erleben, dass Kunden komplett ausflippen, weil sie unsere Angebote so gut finden?
+          </p>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-base leading-relaxed text-muted">
+            Klasse, dass Du Dich entschieden hast, hier Deinen Bauplan für unwiderstehliche Angebote zu bauen — der verspricht ja genau das zu machen. In dreizehn Schritten von „boring und irrelevant" zu einem Angebot, das Dein Team wieder und wieder verwenden kann. Wir befreien Deine Kundengewinnung von inneren Widerständen — vielleicht schon beim nächsten Kunden.
           </p>
           <div className="mt-8 flex justify-center gap-3">
             <a href="#welcome-research" className="rounded-full bg-[#0A0D14] px-8 py-4 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90">

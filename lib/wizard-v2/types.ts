@@ -39,7 +39,10 @@ export interface BuildingBlock {
 
 export interface ICPDemographics {
   name?: string
-  role: string
+  /** Liste von Rollen, die dieses Angebot adressiert. Erste = Hauptrolle. */
+  roles: string[]
+  /** @deprecated use roles[] */
+  role?: string
   responsibilities: string
   companySizeMin?: number
   companySizeMax?: number
