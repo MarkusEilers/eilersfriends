@@ -7,7 +7,8 @@ import { ensureCompanyProfile } from '@/lib/db/self-heal'
 import { WizardV2Layout } from '@/components/wizard-v2/WizardV2Layout'
 import { WelcomeStepV2 } from '@/components/wizard-v2/WelcomeStepV2'
 import { Step01BusinessProductBlocks } from '@/components/wizard-v2/Step01BusinessProductBlocks'
-import type { BusinessContext, ProductOrService, BuildingBlock } from '@/lib/wizard-v2/types'
+import { Step04BeefRadar } from '@/components/wizard-v2/Step04BeefRadar'
+import type { BusinessContext, ProductOrService, BuildingBlock, BeefRadarCard } from '@/lib/wizard-v2/types'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -30,7 +31,6 @@ export default async function WizardV2PreviewPage() {
   await ensureBauplanV2Tables()
   await ensureCompanyProfile()
 
-  // Get or create draft
   let drafts = rowsOf<Record<string, unknown>>(
     await db.execute(sql`
       SELECT id, current_step_key FROM bauplan_drafts
@@ -40,43 +40,26 @@ export default async function WizardV2PreviewPage() {
   )
   if (drafts.length === 0) {
     drafts = rowsOf<Record<string, unknown>>(
-      await db.execute(sql`
-        INSERT INTO bauplan_drafts (user_id) VALUES (${session.user.id})
-        RETURNING id, current_step_key
-      `)
+      await db.execute(sql`INSERT INTO bauplan_drafts (user_id) VALUES (${session.user.id}) RETURNING id, current_step_key`)
     )
   }
   const draft = drafts[0]!
   const draftId = draft.id as string
 
-  // Get welcome profile if exists
   const profileRows = rowsOf<Record<string, unknown>>(
-    await db.execute(sql`
-      SELECT organisation_name, website FROM company_profile
-      WHERE user_id = ${session.user.id} LIMIT 1
-    `)
+    await db.execute(sql`SELECT organisation_name, website FROM company_profile WHERE user_id = ${session.user.id} LIMIT 1`)
   )
   const profile = profileRows[0] ?? null
 
-  // Load Step 01 data
+  // Step 01 data
   const bcRows = rowsOf<Record<string, unknown>>(
-    await db.execute(sql`
-      SELECT market_position, target_market, business_model, business_model_free_text, competitive_positioning
-      FROM bauplan_business_context WHERE bauplan_id = ${draftId} LIMIT 1
-    `)
+    await db.execute(sql`SELECT market_position, target_market, business_model, business_model_free_text, competitive_positioning FROM bauplan_business_context WHERE bauplan_id = ${draftId} LIMIT 1`)
   )
   const productRows = rowsOf<Record<string, unknown>>(
-    await db.execute(sql`
-      SELECT product_name, product_type, product_summary, product_url, product_stage
-      FROM bauplan_product WHERE bauplan_id = ${draftId} LIMIT 1
-    `)
+    await db.execute(sql`SELECT product_name, product_type, product_summary, product_url, product_stage FROM bauplan_product WHERE bauplan_id = ${draftId} LIMIT 1`)
   )
   const blockRows = rowsOf<Record<string, unknown>>(
-    await db.execute(sql`
-      SELECT id, name, description, is_bonus, "order"
-      FROM bauplan_building_blocks WHERE bauplan_id = ${draftId}
-      ORDER BY is_bonus ASC, "order" ASC
-    `)
+    await db.execute(sql`SELECT id, name, description, is_bonus, "order" FROM bauplan_building_blocks WHERE bauplan_id = ${draftId} ORDER BY is_bonus ASC, "order" ASC`)
   )
 
   const businessContext: BusinessContext | null = bcRows[0]
@@ -88,7 +71,6 @@ export default async function WizardV2PreviewPage() {
         competitivePositioning: (bcRows[0].competitive_positioning as string) ?? '',
       }
     : null
-
   const product: ProductOrService | null = productRows[0]
     ? {
         productName: (productRows[0].product_name as string) ?? '',
@@ -98,7 +80,6 @@ export default async function WizardV2PreviewPage() {
         productStage: ((productRows[0].product_stage as ProductOrService['productStage']) ?? 'pilot'),
       }
     : null
-
   const blocks: BuildingBlock[] = blockRows.map((r) => ({
     id: r.id as string,
     name: r.name as string,
@@ -107,12 +88,19 @@ export default async function WizardV2PreviewPage() {
     order: (r.order as number) ?? 0,
   }))
 
-  // Count completed steps
+  // Step 04 data
+  const cardRows = rowsOf<Record<string, unknown>>(
+    await db.execute(sql`SELECT id, building_block_id, "column", text FROM bauplan_beef_radar_cards WHERE bauplan_id = ${draftId}`)
+  )
+  const beefCards: BeefRadarCard[] = cardRows.map((r) => ({
+    id: r.id as string,
+    buildingBlockId: r.building_block_id as string,
+    column: r.column as 'what' | 'how' | 'why',
+    text: (r.text as string) ?? '',
+  }))
+
   const stepsCompletedRows = rowsOf<{ count: string }>(
-    await db.execute(sql`
-      SELECT COUNT(*)::text as count FROM bauplan_step_states
-      WHERE bauplan_id = ${draftId} AND status = 'completed'
-    `)
+    await db.execute(sql`SELECT COUNT(*)::text as count FROM bauplan_step_states WHERE bauplan_id = ${draftId} AND status = 'completed'`)
   )
   const stepsCompleted = parseInt(stepsCompletedRows[0]?.count ?? '0', 10)
 
@@ -131,14 +119,31 @@ export default async function WizardV2PreviewPage() {
         initialBlocks={blocks}
       />
 
-      {/* Stubs für Step 02-12 kommen in den nächsten Commits */}
+      {/* Step 02 + 03 placeholder section */}
+      <section className="bg-white px-6 py-16 border-t border-gray-100">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="mb-4 inline-block rounded-full bg-amber-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber">
+            Step 02 + 03 in Arbeit
+          </span>
+          <p className="mt-4 text-sm leading-relaxed text-muted">
+            ICP-Pills (Step 02) und Herausforderungen + Ergebnisse (Step 03) liegen als Mockup vor — Komponente kommt in den nächsten Commits. Beef-Radar unten funktioniert schon ohne sie, nutzt aber dann ICP-Pains und Schmerz-Vektoren als zusätzlichen Anker.
+          </p>
+        </div>
+      </section>
+
+      <Step04BeefRadar
+        draftId={draftId}
+        buildingBlocks={blocks}
+        initialCards={beefCards}
+      />
+
       <section className="bg-cream px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
           <span className="mb-4 inline-block rounded-full bg-amber-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber">
-            v2-Preview · Welcome + Step 01 live · 11 weitere Steps in Arbeit
+            v2-Preview · Welcome + Step 01 + Step 04 live · 9 weitere Steps in Arbeit
           </span>
           <p className="mt-4 text-base leading-relaxed text-muted">
-            Step 02 (ICP), 03 (Herausforderungen + Ergebnisse), 04 (Beef-Radar), 05 (Future Problems), 06 (Wirtschaftliche Bewertung), 07 (Bulletproof Plan), 08 (Currencies pro Phase), 09 (Preis), 10 (Scarcity), 11 (Risk-Reversal), 12 (Name + Headline) — kommen in den nächsten Commits.
+            Step 02 ICP, 03 Herausforderungen+Ergebnisse, 05 Future Problems, 06 Wirtschaftliche Bewertung, 07 Bulletproof Plan, 08 Currencies pro Phase, 09 Preis, 10 Scarcity, 11 Risk-Reversal, 12 Name+Headline — kommen in den nächsten Commits.
           </p>
         </div>
       </section>
