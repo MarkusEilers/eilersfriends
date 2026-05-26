@@ -254,7 +254,7 @@ export function Step04BeefRadar({ draftId, buildingBlocks, initialCards = [], on
                   <textarea
                     value={r.how}
                     onChange={(e) => updateRow(r.blockId, { how: e.target.value })}
-                    placeholder="1 Satz: was passiert sofort? (z.B. „Sales-Logik in 2 Tagen verankert.")"
+                    placeholder={'1 Satz: was passiert sofort? (z.B. „Sales-Logik in 2 Tagen verankert.“)'}
                     rows={2}
                     className="w-full resize-none border-0 bg-transparent text-sm text-gray-700 focus:outline-none"
                   />
@@ -282,7 +282,7 @@ export function Step04BeefRadar({ draftId, buildingBlocks, initialCards = [], on
                   <textarea
                     value={r.why}
                     onChange={(e) => updateRow(r.blockId, { why: e.target.value })}
-                    placeholder="1 Satz mit Zahl + Einheit. (z.B. „Ramp-Up neue AEs 90 → 30 Tage. Kosten ↓ 80k €/AE.")"
+                    placeholder={'1 Satz mit Zahl + Einheit. (z.B. „Ramp-Up neue AEs 90 → 30 Tage. Kosten ↓ 80k €/AE.“)'}
                     rows={2}
                     className="w-full resize-none border-0 bg-transparent text-sm text-gray-700 focus:outline-none"
                   />

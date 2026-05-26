@@ -168,10 +168,10 @@ export function Step02ICP({ draftId, initialICP, onSaved }: Props) {
             <h3 className="text-xl font-bold text-ink">Demographics</h3>
           </div>
           <Field label="Persona-Name (optional)">
-            <input type="text" value={demographics.name ?? ''} onChange={(e) => setDemographics({ ...demographics, name: e.target.value })} placeholder="z.B. „Lena, die Pipeline-Pragmatikerin"" className="input-base" />
+            <input type="text" value={demographics.name ?? ''} onChange={(e) => setDemographics({ ...demographics, name: e.target.value })} placeholder={'z.B. „Lena, die Pipeline-Pragmatikerin“'} className="input-base" />
           </Field>
           <Field label="Rolle / Job-Titel" help="Konkrete Rolle, nicht „Sales-Leader".">
-            <input type="text" value={demographics.role} onChange={(e) => setDemographics({ ...demographics, role: e.target.value })} placeholder="z.B. „VP Sales B2B SaaS"" className="input-base" />
+            <input type="text" value={demographics.role} onChange={(e) => setDemographics({ ...demographics, role: e.target.value })} placeholder={'z.B. „VP Sales B2B SaaS“'} className="input-base" />
           </Field>
           {pills.roles.length > 0 && (
             <PillRow label="AI-Vorschläge für Rolle" pills={pills.roles} onAccept={acceptRolePill} />
