@@ -160,7 +160,7 @@ export function Step06EconomicCluster({ draftId, initialClusters = [], onSaved }
               </label>
             </div>
             <textarea value={c.methodology} onChange={(e) => updateCluster(c.id, { methodology: e.target.value })}
-              placeholder="Methodik (z.B. „3 FTE × 4h/Wo × 47 Wo × 90 €/h = 50.760 €") — Pflicht bei Hypothese"
+              placeholder={'Methodik (z.B. „3 FTE × 4h/Wo × 47 Wo × 90 €/h = 50.760 €") — Pflicht bei Hypothese'}
               rows={2}
               className="mt-3 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-700" />
           </div>

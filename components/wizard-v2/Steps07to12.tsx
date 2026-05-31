@@ -214,7 +214,7 @@ export function Step08PhaseCurrencies({ draftId, phases, initialCurrencies = [],
                   <input value={it.pessimistic} onChange={(e) => update(it.id, { pessimistic: e.target.value })} placeholder="Pessimistic" className="rounded border border-gray-200 px-2 py-1 text-xs" />
                   <input value={it.realistic} onChange={(e) => update(it.id, { realistic: e.target.value })} placeholder="Realistic" className="rounded border border-gray-200 px-2 py-1 text-xs" />
                   <input value={it.optimistic} onChange={(e) => update(it.id, { optimistic: e.target.value })} placeholder="Optimistic" className="rounded border border-gray-200 px-2 py-1 text-xs" />
-                  <input value={it.measuredAt} onChange={(e) => update(it.id, { measuredAt: e.target.value })} placeholder="Gemessen z.B. „Ende Phase 1"" className="rounded border border-gray-200 px-2 py-1 text-xs sm:col-span-2" />
+                  <input value={it.measuredAt} onChange={(e) => update(it.id, { measuredAt: e.target.value })} placeholder={'Gemessen z.B. „Ende Phase 1"'} className="rounded border border-gray-200 px-2 py-1 text-xs sm:col-span-2" />
                   <button onClick={() => remove(it.id)} className="text-xs text-gray-400 hover:text-red"><X size={12} /></button>
                 </div>
               ))}
@@ -457,10 +457,10 @@ export function Step11RiskReversal({ draftId, initialReversal, onSaved }: { draf
         </div>
 
         <textarea value={rev.triggerCondition} onChange={(e) => setRev((r) => ({ ...r, triggerCondition: e.target.value }))}
-          placeholder="Trigger · was der Kunde commitet (z.B. „Alle 12 Sessions wahrgenommen + Reporting eingereicht")" rows={2}
+          placeholder={'Trigger · was der Kunde commitet (z.B. „Alle 12 Sessions wahrgenommen + Reporting eingereicht")'} rows={2}
           className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm" />
         <textarea value={rev.consequence} onChange={(e) => setRev((r) => ({ ...r, consequence: e.target.value }))}
-          placeholder="Konsequenz · was wir commiten (z.B. „Kostenlose Verlängerung 3 Monate bis Ergebnis")" rows={2}
+          placeholder={'Konsequenz · was wir commiten (z.B. „Kostenlose Verlängerung 3 Monate bis Ergebnis")'} rows={2}
           className="mt-3 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm" />
         <label className="mt-3 inline-flex items-center gap-2 text-sm text-gray-700">
           <input type="checkbox" checked={rev.espressoTest} onChange={(e) => setRev((r) => ({ ...r, espressoTest: e.target.checked }))} /> Espresso-Test bestanden — verteidigbar bei Kollegen ohne Marketing-Sound
@@ -566,7 +566,7 @@ export function Step12NameHeadline({ draftId, initialIdentity, onSaved }: { draf
             <textarea value={identity.headline} onChange={(e) => setIdentity({ ...identity, headline: e.target.value })} rows={2} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm" /></label>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block"><span className="mb-1 block text-xs font-semibold text-gray-700">CTA (Mikro-Schritt)</span>
-              <input value={identity.cta} onChange={(e) => setIdentity({ ...identity, cta: e.target.value })} placeholder="z.B. „45-Min-Sparring buchen"" className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm" /></label>
+              <input value={identity.cta} onChange={(e) => setIdentity({ ...identity, cta: e.target.value })} placeholder={'z.B. „45-Min-Sparring buchen"'} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm" /></label>
             <label className="block"><span className="mb-1 block text-xs font-semibold text-gray-700">CTA Sekundär (optional)</span>
               <input value={identity.ctaSecondary ?? ''} onChange={(e) => setIdentity({ ...identity, ctaSecondary: e.target.value })} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm" /></label>
           </div>
