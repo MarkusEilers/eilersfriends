@@ -58,6 +58,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
   const total = selectedTier.price + vat
 
   async function submit() {
+    if (!selectedTier) return
     setSubmitting(true); setError(null)
     try {
       const res = await fetch(`/api/checkout/${programSlug}/create-session`, {
