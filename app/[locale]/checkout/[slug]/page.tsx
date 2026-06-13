@@ -97,7 +97,7 @@ export default async function CheckoutPage({
 
             {content.promise && (
               <section className="mb-12 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-                <h2 className="mb-6 font-serif text-3xl text-ink">{content.promise.headline}</h2>
+                <h2 className="mb-6 text-3xl font-bold sm:text-4xl text-ink">{content.promise.headline}</h2>
                 <ul className="grid gap-4 sm:grid-cols-2">
                   {content.promise.bullets.map((b, i) => (
                     <li key={i} className="flex items-start gap-3">
@@ -119,7 +119,7 @@ export default async function CheckoutPage({
             {content.outcomes && (
               <section className="mb-12">
                 <span className="mb-3 inline-block rounded-full bg-orange-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-orange">{content.outcomes.eyebrow}</span>
-                <h2 className="font-serif text-3xl text-ink">{content.outcomes.headline}</h2>
+                <h2 className="text-3xl font-bold sm:text-4xl text-ink">{content.outcomes.headline}</h2>
                 <div className="mt-6 grid gap-3 sm:grid-cols-3">
                   {content.outcomes.items.map((item, i) => (
                     <div key={i} className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
@@ -134,7 +134,7 @@ export default async function CheckoutPage({
             {content.typical_effects && (
               <section className="mb-12 rounded-2xl border border-gray-100 bg-cream p-8">
                 <span className="mb-3 inline-block rounded-full bg-orange-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-orange">{content.typical_effects.eyebrow}</span>
-                <h2 className="font-serif text-3xl text-ink">{content.typical_effects.headline}</h2>
+                <h2 className="text-3xl font-bold sm:text-4xl text-ink">{content.typical_effects.headline}</h2>
                 <div className="mt-6 grid grid-cols-2 divide-x divide-gray-200 rounded-2xl border border-gray-200 bg-white sm:grid-cols-4">
                   {content.typical_effects.stats.map((s, i) => (
                     <div key={i} className="flex flex-col items-center gap-1 px-4 py-7">
@@ -150,7 +150,7 @@ export default async function CheckoutPage({
             {content.testimonials && (
               <section className="mb-12">
                 <span className="mb-3 inline-block rounded-full bg-blue-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue">{content.testimonials.eyebrow}</span>
-                <h2 className="font-serif text-3xl text-ink">{content.testimonials.headline}</h2>
+                <h2 className="text-3xl font-bold sm:text-4xl text-ink">{content.testimonials.headline}</h2>
                 <div className="mt-6 grid gap-4 sm:grid-cols-3">
                   {content.testimonials.items.map((t, i) => (
                     <div key={i} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
@@ -181,7 +181,7 @@ export default async function CheckoutPage({
 
             {content.why_now && (
               <section className="mb-12 rounded-2xl border p-8" style={{ borderColor: 'var(--color-orange-border)', backgroundColor: 'var(--color-orange-bg)' }}>
-                <h2 className="font-serif text-3xl text-ink">{content.why_now.headline}</h2>
+                <h2 className="text-3xl font-bold sm:text-4xl text-ink">{content.why_now.headline}</h2>
                 <ul className="mt-4 space-y-3 text-base leading-relaxed text-gray-700">
                   {content.why_now.bullets.map((b, i) => (
                     <li key={i} className="flex items-start gap-3">
@@ -195,7 +195,7 @@ export default async function CheckoutPage({
 
             {content.faqs && (
               <section className="mb-12">
-                <h2 className="mb-4 font-serif text-2xl text-ink">Häufige Fragen.</h2>
+                <h2 className="mb-4 text-2xl font-bold sm:text-3xl text-ink">Häufige Fragen.</h2>
                 {content.faqs.map((f, i) => (
                   <details key={i} className="border-b border-gray-200 py-4">
                     <summary className="cursor-pointer font-semibold text-ink">{f.q}</summary>
