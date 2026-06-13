@@ -196,7 +196,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
 
         <label className="flex items-start gap-2 text-xs text-gray-700">
           <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} className="mt-0.5 accent-blue" />
-          <span>Ich akzeptiere die <a href="/agb" target="_blank" className="text-blue underline">AGB</a> und die <a href="/widerruf" target="_blank" className="text-blue underline">Widerrufs­belehrung</a>. Die Lieferung beginnt sofort.</span>
+          <span>Ich akzeptiere die <a href="/agb" target="_blank" className="text-blue underline">AGB</a> und die <a href="/datenschutz" target="_blank" className="text-blue underline">Datenschutzerklärung</a>. Es gilt die 14-Tage-Zufriedenheitsgarantie.</span>
         </label>
 
         {error && <p className="text-sm text-red">{error}</p>}

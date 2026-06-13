@@ -4,6 +4,8 @@ import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { ensureProgramsTables } from '@/lib/db/self-heal-programs'
 import { CheckoutForm } from '@/components/checkout/CheckoutForm'
+import Image from 'next/image'
+import { getTranslations } from 'next-intl/server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -47,6 +49,7 @@ export default async function CheckoutPage({
 }) {
   const { slug } = await params
   const sp = await searchParams
+  const tCoach = await getTranslations('salesmadePage.coach')
   await ensureProgramsTables()
 
   const rows = rowsOf<Record<string, unknown>>(
@@ -159,6 +162,23 @@ export default async function CheckoutPage({
               </section>
             )}
 
+            {/* Coach — Markus · Bio wortwörtlich aus salesmadePage.coach */}
+            <section className="mb-12 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+              <p className="mb-6 text-xs font-bold uppercase tracking-widest text-blue">{tCoach('eyebrow')}</p>
+              <div className="flex flex-col items-start gap-6 sm:flex-row">
+                <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-2xl">
+                  <Image src="/markus-photo.jpg" alt="Markus Eilers" fill sizes="128px" className="object-cover grayscale" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-ink">{tCoach('name')}</h3>
+                  <p className="text-sm text-muted">{tCoach('roleTag')}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-gray-700">{tCoach('bio1')}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-gray-700">{tCoach('bio2')}</p>
+                  <p className="mt-4 font-serif text-base italic text-gray-800">{tCoach('quote')}</p>
+                </div>
+              </div>
+            </section>
+
             {content.why_now && (
               <section className="mb-12 rounded-2xl border p-8" style={{ borderColor: 'var(--color-orange-border)', backgroundColor: 'var(--color-orange-bg)' }}>
                 <h2 className="font-serif text-3xl text-ink">{content.why_now.headline}</h2>
@@ -203,8 +223,12 @@ export default async function CheckoutPage({
       </div>
 
       <footer className="border-t border-gray-200 bg-cream px-6 py-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-xs text-muted sm:flex-row">
-          <span>© 2026 Eilers+Friends · Markus Eilers e.U.</span>
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-xs text-muted sm:flex-row">
+          <div className="flex items-center gap-2 font-bold text-ink">
+            <span className="inline-block h-6 w-6 rounded-full bg-orange" />
+            <span>Eilers+Friends</span>
+            <span className="ml-2 font-medium text-muted">© 2026</span>
+          </div>
           <div className="flex gap-4">
             <a href="/impressum" className="hover:text-ink">Impressum</a>
             <a href="/datenschutz" className="hover:text-ink">Datenschutz</a>
