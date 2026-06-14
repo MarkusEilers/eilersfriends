@@ -37,6 +37,7 @@ function billingSuffix(b: CheckoutTier['billing']): string {
 export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit, enrollmentDeadline }: Props) {
   const initialTier = tiers.find((t) => t.is_highlighted) ?? tiers[0]
   const [selectedTierId, setSelectedTierId] = useState(initialTier?.id ?? '')
+  const [seats, setSeats] = useState(1)
   const [email, setEmail] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -54,8 +55,17 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
   if (!selectedTier) return <p className="text-sm text-red">Keine Tiers verfügbar.</p>
 
   const isVatExempt = country !== 'Deutschland' && vatId.trim().length >= 8
-  const vat = isVatExempt ? 0 : Math.round(selectedTier.price * 0.19 * 100) / 100
-  const total = selectedTier.price + vat
+  const freeSeats = Math.floor(seats / 5)
+  const paidSeats = Math.max(1, seats - freeSeats)
+  const subtotal = selectedTier.price * paidSeats
+  const vat = isVatExempt ? 0 : Math.round(subtotal * 0.19 * 100) / 100
+  const total = subtotal + vat
+
+  const bonuses: string[] = []
+  if (freeSeats >= 1) bonuses.push(`${freeSeats} ${freeSeats === 1 ? 'freier Ausbildungsplatz' : 'freie Ausbildungsplätze'}`)
+  if (seats >= 10) bonuses.push('Monatliches Team-Training')
+  if (seats >= 15) bonuses.push('Inhalte auf Euren Service zugeschnitten + eigene Community')
+  if (seats >= 30) bonuses.push('Training, Frameworks & Backend unter Eurer Marke')
 
   async function submit() {
     if (!selectedTier) return
@@ -65,6 +75,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           tierId: selectedTier.id,
+          seats,
           email, name: `${firstName} ${lastName}`.trim(), company, vatId,
           billingAddress: { street, postal, city, country },
           acceptTerms,
@@ -129,6 +140,34 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
         )}
       </div>
 
+      {/* Seats */}
+      <div className="border-b border-gray-100 px-6 py-5">
+        <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">Anzahl PlÃ¤tze</p>
+        <div className="flex items-center gap-4">
+          <div className="inline-flex items-center rounded-xl border border-gray-200">
+            <button type="button" onClick={() => setSeats((v) => Math.max(1, v - 1))} disabled={seats <= 1}
+              className="px-3 py-2 text-lg font-bold text-ink disabled:opacity-30" aria-label="Weniger">−</button>
+            <span className="w-10 text-center font-bold text-ink">{seats}</span>
+            <button type="button" onClick={() => setSeats((v) => Math.min(200, v + 1))}
+              className="px-3 py-2 text-lg font-bold text-ink" aria-label="Mehr">+</button>
+          </div>
+          <span className="text-xs text-muted">{paidSeats} zahlbar{freeSeats > 0 ? ` · ${freeSeats} gratis` : ''}</span>
+        </div>
+        {bonuses.length > 0 && (
+          <div className="mt-4 rounded-xl bg-blue-bg p-3">
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-blue">Dein Bonus</p>
+            <ul className="space-y-1.5">
+              {bonuses.map((b, i) => (
+                <li key={i} className="flex items-start gap-2 text-xs text-ink">
+                  <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-blue text-[9px] font-bold text-white">✓</span>
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
       {/* Form */}
       <div className="space-y-4 px-6 py-5">
         <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Deine Daten</p>
@@ -181,8 +220,8 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
         {/* Summary */}
         <div className="space-y-1 rounded-xl bg-cream p-4 text-sm">
           <div className="flex justify-between text-muted">
-            <span>{programName} · {selectedTier.label}</span>
-            <span>{formatEUR(selectedTier.price)}</span>
+            <span>{programName} · {selectedTier.label} × {paidSeats}{freeSeats > 0 ? ` (+${freeSeats} gratis)` : ''}</span>
+            <span>{formatEUR(subtotal)}</span>
           </div>
           <div className="flex justify-between text-muted">
             <span>USt {isVatExempt ? '0 % (Reverse-Charge)' : '19 %'}</span>

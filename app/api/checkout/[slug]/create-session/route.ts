@@ -46,12 +46,15 @@ export async function POST(
   const vatId = (body.vatId as string) ?? ''
   const billingAddress = (body.billingAddress as Record<string, unknown>) ?? {}
   const acceptTerms = Boolean(body.acceptTerms)
+  const seats = Math.max(1, Math.min(200, Math.floor(Number(body.seats) || 1)))
+  const freeSeats = Math.floor(seats / 5)
+  const paidSeats = Math.max(1, seats - freeSeats)
 
   if (!customerEmail || !customerName) {
     return NextResponse.json({ error: 'Name + Email pflicht' }, { status: 400 })
   }
   if (!acceptTerms) {
-    return NextResponse.json({ error: 'AGB + Widerrufsbelehrung akzeptieren' }, { status: 400 })
+    return NextResponse.json({ error: 'Bitte AGB akzeptieren' }, { status: 400 })
   }
 
   const programRows = rowsOf<Record<string, unknown>>(
@@ -89,7 +92,7 @@ export async function POST(
   try {
     const stripeSession = await stripe.checkout.sessions.create({
       mode,
-      line_items: [{ price: tier.stripe_price_id, quantity: 1 }],
+      line_items: [{ price: tier.stripe_price_id, quantity: paidSeats }],
       success_url: successUrl,
       cancel_url: cancelUrl,
       customer_email: customerEmail,
@@ -105,6 +108,9 @@ export async function POST(
         customer_name: customerName,
         company,
         vat_id_supplied: vatId,
+        total_seats: String(seats),
+        paid_seats: String(paidSeats),
+        free_seats: String(freeSeats),
       },
       subscription_data: mode === 'subscription' ? {
         metadata: {

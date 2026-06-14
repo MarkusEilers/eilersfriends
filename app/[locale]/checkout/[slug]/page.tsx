@@ -50,15 +50,15 @@ const FAQS = [
 /** Offer-spezifische Aufbereitung der Tiers (pro Monat zuerst, jargon-frei). */
 function presentTiers(tiers: PricingTier[]): PricingTier[] {
   const mapped = tiers.map((t) => {
-    if (t.billing === 'monthly') {
-      return { ...t, label: 'Pro Platz', note: 'Founding-Preis · bleibt eingefroren, solange Du dabei bist.', is_highlighted: true }
-    }
     if (t.billing === 'yearly') {
-      return { ...t, label: 'Jährlich vorab', note: 'Zwei Monate gratis gegenüber monatlich.', is_highlighted: false }
+      return { ...t, label: 'Jährlich vorab', note: 'Zwei Monate gratis gegenüber monatlich.', is_highlighted: true }
+    }
+    if (t.billing === 'monthly') {
+      return { ...t, label: 'Pro Platz', note: 'Founding-Preis · bleibt eingefroren, solange Du dabei bist.', is_highlighted: false }
     }
     return t
   })
-  const order = (b: string) => (b === 'monthly' ? 0 : b === 'yearly' ? 1 : 2)
+  const order = (b: string) => (b === 'yearly' ? 0 : b === 'monthly' ? 1 : 2)
   return mapped.sort((a, b) => order(a.billing) - order(b.billing))
 }
 
