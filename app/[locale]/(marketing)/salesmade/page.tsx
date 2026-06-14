@@ -71,6 +71,11 @@ export default async function SalesMadePage({ params }: PageProps) {
             {t('hero.headline1')}<br />
             <span style={{ color: accent }}>{t('hero.headlineAccent')}</span>
           </h1>
+          {t.has('hero.subheadline') && (
+            <p className="mx-auto mt-5 max-w-2xl text-xl font-semibold text-white sm:text-2xl">
+              {t('hero.subheadline')}
+            </p>
+          )}
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
             {t('hero.subtext')}
           </p>

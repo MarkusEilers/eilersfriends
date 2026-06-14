@@ -50,6 +50,7 @@ export default async function CheckoutPage({
   const { slug } = await params
   const sp = await searchParams
   const tCoach = await getTranslations('salesmadePage.coach')
+  const tHero = await getTranslations('salesmadePage.hero')
   await ensureProgramsTables()
 
   const rows = rowsOf<Record<string, unknown>>(
@@ -91,8 +92,12 @@ export default async function CheckoutPage({
                 {program.name as string}
               </span>
               <h1 className="text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-5xl">
-                {program.tagline as string}
+                {tHero('headline1')} <span className="text-blue">{tHero('headlineAccent')}</span>
               </h1>
+              {tHero.has('subheadline') && (
+                <p className="mt-4 text-xl font-semibold text-ink sm:text-2xl">{tHero('subheadline')}</p>
+              )}
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted">{tHero('subtext')}</p>
             </div>
 
             {content.promise && (
