@@ -125,7 +125,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
           })}
         </div>
         {enrollmentLimit && (
-          <p className="mt-4 text-[11px] text-muted">Nur {enrollmentLimit} Plätze{deadlineDate ? ` · Cohort schließt ${deadlineDate}` : ''}</p>
+          <p className="mt-4 text-[11px] text-muted">Nur {enrollmentLimit} Plätze{deadlineDate ? ` · die ersten ${enrollmentLimit} enden am ${deadlineDate}` : ''}</p>
         )}
       </div>
 
@@ -196,7 +196,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
 
         <label className="flex items-start gap-2 text-xs text-gray-700">
           <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} className="mt-0.5 accent-blue" />
-          <span>Ich akzeptiere die <a href="/agb" target="_blank" className="text-blue underline">AGB</a> und die <a href="/datenschutz" target="_blank" className="text-blue underline">Datenschutzerklärung</a>. Es gilt die 14-Tage-Zufriedenheitsgarantie.</span>
+          <span>Ich akzeptiere die <a href="/agb" target="_blank" className="text-blue underline">AGB</a> und die <a href="/datenschutz" target="_blank" className="text-blue underline">Datenschutzerklärung</a>. Es gilt die 90-Tage-Zufriedenheitsgarantie.</span>
         </label>
 
         {error && <p className="text-sm text-red">{error}</p>}
@@ -213,7 +213,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
         <div className="flex items-center justify-center gap-2 pt-1 text-[10px] text-muted">
           <span>SSL · PCI-DSS</span><span>·</span>
           <span>Stripe Checkout</span><span>·</span>
-          <span>14 Tage Geld zurück</span>
+          <span>90 Tage Geld zurück</span>
         </div>
       </div>
 

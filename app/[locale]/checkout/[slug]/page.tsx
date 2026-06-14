@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { ensureProgramsTables } from '@/lib/db/self-heal-programs'
 import { CheckoutForm } from '@/components/checkout/CheckoutForm'
+import { SalesFlywheel } from '@/components/sections/salesmade/SalesFlywheel'
 import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
 
@@ -31,13 +32,34 @@ interface PricingTier {
   note?: string
 }
 
-interface CheckoutContent {
-  promise?: { headline: string; bullets: Array<{ num?: string; check?: boolean; title: string; body: string }> }
-  outcomes?: { headline: string; eyebrow: string; items: string[] }
-  typical_effects?: { headline: string; eyebrow: string; stats: Array<{ value: string; label: string; color: string }>; note?: string }
-  testimonials?: { headline: string; eyebrow: string; items: Array<{ quote: string; author: string }> }
-  why_now?: { headline: string; bullets: string[] }
-  faqs?: Array<{ q: string; a: string }>
+const RESULTS = [
+  { v: '28 % → 60 %', l: 'Abschlussquote in Discovery Calls' },
+  { v: '−38 %', l: 'kürzere Verkaufszyklen' },
+  { v: '+48 %', l: 'mehr Umsatz in zwölf Monaten' },
+]
+
+const FAQS = [
+  { q: 'Was kostet ein Platz?', a: '549 € pro Monat. Wer den Jahresbeitrag vorab zahlt, bekommt zwei Monate gratis (5.485 € im Jahr). Ein Platz bildet eine Person zwölf Monate aus — Du kannst selbst teilnehmen.' },
+  { q: 'Wie funktionieren die Mengen-Vorteile?', a: 'Ab 5 Plätzen ist einer frei. Ab 10 kommt monatliches Team-Training dazu. Ab 15 schneiden wir Inhalte auf Euren Service zu und richten eine eigene Community ein. Ab 30 bekommt Ihr Training, Frameworks und Backend unter Eurer Marke.' },
+  { q: 'Was, wenn es nicht passt?', a: '90 Tage Geld zurück. Siehst Du nach 90 Tagen keine messbare Verbesserung in Deinen Sales-KPIs, erstatten wir die volle Investition. Eine Mail an team@eilersfriends.com genügt.' },
+  { q: 'Was bleibt eingefroren?', a: 'Dein Preis, solange Du dabei bist — auch wenn die Academy später teurer wird.' },
+  { q: 'Was passiert nach dem Kauf?', a: 'Innerhalb von 24 Stunden: Account-Setup und der Link zum ersten Onboarding-Call.' },
+  { q: 'Wie funktioniert die Umsatzsteuer?', a: 'Mit gültiger UStID außerhalb DE stellen wir steuerfrei (Reverse-Charge §13b UStG). Bei DE-UStID gilt 19 % MwSt.' },
+]
+
+/** Offer-spezifische Aufbereitung der Tiers (pro Monat zuerst, jargon-frei). */
+function presentTiers(tiers: PricingTier[]): PricingTier[] {
+  const mapped = tiers.map((t) => {
+    if (t.billing === 'monthly') {
+      return { ...t, label: 'Pro Platz', note: 'Founding-Preis · bleibt eingefroren, solange Du dabei bist.', is_highlighted: true }
+    }
+    if (t.billing === 'yearly') {
+      return { ...t, label: 'Jährlich vorab', note: 'Zwei Monate gratis gegenüber monatlich.', is_highlighted: false }
+    }
+    return t
+  })
+  const order = (b: string) => (b === 'monthly' ? 0 : b === 'yearly' ? 1 : 2)
+  return mapped.sort((a, b) => order(a.billing) - order(b.billing))
 }
 
 export default async function CheckoutPage({
@@ -54,12 +76,11 @@ export default async function CheckoutPage({
   await ensureProgramsTables()
 
   const rows = rowsOf<Record<string, unknown>>(
-    await db.execute(sql`SELECT id, slug, name, tagline, pricing_tiers, checkout_content, enrollment_limit, enrollment_deadline FROM programs WHERE slug = ${slug} AND is_active = true LIMIT 1`)
+    await db.execute(sql`SELECT id, slug, name, pricing_tiers, enrollment_limit, enrollment_deadline FROM programs WHERE slug = ${slug} AND is_active = true LIMIT 1`)
   )
   if (rows.length === 0) notFound()
   const program = rows[0]!
-  const tiers = (program.pricing_tiers ?? []) as PricingTier[]
-  const content = (program.checkout_content ?? {}) as CheckoutContent
+  const tiers = presentTiers((program.pricing_tiers ?? []) as PricingTier[])
 
   return (
     <div className="bg-white">
@@ -86,7 +107,8 @@ export default async function CheckoutPage({
         <div className="grid gap-12 lg:grid-cols-[2fr_1fr] lg:gap-16">
           {/* LEFT — Content */}
           <main>
-            <div className="mb-10">
+            {/* HERO */}
+            <div className="mb-12">
               <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-border bg-blue-bg px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-blue">
                 <span className="h-1.5 w-1.5 rounded-full bg-blue" />
                 {program.name as string}
@@ -100,74 +122,45 @@ export default async function CheckoutPage({
               <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted">{tHero('subtext')}</p>
             </div>
 
-            {content.promise && (
-              <section className="mb-12 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-                <h2 className="mb-6 text-3xl font-bold sm:text-4xl text-ink">{content.promise.headline}</h2>
-                <ul className="grid gap-4 sm:grid-cols-2">
-                  {content.promise.bullets.map((b, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      {b.num ? (
-                        <span className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue text-[10px] font-bold text-white">{b.num}</span>
-                      ) : (
-                        <span className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-bg text-[10px] font-bold text-blue">✓</span>
-                      )}
-                      <div>
-                        <p className="font-semibold text-ink">{b.title}</p>
-                        <p className="text-sm text-muted">{b.body}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+            {/* PROBLEM */}
+            <section className="mb-12">
+              <h2 className="text-3xl font-bold sm:text-4xl text-ink">84 % der B2B-Verkäufer wurden nie ausgebildet.</h2>
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted">
+                Im Kundengespräch entscheidet, wie souverän jemand führt, fragt, Einwände hält und abschließt. Dafür hatte fast niemand je eine Ausbildung. Die Folge: Abschlüsse schwanken, Zyklen ziehen sich, und am Ende verkauft der Rabatt.
+              </p>
+            </section>
 
-            {content.outcomes && (
-              <section className="mb-12">
-                <span className="mb-3 inline-block rounded-full bg-orange-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-orange">{content.outcomes.eyebrow}</span>
-                <h2 className="text-3xl font-bold sm:text-4xl text-ink">{content.outcomes.headline}</h2>
-                <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                  {content.outcomes.items.map((item, i) => (
-                    <div key={i} className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-blue">{String(i + 1).padStart(2, '0')}</span>
-                      <p className="mt-1 font-semibold text-ink">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+            {/* DIE NEUE CHANCE */}
+            <section className="mb-12 rounded-2xl border border-gray-100 bg-cream p-8">
+              <span className="mb-3 inline-block rounded-full bg-blue-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue">Die neue Chance</span>
+              <h2 className="text-3xl font-bold sm:text-4xl text-ink">Kurse vermitteln Wissen. Wir bauen Können.</h2>
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-gray-700">
+                Können entsteht durch wiederholtes Training und Mikro-Erfolge. Die Academy beginnt mit einem Assessment über 13 Skills, baut daraus einen Plan individuell für jeden Teilnehmer und trainiert gezielt jeden Monat eine spezifische Fähigkeit — mit Sparring in mehreren Schwierigkeitsstufen und Re-Assessment jedes Quartal. Sichtbarer und spürbarer Fortschritt jeden Monat, der Selbstsicherheit und Ergebnisse produziert.
+              </p>
+            </section>
 
-            {content.typical_effects && (
-              <section className="mb-12 rounded-2xl border border-gray-100 bg-cream p-8">
-                <span className="mb-3 inline-block rounded-full bg-orange-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-orange">{content.typical_effects.eyebrow}</span>
-                <h2 className="text-3xl font-bold sm:text-4xl text-ink">{content.typical_effects.headline}</h2>
-                <div className="mt-6 grid grid-cols-2 divide-x divide-gray-200 rounded-2xl border border-gray-200 bg-white sm:grid-cols-4">
-                  {content.typical_effects.stats.map((s, i) => (
-                    <div key={i} className="flex flex-col items-center gap-1 px-4 py-7">
-                      <span className="text-3xl font-bold sm:text-4xl" style={{ color: s.color }}>{s.value}</span>
-                      <span className="text-xs font-medium text-gray-400">{s.label}</span>
-                    </div>
-                  ))}
-                </div>
-                {content.typical_effects.note && <p className="mt-4 text-xs italic text-muted">{content.typical_effects.note}</p>}
-              </section>
-            )}
+            {/* DAS PROGRAMM — Flywheel */}
+            <section className="mb-4 overflow-hidden rounded-2xl border border-gray-100">
+              <SalesFlywheel eyebrow="12 Monate Transformation durch Training On The Job." compact />
+            </section>
+            <p className="mb-12 text-sm text-muted">
+              <span className="font-semibold text-ink">Enthalten:</span> monatliches 1:1-Coaching mit Markus, individuelle Frameworks, Playbook-Library, monatliches Group-Training.
+            </p>
 
-            {content.testimonials && (
-              <section className="mb-12">
-                <span className="mb-3 inline-block rounded-full bg-blue-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue">{content.testimonials.eyebrow}</span>
-                <h2 className="text-3xl font-bold sm:text-4xl text-ink">{content.testimonials.headline}</h2>
-                <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                  {content.testimonials.items.map((t, i) => (
-                    <div key={i} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                      <p className="font-serif text-base italic leading-relaxed text-gray-800">„{t.quote}"</p>
-                      <p className="mt-4 text-xs text-muted">— {t.author}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+            {/* BEWEIS */}
+            <section className="mb-12">
+              <h2 className="text-3xl font-bold sm:text-4xl text-ink">Typische Ergebnisse unserer Teilnehmer.</h2>
+              <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                {RESULTS.map((s, i) => (
+                  <div key={i} className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+                    <div className="text-2xl font-bold text-blue sm:text-3xl">{s.v}</div>
+                    <div className="mt-1 text-xs text-muted">{s.l}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-            {/* Coach — Markus · Bio wortwörtlich aus salesmadePage.coach */}
+            {/* COACH — Markus · Bio wortwörtlich aus salesmadePage.coach */}
             <section className="mb-12 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
               <p className="mb-6 text-xs font-bold uppercase tracking-widest text-blue">{tCoach('eyebrow')}</p>
               <div className="flex flex-col items-start gap-6 sm:flex-row">
@@ -184,31 +177,36 @@ export default async function CheckoutPage({
               </div>
             </section>
 
-            {content.why_now && (
-              <section className="mb-12 rounded-2xl border p-8" style={{ borderColor: 'var(--color-orange-border)', backgroundColor: 'var(--color-orange-bg)' }}>
-                <h2 className="text-3xl font-bold sm:text-4xl text-ink">{content.why_now.headline}</h2>
-                <ul className="mt-4 space-y-3 text-base leading-relaxed text-gray-700">
-                  {content.why_now.bullets.map((b, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-orange" />
-                      <span dangerouslySetInnerHTML={{ __html: b }} />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+            {/* ANGEBOT / FOUNDING */}
+            <section className="mb-12 rounded-2xl border p-8" style={{ borderColor: 'var(--color-orange-border)', backgroundColor: 'var(--color-orange-bg)' }}>
+              <h2 className="text-3xl font-bold sm:text-4xl text-ink">Die ersten 30 Plätze.</h2>
+              <p className="mt-4 text-base leading-relaxed text-gray-700">
+                Ein Ausbildungsplatz kostet 549 € pro Monat. Ein Platz bildet eine Person über zwölf Monate aus — Du kannst selbst einer davon sein. Wer den Jahresbeitrag vorab zahlt, bekommt zwei Monate gratis.
+              </p>
+              <ul className="mt-5 space-y-3 text-base leading-relaxed text-gray-700">
+                <li className="flex items-start gap-3"><span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-orange" /><span><strong>Founding-Vorteil.</strong> Die ersten 30 Plätze sind Founding-Plätze. Dein Preis bleibt eingefroren, solange Du dabei bist.</span></li>
+                <li className="flex items-start gap-3"><span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-orange" /><span><strong>Je mehr Plätze, desto mehr drin.</strong> Ab 5 ist einer frei, ab 10 monatliches Team-Training, ab 15 zugeschnittene Inhalte und eine eigene Community, ab 30 alles unter Eurer Marke.</span></li>
+                <li className="flex items-start gap-3"><span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-orange" /><span><strong>90 Tage Garantie.</strong> Siehst Du nach 90 Tagen keine messbare Verbesserung in Deinen Sales-KPIs, bekommst Du die volle Investition zurück.</span></li>
+              </ul>
+            </section>
 
-            {content.faqs && (
-              <section className="mb-12">
-                <h2 className="mb-4 text-2xl font-bold sm:text-3xl text-ink">Häufige Fragen.</h2>
-                {content.faqs.map((f, i) => (
-                  <details key={i} className="border-b border-gray-200 py-4">
-                    <summary className="cursor-pointer font-semibold text-ink">{f.q}</summary>
-                    <p className="mt-3 text-sm text-gray-600">{f.a}</p>
-                  </details>
-                ))}
-              </section>
-            )}
+            {/* PUSH */}
+            <section className="mb-12">
+              <p className="text-base leading-relaxed text-gray-700">
+                Sind die ersten 30 Plätze vergeben, gilt der reguläre Preis — und die monatliche Zeit mit Markus läuft über eine Warteliste. Wer jetzt nicht startet, geht mit demselben Team ins nächste Quartal, das er heute hat. Die ersten 30 enden am 31. Juli 2026.
+              </p>
+            </section>
+
+            {/* FAQ */}
+            <section className="mb-12">
+              <h2 className="mb-4 text-2xl font-bold sm:text-3xl text-ink">Häufige Fragen.</h2>
+              {FAQS.map((f, i) => (
+                <details key={i} className="border-b border-gray-200 py-4">
+                  <summary className="cursor-pointer font-semibold text-ink">{f.q}</summary>
+                  <p className="mt-3 text-sm text-gray-600">{f.a}</p>
+                </details>
+              ))}
+            </section>
           </main>
 
           {/* RIGHT — Form */}

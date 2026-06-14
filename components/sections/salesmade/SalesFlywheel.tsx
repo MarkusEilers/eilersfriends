@@ -25,7 +25,7 @@ interface Stage {
 const STAGE_ICONS = [ClipboardCheck, GraduationCap, TrendingUp, Activity]
 const BLUE = '#1A5FD4'
 
-export function SalesFlywheel() {
+export function SalesFlywheel({ eyebrow, compact = false }: { eyebrow?: string; compact?: boolean }) {
   const t = useTranslations('salesmadeExt.flywheel')
   const stages = (t.raw('stages') as Stage[]) ?? []
 
@@ -37,7 +37,7 @@ export function SalesFlywheel() {
             className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
             style={{ backgroundColor: '#EBF1FF', color: BLUE, border: '1px solid #BBCFF5' }}
           >
-            {t('eyebrow')}
+            {eyebrow ?? t('eyebrow')}
           </span>
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>
             {t('headline1')}
@@ -52,7 +52,7 @@ export function SalesFlywheel() {
         <div className="relative pt-2">
           {/* Wavy SVG path — sits absolutely behind all 4 icons, anchored to
               the icon row's vertical center (~36px from top of the relative box). */}
-          <svg
+          {!compact && <svg
             className="hidden lg:block absolute inset-x-0 pointer-events-none"
             viewBox="0 0 1000 160"
             preserveAspectRatio="none"
@@ -69,10 +69,10 @@ export function SalesFlywheel() {
               strokeDasharray="6 5"
               opacity="0.85"
             />
-          </svg>
+          </svg>}
 
           {/* Stations row */}
-          <div className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-4" style={{ zIndex: 1 }}>
+          <div className={`relative grid gap-6 sm:grid-cols-2 ${compact ? '' : 'lg:grid-cols-4'}`} style={{ zIndex: 1 }}>
             {stages.map((s, i) => {
               const Icon = STAGE_ICONS[i] ?? ClipboardCheck
               return (

@@ -85,12 +85,12 @@ export default async function AgbPage({ params }: PageProps) {
             </div>
 
             <div>
-              <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>6. Zufriedenheitsgarantie (14 Tage)</h2>
+              <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>6. Zufriedenheitsgarantie (90 Tage)</h2>
               <p>
-                Innerhalb von 14 Tagen nach Vertragsbeginn kann der Kunde den Vertrag ohne weitere Kosten
-                beenden, sofern die teilnehmende Person das Assessment durchlaufen und die erste
-                Coaching-Session wahrgenommen hat und die Zusammenarbeit dennoch nicht passt. Eine bereits
-                geleistete Zahlung wird in diesem Fall vollständig erstattet. Die Mitteilung genügt in
+                Zeigt sich innerhalb von 90 Tagen nach Vertragsbeginn keine messbare Verbesserung in den
+                Sales-KPIs des Kunden, erstattet der Anbieter die volle bis dahin geleistete Investition.
+                Voraussetzung ist, dass die teilnehmende Person in diesem Zeitraum aktiv teilgenommen hat
+                (Assessment durchlaufen, vereinbarte Sessions wahrgenommen). Die Mitteilung genügt in
                 Textform an team@eilersfriends.com.
               </p>
             </div>
