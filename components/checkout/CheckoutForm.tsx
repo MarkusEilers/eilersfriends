@@ -142,7 +142,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
 
       {/* Seats */}
       <div className="border-b border-gray-100 px-6 py-5">
-        <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">Anzahl PlÃ¤tze</p>
+        <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">Anzahl Plätze</p>
         <div className="flex items-center gap-4">
           <div className="inline-flex items-center rounded-xl border border-gray-200">
             <button type="button" onClick={() => setSeats((v) => Math.max(1, v - 1))} disabled={seats <= 1}
