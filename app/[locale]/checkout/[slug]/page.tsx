@@ -33,7 +33,7 @@ interface PricingTier {
 }
 
 const RESULTS = [
-  { v: '28 % → 60 %', l: 'Abschlussquote in Discovery Calls' },
+  { v: '28 % → 60 %', l: 'Erfolgsquote in Discovery Calls' },
   { v: '−38 %', l: 'kürzere Verkaufszyklen' },
   { v: '+48 %', l: 'mehr Umsatz in zwölf Monaten' },
 ]
@@ -124,7 +124,10 @@ export default async function CheckoutPage({
 
             {/* PROBLEM */}
             <section className="mb-12">
-              <h2 className="text-3xl font-bold sm:text-4xl text-ink">84 % der B2B-Verkäufer wurden nie ausgebildet.</h2>
+              <h2 className="text-3xl font-bold sm:text-4xl text-ink">84 % der B2B-Verkäufer wurden nie richtig ausgebildet.</h2>
+              <p className="mt-4 text-xl font-semibold text-ink sm:text-2xl">
+                87 % der CEOs glauben, dass Verkaufen der wichtigste Skill für den Erfolg ist, finden aber selbst die Zeit nicht, ihr Team auszubilden.
+              </p>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted">
                 Im Kundengespräch entscheidet, wie souverän jemand führt, fragt, Einwände hält und abschließt. Dafür hatte fast niemand je eine Ausbildung. Die Folge: Abschlüsse schwanken, Zyklen ziehen sich, und am Ende verkauft der Rabatt.
               </p>
@@ -133,7 +136,7 @@ export default async function CheckoutPage({
             {/* DIE NEUE CHANCE */}
             <section className="mb-12 rounded-2xl border border-gray-100 bg-cream p-8">
               <span className="mb-3 inline-block rounded-full bg-blue-bg px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue">Die neue Chance</span>
-              <h2 className="text-3xl font-bold sm:text-4xl text-ink">Kurse vermitteln Wissen. Wir bauen Können.</h2>
+              <h2 className="text-3xl font-bold sm:text-4xl text-ink">Gemeinsam bauen wir das Können auf und bringen Dein Team ins Machen.</h2>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-gray-700">
                 Können entsteht durch wiederholtes Training und Mikro-Erfolge. Die Academy beginnt mit einem Assessment über 13 Skills, baut daraus einen Plan individuell für jeden Teilnehmer und trainiert gezielt jeden Monat eine spezifische Fähigkeit — mit Sparring in mehreren Schwierigkeitsstufen und Re-Assessment jedes Quartal. Sichtbarer und spürbarer Fortschritt jeden Monat, der Selbstsicherheit und Ergebnisse produziert.
               </p>
