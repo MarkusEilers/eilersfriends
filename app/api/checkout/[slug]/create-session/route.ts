@@ -58,14 +58,33 @@ export async function POST(
     return NextResponse.json({ error: 'Bitte AGB akzeptieren' }, { status: 400 })
   }
 
+  // Server-seitige Fallback-Angebote ohne DB-Row (Preis bleibt autoritativ).
+  const FALLBACK: Record<string, { name: string; tiers: PricingTier[] }> = {
+    'salesmade-ai-intensive': {
+      name: 'SalesMade AI Intensive',
+      tiers: [{
+        id: 'ai-intensive-onetime', label: 'AI Intensive · 2 Tage', price: 897,
+        currency: 'EUR', billing: 'one-time', stripe_price_id: '', is_available: true,
+      }],
+    },
+  }
+
   const programRows = rowsOf<Record<string, unknown>>(
     await db.execute(sql`SELECT id, slug, name, pricing_tiers FROM programs WHERE slug = ${slug} AND is_active = true LIMIT 1`)
   )
+  let program: Record<string, unknown>
+  let tiers: PricingTier[]
   if (programRows.length === 0) {
-    return NextResponse.json({ error: 'Programm nicht gefunden' }, { status: 404 })
+    const fb = FALLBACK[slug]
+    if (!fb) {
+      return NextResponse.json({ error: 'Programm nicht gefunden' }, { status: 404 })
+    }
+    program = { id: null, name: fb.name }
+    tiers = fb.tiers
+  } else {
+    program = programRows[0]!
+    tiers = (program.pricing_tiers ?? []) as PricingTier[]
   }
-  const program = programRows[0]!
-  const tiers = (program.pricing_tiers ?? []) as PricingTier[]
   const tier = tiers.find((t) => t.id === tierId && t.is_available)
   if (!tier) {
     return NextResponse.json({ error: 'Tier nicht verfügbar' }, { status: 400 })
@@ -115,7 +134,7 @@ export async function POST(
       metadata: {
         kind: 'program-purchase',
         program_slug: slug,
-        program_id: program.id as string,
+        program_id: program.id ? String(program.id) : '',
         tier_id: tier.id,
         user_id: userId ?? '',
         customer_name: customerName,

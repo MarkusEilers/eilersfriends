@@ -1,9 +1,4 @@
 // app/[locale]/checkout/salesmade-ai-intensive/page.tsx
-import { notFound } from 'next/navigation'
-import { db } from '@/lib/db'
-import { sql } from 'drizzle-orm'
-import { ensureProgramsTables } from '@/lib/db/self-heal-programs'
-import { ensureAiIntensiveProgram } from '@/lib/db/seed-ai-intensive'
 import { CheckoutForm } from '@/components/checkout/CheckoutForm'
 import { Check, MapPin } from 'lucide-react'
 
@@ -18,21 +13,19 @@ const INCLUDED = [
   'Der komplette AI-Sales-Stack: alle Frameworks und Prompts',
   'Alles zum Mitnehmen, sofort einsetzbar',
 ]
-
-function rowsOf<T>(r: unknown): T[] {
-  if (Array.isArray(r)) return r as T[]
-  if (r && typeof r === 'object' && 'rows' in r) {
-    const x = (r as { rows: unknown }).rows
-    if (Array.isArray(x)) return x as T[]
-  }
-  return []
-}
-
-interface PricingTier {
-  id: string; label: string; price: number; currency: 'EUR' | 'USD' | 'GBP'
-  billing: 'one-time' | 'monthly' | 'yearly' | 'lifetime'; stripe_price_id: string
-  is_highlighted?: boolean; is_available: boolean; note?: string
-}
+const TIERS = [
+  {
+    id: 'ai-intensive-onetime',
+    label: 'AI Intensive · 2 Tage',
+    price: 897,
+    currency: 'EUR' as const,
+    billing: 'one-time' as const,
+    stripe_price_id: '',
+    is_highlighted: true,
+    is_available: true,
+    note: 'Alumni-Preis · Vorkasse',
+  },
+]
 
 export default async function AiIntensiveCheckout({
   searchParams,
@@ -41,15 +34,6 @@ export default async function AiIntensiveCheckout({
   searchParams: Promise<{ cancelled?: string }>
 }) {
   const sp = await searchParams
-  await ensureProgramsTables()
-  await ensureAiIntensiveProgram()
-
-  const rows = rowsOf<Record<string, unknown>>(
-    await db.execute(sql`SELECT id, slug, name, pricing_tiers FROM programs WHERE slug = ${SLUG} AND is_active = true LIMIT 1`)
-  )
-  if (rows.length === 0) notFound()
-  const program = rows[0]!
-  const tiers = (program.pricing_tiers ?? []) as PricingTier[]
 
   return (
     <div className="bg-white">
@@ -124,8 +108,8 @@ export default async function AiIntensiveCheckout({
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <CheckoutForm
               programSlug={SLUG}
-              programName={program.name as string}
-              tiers={tiers.filter((t) => t.is_available)}
+              programName="SalesMade AI Intensive"
+              tiers={TIERS}
               cities={CITIES}
               maxSeats={5}
             />
