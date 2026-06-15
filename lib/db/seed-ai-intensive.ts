@@ -17,6 +17,9 @@ const AI_INTENSIVE_TIERS = [
 ]
 
 export async function ensureAiIntensiveProgram() {
+  // Legacy-Drizzle-Spalten ggf. nullable machen (schema-egal, idempotent)
+  await db.execute(sql`DO $$ BEGIN ALTER TABLE programs ALTER COLUMN coach_id DROP NOT NULL; EXCEPTION WHEN undefined_column THEN NULL; END $$;`)
+  await db.execute(sql`DO $$ BEGIN ALTER TABLE programs ALTER COLUMN type DROP NOT NULL; EXCEPTION WHEN undefined_column THEN NULL; END $$;`)
   await db.execute(sql`
     INSERT INTO programs (slug, name, tagline, category, brand_color, delivery_format,
       enrollment_limit, pricing_tiers, checkout_content, is_active, published_at, updated_at)
