@@ -27,7 +27,7 @@ export default function AiIntensivePage() {
             <Lock size={12} /> Nur für Alumni · max. 20 Teilnehmer · Stuttgart &amp; Berlin
           </span>
           <h1 className="text-4xl font-bold leading-tight text-white sm:text-5xl">
-            Gesprächsführung auf den Punkt — plus mein kompletter <span style={{ color: '#93B8F5' }}>AI-Sales-Stack.</span>
+            Wirksam Überzeugen auf den Punkt — plus mein kompletter <span style={{ color: '#93B8F5' }}>AI-Sales-Stack.</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)' }}>
             Ein VIP-Wochenende für maximal 20 Alumni pro Termin. Zwei Tage mit Markus in Stuttgart oder Berlin:

@@ -66,7 +66,7 @@ export default async function AiIntensiveCheckout({
                 SalesMade AI Intensive · Nur für Alumni
               </span>
               <h1 className="text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-5xl">
-                Gesprächsführung auf den Punkt — plus mein kompletter <span className="text-blue">AI-Sales-Stack.</span>
+                Wirksam Überzeugen auf den Punkt — plus mein kompletter <span className="text-blue">AI-Sales-Stack.</span>
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted">
                 Zwei Tage mit Markus, maximal 20 Teilnehmer pro Termin. Wähle Deine Stadt, sichere Deinen Platz per Vorkasse.
