@@ -21,6 +21,10 @@ interface Props {
   tiers: CheckoutTier[]
   enrollmentLimit?: number | null
   enrollmentDeadline?: string | null
+  freeSeatPer?: number
+  bonusTiers?: { threshold: number; label: string }[]
+  cities?: string[]
+  maxSeats?: number
 }
 
 const COUNTRIES = ['Deutschland', 'Österreich', 'Schweiz', 'Niederlande', 'Frankreich', 'Andere EU']
@@ -34,10 +38,11 @@ function billingSuffix(b: CheckoutTier['billing']): string {
   return 'einmalig'
 }
 
-export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit, enrollmentDeadline }: Props) {
+export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit, enrollmentDeadline, freeSeatPer = 0, bonusTiers = [], cities, maxSeats = 200 }: Props) {
   const initialTier = tiers.find((t) => t.is_highlighted) ?? tiers[0]
   const [selectedTierId, setSelectedTierId] = useState(initialTier?.id ?? '')
   const [seats, setSeats] = useState(1)
+  const [eventCity, setEventCity] = useState(cities && cities.length ? cities[0] : '')
   const [email, setEmail] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -55,17 +60,15 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
   if (!selectedTier) return <p className="text-sm text-red">Keine Tiers verfügbar.</p>
 
   const isVatExempt = country !== 'Deutschland' && vatId.trim().length >= 8
-  const freeSeats = Math.floor(seats / 5)
+  const freeSeats = freeSeatPer > 0 ? Math.floor(seats / freeSeatPer) : 0
   const paidSeats = Math.max(1, seats - freeSeats)
   const subtotal = selectedTier.price * paidSeats
   const vat = isVatExempt ? 0 : Math.round(subtotal * 0.19 * 100) / 100
   const total = subtotal + vat
 
   const bonuses: string[] = []
-  if (freeSeats >= 1) bonuses.push(`${freeSeats} ${freeSeats === 1 ? 'freier Ausbildungsplatz' : 'freie Ausbildungsplätze'}`)
-  if (seats >= 10) bonuses.push('Monatliches Team-Training')
-  if (seats >= 15) bonuses.push('Inhalte auf Euren Service zugeschnitten + eigene Community')
-  if (seats >= 30) bonuses.push('Training, Frameworks & Backend unter Eurer Marke')
+  if (freeSeats >= 1) bonuses.push(`${freeSeats} ${freeSeats === 1 ? 'freier Platz' : 'freie Plätze'}`)
+  for (const bt of bonusTiers) if (seats >= bt.threshold) bonuses.push(bt.label)
 
   async function submit() {
     if (!selectedTier) return
@@ -76,6 +79,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
         body: JSON.stringify({
           tierId: selectedTier.id,
           seats,
+          city: eventCity,
           email, name: `${firstName} ${lastName}`.trim(), company, vatId,
           billingAddress: { street, postal, city, country },
           acceptTerms,
@@ -148,7 +152,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
             <button type="button" onClick={() => setSeats((v) => Math.max(1, v - 1))} disabled={seats <= 1}
               className="px-3 py-2 text-lg font-bold text-ink disabled:opacity-30" aria-label="Weniger">−</button>
             <span className="w-10 text-center font-bold text-ink">{seats}</span>
-            <button type="button" onClick={() => setSeats((v) => Math.min(200, v + 1))}
+            <button type="button" onClick={() => setSeats((v) => Math.min(maxSeats, v + 1))}
               className="px-3 py-2 text-lg font-bold text-ink" aria-label="Mehr">+</button>
           </div>
           <span className="text-xs text-muted">{paidSeats} zahlbar{freeSeats > 0 ? ` · ${freeSeats} gratis` : ''}</span>
@@ -171,6 +175,14 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
       {/* Form */}
       <div className="space-y-4 px-6 py-5">
         <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Deine Daten</p>
+
+        {cities && cities.length > 0 && (
+          <Field label="Termin / Stadt">
+            <select value={eventCity} onChange={(e) => setEventCity(e.target.value)} className="input-base">
+              {cities.map((c) => <option key={c}>{c}</option>)}
+            </select>
+          </Field>
+        )}
 
         <Field label="Firma">
           <input type="text" value={company} onChange={(e) => setCompany(e.target.value)}
@@ -242,7 +254,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
 
         <button
           onClick={submit}
-          disabled={submitting || !acceptTerms || !email || !firstName}
+          disabled={submitting || !acceptTerms || !email || !firstName || (Boolean(cities) && !eventCity)}
           className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#0A0D14] px-6 py-4 text-sm font-bold text-white shadow-md hover:opacity-90 disabled:opacity-50"
         >
           {submitting ? <Loader2 size={14} className="animate-spin" /> : null}

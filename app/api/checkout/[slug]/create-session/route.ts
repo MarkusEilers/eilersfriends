@@ -46,6 +46,7 @@ export async function POST(
   const vatId = (body.vatId as string) ?? ''
   const billingAddress = (body.billingAddress as Record<string, unknown>) ?? {}
   const acceptTerms = Boolean(body.acceptTerms)
+  const eventCity = (body.city as string) ?? ''
   const seats = Math.max(1, Math.min(200, Math.floor(Number(body.seats) || 1)))
   const freeSeats = Math.floor(seats / 5)
   const paidSeats = Math.max(1, seats - freeSeats)
@@ -69,12 +70,6 @@ export async function POST(
   if (!tier) {
     return NextResponse.json({ error: 'Tier nicht verfügbar' }, { status: 400 })
   }
-  if (!tier.stripe_price_id) {
-    return NextResponse.json({
-      error: 'Stripe-Price-ID fehlt — bitte STRIPE_PRICE_ACADEMY_* in Vercel-Env setzen + seed-programs erneut aufrufen.',
-    }, { status: 500 })
-  }
-
   const stripeKey = process.env.STRIPE_SECRET_KEY
   if (!stripeKey) {
     return NextResponse.json({ error: 'STRIPE_SECRET_KEY missing' }, { status: 500 })
@@ -85,6 +80,24 @@ export async function POST(
   const mode: Stripe.Checkout.SessionCreateParams.Mode =
     tier.billing === 'one-time' || tier.billing === 'lifetime' ? 'payment' : 'subscription'
 
+  if (mode === 'subscription' && !tier.stripe_price_id) {
+    return NextResponse.json({
+      error: 'Stripe-Price-ID fehlt — für wiederkehrende Tiers bitte STRIPE_PRICE_* in Vercel-Env setzen.',
+    }, { status: 500 })
+  }
+
+  const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = tier.stripe_price_id
+    ? [{ price: tier.stripe_price_id, quantity: paidSeats }]
+    : [{
+        price_data: {
+          currency: (tier.currency || 'EUR').toLowerCase(),
+          unit_amount: Math.round(tier.price * 100),
+          tax_behavior: 'exclusive',
+          product_data: { name: `${String(program.name)} — ${tier.label}` },
+        },
+        quantity: paidSeats,
+      }]
+
   const origin = new URL(request.url).origin
   const successUrl = `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}&slug=${slug}`
   const cancelUrl = `${origin}/checkout/${slug}?cancelled=1`
@@ -92,7 +105,7 @@ export async function POST(
   try {
     const stripeSession = await stripe.checkout.sessions.create({
       mode,
-      line_items: [{ price: tier.stripe_price_id, quantity: paidSeats }],
+      line_items,
       success_url: successUrl,
       cancel_url: cancelUrl,
       customer_email: customerEmail,
@@ -111,6 +124,7 @@ export async function POST(
         total_seats: String(seats),
         paid_seats: String(paidSeats),
         free_seats: String(freeSeats),
+        event_city: eventCity,
       },
       subscription_data: mode === 'subscription' ? {
         metadata: {

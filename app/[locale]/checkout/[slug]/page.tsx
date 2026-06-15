@@ -220,6 +220,12 @@ export default async function CheckoutPage({
               tiers={tiers.filter((t) => t.is_available)}
               enrollmentLimit={program.enrollment_limit as number | null}
               enrollmentDeadline={program.enrollment_deadline as string | null}
+              freeSeatPer={5}
+              bonusTiers={[
+                { threshold: 10, label: 'Monatliches Team-Training' },
+                { threshold: 15, label: 'Inhalte auf Euren Service zugeschnitten + eigene Community' },
+                { threshold: 30, label: 'Training, Frameworks & Backend unter Eurer Marke' },
+              ]}
             />
             <p className="mt-6 text-xs text-muted">
               Probleme? <a href="mailto:team@eilersfriends.com" className="text-blue underline">team@eilersfriends.com</a>
