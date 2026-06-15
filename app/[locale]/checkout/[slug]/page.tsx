@@ -220,6 +220,8 @@ export default async function CheckoutPage({
               tiers={tiers.filter((t) => t.is_available)}
               enrollmentLimit={program.enrollment_limit as number | null}
               enrollmentDeadline={program.enrollment_deadline as string | null}
+              guaranteeText="90-Tage-Zufriedenheitsgarantie"
+              guaranteeBadge="90 Tage Geld zurück"
               freeSeatPer={5}
               bonusTiers={[
                 { threshold: 10, label: 'Monatliches Team-Training' },

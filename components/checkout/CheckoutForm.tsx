@@ -25,6 +25,8 @@ interface Props {
   bonusTiers?: { threshold: number; label: string }[]
   cities?: string[]
   maxSeats?: number
+  guaranteeText?: string
+  guaranteeBadge?: string
 }
 
 const COUNTRIES = ['Deutschland', 'Österreich', 'Schweiz', 'Niederlande', 'Frankreich', 'Andere EU']
@@ -38,7 +40,7 @@ function billingSuffix(b: CheckoutTier['billing']): string {
   return 'einmalig'
 }
 
-export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit, enrollmentDeadline, freeSeatPer = 0, bonusTiers = [], cities, maxSeats = 200 }: Props) {
+export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit, enrollmentDeadline, freeSeatPer = 0, bonusTiers = [], cities, maxSeats = 200, guaranteeText, guaranteeBadge }: Props) {
   const initialTier = tiers.find((t) => t.is_highlighted) ?? tiers[0]
   const [selectedTierId, setSelectedTierId] = useState(initialTier?.id ?? '')
   const [seats, setSeats] = useState(1)
@@ -247,7 +249,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
 
         <label className="flex items-start gap-2 text-xs text-gray-700">
           <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} className="mt-0.5 accent-blue" />
-          <span>Ich akzeptiere die <a href="/agb" target="_blank" className="text-blue underline">AGB</a> und die <a href="/datenschutz" target="_blank" className="text-blue underline">Datenschutzerklärung</a>. Es gilt die 90-Tage-Zufriedenheitsgarantie.</span>
+          <span>Ich akzeptiere die <a href="/agb" target="_blank" className="text-blue underline">AGB</a> und die <a href="/datenschutz" target="_blank" className="text-blue underline">Datenschutzerklärung</a>.{guaranteeText ? ` Es gilt die ${guaranteeText}.` : ''}</span>
         </label>
 
         {error && <p className="text-sm text-red">{error}</p>}
@@ -263,8 +265,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
 
         <div className="flex items-center justify-center gap-2 pt-1 text-[10px] text-muted">
           <span>SSL · PCI-DSS</span><span>·</span>
-          <span>Stripe Checkout</span><span>·</span>
-          <span>90 Tage Geld zurück</span>
+          <span>Stripe Checkout</span>{guaranteeBadge ? <><span>·</span><span>{guaranteeBadge}</span></> : null}
         </div>
       </div>
 
