@@ -238,7 +238,7 @@ export default async function CheckoutPage({
       <footer className="border-t border-gray-200 bg-cream px-6 py-8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-xs text-muted sm:flex-row">
           <div className="flex items-center gap-2 text-ink">
-            <Image src="/ef-logo.png" alt="Eilers+Friends" width={130} height={36} className="h-6 w-auto object-contain" />
+            <Image src="/wing-white.png" alt="Eilers+Friends" width={40} height={40} className="h-8 w-auto" style={{ filter: 'brightness(0)' }} />
             <span className="font-medium text-muted">© 2026</span>
           </div>
           <div className="flex gap-4">
