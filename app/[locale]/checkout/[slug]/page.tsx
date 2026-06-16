@@ -87,7 +87,7 @@ export default async function CheckoutPage({
       <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           <a href="/" className="flex items-center gap-2">
-            <Image src="/ef-logo.png" alt="Eilers+Friends" width={150} height={42} className="h-7 w-auto object-contain" priority />
+            <Image src="/ef-logo.png" alt="Eilers+Friends" width={200} height={56} className="h-12 md:h-14 w-auto object-contain" priority />
             <span className="text-xs font-medium text-muted">· Checkout</span>
           </a>
           <span className="hidden text-xs text-muted sm:inline">Sichere Zahlung · Stripe</span>
@@ -235,16 +235,16 @@ export default async function CheckoutPage({
         </div>
       </div>
 
-      <footer className="border-t border-gray-200 bg-cream px-6 py-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-xs text-muted sm:flex-row">
-          <div className="flex items-center gap-2 text-ink">
-            <Image src="/wing-white.png" alt="Eilers+Friends" width={40} height={40} className="h-8 w-auto" style={{ filter: 'brightness(0)' }} />
-            <span className="font-medium text-muted">© 2026</span>
+      <footer style={{ backgroundColor: '#0A0D14' }} className="px-6 py-10 text-white">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-xs sm:flex-row" style={{ color: 'rgba(255,255,255,0.6)' }}>
+          <div className="flex items-center gap-3">
+            <Image src="/wing-white.png" alt="Eilers+Friends" width={64} height={64} className="h-16 w-auto" />
+            <span className="font-medium">© 2026</span>
           </div>
           <div className="flex gap-4">
-            <a href="/impressum" className="hover:text-ink">Impressum</a>
-            <a href="/datenschutz" className="hover:text-ink">Datenschutz</a>
-            <a href="/agb" className="hover:text-ink">AGB</a>
+            <a href="/impressum" className="hover:text-white">Impressum</a>
+            <a href="/datenschutz" className="hover:text-white">Datenschutz</a>
+            <a href="/agb" className="hover:text-white">AGB</a>
           </div>
         </div>
       </footer>
