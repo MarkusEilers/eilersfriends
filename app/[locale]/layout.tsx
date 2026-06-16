@@ -4,6 +4,7 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/lib/i18n/routing'
 import { AnalyticsGate } from '@/components/layout/AnalyticsGate'
+import { ChatWidget } from '@/components/chat/ChatWidget'
 
 const TITLE_BY_LOCALE: Record<string, { default: string; description: string }> = {
   de: {
@@ -59,6 +60,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages} locale={locale}>
       {children}
       <AnalyticsGate />
+      <ChatWidget />
     </NextIntlClientProvider>
   )
 }
