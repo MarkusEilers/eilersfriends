@@ -1,5 +1,6 @@
 // app/[locale]/checkout/salesmade-ai-intensive/page.tsx
 import { CheckoutForm } from '@/components/checkout/CheckoutForm'
+import Image from 'next/image'
 import { Check, MapPin } from 'lucide-react'
 
 export const runtime = 'nodejs'
@@ -39,11 +40,10 @@ export default async function AiIntensiveCheckout({
     <div className="bg-white">
       <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-2 text-sm font-bold text-ink">
-            <span className="inline-block h-6 w-6 rounded-full bg-orange" />
-            <span>Eilers+Friends</span>
-            <span className="ml-2 text-xs font-medium text-muted">· Checkout</span>
-          </div>
+          <a href="/" className="flex items-center gap-2">
+            <Image src="/ef-logo.png" alt="Eilers+Friends" width={150} height={42} className="h-7 w-auto object-contain" priority />
+            <span className="text-xs font-medium text-muted">· Checkout</span>
+          </a>
           <span className="hidden text-xs text-muted sm:inline">Sichere Zahlung · Stripe</span>
         </div>
       </header>
@@ -122,10 +122,9 @@ export default async function AiIntensiveCheckout({
 
       <footer className="border-t border-gray-200 bg-cream px-6 py-8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-xs text-muted sm:flex-row">
-          <div className="flex items-center gap-2 font-bold text-ink">
-            <span className="inline-block h-6 w-6 rounded-full bg-orange" />
-            <span>Eilers+Friends</span>
-            <span className="ml-2 font-medium text-muted">© 2026</span>
+          <div className="flex items-center gap-2 text-ink">
+            <Image src="/ef-logo.png" alt="Eilers+Friends" width={130} height={36} className="h-6 w-auto object-contain" />
+            <span className="font-medium text-muted">© 2026</span>
           </div>
           <div className="flex gap-4">
             <a href="/impressum" className="hover:text-ink">Impressum</a>
