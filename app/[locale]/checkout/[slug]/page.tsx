@@ -4,10 +4,6 @@ import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { ensureProgramsTables } from '@/lib/db/self-heal-programs'
 import { CheckoutForm } from '@/components/checkout/CheckoutForm'
-import { Topbar } from '@/components/layout/Topbar'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
-import { getSetting } from '@/lib/db/queries/settings'
 import { SalesFlywheel } from '@/components/sections/salesmade/SalesFlywheel'
 import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
@@ -75,7 +71,6 @@ export default async function CheckoutPage({
 }) {
   const { slug } = await params
   const sp = await searchParams
-  const calendlyUrl = await getSetting('calendly.markus')
   const tCoach = await getTranslations('salesmadePage.coach')
   const tHero = await getTranslations('salesmadePage.hero')
   await ensureProgramsTables()
@@ -89,8 +84,15 @@ export default async function CheckoutPage({
 
   return (
     <div className="bg-white">
-      <Topbar />
-      <Navbar calendlyUrl={calendlyUrl} />
+      <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
+          <a href="/" className="flex items-center gap-2">
+            <Image src="/ef-logo.png" alt="Eilers+Friends" width={150} height={42} className="h-7 w-auto object-contain" priority />
+            <span className="text-xs font-medium text-muted">· Checkout</span>
+          </a>
+          <span className="hidden text-xs text-muted sm:inline">Sichere Zahlung · Stripe</span>
+        </div>
+      </header>
 
       {sp.cancelled && (
         <div className="mx-auto max-w-7xl px-6 pt-6">
@@ -233,7 +235,19 @@ export default async function CheckoutPage({
         </div>
       </div>
 
-      <Footer />
+      <footer className="border-t border-gray-200 bg-cream px-6 py-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-xs text-muted sm:flex-row">
+          <div className="flex items-center gap-2 text-ink">
+            <Image src="/ef-logo.png" alt="Eilers+Friends" width={130} height={36} className="h-6 w-auto object-contain" />
+            <span className="font-medium text-muted">© 2026</span>
+          </div>
+          <div className="flex gap-4">
+            <a href="/impressum" className="hover:text-ink">Impressum</a>
+            <a href="/datenschutz" className="hover:text-ink">Datenschutz</a>
+            <a href="/agb" className="hover:text-ink">AGB</a>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
