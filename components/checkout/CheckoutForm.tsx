@@ -146,7 +146,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
         )}
       </div>
 
-      {/* Seats */}
+      {maxSeats > 1 && (
       <div className="border-b border-gray-100 px-6 py-5">
         <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">Anzahl Plätze</p>
         <div className="flex items-center gap-4">
@@ -173,6 +173,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
           </div>
         )}
       </div>
+      )}
 
       {/* Form */}
       <div className="space-y-4 px-6 py-5">

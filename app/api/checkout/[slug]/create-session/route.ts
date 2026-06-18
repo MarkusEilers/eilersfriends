@@ -67,6 +67,13 @@ export async function POST(
         currency: 'EUR', billing: 'one-time', stripe_price_id: '', is_available: true,
       }],
     },
+    'mystery-shopping': {
+      name: 'Mystery Shopping',
+      tiers: [{
+        id: 'mystery-onetime', label: 'Mystery Shopping', price: 1,
+        currency: 'EUR', billing: 'one-time', stripe_price_id: '', is_available: true,
+      }],
+    },
   }
 
   const programRows = rowsOf<Record<string, unknown>>(

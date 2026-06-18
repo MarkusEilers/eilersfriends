@@ -5,7 +5,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { getSetting } from '@/lib/db/queries/settings'
 import { Link } from '@/lib/i18n/navigation'
-import { GraduationCap, Sparkles, ArrowRight } from 'lucide-react'
+import { GraduationCap, Sparkles, Search, ArrowRight } from 'lucide-react'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -21,7 +21,7 @@ type Offer = {
   desc: string
   price: string
   href: string
-  icon: 'academy' | 'workshop'
+  icon: 'academy' | 'workshop' | 'mystery'
 }
 
 const OFFERS: Offer[] = [
@@ -40,6 +40,14 @@ const OFFERS: Offer[] = [
     price: '897 € · Vorkasse',
     href: '/checkout/salesmade-ai-intensive',
     icon: 'workshop',
+  },
+  {
+    tag: 'Service · Kennenlernangebot',
+    title: 'Mystery Shopping',
+    desc: 'Markus spricht als Kunde mit Deinem Sales-Team und wertet jedes Gespräch aus — 13 Skills, 5 Dimensionen. Du bekommst einen 14-Seiten-Report, das Team individuelles Feedback und das wichtigste Werkzeug gratis.',
+    price: '1 € · Testphase',
+    href: '/checkout/mystery-shopping',
+    icon: 'mystery',
   },
 ]
 
@@ -64,7 +72,7 @@ export default async function CheckoutIndex() {
 
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
               {OFFERS.map((o) => {
-                const Icon = o.icon === 'academy' ? GraduationCap : Sparkles
+                const Icon = o.icon === 'academy' ? GraduationCap : o.icon === 'mystery' ? Search : Sparkles
                 return (
                   <Link
                     key={o.href}
