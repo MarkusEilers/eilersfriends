@@ -25,6 +25,13 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Standalone static page (no localization, not in nav)
+  if (pathname === '/fortuna' || pathname === '/fortuna/') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/fortuna.html'
+    return NextResponse.rewrite(url)
+  }
+
   // Check for domain rewrites (landing page domains)
   const rewritePath = DOMAIN_REWRITES[hostname]
   if (rewritePath) {
