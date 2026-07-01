@@ -31,6 +31,11 @@ export default async function middleware(request: NextRequest) {
     url.pathname = '/fortuna.html'
     return NextResponse.rewrite(url)
   }
+  if (pathname === '/fortuna/impressum' || pathname === '/fortuna/datenschutz') {
+    const url = request.nextUrl.clone()
+    url.pathname = pathname + '.html'
+    return NextResponse.rewrite(url)
+  }
 
   // Check for domain rewrites (landing page domains)
   const rewritePath = DOMAIN_REWRITES[hostname]
