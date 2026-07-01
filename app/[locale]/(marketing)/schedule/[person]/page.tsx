@@ -10,7 +10,7 @@ export default async function ScheduleTypes({ params }: { params: Promise<{ pers
   const ent = entityFor(person)
   if (!ent) notFound()
   return (
-    <main style={{ backgroundColor: '#FAFAF8' }}>
+    <div style={{ backgroundColor: '#FAFAF8' }}>
       <section className="px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl">
           <Link href="/schedule" className="text-xs font-semibold text-gray-400 hover:text-gray-700">← Alle</Link>
@@ -30,6 +30,6 @@ export default async function ScheduleTypes({ params }: { params: Promise<{ pers
           </div>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

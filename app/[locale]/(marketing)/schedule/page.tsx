@@ -9,7 +9,7 @@ export default function ScheduleIndex() {
   const cards = [...PERSONS.map(p => ({ slug: p.slug, name: p.name, sub: p.role || '', team: false })),
     { slug: TEAM.slug, name: TEAM.name, sub: 'Termin, an dem beide frei sind', team: true }]
   return (
-    <main style={{ backgroundColor: '#FAFAF8' }}>
+    <div style={{ backgroundColor: '#FAFAF8' }}>
       <section className="px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Termin buchen</p>
@@ -29,6 +29,6 @@ export default function ScheduleIndex() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

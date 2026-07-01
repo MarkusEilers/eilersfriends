@@ -10,7 +10,7 @@ export default async function ScheduleBooking({ params }: { params: Promise<{ pe
   const ent = entityFor(person); const t = typeBySlug(type)
   if (!ent || !t) notFound()
   return (
-    <main style={{ backgroundColor: '#FAFAF8' }}>
+    <div style={{ backgroundColor: '#FAFAF8' }}>
       <section className="px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-3xl">
           <Link href={`/schedule/${person}` as '/'} className="text-xs font-semibold text-gray-400 hover:text-gray-700">← Zurück</Link>
@@ -21,6 +21,6 @@ export default async function ScheduleBooking({ params }: { params: Promise<{ pe
           </div>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

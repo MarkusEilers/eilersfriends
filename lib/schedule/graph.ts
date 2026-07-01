@@ -113,7 +113,7 @@ export async function freeSlots(slug: string, durationMin: number): Promise<{ sl
   return { slots: out, connected: true }
 }
 
-export async function createBooking(slug: string, startISO: string, durationMin: number, name: string, email: string, note: string): Promise<{ ok: boolean; error?: string }> {
+export async function createBooking(slug: string, startISO: string, durationMin: number, name: string, email: string, note: string): Promise<{ ok: boolean; error?: string; joinUrl?: string | null; webLink?: string | null; eventId?: string | null }> {
   const at = await accessTokenFor(slug)
   if (!at) return { ok: false, error: 'not_connected' }
   const m = membersFor(slug)
@@ -133,6 +133,8 @@ export async function createBooking(slug: string, startISO: string, durationMin:
       attendees, isOnlineMeeting: true, onlineMeetingProvider: 'teamsForBusiness',
     }),
   })
-  if (!res.ok) { const d = await res.json().catch(() => ({})); return { ok: false, error: d.error?.message || 'create_failed' } }
-  return { ok: true }
+  const data = await res.json().catch(() => ({} as Record<string, unknown>))
+  if (!res.ok) { const e = (data as { error?: { message?: string } }).error; return { ok: false, error: e?.message || 'create_failed' } }
+  const d = data as { id?: string; webLink?: string; onlineMeeting?: { joinUrl?: string }; onlineMeetingUrl?: string }
+  return { ok: true, joinUrl: d.onlineMeeting?.joinUrl || d.onlineMeetingUrl || null, webLink: d.webLink || null, eventId: d.id || null }
 }
