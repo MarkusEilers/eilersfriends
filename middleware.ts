@@ -25,16 +25,10 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Standalone static page (no localization, not in nav)
-  if (pathname === '/fortuna' || pathname === '/fortuna/') {
-    const url = request.nextUrl.clone()
-    url.pathname = '/fortuna.html'
-    return NextResponse.rewrite(url)
-  }
-  if (pathname === '/fortuna/impressum' || pathname === '/fortuna/datenschutz') {
-    const url = request.nextUrl.clone()
-    url.pathname = pathname + '.html'
-    return NextResponse.rewrite(url)
+  // Fortuna läuft jetzt als eigenes Projekt unter fortuna-infinita.com — alte Links dorthin umleiten
+  if (pathname === '/fortuna' || pathname.startsWith('/fortuna/')) {
+    const rest = pathname.replace(/^\/fortuna/, '')
+    return NextResponse.redirect('https://fortuna-infinita.com' + (rest || '/'), 308)
   }
 
   // Check for domain rewrites (landing page domains)
