@@ -7,8 +7,8 @@ import { Calendar, Mail } from 'lucide-react'
  * Soll zeigen: hinter dem Angebot stehen zwei Menschen, nicht ein Funnel.
  */
 export function AboutUsFooter({
-  markusCalendly = 'https://calendly.com/markuseilers/kennenlernen',
-  aljonaCalendly = 'https://calendly.com/eilersjung/kennenlernsession',
+  markusCalendly = '/schedule/markus/kennenlernen-45',
+  aljonaCalendly = '/schedule/aljona/kennenlernen-45',
 }: {
   markusCalendly?: string
   aljonaCalendly?: string

@@ -8,8 +8,9 @@ import { eq, sql, asc } from 'drizzle-orm'
  */
 
 const DEFAULTS: Record<string, string> = {
-  'calendly.markus': 'https://calendly.com/markuseilers/kennenlernen',
-  'calendly.aljona': 'https://calendly.com/eilersjung/kennenlernsession',
+  // Calendly wurde durch das eigene /schedule-System ersetzt
+  'calendly.markus': '/schedule/markus/kennenlernen-45',
+  'calendly.aljona': '/schedule/aljona/kennenlernen-45',
 }
 
 let tableEnsured = false
@@ -26,14 +27,20 @@ async function ensureTable() {
 }
 
 export async function getSetting(key: string, fallback?: string): Promise<string> {
+  let value = ''
   try {
     await ensureTable()
     const [row] = await db.select().from(siteSettings).where(eq(siteSettings.key, key)).limit(1)
-    if (row?.value) return row.value
+    if (row?.value) value = row.value
   } catch (err) {
     console.error('[settings] getSetting failed for', key, err)
   }
-  return fallback ?? DEFAULTS[key] ?? ''
+  if (!value) value = fallback ?? DEFAULTS[key] ?? ''
+  // Alte Calendly-Links automatisch aufs neue /schedule-System mappen
+  if (/calendly\.com/i.test(value) && DEFAULTS[key] && !/calendly\.com/i.test(DEFAULTS[key])) {
+    value = DEFAULTS[key]
+  }
+  return value
 }
 
 export async function setSetting(key: string, value: string): Promise<void> {

@@ -19,8 +19,8 @@ export async function updateSettingAction(formData: FormData) {
   if (!ALLOWED_KEYS.has(key)) {
     throw new Error(`unknown setting key: ${key}`)
   }
-  if (value && !value.startsWith('https://')) {
-    throw new Error('Calendly-URLs müssen mit https:// beginnen.')
+  if (value && !value.startsWith('https://') && !value.startsWith('/')) {
+    throw new Error('Bitte einen Link (https://…) oder internen Pfad (/schedule/…) angeben.')
   }
   await setSetting(key, value)
   revalidatePath('/admin/settings')

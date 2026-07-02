@@ -55,8 +55,8 @@ export default async function PublicOfferPage({ params }: { params: Promise<{ se
 
   // Calendly URLs from DB settings (with hardcoded fallback)
   const [markusCalendly, aljonaCalendly] = await Promise.all([
-    getSetting('calendly.markus', 'https://calendly.com/markuseilers/kennenlernen').catch(() => 'https://calendly.com/markuseilers/kennenlernen'),
-    getSetting('calendly.aljona', 'https://calendly.com/eilersjung/kennenlernsession').catch(() => 'https://calendly.com/eilersjung/kennenlernsession'),
+    getSetting('calendly.markus', '/schedule/markus/kennenlernen-45').catch(() => '/schedule/markus/kennenlernen-45'),
+    getSetting('calendly.aljona', '/schedule/aljona/kennenlernen-45').catch(() => '/schedule/aljona/kennenlernen-45'),
   ])
 
   const validUntilDate = new Date(offer.valid_until)

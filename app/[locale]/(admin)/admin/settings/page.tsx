@@ -3,14 +3,14 @@ import { updateSettingAction } from '@/lib/actions/settings'
 
 const SETTING_LABELS: Record<string, { label: string; hint: string; group: string }> = {
   'calendly.markus': {
-    label: 'Markus · Calendly-URL',
+    label: 'Markus · Termin-Link',
     hint: 'Strategie-Gespräch / Kennenlernen mit Markus',
-    group: 'Calendly',
+    group: 'Terminbuchung',
   },
   'calendly.aljona': {
-    label: 'Aljona · Calendly-URL',
+    label: 'Aljona · Termin-Link',
     hint: 'Liquid Leadership Strategie-Gespräch / Kennenlernen mit Aljona',
-    group: 'Calendly',
+    group: 'Terminbuchung',
   },
 }
 
@@ -59,9 +59,9 @@ export default async function AdminSettingsPage() {
                   <div className="flex gap-2">
                     <input
                       name="value"
-                      type="url"
+                      type="text"
                       defaultValue={s.value}
-                      placeholder="https://calendly.com/..."
+                      placeholder="/schedule/markus/kennenlernen-45"
                       className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none transition-colors focus:border-blue-400 focus:bg-white"
                     />
                     <button
