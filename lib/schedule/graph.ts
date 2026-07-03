@@ -5,7 +5,7 @@ const TENANT = process.env.MS_TENANT_ID || 'organizations'
 const CLIENT_ID = process.env.MS_CLIENT_ID || ''
 const CLIENT_SECRET = process.env.MS_CLIENT_SECRET || ''
 export const REDIRECT_URI = process.env.MS_REDIRECT_URI || 'https://www.eilersfriends.com/api/schedule/oauth/callback'
-export const SCOPE = 'offline_access openid email profile https://graph.microsoft.com/Calendars.ReadWrite'
+export const SCOPE = 'offline_access openid email profile https://graph.microsoft.com/Calendars.ReadWrite https://graph.microsoft.com/Mail.Send'
 
 export function graphConfigured(): boolean { return Boolean(CLIENT_ID && CLIENT_SECRET) }
 
@@ -47,6 +47,14 @@ async function accessTokenFor(slug: string): Promise<string | null> {
   } catch { await markRevoked(slug).catch(() => {}); return null }
 }
 
+// Für Team-Owner: Token des ersten verbundenen Mitglieds (Team-Slug hat selbst keine Verbindung)
+async function accessTokenForOwner(slug: string): Promise<string | null> {
+  const direct = await accessTokenFor(slug)
+  if (direct) return direct
+  for (const p of membersFor(slug)) { const t = await accessTokenFor(p.slug); if (t) return t }
+  return null
+}
+
 type Busy = { start: number; end: number }
 
 function tzOffsetMin(d: Date, tz: string): number {
@@ -68,7 +76,7 @@ function berlinParts(d: Date, tz: string) {
 }
 
 async function busyFor(slug: string, startISO: string, endISO: string): Promise<Busy[] | null> {
-  const at = await accessTokenFor(slug)
+  const at = await accessTokenForOwner(slug)
   if (!at) return null
   const m = membersFor(slug)
   const res = await fetch('https://graph.microsoft.com/v1.0/me/calendar/getSchedule', {
@@ -83,14 +91,21 @@ async function busyFor(slug: string, startISO: string, endISO: string): Promise<
       if (['busy', 'tentative', 'oof', 'workingElsewhere'].includes(it.status)) {
         const s = new Date((it.start?.dateTime || '') + (/(Z|[+-]\d\d:?\d\d)$/.test(it.start?.dateTime || '') ? '' : 'Z')).getTime()
         const e = new Date((it.end?.dateTime || '') + (/(Z|[+-]\d\d:?\d\d)$/.test(it.end?.dateTime || '') ? '' : 'Z')).getTime()
-        if (s && e) busy.push({ start: s - WORK.bufferMin * 60000, end: e + WORK.bufferMin * 60000 })
+        if (s && e) busy.push({ start: s, end: e })
       }
     }
   }
   return busy
 }
 
-export async function freeSlots(slug: string, durationMin: number): Promise<{ slots: string[]; connected: boolean }> {
+export type SlotOpts = { durationMin: number; bufferBeforeMin?: number; bufferAfterMin?: number; blockedDayKeys?: Set<string> }
+function pad2(n: number) { return String(n).padStart(2, '0') }
+
+export async function freeSlots(slug: string, opts: SlotOpts): Promise<{ slots: string[]; connected: boolean }> {
+  const durationMin = opts.durationMin
+  const bufBefore = (opts.bufferBeforeMin ?? 0) * 60000
+  const bufAfter = (opts.bufferAfterMin ?? 0) * 60000
+  const blockedDays = opts.blockedDayKeys ?? new Set<string>()
   const now = Date.now()
   const startISO = new Date(now).toISOString().slice(0, 19)
   const endISO = new Date(now + WORK.horizonDays * 864e5).toISOString().slice(0, 19)
@@ -98,36 +113,38 @@ export async function freeSlots(slug: string, durationMin: number): Promise<{ sl
   if (busy === null) return { slots: [], connected: false }
   const earliest = now + WORK.leadHours * 3600e3
   const out: string[] = []
-  for (let dd = 0; dd <= WORK.horizonDays && out.length < 200; dd++) {
+  for (let dd = 0; dd <= WORK.horizonDays && out.length < 300; dd++) {
     const probe = new Date(now + dd * 864e5)
     const bp = berlinParts(probe, WORK.tz)
     if (!WORK.days.includes(bp.wd)) continue
+    const dayKey = `${bp.y}-${pad2(bp.m)}-${pad2(bp.day)}`
+    if (blockedDays.has(dayKey)) continue
     for (let h = WORK.startHour * 60; h + durationMin <= WORK.endHour * 60; h += WORK.granularityMin) {
       const s = wallToUTC(bp.y, bp.m, bp.day, Math.floor(h / 60), h % 60, WORK.tz).getTime()
       const e = s + durationMin * 60000
       if (s < earliest) continue
-      const blocked = busy.some(b => s < b.end && e > b.start)
-      if (!blocked) out.push(new Date(s).toISOString())
+      const hit = busy.some(b => (s - bufBefore) < b.end && (e + bufAfter) > b.start)
+      if (!hit) out.push(new Date(s).toISOString())
     }
   }
   return { slots: out, connected: true }
 }
 
-export async function createBooking(slug: string, startISO: string, durationMin: number, name: string, email: string, note: string): Promise<{ ok: boolean; error?: string; joinUrl?: string | null; webLink?: string | null; eventId?: string | null }> {
-  const at = await accessTokenFor(slug)
+export async function createBooking(slug: string, startISO: string, durationMin: number, opts: { subject: string; bodyHtml: string; attendeeName: string; attendeeEmail: string }): Promise<{ ok: boolean; error?: string; joinUrl?: string | null; webLink?: string | null; eventId?: string | null }> {
+  const at = await accessTokenForOwner(slug)
   if (!at) return { ok: false, error: 'not_connected' }
   const m = membersFor(slug)
   const start = new Date(startISO)
   const end = new Date(start.getTime() + durationMin * 60000)
   const attendees = [
-    { emailAddress: { address: email, name }, type: 'required' },
+    { emailAddress: { address: opts.attendeeEmail, name: opts.attendeeName }, type: 'required' },
     ...m.slice(1).map(p => ({ emailAddress: { address: p.email, name: p.name }, type: 'required' })),
   ]
   const res = await fetch('https://graph.microsoft.com/v1.0/me/events', {
     method: 'POST', headers: { Authorization: `Bearer ${at}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      subject: `Eilers+Friends · Termin mit ${name}`,
-      body: { contentType: 'text', content: note || 'Gebucht über eilersfriends.com/schedule' },
+      subject: opts.subject,
+      body: { contentType: 'html', content: opts.bodyHtml },
       start: { dateTime: start.toISOString(), timeZone: 'UTC' },
       end: { dateTime: end.toISOString(), timeZone: 'UTC' },
       attendees, isOnlineMeeting: true, onlineMeetingProvider: 'teamsForBusiness',
@@ -137,4 +154,40 @@ export async function createBooking(slug: string, startISO: string, durationMin:
   if (!res.ok) { const e = (data as { error?: { message?: string } }).error; return { ok: false, error: e?.message || 'create_failed' } }
   const d = data as { id?: string; webLink?: string; onlineMeeting?: { joinUrl?: string }; onlineMeetingUrl?: string }
   return { ok: true, joinUrl: d.onlineMeeting?.joinUrl || d.onlineMeetingUrl || null, webLink: d.webLink || null, eventId: d.id || null }
+}
+
+export async function updateEventTime(slug: string, eventId: string, startISO: string, durationMin: number): Promise<{ ok: boolean; joinUrl?: string | null; error?: string }> {
+  const at = await accessTokenForOwner(slug)
+  if (!at) return { ok: false, error: 'not_connected' }
+  const start = new Date(startISO)
+  const end = new Date(start.getTime() + durationMin * 60000)
+  const res = await fetch(`https://graph.microsoft.com/v1.0/me/events/${encodeURIComponent(eventId)}`, {
+    method: 'PATCH', headers: { Authorization: `Bearer ${at}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ start: { dateTime: start.toISOString(), timeZone: 'UTC' }, end: { dateTime: end.toISOString(), timeZone: 'UTC' } }),
+  })
+  const data = await res.json().catch(() => ({} as Record<string, unknown>))
+  if (!res.ok) { const e = (data as { error?: { message?: string } }).error; return { ok: false, error: e?.message || 'update_failed' } }
+  const d = data as { onlineMeeting?: { joinUrl?: string } }
+  return { ok: true, joinUrl: d.onlineMeeting?.joinUrl || null }
+}
+
+export async function cancelEvent(slug: string, eventId: string): Promise<{ ok: boolean; error?: string }> {
+  const at = await accessTokenForOwner(slug)
+  if (!at) return { ok: false, error: 'not_connected' }
+  const res = await fetch(`https://graph.microsoft.com/v1.0/me/events/${encodeURIComponent(eventId)}`, {
+    method: 'DELETE', headers: { Authorization: `Bearer ${at}` },
+  })
+  if (!res.ok && res.status !== 404) { const d = await res.json().catch(() => ({})); return { ok: false, error: (d as { error?: { message?: string } }).error?.message || 'cancel_failed' } }
+  return { ok: true }
+}
+
+export async function sendMailAs(slug: string, to: string, subject: string, html: string): Promise<{ ok: boolean; error?: string }> {
+  const at = await accessTokenForOwner(slug)
+  if (!at) return { ok: false, error: 'not_connected' }
+  const res = await fetch('https://graph.microsoft.com/v1.0/me/sendMail', {
+    method: 'POST', headers: { Authorization: `Bearer ${at}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: { subject, body: { contentType: 'HTML', content: html }, toRecipients: [{ emailAddress: { address: to } }] }, saveToSentItems: true }),
+  })
+  if (!res.ok) { const d = await res.json().catch(() => ({})); return { ok: false, error: (d as { error?: { message?: string } }).error?.message || 'send_failed' } }
+  return { ok: true }
 }

@@ -1,53 +1,80 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import { freeSlots, createBooking } from '@/lib/schedule/graph'
-import { typeBySlug, membersFor, entityFor } from '@/lib/schedule/config'
-import { sendEmail } from '@/lib/email/resend'
+import { entityFor, membersFor } from '@/lib/schedule/config'
+import { getEventType } from '@/lib/schedule/types-store'
+import { createBooking as storeBooking, bookingCountsByDay } from '@/lib/schedule/bookings-store'
 
 export const runtime = 'nodejs'
 
-function fmt(iso: string) {
-  return new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }).format(new Date(iso))
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.eilersfriends.com'
+const TZ = 'Europe/Berlin'
+function dayKeyOf(iso: string) {
+  const p: Record<string, string> = {}
+  for (const x of new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date(iso))) p[x.type] = x.value
+  return `${p.year}-${p.month}-${p.day}`
 }
+function esc(s: string) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string)) }
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({} as Record<string, unknown>))
   const person = String(body.person || ''); const type = String(body.type || '')
   const slot = String(body.slot || ''); const name = String(body.name || '').slice(0, 120)
   const email = String(body.email || '').slice(0, 160); const note = String(body.note || '').slice(0, 2000)
-  const t = typeBySlug(type); const ent = entityFor(person)
-  if (!t || !ent || membersFor(person).length === 0 || !slot || !name || !/.+@.+\..+/.test(email)) {
+  const rawAnswers = (body.answers && typeof body.answers === 'object') ? body.answers as Record<string, string> : {}
+
+  const ent = entityFor(person); const et = await getEventType(person, type)
+  if (!ent || !et || et.visibility === 'offline' || membersFor(person).length === 0 || !slot || !name || !/.+@.+\..+/.test(email)) {
     return NextResponse.json({ error: 'bad_params' }, { status: 400 })
   }
-  // Re-validate slot is still free
-  const { slots, connected } = await freeSlots(person, t.durationMin)
+
+  // Pflichtfragen prüfen + Antworten ordnen
+  const answers: { question: string; answer: string }[] = []
+  for (const q of et.questions) {
+    const a = String(rawAnswers[q.id] ?? '').trim()
+    if (q.required && !a) return NextResponse.json({ error: 'missing_answer', field: q.id }, { status: 400 })
+    if (a) answers.push({ question: q.label, answer: a })
+  }
+
+  // Tageslimit
+  if (et.maxPerDay != null) {
+    const counts = await bookingCountsByDay(person, type)
+    if ((counts[dayKeyOf(slot)] || 0) >= et.maxPerDay) return NextResponse.json({ error: 'day_full' }, { status: 409 })
+  }
+
+  // Slot noch frei?
+  const blocked = new Set<string>()
+  if (et.maxPerDay != null) { const counts = await bookingCountsByDay(person, type); for (const [d, n] of Object.entries(counts)) if (n >= et.maxPerDay) blocked.add(d) }
+  const { slots, connected } = await freeSlots(person, { durationMin: et.durationMin, bufferBeforeMin: et.bufferBeforeMin, bufferAfterMin: et.bufferAfterMin, blockedDayKeys: blocked })
   if (!connected) return NextResponse.json({ error: 'not_connected' }, { status: 503 })
   if (!slots.includes(slot)) return NextResponse.json({ error: 'slot_taken' }, { status: 409 })
 
-  const r = await createBooking(person, slot, t.durationMin, name, email, note)
+  const token = randomBytes(18).toString('base64url')
+  const manageUrl = `${SITE}/termin/${token}`
+  const end = new Date(new Date(slot).getTime() + et.durationMin * 60000).toISOString()
+  const title = `${et.name} · ${ent.name} × ${name}`
+
+  const qaHtml = answers.length
+    ? '<p><b>Angaben des Gastes:</b></p><ul>' + answers.map(a => `<li><b>${esc(a.question)}:</b> ${esc(a.answer)}</li>`).join('') + '</ul>'
+    : ''
+  const noteHtml = note ? `<p><b>Nachricht:</b><br>${esc(note).replace(/\n/g, '<br>')}</p>` : ''
+  const infoHtml = et.infoText ? `<p>${esc(et.infoText).replace(/\n/g, '<br>')}</p>` : ''
+  const bodyHtml = `<div style="font-family:Arial,sans-serif">
+    <p><b>${esc(et.name)}</b> mit ${esc(ent.name)}</p>
+    ${infoHtml}
+    <p><b>Gast:</b> ${esc(name)} · ${esc(email)}</p>
+    ${qaHtml}${noteHtml}
+    <hr>
+    <p>Der Gast kann den Termin selbst verwalten: <a href="${manageUrl}">Umbuchen oder absagen</a><br>${manageUrl}</p>
+  </div>`
+
+  const r = await createBooking(person, slot, et.durationMin, { subject: title, bodyHtml, attendeeName: name, attendeeEmail: email })
   if (!r.ok) return NextResponse.json({ error: r.error || 'failed' }, { status: 502 })
 
-  const end = new Date(new Date(slot).getTime() + t.durationMin * 60000).toISOString()
-  const title = `${t.name} mit ${ent.name}`
-  const when = fmt(slot)
+  await storeBooking({
+    eventTypeId: et.id, ownerSlug: person, typeSlug: type, startUtc: slot, endUtc: end, dayKey: dayKeyOf(slot),
+    customerName: name, customerEmail: email, answers, note, msEventId: r.eventId || null, joinUrl: r.joinUrl || null, manageToken: token,
+  })
 
-  // Bestätigungsmail an den Bucher (best effort — Buchung gilt auch ohne Mail, MS-Einladung geht separat)
-  try {
-    const joinLine = r.joinUrl ? `<p style="margin:16px 0"><a href="${r.joinUrl}" style="background:#1A5FD4;color:#fff;text-decoration:none;padding:10px 18px;border-radius:9999px;font-weight:700;display:inline-block">Microsoft-Teams-Meeting öffnen</a></p>` : ''
-    await sendEmail({
-      to: email,
-      subject: `Bestätigt: ${title} · ${when} Uhr`,
-      html: `<div style="font-family:Arial,Helvetica,sans-serif;color:#0D0D0B;max-width:520px">
-        <p>Hallo ${name},</p>
-        <p>Dein Termin steht:</p>
-        <p style="font-size:16px;font-weight:700">${title}<br>${when} Uhr · ${t.durationMin} Minuten</p>
-        ${joinLine}
-        ${note ? `<p style="color:#555"><b>Dein Anliegen:</b><br>${note.replace(/</g, '&lt;').replace(/\n/g, '<br>')}</p>` : ''}
-        <p>Du bekommst zusätzlich eine Kalender-Einladung von Microsoft. Falls etwas dazwischenkommt, antworte einfach auf diese Mail.</p>
-        <p>Bis bald!<br>Eilers+Friends</p>
-      </div>`,
-      text: `Hallo ${name},\n\nDein Termin steht:\n${title}\n${when} Uhr · ${t.durationMin} Minuten\n${r.joinUrl ? '\nTeams-Link: ' + r.joinUrl + '\n' : ''}\nDu bekommst zusätzlich eine Kalender-Einladung von Microsoft.\n\nBis bald!\nEilers+Friends`,
-    })
-  } catch { /* Mailversand darf die Buchung nicht scheitern lassen */ }
-
-  return NextResponse.json({ ok: true, start: slot, end, joinUrl: r.joinUrl || null, title })
+  return NextResponse.json({ ok: true, start: slot, end, joinUrl: r.joinUrl || null, title: `${et.name} mit ${ent.name}`, manageUrl })
 }
