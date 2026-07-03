@@ -5,7 +5,8 @@ const TENANT = process.env.MS_TENANT_ID || 'organizations'
 const CLIENT_ID = process.env.MS_CLIENT_ID || ''
 const CLIENT_SECRET = process.env.MS_CLIENT_SECRET || ''
 export const REDIRECT_URI = process.env.MS_REDIRECT_URI || 'https://www.eilersfriends.com/api/schedule/oauth/callback'
-export const SCOPE = 'offline_access openid email profile https://graph.microsoft.com/Calendars.ReadWrite https://graph.microsoft.com/Mail.Send'
+const BASE_SCOPE = 'offline_access openid email profile https://graph.microsoft.com/Calendars.ReadWrite'
+export const SCOPE = BASE_SCOPE + ' https://graph.microsoft.com/Mail.Send'
 
 export function graphConfigured(): boolean { return Boolean(CLIENT_ID && CLIENT_SECRET) }
 
@@ -40,11 +41,16 @@ export async function exchangeCode(code: string): Promise<{ accessToken: string;
 async function accessTokenFor(slug: string): Promise<string | null> {
   const rt = await getRefreshToken(slug)
   if (!rt) return null
+  let t: { access_token: string; refresh_token?: string } | null = null
   try {
-    const t = await tokenRequest({ grant_type: 'refresh_token', refresh_token: rt, scope: SCOPE })
-    if (t.refresh_token) await saveConnection(slug, t.refresh_token, null).catch(() => {})
-    return t.access_token
-  } catch { await markRevoked(slug).catch(() => {}); return null }
+    t = await tokenRequest({ grant_type: 'refresh_token', refresh_token: rt, scope: SCOPE })
+  } catch {
+    // Fallback: alte Verbindungen ohne Mail.Send-Consent behalten Kalender-Zugriff
+    try { t = await tokenRequest({ grant_type: 'refresh_token', refresh_token: rt, scope: BASE_SCOPE }) }
+    catch { await markRevoked(slug).catch(() => {}); return null }
+  }
+  if (t.refresh_token) await saveConnection(slug, t.refresh_token, null).catch(() => {})
+  return t.access_token
 }
 
 // Für Team-Owner: Token des ersten verbundenen Mitglieds (Team-Slug hat selbst keine Verbindung)
