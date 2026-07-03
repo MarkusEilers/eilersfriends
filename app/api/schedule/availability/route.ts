@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { freeSlots } from '@/lib/schedule/graph'
 import { entityFor } from '@/lib/schedule/config'
 import { getEventType } from '@/lib/schedule/types-store'
-import { bookingCountsByDay } from '@/lib/schedule/bookings-store'
+import { getCached, computeAndCache, CACHE_STALE_MS } from '@/lib/schedule/availability-cache'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -14,13 +13,10 @@ export async function GET(req: NextRequest) {
   const et = await getEventType(person, type)
   if (!ent || !et || et.visibility === 'offline') return NextResponse.json({ error: 'bad_params' }, { status: 400 })
 
-  const blocked = new Set<string>()
-  if (et.maxPerDay != null) {
-    const counts = await bookingCountsByDay(person, type)
-    for (const [d, n] of Object.entries(counts)) if (n >= et.maxPerDay) blocked.add(d)
+  const cached = await getCached(person, type).catch(() => null)
+  if (cached && cached.connected && Date.now() - cached.refreshedAt < CACHE_STALE_MS) {
+    return NextResponse.json({ connected: true, durationMin: et.durationMin, slots: cached.slots, cached: true })
   }
-  const { slots, connected } = await freeSlots(person, {
-    durationMin: et.durationMin, bufferBeforeMin: et.bufferBeforeMin, bufferAfterMin: et.bufferAfterMin, blockedDayKeys: blocked,
-  })
+  const { slots, connected } = await computeAndCache(person, type, et)
   return NextResponse.json({ connected, durationMin: et.durationMin, slots })
 }

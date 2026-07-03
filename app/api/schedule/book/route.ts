@@ -4,6 +4,7 @@ import { freeSlots, createBooking } from '@/lib/schedule/graph'
 import { entityFor, membersFor } from '@/lib/schedule/config'
 import { getEventType } from '@/lib/schedule/types-store'
 import { createBooking as storeBooking, bookingCountsByDay } from '@/lib/schedule/bookings-store'
+import { removeSlotFromCache } from '@/lib/schedule/availability-cache'
 
 export const runtime = 'nodejs'
 
@@ -75,6 +76,7 @@ export async function POST(req: NextRequest) {
     eventTypeId: et.id, ownerSlug: person, typeSlug: type, startUtc: slot, endUtc: end, dayKey: dayKeyOf(slot),
     customerName: name, customerEmail: email, answers, note, msEventId: r.eventId || null, joinUrl: r.joinUrl || null, manageToken: token,
   })
+  await removeSlotFromCache(person, type, slot)
 
   return NextResponse.json({ ok: true, start: slot, end, joinUrl: r.joinUrl || null, title: `${et.name} mit ${ent.name}`, manageUrl })
 }

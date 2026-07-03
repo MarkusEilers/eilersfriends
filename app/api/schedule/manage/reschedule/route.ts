@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getBookingByToken, updateBookingTime, bookingCountsByDay } from '@/lib/schedule/bookings-store'
 import { getEventType } from '@/lib/schedule/types-store'
 import { freeSlots, updateEventTime } from '@/lib/schedule/graph'
+import { removeSlotFromCache } from '@/lib/schedule/availability-cache'
 
 export const runtime = 'nodejs'
 const TZ = 'Europe/Berlin'
@@ -28,5 +29,6 @@ export async function POST(req: NextRequest) {
   const end = new Date(new Date(String(slot)).getTime() + et.durationMin * 60000).toISOString()
   if (b.msEventId) { const r = await updateEventTime(b.ownerSlug, b.msEventId, String(slot), et.durationMin); if (!r.ok) return NextResponse.json({ error: 'update_failed' }, { status: 502 }) }
   await updateBookingTime(b.id, String(slot), end, dayKeyOf(String(slot)))
+  await removeSlotFromCache(b.ownerSlug, b.typeSlug, String(slot))
   return NextResponse.json({ ok: true, start: slot, end })
 }
