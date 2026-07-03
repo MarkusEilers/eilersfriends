@@ -1,7 +1,7 @@
 'use client'
 import { useState, useTransition, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Pencil, Trash2, X, Save, GripVertical } from 'lucide-react'
+import { Plus, Pencil, Trash2, X, Save, GripVertical, Eye, ExternalLink } from 'lucide-react'
 import { saveEventTypeAction, deleteEventTypeAction, saveHostProfileAction, type EventTypePayload } from '@/lib/actions/schedule-admin'
 
 type ET = {
@@ -79,8 +79,10 @@ export function EventTypeEditor({ owners, types, hosts }: { owners: Owner[]; typ
                       </div>
                       <span className={'shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ' + (t.visibility === 'live' ? 'bg-green-50 text-green-700' : t.visibility === 'internal' ? 'bg-amber-50 text-amber-700' : 'bg-gray-100 text-gray-500')}>{t.visibility === 'live' ? 'Live' : t.visibility === 'internal' ? 'Intern' : 'Offline'}</span>
                     </div>
-                    <div className="mt-3 flex gap-2">
+                    <div className="mt-3 flex flex-wrap gap-2">
                       <button onClick={() => setDraft(toDraft(t))} className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2.5 py-1 text-xs font-semibold text-gray-600 hover:border-blue-300"><Pencil size={12} /> Bearbeiten</button>
+                      <a href={`/schedule/${t.ownerSlug}/${t.slug}?preview=1`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2.5 py-1 text-xs font-semibold text-gray-600 hover:border-blue-300"><Eye size={12} /> Vorschau</a>
+                      {t.visibility !== 'offline' && <a href={`/schedule/${t.ownerSlug}/${t.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-lg border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 hover:border-green-300"><ExternalLink size={12} /> Live-Seite</a>}
                       <button onClick={() => del(t.id)} className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2.5 py-1 text-xs font-semibold text-gray-500 hover:border-red-300 hover:text-red-600"><Trash2 size={12} /> Löschen</button>
                     </div>
                   </div>
@@ -135,7 +137,10 @@ function EditorForm({ draft, setDraft, onSave, onCancel, pending, err }: { draft
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Name"><input value={draft.name} onChange={e => set({ name: e.target.value })} className={inp} placeholder="Kennenlernen" /></Field>
-        <Field label="URL-Slug (optional)"><input value={draft.slug} onChange={e => set({ slug: e.target.value })} className={inp} placeholder="wird aus Name erzeugt" /></Field>
+        <div>
+          <Field label="URL-Slug (optional)"><input value={draft.slug} onChange={e => set({ slug: e.target.value })} className={inp} placeholder="wird aus Name erzeugt" /></Field>
+          {draft.id && <p className="mt-1 text-[11px] leading-snug text-amber-600">Achtung: Den Slug nachträglich zu ändern bricht bestehende Links (Navi, „Book a call", Kontakt, bereits geteilte Buchungslinks). Besser nur den Namen ändern und den Slug lassen.</p>}
+        </div>
         <Field label="Beschreibung"><input value={draft.description} onChange={e => set({ description: e.target.value })} className={inp} /></Field>
         <Field label="Sichtbarkeit"><select value={draft.visibility} onChange={e => set({ visibility: e.target.value })} className={inp}>{Object.entries(VIS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></Field>
         <Field label="Dauer (Min)"><input type="number" value={draft.durationMin} onChange={e => set({ durationMin: Number(e.target.value) })} className={inp} /></Field>

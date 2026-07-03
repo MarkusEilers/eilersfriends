@@ -9,8 +9,8 @@ import { eq, sql, asc } from 'drizzle-orm'
 
 const DEFAULTS: Record<string, string> = {
   // Calendly wurde durch das eigene /schedule-System ersetzt
-  'calendly.markus': '/schedule/markus/kennenlernen-45',
-  'calendly.aljona': '/schedule/aljona/kennenlernen-45',
+  'calendly.markus': '/schedule/markus/kennenlernen-30',
+  'calendly.aljona': '/schedule/aljona',
 }
 
 let tableEnsured = false

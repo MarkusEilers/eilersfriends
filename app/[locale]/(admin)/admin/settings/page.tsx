@@ -61,7 +61,7 @@ export default async function AdminSettingsPage() {
                       name="value"
                       type="text"
                       defaultValue={s.value}
-                      placeholder="/schedule/markus/kennenlernen-45"
+                      placeholder="/schedule/markus/kennenlernen-30"
                       className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none transition-colors focus:border-blue-400 focus:bg-white"
                     />
                     <button
