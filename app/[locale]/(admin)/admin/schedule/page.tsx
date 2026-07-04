@@ -3,6 +3,8 @@ import { getConnectionStatus, listExtraCalendars } from '@/lib/schedule/store'
 import { graphConfigured } from '@/lib/schedule/graph'
 import { listEventTypes, listHostProfiles } from '@/lib/schedule/types-store'
 import { EventTypeEditor } from '@/components/admin/EventTypeEditor'
+import { AvailabilityEditor } from '@/components/admin/AvailabilityEditor'
+import { getWeek } from '@/lib/schedule/availability-rules'
 import { CalendarClock, CheckCircle2, AlertCircle, PlugZap, Plus, Trash2, CalendarPlus } from 'lucide-react'
 import { toggleCalendarAction, removeCalendarAction } from '@/lib/actions/schedule-admin'
 
@@ -14,6 +16,7 @@ export default async function AdminSchedulePage({ searchParams }: { searchParams
   const configured = graphConfigured()
   const statuses = await Promise.all(PERSONS.map(async (p) => ({ p, conn: configured ? await getConnectionStatus(p.slug).catch(() => null) : null, extras: configured ? await listExtraCalendars(p.slug).catch(() => []) : [] })))
   const [types, hostProfiles] = await Promise.all([listEventTypes().catch(() => []), listHostProfiles().catch(() => [])])
+  const weeks = Object.fromEntries(await Promise.all(PERSONS.map(async p => [p.slug, await getWeek(p.slug).catch(() => undefined)])))
 
   const owners = [...PERSONS.map(p => ({ slug: p.slug, name: p.name })), { slug: TEAM.slug, name: entityFor(TEAM.slug)?.name || TEAM.name }]
   const hosts = PERSONS.map(p => {
@@ -99,10 +102,21 @@ export default async function AdminSchedulePage({ searchParams }: { searchParams
         })}
       </div>
 
+      <h2 className="mb-2 mt-10 text-sm font-bold uppercase tracking-widest text-gray-400">Verfügbarkeits-Zeiten</h2>
+      <p className="mb-4 text-xs text-gray-500">Wöchentliche Standard-Verfügbarkeit je Person (08:00–20:00). Geblockte Zeiten sind <strong>immer</strong> nicht buchbar — unabhängig vom Kalender.</p>
+      <div className="space-y-2">
+        {PERSONS.map(p => (
+          <details key={p.slug} className="rounded-2xl border border-gray-100 bg-white p-4">
+            <summary className="cursor-pointer text-sm font-bold text-gray-900">{p.name}</summary>
+            <div className="mt-4"><AvailabilityEditor person={p.slug} week={weeks[p.slug]} /></div>
+          </details>
+        ))}
+      </div>
+
       <h2 className="mb-4 mt-10 text-sm font-bold uppercase tracking-widest text-gray-400">Event-Typen</h2>
       <EventTypeEditor owners={owners} types={types} hosts={hosts} />
 
-      <p className="mt-8 text-xs text-gray-400">Arbeitszeiten: Mo–Fr {WORK.startHour}:00–{WORK.endHour}:00 ({WORK.tz}), {WORK.leadHours} h Vorlauf, {WORK.horizonDays} Tage Horizont. Puffer &amp; Tageslimit je Event-Typ oben einstellbar.</p>
+      <p className="mt-8 text-xs text-gray-400">Zeitzone {WORK.tz}, {WORK.leadHours} h Vorlauf, {WORK.horizonDays} Tage Horizont. Verfügbarkeits-Zeiten je Person oben, Puffer &amp; Tageslimit je Event-Typ.</p>
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { getRefreshToken, saveConnection, markRevoked, getActiveExtraCalendars, setExtraCalendarRefresh, markExtraCalendarRevoked, type ExtraCalToken } from './store'
 import { WORK, membersFor } from './config'
+import { intervalsForOwner } from './availability-rules'
 
 const TENANT = process.env.MS_TENANT_ID || 'organizations'
 const CLIENT_ID = process.env.MS_CLIENT_ID || ''
@@ -162,19 +163,24 @@ export async function freeSlots(slug: string, opts: SlotOpts): Promise<{ slots: 
   const busy = await busyFor(slug, startISO, endISO)
   if (busy === null) return { slots: [], connected: false }
   const earliest = now + WORK.leadHours * 3600e3
+  const week = await intervalsForOwner(slug)
   const out: string[] = []
   for (let dd = 0; dd <= WORK.horizonDays && out.length < 300; dd++) {
     const probe = new Date(now + dd * 864e5)
     const bp = berlinParts(probe, WORK.tz)
-    if (!WORK.days.includes(bp.wd)) continue
+    const wdMon = (bp.wd + 6) % 7
+    const intervals = week[wdMon] || []
+    if (!intervals.length) continue
     const dayKey = `${bp.y}-${pad2(bp.m)}-${pad2(bp.day)}`
     if (blockedDays.has(dayKey)) continue
-    for (let h = WORK.startHour * 60; h + durationMin <= WORK.endHour * 60; h += WORK.granularityMin) {
-      const s = wallToUTC(bp.y, bp.m, bp.day, Math.floor(h / 60), h % 60, WORK.tz).getTime()
-      const e = s + durationMin * 60000
-      if (s < earliest) continue
-      const hit = busy.some(b => (s - bufBefore) < b.end && (e + bufAfter) > b.start)
-      if (!hit) out.push(new Date(s).toISOString())
+    for (const [istart, iend] of intervals) {
+      for (let h = istart; h + durationMin <= iend; h += WORK.granularityMin) {
+        const s = wallToUTC(bp.y, bp.m, bp.day, Math.floor(h / 60), h % 60, WORK.tz).getTime()
+        const e = s + durationMin * 60000
+        if (s < earliest) continue
+        const hit = busy.some(b => (s - bufBefore) < b.end && (e + bufAfter) > b.start)
+        if (!hit) out.push(new Date(s).toISOString())
+      }
     }
   }
   return { slots: out, connected: true }
