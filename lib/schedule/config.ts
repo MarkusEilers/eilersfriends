@@ -19,7 +19,7 @@ export const TYPES: SchedType[] = [
 ]
 
 // Arbeitszeiten (lokale Zeit der Mailbox / CET). Mo–Fr.
-export const WORK = { tz: 'Europe/Berlin', startHour: 9, endHour: 17, days: [1, 2, 3, 4, 5], bufferMin: 15, leadHours: 12, horizonDays: 21, granularityMin: 15 }
+export const WORK = { tz: 'Europe/Berlin', startHour: 9, endHour: 17, days: [1, 2, 3, 4, 5], bufferMin: 15, leadHours: 12, horizonDays: 35, granularityMin: 15 }
 
 export function personBySlug(slug: string): Person | undefined { return PERSONS.find(p => p.slug === slug) }
 export function typeBySlug(slug: string): SchedType | undefined { return TYPES.find(t => t.slug === slug) }
