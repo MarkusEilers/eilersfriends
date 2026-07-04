@@ -133,8 +133,9 @@ export function BookingWidget({ person, type, personName, durationMin, infoText,
   )
 
   if (!slots.length) return <>{intro}<Info>{t('noTimes')} <a href="mailto:team@eilersfriends.com" className="font-semibold underline" style={{ color: ACCENT }}>team@eilersfriends.com</a>.</Info></>
+  if (!cursor) return <>{intro}{tzBar}<SkeletonCal /></>
 
-  const y = cursor!.y, m = cursor!.m
+  const y = cursor.y, m = cursor.m
   const lead = firstWeekdayMon(y, m), total = daysInMonth(y, m)
   const cells: (string | null)[] = []
   for (let i = 0; i < lead; i++) cells.push(null)
