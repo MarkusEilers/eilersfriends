@@ -5,6 +5,7 @@ import { entityFor, membersFor } from '@/lib/schedule/config'
 import { getEventType } from '@/lib/schedule/types-store'
 import { createBooking as storeBooking, bookingCountsByDay } from '@/lib/schedule/bookings-store'
 import { removeSlotFromCache } from '@/lib/schedule/availability-cache'
+import { logError } from '@/lib/errors/store'
 
 export const runtime = 'nodejs'
 
@@ -70,7 +71,10 @@ export async function POST(req: NextRequest) {
   </div>`
 
   const r = await createBooking(person, slot, et.durationMin, { subject: title, bodyHtml, attendeeName: name, attendeeEmail: email })
-  if (!r.ok) return NextResponse.json({ error: r.error || 'failed' }, { status: 502 })
+  if (!r.ok) {
+    await logError({ level: 'error', source: 'server', status: 502, message: `Buchung fehlgeschlagen (${person}/${type}): ${r.error || 'failed'}`, url: '/api/schedule/book', context: { person, type, slot } })
+    return NextResponse.json({ error: r.error || 'failed' }, { status: 502 })
+  }
 
   await storeBooking({
     eventTypeId: et.id, ownerSlug: person, typeSlug: type, startUtc: slot, endUtc: end, dayKey: dayKeyOf(slot),
