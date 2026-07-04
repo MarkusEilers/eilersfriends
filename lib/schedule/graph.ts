@@ -33,14 +33,20 @@ function tidFromIdToken(idt?: string): string | null {
   if (!idt) return null
   try { const p = JSON.parse(Buffer.from(idt.split('.')[1], 'base64').toString('utf8')); return (p.tid as string) || null } catch { return null }
 }
+function emailFromIdToken(idt?: string): string | null {
+  if (!idt) return null
+  try { const p = JSON.parse(Buffer.from(idt.split('.')[1], 'base64').toString('utf8')); return (p.preferred_username as string) || (p.email as string) || (p.upn as string) || null } catch { return null }
+}
 
 export async function exchangeCode(code: string, authority: string = TENANT): Promise<{ accessToken: string; refreshToken: string; email: string | null; tenantId: string | null }> {
   const t = await tokenRequestAt(authority, { grant_type: 'authorization_code', code, scope: SCOPE })
-  let email: string | null = null
-  try {
-    const me = await fetch('https://graph.microsoft.com/v1.0/me', { headers: { Authorization: `Bearer ${t.access_token}` } }).then(r => r.json())
-    email = me.mail || me.userPrincipalName || null
-  } catch { /* ignore */ }
+  let email: string | null = emailFromIdToken(t.id_token)
+  if (!email) {
+    try {
+      const me = await fetch('https://graph.microsoft.com/v1.0/me', { headers: { Authorization: `Bearer ${t.access_token}` } }).then(r => r.json())
+      email = me.mail || me.userPrincipalName || null
+    } catch { /* ignore */ }
+  }
   return { accessToken: t.access_token, refreshToken: t.refresh_token || '', email, tenantId: tidFromIdToken(t.id_token) }
 }
 

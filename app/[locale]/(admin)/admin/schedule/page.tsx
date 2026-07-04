@@ -53,7 +53,7 @@ export default async function AdminSchedulePage({ searchParams }: { searchParams
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: '#EBF1FF' }}><CalendarClock size={18} style={{ color: '#1A5FD4' }} /></span>
-                  <div><p className="text-sm font-bold text-gray-900">{p.name}</p><p className="text-xs text-gray-400">{p.email}</p></div>
+                  <div><p className="text-sm font-bold text-gray-900">{p.name}</p><p className="text-xs text-gray-400">{conn?.msEmail || p.email}</p></div>
                 </div>
                 {connected
                   ? <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-700"><CheckCircle2 size={12} /> verbunden</span>

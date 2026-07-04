@@ -72,3 +72,12 @@ export async function refreshAllCaches(): Promise<{ refreshed: number; skipped: 
   }
   return { refreshed, skipped }
 }
+
+export async function invalidatePerson(slug: string) {
+  await ensureCacheTable()
+  await db.execute(sql`DELETE FROM schedule_availability_cache WHERE owner_slug = ${slug} OR owner_slug = 'team'`).catch(() => {})
+}
+export async function clearAllCache() {
+  await ensureCacheTable()
+  await db.execute(sql`DELETE FROM schedule_availability_cache`).catch(() => {})
+}

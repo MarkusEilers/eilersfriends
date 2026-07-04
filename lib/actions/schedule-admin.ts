@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { auth } from '@/lib/auth'
 import { upsertEventType, deleteEventType, upsertHostProfile, type Question, type Reminder, type Visibility } from '@/lib/schedule/types-store'
 import { setExtraCalendarActive, removeExtraCalendar } from '@/lib/schedule/store'
+import { clearAllCache } from '@/lib/schedule/availability-cache'
 import { entityFor } from '@/lib/schedule/config'
 
 async function guard() {
@@ -61,6 +62,7 @@ export async function toggleCalendarAction(formData: FormData) {
   const id = String(formData.get('id') || '')
   const active = formData.get('active') === '1'
   if (id) await setExtraCalendarActive(id, active)
+  await clearAllCache().catch(() => {})
   revalidatePath('/admin/schedule')
 }
 
@@ -68,5 +70,6 @@ export async function removeCalendarAction(formData: FormData) {
   await guard()
   const id = String(formData.get('id') || '')
   if (id) await removeExtraCalendar(id)
+  await clearAllCache().catch(() => {})
   revalidatePath('/admin/schedule')
 }
