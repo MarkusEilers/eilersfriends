@@ -44,6 +44,7 @@ export default async function AdminSchedulePage({ searchParams }: { searchParams
       </div>
 
       <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gray-400">Kalender-Verbindungen</h2>
+      <p className="mb-3 -mt-1 text-xs text-gray-500">Der <strong>erste (Haupt-)Kalender</strong> pro Person muss das <strong>eilersfriends.com</strong>-Konto sein — dort werden die Termine angelegt. „Weitere Kalender" (auch aus anderen Tenants) zählen nur als Belegt-Filter.</p>
       <div className="grid gap-3 sm:grid-cols-2">
         {statuses.map(({ p, conn, extras }) => {
           const connected = conn?.status === 'connected'
