@@ -20,7 +20,7 @@ export default async function HomePage() {
   return (
     <>
       <Topbar />
-      <Navbar calendlyUrl={calendlyUrl} />
+      <Navbar />
       <main>
         <HeroSection calendlyUrl={calendlyUrl} />
         <LogoStripSection />

@@ -3,7 +3,6 @@ import type { Metadata } from 'next'
 import { Topbar } from '@/components/layout/Topbar'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { getSetting } from '@/lib/db/queries/settings'
 import { Link } from '@/lib/i18n/navigation'
 import { GraduationCap, Sparkles, Search, ArrowRight } from 'lucide-react'
 
@@ -52,12 +51,11 @@ const OFFERS: Offer[] = [
 ]
 
 export default async function CheckoutIndex() {
-  const calendlyUrl = await getSetting('calendly.markus')
 
   return (
     <>
       <Topbar />
-      <Navbar calendlyUrl={calendlyUrl} />
+      <Navbar />
       <main style={{ backgroundColor: '#FAFAF8' }}>
         <section className="px-6 py-16 sm:py-20">
           <div className="mx-auto max-w-5xl">

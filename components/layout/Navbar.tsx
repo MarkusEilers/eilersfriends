@@ -108,10 +108,14 @@ const NAV_ITEMS: NavItem[] = [
   { kind: 'link', key: 'contact', href: '/kontakt' },
 ]
 
-export function Navbar({ calendlyUrl }: { calendlyUrl: string }) {
+export function Navbar() {
   const t = useTranslations('nav')
   const locale = useLocale()
   const pathname = usePathname()
+  const _bp = (pathname || '').toLowerCase()
+  const bookingHref = (_bp.includes('/aljona') || _bp.includes('leadership')) ? '/schedule/aljona'
+    : (_bp.includes('/markus') || _bp.includes('salesmade')) ? '/schedule/markus'
+    : '/schedule'
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
@@ -237,11 +241,11 @@ export function Navbar({ calendlyUrl }: { calendlyUrl: string }) {
               <User size={13} /> {t('clients')}
             </Link>
 
-            <a href={calendlyUrl} target="_blank" rel="noopener noreferrer"
+            <Link href={bookingHref as '/'}
               className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
               style={{ backgroundColor: '#1A5FD4' }}>
               {t('cta')}
-            </a>
+            </Link>
 
             <button onClick={() => setMobileOpen(true)}
               className="lg:hidden p-2 -mr-2 text-gray-700" aria-label="Menü öffnen">
@@ -425,11 +429,11 @@ export function Navbar({ calendlyUrl }: { calendlyUrl: string }) {
                 </div>
               )}
 
-              <a href={calendlyUrl} target="_blank" rel="noopener noreferrer"
+              <Link href={bookingHref as '/'} onClick={() => setMobileOpen(false)}
                 className="flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
                 style={{ backgroundColor: '#1A5FD4' }}>
                 {t('bookCta')} <ArrowRight size={14} />
-              </a>
+              </Link>
             </div>
           </div>
         </div>
