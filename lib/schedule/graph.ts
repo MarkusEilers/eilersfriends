@@ -1,4 +1,4 @@
-import { getRefreshToken, saveConnection, markRevoked } from './store'
+import { getRefreshToken, saveConnection, markRevoked, getActiveExtraCalendars, setExtraCalendarRefresh, markExtraCalendarRevoked, type ExtraCalToken } from './store'
 import { WORK, membersFor } from './config'
 
 const TENANT = process.env.MS_TENANT_ID || 'organizations'
@@ -10,33 +10,41 @@ export const SCOPE = BASE_SCOPE + ' https://graph.microsoft.com/Mail.Send'
 
 export function graphConfigured(): boolean { return Boolean(CLIENT_ID && CLIENT_SECRET) }
 
-export function authorizeUrl(state: string): string {
+export function authorizeUrl(state: string, authority: string = TENANT): string {
   const p = new URLSearchParams({
     client_id: CLIENT_ID, response_type: 'code', redirect_uri: REDIRECT_URI,
     response_mode: 'query', scope: SCOPE, state, prompt: 'select_account',
   })
-  return `https://login.microsoftonline.com/${TENANT}/oauth2/v2.0/authorize?${p.toString()}`
+  return `https://login.microsoftonline.com/${authority}/oauth2/v2.0/authorize?${p.toString()}`
 }
 
-async function tokenRequest(body: Record<string, string>) {
-  const res = await fetch(`https://login.microsoftonline.com/${TENANT}/oauth2/v2.0/token`, {
+async function tokenRequestAt(authority: string, body: Record<string, string>) {
+  const res = await fetch(`https://login.microsoftonline.com/${authority}/oauth2/v2.0/token`, {
     method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ client_id: CLIENT_ID, client_secret: CLIENT_SECRET, redirect_uri: REDIRECT_URI, ...body }).toString(),
   })
   const data = await res.json()
   if (!res.ok) throw new Error(data.error_description || data.error || 'token error')
-  return data as { access_token: string; refresh_token?: string }
+  return data as { access_token: string; refresh_token?: string; id_token?: string }
+}
+async function tokenRequest(body: Record<string, string>) { return tokenRequestAt(TENANT, body) }
+
+function tidFromIdToken(idt?: string): string | null {
+  if (!idt) return null
+  try { const p = JSON.parse(Buffer.from(idt.split('.')[1], 'base64').toString('utf8')); return (p.tid as string) || null } catch { return null }
 }
 
-export async function exchangeCode(code: string): Promise<{ accessToken: string; refreshToken: string; email: string | null }> {
-  const t = await tokenRequest({ grant_type: 'authorization_code', code, scope: SCOPE })
+export async function exchangeCode(code: string, authority: string = TENANT): Promise<{ accessToken: string; refreshToken: string; email: string | null; tenantId: string | null }> {
+  const t = await tokenRequestAt(authority, { grant_type: 'authorization_code', code, scope: SCOPE })
   let email: string | null = null
   try {
     const me = await fetch('https://graph.microsoft.com/v1.0/me', { headers: { Authorization: `Bearer ${t.access_token}` } }).then(r => r.json())
     email = me.mail || me.userPrincipalName || null
   } catch { /* ignore */ }
-  return { accessToken: t.access_token, refreshToken: t.refresh_token || '', email }
+  return { accessToken: t.access_token, refreshToken: t.refresh_token || '', email, tenantId: tidFromIdToken(t.id_token) }
 }
+
+export const ADD_AUTHORITY = 'organizations'
 
 async function accessTokenFor(slug: string): Promise<string | null> {
   const rt = await getRefreshToken(slug)
@@ -81,15 +89,25 @@ function berlinParts(d: Date, tz: string) {
   return { y: +p.year, m: +p.month, day: +p.day, wd }
 }
 
-async function busyFor(slug: string, startISO: string, endISO: string): Promise<Busy[] | null> {
-  const at = await accessTokenForOwner(slug)
-  if (!at) return null
-  const m = membersFor(slug)
+// Token für einen zusätzlichen (ggf. fremd-mandantigen) Kalender
+export async function accessTokenForCalendar(cal: ExtraCalToken): Promise<string | null> {
+  const authority = cal.tenantId || ADD_AUTHORITY
+  let t: { access_token: string; refresh_token?: string } | null = null
+  try { t = await tokenRequestAt(authority, { grant_type: 'refresh_token', refresh_token: cal.refreshToken, scope: SCOPE }) }
+  catch {
+    try { t = await tokenRequestAt(authority, { grant_type: 'refresh_token', refresh_token: cal.refreshToken, scope: BASE_SCOPE }) }
+    catch { await markExtraCalendarRevoked(cal.id).catch(() => {}); return null }
+  }
+  if (t.refresh_token) await setExtraCalendarRefresh(cal.id, t.refresh_token).catch(() => {})
+  return t.access_token
+}
+
+async function queryBusy(accessToken: string, emails: string[], startISO: string, endISO: string): Promise<Busy[]> {
   const res = await fetch('https://graph.microsoft.com/v1.0/me/calendar/getSchedule', {
-    method: 'POST', headers: { Authorization: `Bearer ${at}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ schedules: m.map(p => p.email), startTime: { dateTime: startISO, timeZone: 'UTC' }, endTime: { dateTime: endISO, timeZone: 'UTC' }, availabilityViewInterval: WORK.granularityMin }),
+    method: 'POST', headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ schedules: emails, startTime: { dateTime: startISO, timeZone: 'UTC' }, endTime: { dateTime: endISO, timeZone: 'UTC' }, availabilityViewInterval: WORK.granularityMin }),
   })
-  if (!res.ok) return null
+  if (!res.ok) return []
   const data = await res.json()
   const busy: Busy[] = []
   for (const sched of (data.value || [])) {
@@ -101,6 +119,26 @@ async function busyFor(slug: string, startISO: string, endISO: string): Promise<
       }
     }
   }
+  return busy
+}
+
+// Belegtzeiten = Vereinigung über Primär-Kalender + alle aktiven Extra-Kalender (Schnittmengen-Filter)
+async function busyFor(slug: string, startISO: string, endISO: string): Promise<Busy[] | null> {
+  const m = membersFor(slug)
+  const busy: Busy[] = []
+  let connected = false
+  const at = await accessTokenForOwner(slug)
+  if (at) { connected = true; busy.push(...await queryBusy(at, m.map(p => p.email), startISO, endISO)) }
+  for (const p of m) {
+    const extras = await getActiveExtraCalendars(p.slug)
+    for (const cal of extras) {
+      const ct = await accessTokenForCalendar(cal)
+      if (!ct) continue
+      connected = true
+      busy.push(...await queryBusy(ct, [cal.msEmail], startISO, endISO))
+    }
+  }
+  if (!connected) return null
   return busy
 }
 

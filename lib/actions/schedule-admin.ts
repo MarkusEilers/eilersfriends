@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { auth } from '@/lib/auth'
 import { upsertEventType, deleteEventType, upsertHostProfile, type Question, type Reminder, type Visibility } from '@/lib/schedule/types-store'
+import { setExtraCalendarActive, removeExtraCalendar } from '@/lib/schedule/store'
 import { entityFor } from '@/lib/schedule/config'
 
 async function guard() {
@@ -51,5 +52,21 @@ export async function deleteEventTypeAction(id: string) {
 export async function saveHostProfileAction(slug: string, avatarUrl: string, intro: string) {
   await guard()
   await upsertHostProfile(slug, (avatarUrl || '').trim(), (intro || '').trim())
+  revalidatePath('/admin/schedule')
+}
+
+
+export async function toggleCalendarAction(formData: FormData) {
+  await guard()
+  const id = String(formData.get('id') || '')
+  const active = formData.get('active') === '1'
+  if (id) await setExtraCalendarActive(id, active)
+  revalidatePath('/admin/schedule')
+}
+
+export async function removeCalendarAction(formData: FormData) {
+  await guard()
+  const id = String(formData.get('id') || '')
+  if (id) await removeExtraCalendar(id)
   revalidatePath('/admin/schedule')
 }

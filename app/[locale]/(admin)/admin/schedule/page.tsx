@@ -1,17 +1,18 @@
 import { PERSONS, TEAM, WORK, entityFor } from '@/lib/schedule/config'
-import { getConnectionStatus } from '@/lib/schedule/store'
+import { getConnectionStatus, listExtraCalendars } from '@/lib/schedule/store'
 import { graphConfigured } from '@/lib/schedule/graph'
 import { listEventTypes, listHostProfiles } from '@/lib/schedule/types-store'
 import { EventTypeEditor } from '@/components/admin/EventTypeEditor'
-import { CalendarClock, CheckCircle2, AlertCircle, PlugZap } from 'lucide-react'
+import { CalendarClock, CheckCircle2, AlertCircle, PlugZap, Plus, Trash2, CalendarPlus } from 'lucide-react'
+import { toggleCalendarAction, removeCalendarAction } from '@/lib/actions/schedule-admin'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-export default async function AdminSchedulePage({ searchParams }: { searchParams: Promise<{ connected?: string; error?: string }> }) {
+export default async function AdminSchedulePage({ searchParams }: { searchParams: Promise<{ connected?: string; added?: string; error?: string }> }) {
   const sp = await searchParams
   const configured = graphConfigured()
-  const statuses = await Promise.all(PERSONS.map(async (p) => ({ p, conn: configured ? await getConnectionStatus(p.slug).catch(() => null) : null })))
+  const statuses = await Promise.all(PERSONS.map(async (p) => ({ p, conn: configured ? await getConnectionStatus(p.slug).catch(() => null) : null, extras: configured ? await listExtraCalendars(p.slug).catch(() => []) : [] })))
   const [types, hostProfiles] = await Promise.all([listEventTypes().catch(() => []), listHostProfiles().catch(() => [])])
 
   const owners = [...PERSONS.map(p => ({ slug: p.slug, name: p.name })), { slug: TEAM.slug, name: entityFor(TEAM.slug)?.name || TEAM.name }]
@@ -28,6 +29,7 @@ export default async function AdminSchedulePage({ searchParams }: { searchParams
       </div>
 
       {sp.connected && <div className="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">Kalender für <strong>{sp.connected}</strong> verbunden.</div>}
+      {sp.added && <div className="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">Zusätzlicher Kalender für <strong>{sp.added}</strong> verbunden.</div>}
       {sp.error && <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">Verbindung fehlgeschlagen ({sp.error}). Bitte erneut versuchen.</div>}
 
       <div className="mb-8 flex items-center gap-3 rounded-2xl border border-gray-100 bg-white p-5">
@@ -43,7 +45,7 @@ export default async function AdminSchedulePage({ searchParams }: { searchParams
 
       <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gray-400">Kalender-Verbindungen</h2>
       <div className="grid gap-3 sm:grid-cols-2">
-        {statuses.map(({ p, conn }) => {
+        {statuses.map(({ p, conn, extras }) => {
           const connected = conn?.status === 'connected'
           return (
             <div key={p.slug} className="rounded-2xl border border-gray-100 bg-white p-5">
@@ -63,6 +65,34 @@ export default async function AdminSchedulePage({ searchParams }: { searchParams
                   {connected ? 'Neu verbinden' : 'Verbinden'}
                 </a>
               </div>
+
+              {(extras.length > 0 || connected) && (
+                <div className="mt-4 border-t border-gray-100 pt-3">
+                  <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-gray-400">Weitere Kalender (Filter)</p>
+                  {extras.map(ex => (
+                    <div key={ex.id} className="mb-1.5 flex items-center justify-between gap-2 rounded-lg bg-gray-50 px-2.5 py-1.5">
+                      <div className="min-w-0">
+                        <p className="truncate text-xs font-semibold text-gray-800">{ex.msEmail}</p>
+                        <p className="text-[10px] text-gray-400">{ex.status === 'connected' ? (ex.active ? 'aktiv · zählt als Filter' : 'inaktiv') : 'Verbindung getrennt'}</p>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-1">
+                        <form action={toggleCalendarAction}>
+                          <input type="hidden" name="id" value={ex.id} />
+                          <input type="hidden" name="active" value={ex.active ? '0' : '1'} />
+                          <button type="submit" className={'rounded-md px-2 py-1 text-[10px] font-bold ' + (ex.active ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500')}>{ex.active ? 'An' : 'Aus'}</button>
+                        </form>
+                        <form action={removeCalendarAction}>
+                          <input type="hidden" name="id" value={ex.id} />
+                          <button type="submit" className="rounded-md p-1 text-gray-400 hover:text-red-600"><Trash2 size={12} /></button>
+                        </form>
+                      </div>
+                    </div>
+                  ))}
+                  {configured && (
+                    <a href={`/api/schedule/oauth/start?person=${p.slug}&add=1`} className="mt-1 inline-flex items-center gap-1 text-xs font-semibold" style={{ color: '#1A5FD4' }}><CalendarPlus size={13} /> Weiteren Kalender verbinden</a>
+                  )}
+                </div>
+              )}
             </div>
           )
         })}
