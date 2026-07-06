@@ -64,3 +64,19 @@ export async function removeTeamStatus(slug: string) {
   await ensureVoiceTables()
   await db.execute(sql`DELETE FROM voice_team_status WHERE person_slug = ${slug}`)
 }
+
+// Gesprächs-Session je Twilio-Call (für /voice/twiml)
+export async function ensureCallSessionTable() {
+  await db.execute(sql`CREATE TABLE IF NOT EXISTS voice_call_sessions (call_sid text PRIMARY KEY, dw int, history jsonb NOT NULL DEFAULT '[]', updated_at timestamptz NOT NULL DEFAULT now())`)
+}
+export async function getCallSession(callSid: string): Promise<{ role: 'user' | 'assistant'; content: string }[]> {
+  await ensureCallSessionTable()
+  const r = rowsOf<Record<string, unknown>>(await db.execute(sql`SELECT history FROM voice_call_sessions WHERE call_sid = ${callSid} LIMIT 1`))
+  const h = r[0]?.history
+  return Array.isArray(h) ? h as { role: 'user' | 'assistant'; content: string }[] : (typeof h === 'string' ? JSON.parse(h) : [])
+}
+export async function saveCallSession(callSid: string, dw: number, history: { role: 'user' | 'assistant'; content: string }[]) {
+  await ensureCallSessionTable()
+  await db.execute(sql`INSERT INTO voice_call_sessions (call_sid, dw, history, updated_at) VALUES (${callSid}, ${dw}, ${JSON.stringify(history)}::jsonb, now())
+    ON CONFLICT (call_sid) DO UPDATE SET history=EXCLUDED.history, updated_at=now()`)
+}

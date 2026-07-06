@@ -43,10 +43,9 @@ ESKALATION
 
 type Msg = { role: 'user' | 'assistant'; content: string }
 
-export async function POST(req: Request) {
-  const apiKey = process.env.OPENAI_API_KEY
-  if (!apiKey) return NextResponse.json({ error: 'OPENAI_API_KEY missing' }, { status: 500 })
+const FALLBACK = 'Ich bin gerade kurz nicht am Netz — schreib uns direkt: team@eilersfriends.com, oder buch ein Gespräch über /schedule. Ich melde mich, sobald ich wieder da bin.'
 
+export async function POST(req: Request) {
   const body = await req.json().catch(() => ({} as Record<string, unknown>))
   const raw = Array.isArray((body as { messages?: unknown }).messages) ? (body as { messages: unknown[] }).messages : []
   const messages: Msg[] = raw
@@ -58,23 +57,30 @@ export async function POST(req: Request) {
 
   if (messages.length === 0) return NextResponse.json({ error: 'no messages' }, { status: 400 })
 
-  try {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        temperature: 0.7,
-        max_tokens: 350,
-        messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
-      }),
-    })
-    if (!res.ok) return NextResponse.json({ error: `OpenAI ${res.status}` }, { status: 502 })
-    const data = await res.json()
-    const reply = (data?.choices?.[0]?.message?.content ?? '').trim()
-      || 'Da ist gerade etwas schiefgelaufen. Magst Du es nochmal versuchen — oder direkt mit dem Team sprechen?'
-    return NextResponse.json({ reply })
-  } catch (err) {
-    return NextResponse.json({ error: String(err) }, { status: 500 })
+  // Bevorzugt Claude (Anthropic), sonst OpenAI, sonst freundlicher Fallback (nie 5xx an den Besucher)
+  const anthropic = process.env.ANTHROPIC_API_KEY
+  if (anthropic) {
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST', headers: { 'x-api-key': anthropic, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+        body: JSON.stringify({ model: process.env.VOICE_AGENT_MODEL || 'claude-sonnet-4-6', max_tokens: 400, system: SYSTEM_PROMPT, messages }),
+      })
+      const data = await res.json()
+      const reply = Array.isArray(data?.content) ? data.content.filter((c: { type: string }) => c.type === 'text').map((c: { text: string }) => c.text).join(' ').trim() : ''
+      if (reply) return NextResponse.json({ reply })
+    } catch { /* fall through */ }
   }
+  const openai = process.env.OPENAI_API_KEY
+  if (openai) {
+    try {
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${openai}` },
+        body: JSON.stringify({ model: 'gpt-4o-mini', temperature: 0.7, max_tokens: 350, messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages] }),
+      })
+      const data = await res.json().catch(() => ({}))
+      const reply = (data?.choices?.[0]?.message?.content ?? '').trim()
+      if (reply) return NextResponse.json({ reply })
+    } catch { /* fall through */ }
+  }
+  return NextResponse.json({ reply: FALLBACK })
 }
