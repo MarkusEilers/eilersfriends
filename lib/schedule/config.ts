@@ -8,6 +8,7 @@ export const PERSONS: Person[] = [
   { slug: 'markus', name: 'Markus Eilers', email: 'markus@eilersfriends.com', role: 'Vertrieb & AI im Sales' },
   { slug: 'aljona', name: 'Aljona Eilers', email: 'aljona@eilersfriends.com', role: 'Leadership' },
   { slug: 'cosima', name: 'Cosima Bär', email: 'cosima@eilersfriends.com', role: 'Eilers+Friends' },
+  { slug: 'daniel', name: 'Daniel', email: 'daniel@eilersfriends.com', role: 'Sales Development' },
 ]
 
 // „Team" = beide müssen frei sein (Schnittmenge)

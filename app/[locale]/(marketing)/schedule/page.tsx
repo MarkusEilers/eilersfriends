@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
 import { PERSONS, TEAM } from '@/lib/schedule/config'
-import { listHostProfiles } from '@/lib/schedule/types-store'
+import { listHostProfiles, listEventTypes } from '@/lib/schedule/types-store'
 import { Users, ArrowRight } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -13,12 +13,13 @@ function initials(name: string) { return name.split(' ').map(w => w[0]).slice(0,
 
 export default async function ScheduleIndex() {
   const t = await getTranslations('schedule')
-  const profiles = await listHostProfiles().catch(() => [])
+  const [profiles, allTypes] = await Promise.all([listHostProfiles().catch(() => []), listEventTypes().catch(() => [])])
+  const liveOwners = new Set(allTypes.filter(t => t.visibility === 'live').map(t => t.ownerSlug))
   const avatarOf = (slug: string) => profiles.find(p => p.personSlug === slug)?.avatarUrl || ''
   const cards = [
     ...PERSONS.map(p => ({ slug: p.slug, name: p.name, sub: p.role || '', team: false, avatar: avatarOf(p.slug) })),
     { slug: TEAM.slug, name: TEAM.name, sub: t('teamSub'), team: true, avatar: '' },
-  ]
+  ].filter(c => liveOwners.has(c.slug))
   return (
     <div style={{ backgroundColor: '#FAFAF8' }}>
       <section className="px-6 py-16 sm:py-20">
