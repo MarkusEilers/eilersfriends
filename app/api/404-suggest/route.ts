@@ -25,7 +25,7 @@ const FALLBACK_MSG: Record<Loc, string> = {
 
 function fallback(query: string, locale: Loc) {
   const lang = locale === 'en' || locale === 'es' || locale === 'ru' ? 'en' : 'de'
-  const matched = PAGES.filter(p => p.keys.test(query)).map(p => (p as Record<string, Sug>)[lang])
+  const matched = PAGES.filter(p => p.keys.test(query)).map(p => (lang === 'de' ? p.de : p.en))
   const suggestions = (matched.length ? matched : DEFAULTS[lang]).slice(0, 4)
   return { message: FALLBACK_MSG[locale] || FALLBACK_MSG.de, suggestions }
 }
