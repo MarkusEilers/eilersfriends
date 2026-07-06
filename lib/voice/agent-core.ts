@@ -7,6 +7,9 @@ import { sendTeamNotification } from './notify'
 export type Msg = { role: 'user' | 'assistant'; content: string }
 export type Ctx = { callerId?: string; source?: string }
 
+export function stripSpeakable(t: string): string {
+  return String(t || '').replace(/[\p{Extended_Pictographic}\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').replace(/[:;]-?[)(\]\[dpDP]/g, '').replace(/\s{2,}/g, ' ').trim()
+}
 export function renderTranscript(messages: Msg[]): string {
   return messages.map(m => (m.role === 'user' ? 'Anrufer' : 'Assistentin') + ': ' + m.content).join('\n')
 }

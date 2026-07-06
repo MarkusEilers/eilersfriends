@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { runAgent } from '@/lib/voice/agent-core'
+import { runAgent, stripSpeakable } from '@/lib/voice/agent-core'
 import { getCallSession, saveCallSession } from '@/lib/voice/store'
 import { logError } from '@/lib/errors/store'
 
@@ -29,7 +29,10 @@ export async function POST(req: NextRequest) {
       const r = await runAgent(dw, history, { callerId }); reply = r.reply
       history = [...history, { role: 'assistant', content: reply }]
     } else {
-      reply = 'Ich bin noch dran — was kann ich für Sie tun?'
+      if (retry >= 2) return twiml(`<Say language="de-DE" voice="${VOICE}">Kein Problem, melden Sie sich einfach, wenn es passt. Bis bald!</Say>`)
+      const nudge = retry === 0 ? 'Sind Sie noch dran? Erzählen Sie einfach kurz, worum es geht.' : 'Ich höre Sie leider nicht. Sagen Sie ein Wort, dann helfe ich weiter.'
+      const a = `/voice/twiml?dw=${dw}&amp;voice=${encodeURIComponent(VOICE)}&amp;retry=${retry + 1}`
+      return twiml(`<Gather input="speech" language="de-DE" speechTimeout="auto" timeout="8" action="${a}" method="POST"><Say language="de-DE" voice="${VOICE}">${esc(nudge)}</Say></Gather><Redirect method="POST">${a}</Redirect>`)
     }
     await saveCallSession(callSid, dw, history).catch(() => {})
   } catch (e) {
@@ -41,7 +44,7 @@ export async function POST(req: NextRequest) {
   const nudgeAction = `/voice/twiml?dw=${dw}&amp;voice=${encodeURIComponent(VOICE)}&amp;retry=0`
   return twiml(
     `<Gather input="speech" language="de-DE" speechTimeout="auto" timeout="8" action="${action}" method="POST">` +
-    `<Say language="de-DE" voice="${VOICE}">${esc(reply)}</Say>` +
+    `<Say language="de-DE" voice="${VOICE}">${esc(stripSpeakable(reply))}</Say>` +
     `</Gather>` +
     `<Redirect method="POST">${nudgeAction}</Redirect>`
   )

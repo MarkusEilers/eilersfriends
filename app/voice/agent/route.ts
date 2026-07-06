@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { voiceAuthorized } from '@/lib/voice/auth'
 import { auth } from '@/lib/auth'
-import { runAgent, type Msg } from '@/lib/voice/agent-core'
+import { runAgent, stripSpeakable, type Msg } from '@/lib/voice/agent-core'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -13,5 +13,5 @@ export async function POST(req: NextRequest) {
   const b = await req.json().catch(() => ({} as Record<string, unknown>))
   const dw = Number(b.dw ?? 0)
   const messages: Msg[] = Array.isArray(b.messages) ? (b.messages as Msg[]) : []
-  return NextResponse.json(await runAgent(dw, messages, { source: 'cockpit' }))
+  const r = await runAgent(dw, messages, { source: 'cockpit' }); return NextResponse.json({ ...r, reply: stripSpeakable(r.reply) })
 }
