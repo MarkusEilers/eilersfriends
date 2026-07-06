@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { signOutAdminAction } from '@/lib/actions/offers'
 import {
   LayoutDashboard, Mail, LayoutTemplate, ListOrdered, Users, FileText, Settings,
-  BookOpen, Image as ImageIcon, FileSignature, LogOut, Menu, X, Webhook, UserCircle, CalendarClock, AlertTriangle,
+  BookOpen, Image as ImageIcon, FileSignature, LogOut, Menu, X, Webhook, UserCircle, CalendarClock, AlertTriangle, PhoneCall,
 } from 'lucide-react'
 
 type NavGroup = {
@@ -45,6 +45,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Integrations',  href: '/admin/integrations', icon: Webhook },
       { label: 'Fehler-Log',    href: '/admin/errors',       icon: AlertTriangle },
+      { label: 'Voice-Test',    href: '/admin/voice-test',   icon: PhoneCall },
       { label: 'Einstellungen', href: '/admin/settings',     icon: Settings },
     ],
   },
