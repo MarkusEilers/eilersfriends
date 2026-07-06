@@ -9,7 +9,6 @@ const DWS: { dw: number; name: string }[] = [
   { dw: 6, name: 'Cosima' }, { dw: 7, name: 'Markus' }, { dw: 8, name: 'Reserve → Zentrale' },
 ]
 type Msg = { role: 'user' | 'assistant'; content: string }
-const TW_SDK = 'https://sdk.twilio.com/js/voice/releases/2.14.0/twilio.min.js'
 
 export function VoiceTestCockpit() {
   const [engine, setEngine] = useState<'browser' | 'twilio'>('browser')
@@ -67,19 +66,13 @@ export function VoiceTestCockpit() {
   function stopMic() { try { recRef.current?.stop() } catch { /* */ } setListening(false) }
 
   // ---------- Twilio WebRTC (echte Stimme) ----------
-  function loadSdk(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if ((window as any).Twilio?.Device) return resolve((window as any).Twilio)
-      const s = document.createElement('script'); s.src = TW_SDK; s.onload = () => resolve((window as any).Twilio); s.onerror = () => reject(new Error('SDK-Load fehlgeschlagen')); document.head.appendChild(s)
-    })
-  }
   async function startTwilio(d: number) {
     setTwStatus('connecting'); setTwMsg('Verbinde …')
     try {
       const tok = await fetch('/voice/token').then(r => r.json())
       if (!tok.configured) { setTwStatus('error'); setTwMsg('Twilio noch nicht konfiguriert: ' + (tok.missing || []).join(', ')); return }
-      const Twilio = await loadSdk()
-      const device = new Twilio.Device(tok.token, { logLevel: 1 }); deviceRef.current = device
+      const { Device } = await import('@twilio/voice-sdk')
+      const device = new Device(tok.token, { logLevel: 1 }); deviceRef.current = device
       const call = await device.connect({ params: { To: String(d), dw: String(d) } }); callRef.current = call
       call.on('accept', () => { setTwStatus('live'); setTwMsg('Verbunden — sprich einfach.') })
       call.on('disconnect', () => { setTwStatus('ended'); setTwMsg('Anruf beendet.') })
