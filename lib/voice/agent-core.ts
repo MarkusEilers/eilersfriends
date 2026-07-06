@@ -1,6 +1,7 @@
 import { persona } from './personas'
 import { runGetSlots, runBook, runTeamStatus } from './tools'
 import { knowledgeContext } from './knowledge'
+import { logActivity } from './store'
 
 export type Msg = { role: 'user' | 'assistant'; content: string }
 
@@ -20,26 +21,78 @@ const TOOLS = [
 
 async function scriptedReply(dw: number, messages: Msg[]): Promise<{ reply: string; mode: string }> {
   const p = persona(dw)
-  const last = (messages[messages.length - 1]?.content || '').toLowerCase()
-  if (/(termin|buchen|zeit|slot|kalender)/.test(last)) {
-    const r = await runGetSlots(p.person || 'markus')
+  const lastUser = (messages[messages.length - 1]?.content || '')
+  const low = lastUser.toLowerCase()
+  const lastA = [...messages].reverse().find(m => m.role === 'assistant')?.content || ''
+  const person = p.person || 'markus'
+  const firstName = p.name.replace(/ .*/, '')
+
+  const reEmail = /[^\s@]+@[^\s@]+\.[^\s@]+/
+  const rePhone = /(\+?\d[\d\s/().-]{5,}\d)/
+  const yes = /\b(ja|gern|gerne|bitte|klar|okay|ok|passt|mach|jup|jep)\b/.test(low)
+  const no = /\b(nein|ne|nö|keine?|nicht|später|kein interesse)\b/.test(low)
+  const emailInText = (t: string) => (t.match(reEmail) || [])[0] || ''
+  const phoneInText = (t: string) => { const m = t.match(rePhone); if (!m) return ''; const d = m[0].replace(/[^\d+]/g, ''); return d.replace(/\D/g, '').length >= 6 ? m[0].trim() : '' }
+  const answerAfter = (marker: RegExp): string => {
+    for (let i = 0; i < messages.length - 1; i++) if (messages[i].role === 'assistant' && marker.test(messages[i].content) && messages[i + 1]?.role === 'user') return messages[i + 1].content
+    return ''
+  }
+  const topic = messages.find(m => m.role === 'user')?.content || ''
+
+  async function finalize(): Promise<{ reply: string; mode: string }> {
+    const name = answerAfter(/wie darf ich sie nennen|ihr name/i).trim()
+    const phone = messages.map(m => phoneInText(m.content)).find(Boolean) || ''
+    const email = messages.map(m => emailInText(m.content)).find(Boolean) || ''
+    await logActivity({ type: 'lead', dw, personSlug: person, name: name || null, phone: phone || null, email: email || null, topic: topic || null, summary: `Rückruf-Wunsch (Voice, DW${dw})${topic ? ': ' + topic : ''}` }).catch(() => {})
+    return { reply: `Danke${name ? ', ' + name.split(' ')[0] : ''}! Ich habe alles notiert${phone ? ' — Rückruf an ' + phone : ''}. Das Team meldet sich. Bis bald!`, mode: 'scripted' }
+  }
+
+  // ---------- geführte Aufnahme (Anrufbeantworter) ----------
+  if (/deine e-?mail|ihre e-?mail|e-?mail.*(hinterlassen|angeben|nennen)/i.test(lastA)) {
+    return finalize() // egal ob E-Mail genannt oder abgelehnt
+  }
+  if (/welcher nummer|r(ü|ue)ckrufnummer|erreichen wir sie|ihre nummer/i.test(lastA)) {
+    if (!phoneInText(lastUser)) return { reply: 'Die Nummer habe ich nicht ganz verstanden — sagen Sie sie mir bitte noch einmal langsam?', mode: 'scripted' }
+    return { reply: 'Danke. Möchten Sie noch eine E-Mail-Adresse hinterlassen? Sonst reicht die Nummer.', mode: 'scripted' }
+  }
+  if (/wie darf ich sie nennen|ihr name/i.test(lastA)) {
+    return { reply: `Danke${lastUser.trim() ? ', ' + lastUser.trim().split(' ')[0] : ''}. Und unter welcher Nummer erreichen wir Sie am besten?`, mode: 'scripted' }
+  }
+  // Angebot zur Aufnahme wurde bejaht?
+  if (/anliegen.*(aufnehmen|notieren)|r(ü|ue)ckruf.*notieren|soll ich.*(aufnehmen|notieren)/i.test(lastA) && yes) {
+    return { reply: 'Gern. Wie darf ich Sie nennen?', mode: 'scripted' }
+  }
+
+  // ---------- Intents ----------
+  if (/(termin|buchen|zeit|slot|kalender|verf(ü|ue)gbar)/.test(low)) {
+    const r = await runGetSlots(person)
     const slots = (r as { slots?: { label: string }[] }).slots || []
-    if (slots.length) return { reply: `Gerne. Als Nächstes frei wäre: ${slots.slice(0, 3).map(s => s.label).join(', oder ')}. Was passt Ihnen?`, mode: 'scripted' }
-    return { reply: 'Aktuell sehe ich keine freien Zeiten — ich lasse Sie vom Team zurückrufen. Wie ist Ihre Nummer?', mode: 'scripted' }
+    if (slots.length) return { reply: `Gerne. Als Nächstes frei wäre: ${slots.slice(0, 3).map(s => s.label).join(', oder ')}. Was passt Ihnen? Ich brauche dann noch Ihren Namen und eine Nummer.`, mode: 'scripted' }
+    return { reply: 'Aktuell sehe ich keine freien Zeiten. Ich nehme gern Ihr Anliegen für einen Rückruf auf — wie darf ich Sie nennen?', mode: 'scripted' }
   }
-  if (/(status|erreichbar|verf(ü|ue)gbar|frei)/.test(last) && p.person) {
+  if (/(r(ü|ue)ckruf|zur(ü|ue)ckrufen|melden|anrufen lassen|nachricht|hinterlassen)/.test(low)) {
+    return { reply: 'Sehr gern nehme ich Ihr Anliegen auf. Wie darf ich Sie nennen?', mode: 'scripted' }
+  }
+  if (/(status|erreichbar|frei|sprechen mit|durchstellen)/.test(low) && p.person) {
     const st = (await runTeamStatus()) as Record<string, { status: string }>
-    const s = st[p.person]?.status || 'offline'
-    const map: Record<string, string> = { available: 'gerade erreichbar', meeting: 'gerade im Termin', offline: 'aktuell nicht verbunden', training: 'im Training', vacation: 'im Urlaub' }
-    return { reply: `${p.name.replace(/ .*/, '')} ist ${map[s] || s}. Soll ich Ihr Anliegen aufnehmen oder einen Termin einrichten?`, mode: 'scripted' }
+    const smap: Record<string, string> = { available: 'gerade erreichbar', meeting: 'gerade im Termin', offline: 'aktuell nicht am Platz', training: 'im Training', vacation: 'im Urlaub' }
+    const status = st[person]?.status || 'offline'
+    if (status === 'available') return { reply: `${firstName} ist ${smap[status]}. Ich versuche zu verbinden — worum geht es kurz?`, mode: 'scripted' }
+    return { reply: `${firstName} ist ${smap[status] || status}. Soll ich Ihr Anliegen und eine Rückrufnummer aufnehmen?`, mode: 'scripted' }
   }
-  if (/(preis|kost|teuer|was kostet|invest)/.test(last)) return { reply: 'Zu Zahlen sage ich am Telefon ungern etwas Verbindliches — ob wir freie Plätze haben und was passt, klären wir am besten kurz persönlich. Soll ich einen Termin einrichten?', mode: 'scripted' }
-  if (/(info|was macht|was ist|erz(ä|ae)hl|academy|salesmade|angebot|programm|leistung)/.test(last)) return { reply: 'Wir machen B2B-Vertrieb planbar — Ausbildung fürs Sales-Team (SalesMade Academy), AI im Verkauf und Leadership. Wo steht Euer Team gerade, dann sage ich, was passt?', mode: 'scripted' }
-  if (/(hallo|hi\b|guten|hey|servus|moin)/.test(last)) return { reply: 'Hallo! Worum geht es — ein Termin, eine Frage zu unseren Programmen, oder jemand Bestimmtes im Team?', mode: 'scripted' }
-  if (/(danke|tsch(ü|ue)ss|wiederh(ö|oe)ren|ciao)/.test(last)) return { reply: 'Sehr gern — bis bald!', mode: 'scripted' }
-  const outros = ['Erzählen Sie kurz, worum es geht — dann helfe ich gezielt weiter.', 'Sagen Sie mir kurz Ihr Anliegen, dann leite ich das Richtige ein.', 'Was wäre für Sie ein gutes Ergebnis aus diesem Gespräch?']
-  return { reply: outros[Math.floor(Math.random() * outros.length)], mode: 'scripted' }
+  if (/(preis|kost|teuer|was kostet|invest)/.test(low)) return { reply: 'Zu Zahlen sage ich am Telefon ungern etwas Verbindliches — was passt und ob Plätze frei sind, klären wir am besten kurz persönlich. Soll ich einen Termin einrichten oder einen Rückruf notieren?', mode: 'scripted' }
+  if (/(info|was macht|was ist|erz(ä|ae)hl|academy|salesmade|angebot|programm|leistung|frameworks?)/.test(low)) return { reply: 'Wir machen B2B-Vertrieb planbar — Ausbildung fürs Sales-Team, AI im Verkauf und Leadership. Wo steht Euer Team gerade? Dann sage ich, was passt — oder ich verbinde Sie.', mode: 'scripted' }
+  if (/(vertrieb|sales|verkauf|neukunde|akquise)/.test(low)) return { reply: 'Da hilft unser Vertriebs-Team. Möchten Sie einen Termin, oder soll ich Ihr Anliegen für einen Rückruf aufnehmen?', mode: 'scripted' }
+  if (/(kunde|teilnehmer|betreuung|umbuchen|programm l(ä|ae)uft|schon dabei)/.test(low)) return { reply: 'Für laufende Programme ist die Kundenbetreuung da. Ich kann einen Termin einrichten oder Ihr Anliegen aufnehmen — was möchten Sie?', mode: 'scripted' }
+  if (/(markus|aljona|cosima|daniel)/.test(low)) return { reply: 'Gern. Ich prüfe den Status — oder ich nehme direkt Ihr Anliegen und eine Rückrufnummer auf. Was möchten Sie?', mode: 'scripted' }
+  if (/(hallo|hi\b|guten|hey|servus|moin)/.test(low)) return { reply: 'Hallo! Ich kann Sie mit Vertrieb, Kundenbetreuung oder Infos weiterbringen, einen Termin einrichten oder Ihr Anliegen aufnehmen. Was möchten Sie?', mode: 'scripted' }
+  if (/(danke|tsch(ü|ue)ss|wiederh(ö|oe)ren|ciao|auf wiedersehen)/.test(low)) return { reply: 'Sehr gern — bis bald!', mode: 'scripted' }
+  if (no && /anliegen|r(ü|ue)ckruf|termin/i.test(lastA)) return { reply: 'Alles gut. Wenn Sie mögen, schauen Sie auf eilersfriends.com vorbei — oder rufen Sie später wieder an. Bis bald!', mode: 'scripted' }
+
+  // Menü / Auffangnetz
+  return { reply: 'Ich kann Sie mit Vertrieb, Kundenbetreuung oder Infos weiterbringen, einen Termin einrichten — oder ich nehme Ihr Anliegen mit Rückrufnummer auf. Was davon passt für Sie?', mode: 'scripted' }
 }
+
 
 export async function runAgent(dw: number, messages: Msg[]): Promise<{ reply: string; mode: string; tools?: string[] }> {
   const p = persona(dw)
