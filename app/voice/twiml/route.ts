@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { runAgent } from '@/lib/voice/agent-core'
 import { getCallSession, saveCallSession } from '@/lib/voice/store'
+import { logError } from '@/lib/errors/store'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -16,20 +17,25 @@ export async function POST(req: NextRequest) {
   const dw = Number(req.nextUrl.searchParams.get('dw') || form?.get('dw') || 0)
   const VOICE = String(req.nextUrl.searchParams.get('voice') || form?.get('voice') || process.env.VOICE_TWILIO_VOICE || 'Polly.Vicki-Neural')
 
-  let history = await getCallSession(callSid).catch(() => [])
   let reply = ''
-  if (!history.length && !speech) {
-    const r = await runAgent(dw, []); reply = r.reply; history = [{ role: 'assistant', content: reply }]
-  } else if (speech) {
-    history = [...history, { role: 'user', content: speech }]
-    const r = await runAgent(dw, history); reply = r.reply
-    history = [...history, { role: 'assistant', content: reply }]
-  } else {
-    reply = 'Ich bin noch dran — was kann ich für Sie tun?'
+  try {
+    let history = await getCallSession(callSid).catch(() => [])
+    if (!history.length && !speech) {
+      const r = await runAgent(dw, []); reply = r.reply; history = [{ role: 'assistant', content: reply }]
+    } else if (speech) {
+      history = [...history, { role: 'user', content: speech }]
+      const r = await runAgent(dw, history); reply = r.reply
+      history = [...history, { role: 'assistant', content: reply }]
+    } else {
+      reply = 'Ich bin noch dran — was kann ich für Sie tun?'
+    }
+    await saveCallSession(callSid, dw, history).catch(() => {})
+  } catch (e) {
+    await logError({ source: 'voice', message: 'twiml handler: ' + String((e as Error)?.message || e), url: '/voice/twiml' }).catch(() => {})
+    reply = 'Entschuldigung, da ist gerade etwas schiefgelaufen. Bitte hinterlassen Sie Ihren Namen und eine Rückrufnummer, das Team meldet sich.'
   }
-  await saveCallSession(callSid, dw, history).catch(() => {})
 
-  const action = `/voice/twiml?dw=${dw}&voice=${encodeURIComponent(VOICE)}`
+  const action = `/voice/twiml?dw=${dw}&amp;voice=${encodeURIComponent(VOICE)}`
   return twiml(
     `<Gather input="speech" language="de-DE" speechTimeout="auto" action="${action}" method="POST">` +
     `<Say language="de-DE" voice="${VOICE}">${esc(reply)}</Say>` +
