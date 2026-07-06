@@ -13,5 +13,5 @@ export async function POST(req: NextRequest) {
   const b = await req.json().catch(() => ({} as Record<string, unknown>))
   const dw = Number(b.dw ?? 0)
   const messages: Msg[] = Array.isArray(b.messages) ? (b.messages as Msg[]) : []
-  return NextResponse.json(await runAgent(dw, messages))
+  return NextResponse.json(await runAgent(dw, messages, { source: 'cockpit' }))
 }

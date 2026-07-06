@@ -15,16 +15,17 @@ export async function POST(req: NextRequest) {
   const callSid = String(form?.get('CallSid') || 'test')
   const speech = String(form?.get('SpeechResult') || '').trim()
   const dw = Number(req.nextUrl.searchParams.get('dw') || form?.get('dw') || 0)
+  const callerId = String(form?.get('From') || form?.get('Caller') || '')
   const VOICE = String(req.nextUrl.searchParams.get('voice') || form?.get('voice') || process.env.VOICE_TWILIO_VOICE || 'Polly.Vicki-Neural')
 
   let reply = ''
   try {
     let history = await getCallSession(callSid).catch(() => [])
     if (!history.length && !speech) {
-      const r = await runAgent(dw, []); reply = r.reply; history = [{ role: 'assistant', content: reply }]
+      const r = await runAgent(dw, [], { callerId }); reply = r.reply; history = [{ role: 'assistant', content: reply }]
     } else if (speech) {
       history = [...history, { role: 'user', content: speech }]
-      const r = await runAgent(dw, history); reply = r.reply
+      const r = await runAgent(dw, history, { callerId }); reply = r.reply
       history = [...history, { role: 'assistant', content: reply }]
     } else {
       reply = 'Ich bin noch dran — was kann ich für Sie tun?'
