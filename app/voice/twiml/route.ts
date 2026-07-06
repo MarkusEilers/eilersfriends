@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
   const speech = String(form?.get('SpeechResult') || '').trim()
   const dw = Number(req.nextUrl.searchParams.get('dw') || form?.get('dw') || 0)
   const callerId = String(form?.get('From') || form?.get('Caller') || '')
+  const retry = Number(req.nextUrl.searchParams.get('retry') || 0)
   const VOICE = String(req.nextUrl.searchParams.get('voice') || form?.get('voice') || process.env.VOICE_TWILIO_VOICE || 'Polly.Vicki-Neural')
 
   let reply = ''
@@ -37,11 +38,12 @@ export async function POST(req: NextRequest) {
   }
 
   const action = `/voice/twiml?dw=${dw}&amp;voice=${encodeURIComponent(VOICE)}`
+  const nudgeAction = `/voice/twiml?dw=${dw}&amp;voice=${encodeURIComponent(VOICE)}&amp;retry=0`
   return twiml(
-    `<Gather input="speech" language="de-DE" speechTimeout="auto" action="${action}" method="POST">` +
+    `<Gather input="speech" language="de-DE" speechTimeout="auto" timeout="8" action="${action}" method="POST">` +
     `<Say language="de-DE" voice="${VOICE}">${esc(reply)}</Say>` +
     `</Gather>` +
-    `<Say language="de-DE" voice="${VOICE}">Ich habe nichts mehr gehört. Bis bald!</Say>`
+    `<Redirect method="POST">${nudgeAction}</Redirect>`
   )
 }
 
