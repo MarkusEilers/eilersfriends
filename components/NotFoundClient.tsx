@@ -177,7 +177,7 @@ export function NotFoundClient() {
             {busy ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
           </button>
         </div>
-        {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
+        {error && <p className="mt-3 text-xs text-gray-400">Schreib uns einfach kurz: team@eilersfriends.com</p>}
 
         {aiMessage && (
           <div className="mt-5 rounded-xl border-l-4 px-4 py-3" style={{ borderColor: '#F05A1A', backgroundColor: '#FFF1EB' }}>

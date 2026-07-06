@@ -3,6 +3,7 @@ import { voiceAuthorized } from '@/lib/voice/auth'
 import { auth } from '@/lib/auth'
 import { persona } from '@/lib/voice/personas'
 import { runGetSlots, runBook, runTeamStatus } from '@/lib/voice/tools'
+import { knowledgeContext } from '@/lib/voice/knowledge'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
   if (!key) return NextResponse.json(await scriptedReply(dw, messages))
 
   const model = process.env.VOICE_AGENT_MODEL || 'claude-sonnet-4-6'
+  const systemPrompt = p.system + '\n\n' + await knowledgeContext()
   // Anthropic messages content-Format
   const convo: Array<{ role: 'user' | 'assistant'; content: unknown }> = messages.map(m => ({ role: m.role, content: m.content }))
   const usedTools: string[] = []
@@ -67,7 +69,7 @@ export async function POST(req: NextRequest) {
     for (let i = 0; i < 4; i++) {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST', headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-        body: JSON.stringify({ model, max_tokens: 500, system: p.system, tools: TOOLS, messages: convo }),
+        body: JSON.stringify({ model, max_tokens: 500, system: systemPrompt, tools: TOOLS, messages: convo }),
       })
       const data = await res.json()
       if (!res.ok) { console.error('anthropic', data); return NextResponse.json(await scriptedReply(dw, messages)) }
