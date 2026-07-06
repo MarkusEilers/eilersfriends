@@ -9,6 +9,13 @@ const DWS: { dw: number; name: string }[] = [
   { dw: 6, name: 'Cosima' }, { dw: 7, name: 'Markus' }, { dw: 8, name: 'Reserve → Zentrale' },
 ]
 type Msg = { role: 'user' | 'assistant'; content: string }
+const TW_VOICES = [
+  { id: 'Polly.Vicki-Neural', label: 'Vicki (neural, w)' },
+  { id: 'Polly.Daniel-Neural', label: 'Daniel (neural, m)' },
+  { id: 'Polly.Marlene', label: 'Marlene (Standard, w)' },
+  { id: 'Google.de-DE-Wavenet-C', label: 'Google Wavenet C (w)' },
+  { id: 'Google.de-DE-Wavenet-B', label: 'Google Wavenet B (m)' },
+]
 
 export function VoiceTestCockpit() {
   const [engine, setEngine] = useState<'browser' | 'twilio'>('browser')
@@ -22,6 +29,7 @@ export function VoiceTestCockpit() {
   const [mode, setMode] = useState('')
   const [twStatus, setTwStatus] = useState<'idle' | 'connecting' | 'live' | 'ended' | 'error'>('idle')
   const [twMsg, setTwMsg] = useState('')
+  const [twVoice, setTwVoice] = useState('Polly.Vicki-Neural')
   const recRef = useRef<any>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const deviceRef = useRef<any>(null)
@@ -73,7 +81,7 @@ export function VoiceTestCockpit() {
       if (!tok.configured) { setTwStatus('error'); setTwMsg('Twilio noch nicht konfiguriert: ' + (tok.missing || []).join(', ')); return }
       const { Device } = await import('@twilio/voice-sdk')
       const device = new Device(tok.token, { logLevel: 1 }); deviceRef.current = device
-      const call = await device.connect({ params: { To: String(d), dw: String(d) } }); callRef.current = call
+      const call = await device.connect({ params: { To: String(d), dw: String(d), voice: twVoice } }); callRef.current = call
       call.on('accept', () => { setTwStatus('live'); setTwMsg('Verbunden — sprich einfach.') })
       call.on('disconnect', () => { setTwStatus('ended'); setTwMsg('Anruf beendet.') })
       call.on('error', (e: any) => { setTwStatus('error'); setTwMsg('Fehler: ' + (e?.message || e)) })
@@ -103,6 +111,15 @@ export function VoiceTestCockpit() {
               </button>
             ))}
           </div>
+          {engine === 'twilio' && (
+            <div className="mt-4">
+              <label className="mb-1 flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-gray-400"><Volume2 size={12} /> Twilio-Stimme</label>
+              <select value={twVoice} onChange={e => setTwVoice(e.target.value)} className="w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs">
+                {TW_VOICES.map(v => <option key={v.id} value={v.id}>{v.label}</option>)}
+              </select>
+              <p className="mt-1 text-[10px] text-gray-400">Vor dem Anruf wählen. Neural/Wavenet klingen deutlich natürlicher.</p>
+            </div>
+          )}
           {engine === 'browser' && (
             <div className="mt-4">
               <label className="mb-1 flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-gray-400"><Volume2 size={12} /> Stimme (Browser)</label>

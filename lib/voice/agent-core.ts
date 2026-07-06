@@ -33,7 +33,12 @@ async function scriptedReply(dw: number, messages: Msg[]): Promise<{ reply: stri
     const map: Record<string, string> = { available: 'gerade erreichbar', meeting: 'gerade im Termin', offline: 'aktuell nicht verbunden', training: 'im Training', vacation: 'im Urlaub' }
     return { reply: `${p.name.replace(/ .*/, '')} ist ${map[s] || s}. Soll ich Ihr Anliegen aufnehmen oder einen Termin einrichten?`, mode: 'scripted' }
   }
-  return { reply: 'Ich habe Ihr Anliegen notiert — das Team meldet sich. Möchten Sie stattdessen direkt einen Termin?', mode: 'scripted' }
+  if (/(preis|kost|teuer|was kostet|invest)/.test(last)) return { reply: 'Zu Zahlen sage ich am Telefon ungern etwas Verbindliches — ob wir freie Plätze haben und was passt, klären wir am besten kurz persönlich. Soll ich einen Termin einrichten?', mode: 'scripted' }
+  if (/(info|was macht|was ist|erz(ä|ae)hl|academy|salesmade|angebot|programm|leistung)/.test(last)) return { reply: 'Wir machen B2B-Vertrieb planbar — Ausbildung fürs Sales-Team (SalesMade Academy), AI im Verkauf und Leadership. Wo steht Euer Team gerade, dann sage ich, was passt?', mode: 'scripted' }
+  if (/(hallo|hi\b|guten|hey|servus|moin)/.test(last)) return { reply: 'Hallo! Worum geht es — ein Termin, eine Frage zu unseren Programmen, oder jemand Bestimmtes im Team?', mode: 'scripted' }
+  if (/(danke|tsch(ü|ue)ss|wiederh(ö|oe)ren|ciao)/.test(last)) return { reply: 'Sehr gern — bis bald!', mode: 'scripted' }
+  const outros = ['Erzählen Sie kurz, worum es geht — dann helfe ich gezielt weiter.', 'Sagen Sie mir kurz Ihr Anliegen, dann leite ich das Richtige ein.', 'Was wäre für Sie ein gutes Ergebnis aus diesem Gespräch?']
+  return { reply: outros[Math.floor(Math.random() * outros.length)], mode: 'scripted' }
 }
 
 export async function runAgent(dw: number, messages: Msg[]): Promise<{ reply: string; mode: string; tools?: string[] }> {
