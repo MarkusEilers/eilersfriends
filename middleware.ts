@@ -25,6 +25,10 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Voice/Telefonie-Endpunkte: server-to-server JSON, keine Lokalisierung
+  if (pathname === '/voice' || pathname.startsWith('/voice/')) {
+    return NextResponse.next()
+  }
   // Fortuna läuft jetzt als eigenes Projekt unter fortuna-infinita.com — alte Links dorthin umleiten
   if (pathname === '/fortuna' || pathname.startsWith('/fortuna/')) {
     const rest = pathname.replace(/^\/fortuna/, '')

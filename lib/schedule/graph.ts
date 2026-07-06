@@ -193,7 +193,7 @@ export async function createBooking(slug: string, startISO: string, durationMin:
   const start = new Date(startISO)
   const end = new Date(start.getTime() + durationMin * 60000)
   const attendees = [
-    { emailAddress: { address: opts.attendeeEmail, name: opts.attendeeName }, type: 'required' },
+    ...(opts.attendeeEmail ? [{ emailAddress: { address: opts.attendeeEmail, name: opts.attendeeName }, type: 'required' }] : []),
     ...m.slice(1).map(p => ({ emailAddress: { address: p.email, name: p.name }, type: 'required' })),
   ]
   const res = await fetch('https://graph.microsoft.com/v1.0/me/events', {
@@ -246,4 +246,15 @@ export async function sendMailAs(slug: string, to: string, subject: string, html
   })
   if (!res.ok) { const d = await res.json().catch(() => ({})); return { ok: false, error: (d as { error?: { message?: string } }).error?.message || 'send_failed' } }
   return { ok: true }
+}
+
+
+// Aktueller Status einer Person für die Telefonie (available/meeting/offline)
+export async function statusNow(slug: string): Promise<'available' | 'meeting' | 'offline'> {
+  const startISO = new Date().toISOString().slice(0, 19)
+  const endISO = new Date(Date.now() + 30 * 60000).toISOString().slice(0, 19)
+  const busy = await busyFor(slug, startISO, endISO)
+  if (busy === null) return 'offline'
+  const now = Date.now()
+  return busy.some(b => b.start <= now && b.end > now) ? 'meeting' : 'available'
 }
