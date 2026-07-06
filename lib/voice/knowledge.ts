@@ -30,11 +30,15 @@ function ownerName(slug: string): string {
   return ({ markus: 'Markus', aljona: 'Aljona', cosima: 'Cosima', daniel: 'Daniel', team: 'Team (Markus & Aljona)' } as Record<string, string>)[slug] || slug
 }
 
+let _cache: { text: string; at: number } | null = null
 export async function knowledgeContext(): Promise<string> {
+  if (_cache && Date.now() - _cache.at < 300000) return _cache.text
   let bookable = ''
   try {
     const types = (await listEventTypes()).filter(t => t.visibility === 'live')
     if (types.length) bookable = '\n\nAKTUELL BUCHBAR:\n' + types.map(t => `- ${t.name} (${t.durationMin} Min) bei ${ownerName(t.ownerSlug)}: /schedule/${t.ownerSlug}/${t.slug}`).join('\n')
   } catch { /* ignore */ }
-  return BASE + bookable
+  const out = BASE + bookable
+  _cache = { text: out, at: Date.now() }
+  return out
 }

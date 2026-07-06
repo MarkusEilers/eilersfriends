@@ -10,11 +10,12 @@ const DWS: { dw: number; name: string }[] = [
 ]
 type Msg = { role: 'user' | 'assistant'; content: string }
 const TW_VOICES = [
-  { id: 'Polly.Vicki-Neural', label: 'Vicki (neural, w)' },
-  { id: 'Polly.Daniel-Neural', label: 'Daniel (neural, m)' },
-  { id: 'Polly.Marlene', label: 'Marlene (Standard, w)' },
+  { id: 'Google.de-DE-Neural2-F', label: 'Google Neural2 F (w) — natürlich' },
+  { id: 'Google.de-DE-Neural2-B', label: 'Google Neural2 B (m)' },
+  { id: 'Google.de-DE-Neural2-C', label: 'Google Neural2 C (w)' },
+  { id: 'Polly.Vicki-Neural', label: 'Amazon Vicki (neural, w)' },
+  { id: 'Polly.Daniel-Neural', label: 'Amazon Daniel (neural, m)' },
   { id: 'Google.de-DE-Wavenet-C', label: 'Google Wavenet C (w)' },
-  { id: 'Google.de-DE-Wavenet-B', label: 'Google Wavenet B (m)' },
 ]
 
 export function VoiceTestCockpit() {
@@ -29,7 +30,7 @@ export function VoiceTestCockpit() {
   const [mode, setMode] = useState('')
   const [twStatus, setTwStatus] = useState<'idle' | 'connecting' | 'live' | 'ended' | 'error'>('idle')
   const [twMsg, setTwMsg] = useState('')
-  const [twVoice, setTwVoice] = useState('Polly.Vicki-Neural')
+  const [twVoice, setTwVoice] = useState('Google.de-DE-Neural2-F')
   const recRef = useRef<any>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const deviceRef = useRef<any>(null)
@@ -117,7 +118,7 @@ export function VoiceTestCockpit() {
               <select value={twVoice} onChange={e => setTwVoice(e.target.value)} className="w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs">
                 {TW_VOICES.map(v => <option key={v.id} value={v.id}>{v.label}</option>)}
               </select>
-              <p className="mt-1 text-[10px] text-gray-400">Vor dem Anruf wählen. Neural/Wavenet klingen deutlich natürlicher.</p>
+              <p className="mt-1 text-[10px] text-gray-400">Vor dem Anruf wählen. Google-Neural2 klingen am besten. Für wirklich menschliche Stimme + niedrige Latenz braucht es ElevenLabs über den Telefonie-Server (ConversationRelay).</p>
             </div>
           )}
           {engine === 'browser' && (

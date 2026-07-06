@@ -110,7 +110,7 @@ export async function runAgent(dw: number, messages: Msg[], ctx?: Ctx): Promise<
     for (let i = 0; i < 5; i++) {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST', headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-        body: JSON.stringify({ model, max_tokens: 500, system: systemPrompt, tools: TOOLS, messages: convo }),
+        body: JSON.stringify({ model, max_tokens: 220, system: systemPrompt, tools: TOOLS, messages: convo }),
       })
       const data = await res.json()
       if (!res.ok) { console.error('anthropic', data); return await scriptedReply(dw, messages, ctx) }
