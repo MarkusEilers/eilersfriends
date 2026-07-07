@@ -1,0 +1,33 @@
+app = "eilersfriends-voice"
+primary_region = "fra"
+
+[build]
+
+[env]
+  AGENT_BASE = "https://www.eilersfriends.com/voice"
+  PUBLIC_HOST = "eilersfriends-voice.fly.dev"
+  TTS_LANGUAGE = "de-DE"
+  TTS_PROVIDER = "ElevenLabs"
+  TTS_VOICE = "XrExE9yKIg1WjnnlVkGX"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+
+[checks]
+  [checks.health]
+    type = "http"
+    port = 8080
+    method = "get"
+    path = "/health"
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
