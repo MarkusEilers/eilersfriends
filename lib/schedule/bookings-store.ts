@@ -1,5 +1,20 @@
 import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
+import { randomBytes } from 'crypto'
+
+// Sprechender, aber unratbarer Manage-Token: person-type-<10 Zufallszeichen>.
+// Der Zufallsteil ist die eigentliche Zugangskontrolle (capability URL) -
+// deshalb bleibt er stark; das Praefix dient nur der Lesbarkeit. Kein
+// Kundenname (das waere PII in der URL/in Logs).
+const TOKEN_ALPHABET = 'abcdefghjkmnpqrstuvwxyz23456789' // ohne 0/o/1/l/i
+export function makeManageToken(ownerSlug: string, typeSlug: string): string {
+  const clean = (s: string) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40)
+  const rnd = randomBytes(10)
+  let suffix = ''
+  for (let i = 0; i < 10; i++) suffix += TOKEN_ALPHABET[rnd[i] % TOKEN_ALPHABET.length]
+  const prefix = [clean(ownerSlug), clean(typeSlug)].filter(Boolean).join('-')
+  return prefix ? `${prefix}-${suffix}` : suffix
+}
 
 function rowsOf<T>(r: unknown): T[] {
   if (Array.isArray(r)) return r as T[]

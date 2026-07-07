@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { randomBytes } from 'crypto'
 import { voiceAuthorized } from '@/lib/voice/auth'
 import { freeSlots, createBooking } from '@/lib/schedule/graph'
 import { entityFor } from '@/lib/schedule/config'
 import { getEventType, listBookableTypes } from '@/lib/schedule/types-store'
-import { createBooking as storeBooking, bookingCountsByDay } from '@/lib/schedule/bookings-store'
+import { createBooking as storeBooking, bookingCountsByDay, makeManageToken } from '@/lib/schedule/bookings-store'
 import { removeSlotFromCache } from '@/lib/schedule/availability-cache'
 import { logActivity } from '@/lib/voice/store'
 
@@ -35,7 +34,7 @@ export async function POST(req: NextRequest) {
   if (!connected) return NextResponse.json({ error: 'not_connected' }, { status: 503 })
   if (!slots.includes(slot)) return NextResponse.json({ error: 'slot_taken' }, { status: 409 })
 
-  const token = randomBytes(18).toString('base64url')
+  const token = makeManageToken(person, et.slug)
   const manageUrl = `${SITE}/termin/${token}`
   const end = new Date(new Date(slot).getTime() + et.durationMin * 60000).toISOString()
   const bodyHtml = `<div style="font-family:Arial,sans-serif"><p><b>${esc(et.name)}</b> mit ${esc(ent.name)} · <b>Telefonisch gebucht</b></p>

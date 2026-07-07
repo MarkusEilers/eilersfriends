@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { randomBytes } from 'crypto'
 import { freeSlots, createBooking } from '@/lib/schedule/graph'
 import { entityFor, membersFor } from '@/lib/schedule/config'
 import { getEventType } from '@/lib/schedule/types-store'
-import { createBooking as storeBooking, bookingCountsByDay } from '@/lib/schedule/bookings-store'
+import { createBooking as storeBooking, bookingCountsByDay, makeManageToken } from '@/lib/schedule/bookings-store'
 import { removeSlotFromCache } from '@/lib/schedule/availability-cache'
 import { logError } from '@/lib/errors/store'
 
@@ -51,7 +50,7 @@ export async function POST(req: NextRequest) {
   if (!connected) return NextResponse.json({ error: 'not_connected' }, { status: 503 })
   if (!slots.includes(slot)) return NextResponse.json({ error: 'slot_taken' }, { status: 409 })
 
-  const token = randomBytes(18).toString('base64url')
+  const token = makeManageToken(person, type)
   const manageUrl = `${SITE}/termin/${token}`
   const end = new Date(new Date(slot).getTime() + et.durationMin * 60000).toISOString()
   const title = `${et.name} · ${ent.name} × ${name}`
