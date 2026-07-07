@@ -10,7 +10,7 @@ function rowsOf<T>(r: unknown): T[] {
   return []
 }
 
-export const CACHE_STALE_MS = 8 * 3600 * 1000 // nach 8h lazy neu rechnen
+export const CACHE_STALE_MS = 5 * 60 * 1000 // 5 Min: oeffentliche Sicht nahezu live (Buchung prueft ohnehin frisch)
 
 let ensured = false
 export async function ensureCacheTable() {
