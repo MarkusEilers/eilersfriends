@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   if (!connected) return NextResponse.json({ error: 'not_connected' }, { status: 503 })
   if (!slots.includes(slot)) return NextResponse.json({ error: 'slot_taken' }, { status: 409 })
 
-  const token = makeManageToken(person, et.slug)
+  const token = makeManageToken(person, et.slug, slot)
   const manageUrl = `${SITE}/termin/${token}`
   const end = new Date(new Date(slot).getTime() + et.durationMin * 60000).toISOString()
   const bodyHtml = `<div style="font-family:Arial,sans-serif"><p><b>${esc(et.name)}</b> mit ${esc(ent.name)} · <b>Telefonisch gebucht</b></p>

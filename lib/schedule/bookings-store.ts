@@ -2,20 +2,26 @@ import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { randomBytes } from 'crypto'
 
-// Sprechender, aber unratbarer Manage-Token: person-type-<10 Zufallszeichen>.
-// Der Zufallsteil ist die eigentliche Zugangskontrolle (capability URL) -
-// deshalb bleibt er stark; das Praefix dient nur der Lesbarkeit. Kein
-// Kundenname (das waere PII in der URL/in Logs).
-const TOKEN_ALPHABET = 'abcdefghjkmnpqrstuvwxyz23456789' // ohne 0/o/1/l/i
-export function makeManageToken(ownerSlug: string, typeSlug: string): string {
+// Sprechender Manage-Token: person-type-JJJJ-MM-TT-wort-4ziffern.
+// Datum = Termindatum (Europe/Berlin). Wort + 4 Ziffern sorgen fuer
+// Eindeutigkeit (auch bei mehreren Buchungen am selben Tag) und etwas
+// Streuung. Kein Kundenname (PII).
+const POSITIVE_WORDS = ['sonne','sonnenschein','anker','flink','freude','klar','mutig','gipfel','licht','frisch','ruhig','stark','weite','wunder','zauber','blume','morgen','glueck','funke','kompass','segel','horizont','feder','kristall','komet','nordstern','aurora','delfin','falke','luchs','koala','panda','otter','fuchs','adler','kranich','libelle','iris','lavendel','minze','safran','zimt','honig','koralle','achat','opal','topas','jade','bernstein','saphir','smaragd','rubin','perle','melodie','harmonie','rhythmus','sinfonie','sonate','walzer','tango','kaskade','fontaene','oase','lagune','delta','fjord','duene','prairie','tundra','savanne','mango','papaya','guave','litschi','kiwi','feige','dattel','olive','walnuss','haselnuss','marille','pfirsich','kirsche','holunder','flieder','magnolie','tulpe','narzisse','krokus','anemone','klee','farn','moos','eiche','ahorn','birke','zeder','zephyr','brise','passat','monsun','nebel','tau','prisma','spektrum','galaxie','nova','pulsar','quasar','orbit','zenit','apex','tempo','allegro','forte','vivace','brio','elan','schwung','tandem','triumph','fortuna','amber','indigo','azur','purpur','vanille','karamell','trueffel','pralin','kakao','espresso','latte','matcha','ingwer']
+export function makeManageToken(ownerSlug: string, typeSlug: string, dateISO?: string): string {
   const clean = (s: string) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40)
-  const rnd = randomBytes(10)
-  let suffix = ''
-  for (let i = 0; i < 10; i++) suffix += TOKEN_ALPHABET[rnd[i] % TOKEN_ALPHABET.length]
-  const prefix = [clean(ownerSlug), clean(typeSlug)].filter(Boolean).join('-')
-  return prefix ? `${prefix}-${suffix}` : suffix
+  let datePart = ''
+  if (dateISO) {
+    try {
+      const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(dateISO))
+      if (/^\d{4}-\d{2}-\d{2}$/.test(parts)) datePart = parts
+    } catch { /* ignore */ }
+  }
+  const rnd = randomBytes(3)
+  const word = POSITIVE_WORDS[((rnd[0] << 8) | rnd[1]) % POSITIVE_WORDS.length]
+  const digits = String((((rnd[1] << 8) | rnd[2]) % 9000) + 1000)
+  const parts = [clean(ownerSlug), clean(typeSlug), datePart, word, digits].filter(Boolean)
+  return parts.join('-')
 }
-
 function rowsOf<T>(r: unknown): T[] {
   if (Array.isArray(r)) return r as T[]
   if (r && typeof r === 'object' && 'rows' in r) { const x = (r as { rows: unknown }).rows; if (Array.isArray(x)) return x as T[] }
