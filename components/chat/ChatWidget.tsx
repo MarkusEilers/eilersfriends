@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, type ReactNode } from 'react'
 import { MessageCircle, X, Send, Loader2 } from 'lucide-react'
 
 const ACCENT = '#1A5FD4'
@@ -11,6 +11,32 @@ const GREETING: Msg = {
   role: 'assistant',
   content:
     'Hey! Ich bin der Assistent von Eilers+Friends. Frag mich alles zur SalesMade Academy, zum AI Intensive oder dazu, wie wir Vertrieb planbar machen — oder ich verbinde Dich direkt mit Markus und dem Team. Was beschäftigt Dich gerade?',
+}
+
+function renderRich(text: string): ReactNode {
+  const nodes: ReactNode[] = []
+  // Reihenfolge: [Text](href) | **fett** | https-URL | E-Mail | interner /pfad
+  const re = /\[([^\]]+)\]\(([^)]+)\)|\*\*(.+?)\*\*|(https?:\/\/[^\s)]+)|([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})|(\/[A-Za-z0-9][A-Za-z0-9/_-]*)/g
+  let last = 0, k = 0, m: RegExpExecArray | null
+  const linkCls = 'font-medium underline'
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) nodes.push(text.slice(last, m.index))
+    if (m[1] !== undefined) {
+      const href = m[2]
+      nodes.push(<a key={k++} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className={linkCls} style={{ color: ACCENT }}>{m[1]}</a>)
+    } else if (m[3] !== undefined) {
+      nodes.push(<strong key={k++}>{m[3]}</strong>)
+    } else if (m[4] !== undefined) {
+      nodes.push(<a key={k++} href={m[4]} target="_blank" rel="noopener noreferrer" className={linkCls} style={{ color: ACCENT }}>{m[4]}</a>)
+    } else if (m[5] !== undefined) {
+      nodes.push(<a key={k++} href={`mailto:${m[5]}`} className={linkCls} style={{ color: ACCENT }}>{m[5]}</a>)
+    } else if (m[6] !== undefined) {
+      nodes.push(<a key={k++} href={m[6]} className={linkCls} style={{ color: ACCENT }}>{m[6]}</a>)
+    }
+    last = re.lastIndex
+  }
+  if (last < text.length) nodes.push(text.slice(last))
+  return nodes
 }
 
 export function ChatWidget() {
@@ -91,7 +117,7 @@ export function ChatWidget() {
                   }
                   style={m.role === 'user' ? { backgroundColor: ACCENT } : undefined}
                 >
-                  {m.content}
+                  {m.role === 'assistant' ? renderRich(m.content) : m.content}
                 </div>
               </div>
             ))}

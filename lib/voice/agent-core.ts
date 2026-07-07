@@ -8,7 +8,16 @@ export type Msg = { role: 'user' | 'assistant'; content: string }
 export type Ctx = { callerId?: string; source?: string }
 
 export function stripSpeakable(t: string): string {
-  return String(t || '').replace(/[\p{Extended_Pictographic}\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').replace(/[:;]-?[)(\]\[dpDP]/g, '').replace(/\s{2,}/g, ' ').trim()
+  return String(t || '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')       // [Text](url) -> Text
+    .replace(/(\*\*|__)(.*?)\1/g, '$2')              // **fett** / __fett__
+    .replace(/(^|\s)[*_]([^*_\n]+)[*_]/g, '$1$2')     // *kursiv* / _kursiv_
+    .replace(/`([^`]+)`/g, '$1')                       // `code`
+    .replace(/^\s{0,3}#{1,6}\s+/gm, '')               // # Ueberschriften
+    .replace(/^\s{0,3}[-*+]\s+/gm, '')                // Listen-Bullets
+    .replace(/[\p{Extended_Pictographic}\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '')
+    .replace(/[:;]-?[)(\]\[dpDP]/g, '')
+    .replace(/\s{2,}/g, ' ').trim()
 }
 export function renderTranscript(messages: Msg[]): string {
   return messages.map(m => (m.role === 'user' ? 'Anrufer' : 'Assistentin') + ': ' + m.content).join('\n')

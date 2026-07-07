@@ -49,6 +49,11 @@ export function BookingWidget({ person, type, personName, durationMin, infoText,
 
   useEffect(() => { setTz(detectTz()) }, [])
   useEffect(() => {
+    const q = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '')
+    const pre = q.get('betreff') || q.get('note')
+    if (pre) setNote(pre.slice(0, 500))
+  }, [])
+  useEffect(() => {
     let alive = true
     // Interner Team-Modus: ?internal=1[&days=150] an der Seiten-URL -> langer Horizont,
     // kein Cache (API prueft Admin/Coach). Nicht-Admins fallen automatisch auf die
