@@ -50,8 +50,21 @@ export function BookingWidget({ person, type, personName, durationMin, infoText,
   useEffect(() => { setTz(detectTz()) }, [])
   useEffect(() => {
     let alive = true
-    fetch(`/api/schedule/availability?person=${person}&type=${type}`).then(r => r.json()).then(d => {
+    // Interner Team-Modus: ?internal=1[&days=150] an der Seiten-URL -> langer Horizont,
+    // kein Cache (API prueft Admin/Coach). Nicht-Admins fallen automatisch auf die
+    // oeffentliche Sicht zurueck.
+    const q = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '')
+    const wantInternal = q.get('internal') === '1'
+    const daysParam = q.get('days')
+    const url = `/api/schedule/availability?person=${person}&type=${type}` + (wantInternal ? `&internal=1${daysParam ? `&days=${daysParam}` : ''}` : '')
+    fetch(url).then(r => r.json()).then(async d => {
       if (!alive) return
+      if (d && d.error === 'forbidden') {
+        const d2 = await fetch(`/api/schedule/availability?person=${person}&type=${type}`).then(r => r.json()).catch(() => null)
+        if (!alive) return
+        if (!d2) { setConnected(false); return }
+        setConnected(d2.connected !== false); setSlots(d2.slots || []); return
+      }
       setConnected(d.connected !== false); setSlots(d.slots || [])
     }).catch(() => alive && setConnected(false)).finally(() => alive && setLoading(false))
     return () => { alive = false }

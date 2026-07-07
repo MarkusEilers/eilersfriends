@@ -61,6 +61,13 @@ export async function computeAndCache(owner: string, type: string, et?: EventTyp
   return { slots, connected }
 }
 
+// Interner Team-Modus: frisch berechnen (kein Cache), langer Horizont
+export async function computeInternal(owner: string, type: string, et: EventType, horizonDays: number): Promise<{ slots: string[]; connected: boolean }> {
+  const blocked = new Set<string>()
+  if (et.maxPerDay != null) { const counts = await bookingCountsByDay(owner, type); for (const [d, n] of Object.entries(counts)) if (n >= et.maxPerDay) blocked.add(d) }
+  return freeSlots(owner, { durationMin: et.durationMin, bufferBeforeMin: et.bufferBeforeMin, bufferAfterMin: et.bufferAfterMin, blockedDayKeys: blocked, horizonDays })
+}
+
 // Cron: alle buchbaren Typen neu berechnen
 export async function refreshAllCaches(): Promise<{ refreshed: number; skipped: number }> {
   const all = await listEventTypes()

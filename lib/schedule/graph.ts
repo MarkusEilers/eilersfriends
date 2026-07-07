@@ -149,7 +149,7 @@ async function busyFor(slug: string, startISO: string, endISO: string): Promise<
   return busy
 }
 
-export type SlotOpts = { durationMin: number; bufferBeforeMin?: number; bufferAfterMin?: number; blockedDayKeys?: Set<string> }
+export type SlotOpts = { durationMin: number; bufferBeforeMin?: number; bufferAfterMin?: number; blockedDayKeys?: Set<string>; horizonDays?: number }
 function pad2(n: number) { return String(n).padStart(2, '0') }
 
 export async function freeSlots(slug: string, opts: SlotOpts): Promise<{ slots: string[]; connected: boolean }> {
@@ -157,15 +157,17 @@ export async function freeSlots(slug: string, opts: SlotOpts): Promise<{ slots: 
   const bufBefore = (opts.bufferBeforeMin ?? 0) * 60000
   const bufAfter = (opts.bufferAfterMin ?? 0) * 60000
   const blockedDays = opts.blockedDayKeys ?? new Set<string>()
+  const horizon = opts.horizonDays ?? WORK.horizonDays
   const now = Date.now()
   const startISO = new Date(now).toISOString().slice(0, 19)
-  const endISO = new Date(now + WORK.horizonDays * 864e5).toISOString().slice(0, 19)
+  const endISO = new Date(now + horizon * 864e5).toISOString().slice(0, 19)
   const busy = await busyFor(slug, startISO, endISO)
   if (busy === null) return { slots: [], connected: false }
   const earliest = now + WORK.leadHours * 3600e3
   const week = await intervalsForOwner(slug)
   const out: string[] = []
-  for (let dd = 0; dd <= WORK.horizonDays && out.length < 300; dd++) {
+  const maxOut = horizon > WORK.horizonDays ? 5000 : 300
+  for (let dd = 0; dd <= horizon && out.length < maxOut; dd++) {
     const probe = new Date(now + dd * 864e5)
     const bp = berlinParts(probe, WORK.tz)
     const wdMon = (bp.wd + 6) % 7
