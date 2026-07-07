@@ -10,7 +10,7 @@ function rowsOf<T>(r: unknown): T[] {
   return []
 }
 
-export const CACHE_STALE_MS = 5 * 60 * 1000 // 5 Min: oeffentliche Sicht nahezu live (Buchung prueft ohnehin frisch)
+export const CACHE_STALE_MS = 10 * 60 * 1000 // 10 Min; stale-while-revalidate haelt es fast live ohne Last
 
 let ensured = false
 export async function ensureCacheTable() {
