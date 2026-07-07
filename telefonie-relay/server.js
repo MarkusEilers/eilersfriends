@@ -26,11 +26,52 @@ const PUBLIC_HOST = process.env.PUBLIC_HOST || "";
 // Basis der Website-Voice-Endpunkte
 const AGENT_BASE = (process.env.AGENT_BASE || "https://www.eilersfriends.com/voice").replace(/\/$/, "");
 const VOICE_API_KEY = process.env.VOICE_API_KEY || "";
-// Sprachausgabe von ConversationRelay. Ohne ElevenLabs-Setup in Twilio bleibt
-// Google/Amazon – bereits streaming und deutlich besser als Gather/Say.
-const TTS_PROVIDER = process.env.TTS_PROVIDER || ""; // "" | "ElevenLabs" | "google" | "amazon"
-const TTS_VOICE = process.env.TTS_VOICE || "";       // z. B. de-DE-Wavenet-C oder ElevenLabs-Voice-ID
 const TTS_LANGUAGE = process.env.TTS_LANGUAGE || "de-DE";
+
+// ── Stimmen (ElevenLabs, umschaltbar) + Rueckfallebene ──────────────────────
+// Primaer zwei Library-Stimmen (A/B), zusaetzlich Matilda (Default-ElevenLabs).
+// Umschalten: TTS_VOICE_STRATEGY = a | b | matilda | day  (oder ?voice=a|b|matilda
+// an der Inbound-URL). "day" = Mo/Mi/Fr -> A, sonst B.
+// Wenn ElevenLabs kein Budget mehr hat (75-Min-Limit) oder nicht erreichbar ist,
+// faellt ConversationRelay auf eine Twilio-eigene deutsche Stimme zurueck (immer da).
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || "";
+const VOICE_A = process.env.TTS_VOICE_A || "SiMvlSW9cKKHDYT4BzOp";
+const VOICE_B = process.env.TTS_VOICE_B || "E77N7V3flAUuuy7eDa10";
+const VOICE_MATILDA = process.env.TTS_VOICE_MATILDA || "XrExE9yKIg1WjnnlVkGX";
+const VOICE_STRATEGY = (process.env.TTS_VOICE_STRATEGY || "a").toLowerCase();
+const FALLBACK_PROVIDER = process.env.TTS_FALLBACK_PROVIDER || "Google";
+const FALLBACK_VOICE = process.env.TTS_FALLBACK_VOICE || "de-DE-Chirp3-HD-Leda";
+const EL_VOICES = { a: VOICE_A, b: VOICE_B, matilda: VOICE_MATILDA };
+
+function pickElevenVoice(override) {
+  const o = String(override || "").toLowerCase();
+  if (EL_VOICES[o]) return EL_VOICES[o];
+  if (VOICE_STRATEGY === "day") {
+    const d = new Date().getDay(); // 0 So .. 6 Sa
+    return ([1, 3, 5].includes(d) ? VOICE_A : VOICE_B) || VOICE_MATILDA;
+  }
+  return EL_VOICES[VOICE_STRATEGY] || VOICE_A;
+}
+
+let _elBudget = { ok: false, at: 0 };
+async function elevenlabsHasBudget() {
+  if (!ELEVENLABS_API_KEY) return false;
+  if (Date.now() - _elBudget.at < 60000) return _elBudget.ok; // 60s Cache
+  let ok = false;
+  try {
+    const r = await fetch("https://api.elevenlabs.io/v1/user/subscription", { headers: { "xi-api-key": ELEVENLABS_API_KEY } });
+    if (r.ok) { const j = await r.json(); ok = ((j.character_limit ?? 0) - (j.character_count ?? 0)) > 400; }
+  } catch { ok = false; }
+  _elBudget = { ok, at: Date.now() };
+  return ok;
+}
+
+async function ttsAttrsFor(override) {
+  if (await elevenlabsHasBudget()) {
+    return { attrs: ` ttsProvider="ElevenLabs" voice="${esc(pickElevenVoice(override))}"`, engine: "elevenlabs" };
+  }
+  return { attrs: ` ttsProvider="${esc(FALLBACK_PROVIDER)}" voice="${esc(FALLBACK_VOICE)}"`, engine: "twilio-fallback" };
+}
 const WELCOME_FALLBACK =
   process.env.WELCOME_FALLBACK ||
   "Grüß Gott bei Eilers und Friends! Ich bin die Assistentin des Hauses. Worum geht es bei Ihrem Anruf?";
@@ -115,10 +156,8 @@ async function inboundTwiml(req, res) {
   lastCall[dw] = new Date().toISOString();
   const host = PUBLIC_HOST || req.get("host");
   const greeting = await fetchGreeting(dw, caller);
-
-  const ttsAttrs =
-    (TTS_PROVIDER ? ` ttsProvider="${esc(TTS_PROVIDER)}"` : "") +
-    (TTS_VOICE ? ` voice="${esc(TTS_VOICE)}"` : "");
+  const { attrs: ttsAttrs, engine } = await ttsAttrsFor(req.query.voice);
+  console.log(`📞 DW ${dw} · Stimme: ${engine}`);
 
   res.type("text/xml").send(
     `<?xml version="1.0" encoding="UTF-8"?>
@@ -142,7 +181,7 @@ app.get("/health", (_req, res) =>
     uptime_s: Math.round((Date.now() - STARTED_AT) / 1000),
     agent_base: AGENT_BASE,
     api_key: !!VOICE_API_KEY,
-    tts: TTS_PROVIDER || "default",
+    tts: { strategy: VOICE_STRATEGY, a: VOICE_A, b: VOICE_B, matilda: VOICE_MATILDA, elevenlabs_key: !!ELEVENLABS_API_KEY, fallback: `${FALLBACK_PROVIDER}/${FALLBACK_VOICE}` },
     last_call_per_dw: lastCall,
   })
 );
@@ -197,6 +236,6 @@ wss.on("connection", (ws) => {
 
 server.listen(PORT, () =>
   console.log(
-    `🚀 Telefonie-Relay auf :${PORT}\n   Agent: ${AGENT_BASE}\n   Key: ${VOICE_API_KEY ? "✅" : "❌ FEHLT"}  TTS: ${TTS_PROVIDER || "default"}  Host: ${PUBLIC_HOST || "(request-host)"}`
+    `🚀 Telefonie-Relay auf :${PORT}\n   Agent: ${AGENT_BASE}\n   Key: ${VOICE_API_KEY ? "✅" : "❌ FEHLT"}  Stimme: ${VOICE_STRATEGY} (EL-Key ${ELEVENLABS_API_KEY ? "✅" : "❌"}, Fallback ${FALLBACK_PROVIDER}/${FALLBACK_VOICE})  Host: ${PUBLIC_HOST || "(request-host)"}`
   )
 );
