@@ -9,6 +9,11 @@ const DWS: { dw: number; name: string }[] = [
   { dw: 6, name: 'Cosima' }, { dw: 7, name: 'Markus' }, { dw: 8, name: 'Reserve → Zentrale' },
 ]
 type Msg = { role: 'user' | 'assistant'; content: string }
+const EL_VOICES = [
+  { key: 'a', label: 'AIlisabeth (weiblich)', name: 'Eilisabet', gender: 'f' },
+  { key: 'b', label: 'AIlexander (maennlich)', name: 'Eilexander', gender: 'm' },
+  { key: 'matilda', label: 'AIlisabeth \u2013 Fallback', name: 'Eilisabet', gender: 'f' },
+]
 const TW_VOICES = [
   { id: 'Google.de-DE-Neural2-F', label: 'Google Neural2 F (w) — natürlich' },
   { id: 'Google.de-DE-Neural2-B', label: 'Google Neural2 B (m)' },
@@ -19,7 +24,7 @@ const TW_VOICES = [
 ]
 
 export function VoiceTestCockpit() {
-  const [engine, setEngine] = useState<'browser' | 'twilio'>('browser')
+  const [engine, setEngine] = useState<'browser' | 'elevenlabs' | 'twilio'>('browser')
   const [dw, setDw] = useState<number | null>(null)
   const [messages, setMessages] = useState<Msg[]>([])
   const [busy, setBusy] = useState(false)
@@ -31,6 +36,8 @@ export function VoiceTestCockpit() {
   const [twStatus, setTwStatus] = useState<'idle' | 'connecting' | 'live' | 'ended' | 'error'>('idle')
   const [twMsg, setTwMsg] = useState('')
   const [twVoice, setTwVoice] = useState('Google.de-DE-Neural2-F')
+  const [elVoice, setElVoice] = useState('a')
+  const audioRef = useRef<HTMLAudioElement | null>(null)
   const recRef = useRef<any>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const deviceRef = useRef<any>(null)
@@ -42,24 +49,36 @@ export function VoiceTestCockpit() {
   }, [voiceName])
   useEffect(() => { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight }) }, [messages])
 
-  function speak(t: string) { try { const s = window.speechSynthesis; if (!s) return; s.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'de-DE'; const v = voices.find(x => x.name === voiceName); if (v) u.voice = v; s.speak(u) } catch { /* */ } }
+  async function speak(t: string) {
+    if (engine === 'elevenlabs') {
+      try {
+        window.speechSynthesis?.cancel()
+        const res = await fetch('/voice/tts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ voice: elVoice, text: t }) })
+        if (res.ok) { try { audioRef.current?.pause() } catch { /* */ } const a = new Audio(URL.createObjectURL(await res.blob())); audioRef.current = a; a.play().catch(() => {}); return }
+      } catch { /* fallback unten */ }
+    }
+    try { const s = window.speechSynthesis; if (!s) return; s.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'de-DE'; const v = voices.find(x => x.name === voiceName); if (v) u.voice = v; s.speak(u) } catch { /* */ }
+  }
 
   // ---------- Browser-Simulation ----------
   async function callAgent(next: Msg[]) {
     setBusy(true)
     try {
-      const res = await fetch('/voice/agent', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dw, messages: next }) })
+      const idv = EL_VOICES.find(v => v.key === elVoice)
+      const body: any = { dw, messages: next }
+      if (engine === 'elevenlabs' && idv) body.assistant = { name: idv.name, gender: idv.gender }
+      const res = await fetch('/voice/agent', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       const d = await res.json(); const reply = d.reply || '…'; setMode(d.mode || '')
       setMessages(m => [...m, { role: 'assistant', content: reply }]); speak(reply)
     } catch { setMessages(m => [...m, { role: 'assistant', content: '(Fehler beim Agenten)' }]) } finally { setBusy(false) }
   }
   function startCall(d: number) {
     setDw(d); setMessages([]); setMode('')
-    if (engine === 'browser') setTimeout(() => callAgent([]), 50)
-    else startTwilio(d)
+    if (engine === 'twilio') startTwilio(d)
+    else setTimeout(() => callAgent([]), 50)
   }
   function hangup() {
-    stopMic(); window.speechSynthesis?.cancel()
+    stopMic(); window.speechSynthesis?.cancel(); try { audioRef.current?.pause() } catch { /* */ }
     if (engine === 'twilio') { try { callRef.current?.disconnect(); deviceRef.current?.destroy() } catch { /* */ } setTwStatus('idle'); setTwMsg('') }
     setDw(null); setMessages([])
   }
@@ -92,9 +111,9 @@ export function VoiceTestCockpit() {
   return (
     <div>
       <div className="mb-4 inline-flex rounded-full border border-gray-200 bg-white p-1 text-xs font-semibold">
-        {(['browser', 'twilio'] as const).map(en => (
+        {(['browser', 'elevenlabs', 'twilio'] as const).map(en => (
           <button key={en} onClick={() => { hangup(); setEngine(en) }} className={'rounded-full px-3 py-1.5 ' + (engine === en ? 'text-white' : 'text-gray-600')} style={engine === en ? { backgroundColor: '#1A5FD4' } : undefined}>
-            {en === 'browser' ? 'Browser-Simulation' : 'Twilio (echte Stimme)'}
+            {en === 'browser' ? 'Browser-Simulation' : en === 'elevenlabs' ? 'ElevenLabs (echte Stimme)' : 'Twilio (echte Stimme)'}
           </button>
         ))}
       </div>
@@ -119,6 +138,15 @@ export function VoiceTestCockpit() {
                 {TW_VOICES.map(v => <option key={v.id} value={v.id}>{v.label}</option>)}
               </select>
               <p className="mt-1 text-[10px] text-gray-400">Vor dem Anruf wählen. Google-Neural2 klingen am besten. Für wirklich menschliche Stimme + niedrige Latenz braucht es ElevenLabs über den Telefonie-Server (ConversationRelay).</p>
+            </div>
+          )}
+          {engine === 'elevenlabs' && (
+            <div className="mt-4">
+              <label className="mb-1 flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-gray-400"><Volume2 size={12} /> Stimme (ElevenLabs)</label>
+              <select value={elVoice} onChange={e => setElVoice(e.target.value)} className="w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs">
+                {EL_VOICES.map(v => <option key={v.key} value={v.key}>{v.label}</option>)}
+              </select>
+              <p className="mt-1 text-[10px] text-gray-400">Echter Dialog (Claude) + echte ElevenLabs-Stimme — wie am Telefon, nur ohne Twilio. AIlisabeth/AIlexander stellen sich im Gespraech mit Namen vor.</p>
             </div>
           )}
           {engine === 'browser' && (
