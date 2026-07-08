@@ -38,19 +38,25 @@ const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || "";
 const VOICE_A = process.env.TTS_VOICE_A || "SiMvlSW9cKKHDYT4BzOp";
 const VOICE_B = process.env.TTS_VOICE_B || "E77N7V3flAUuuy7eDa10";
 const VOICE_MATILDA = process.env.TTS_VOICE_MATILDA || "XrExE9yKIg1WjnnlVkGX";
+// Namen je Stimme (konfigurierbar). Ei ~ "AI": Eilisabet/Eilexander ehren Eilers UND A.I.
+const NAME_A = process.env.TTS_NAME_A || "Eilisabet";       // Stimme A (Lola, weiblich)
+const NAME_B = process.env.TTS_NAME_B || "Eilexander";      // Stimme B (Axel, maennlich)
+const NAME_MATILDA = process.env.TTS_NAME_MATILDA || "Eilisabet"; // Matilda (weiblich)
+const IDENTITY = { a: { name: NAME_A, gender: "f" }, b: { name: NAME_B, gender: "m" }, matilda: { name: NAME_MATILDA, gender: "f" } };
 const VOICE_STRATEGY = (process.env.TTS_VOICE_STRATEGY || "a").toLowerCase();
 const FALLBACK_PROVIDER = process.env.TTS_FALLBACK_PROVIDER || "Google";
-const FALLBACK_VOICE = process.env.TTS_FALLBACK_VOICE || "de-DE-Chirp3-HD-Leda";
+const FALLBACK_VOICE_F = process.env.TTS_FALLBACK_VOICE_F || "de-DE-Chirp3-HD-Leda";   // weiblich
+const FALLBACK_VOICE_M = process.env.TTS_FALLBACK_VOICE_M || "de-DE-Chirp3-HD-Charon"; // maennlich
 const EL_VOICES = { a: VOICE_A, b: VOICE_B, matilda: VOICE_MATILDA };
 
-function pickElevenVoice(override) {
+function pickVoiceKey(override) {
   const o = String(override || "").toLowerCase();
-  if (EL_VOICES[o]) return EL_VOICES[o];
+  if (EL_VOICES[o]) return o;
   if (VOICE_STRATEGY === "day") {
     const d = new Date().getDay(); // 0 So .. 6 Sa
-    return ([1, 3, 5].includes(d) ? VOICE_A : VOICE_B) || VOICE_MATILDA;
+    return [1, 3, 5].includes(d) ? "a" : "b";
   }
-  return EL_VOICES[VOICE_STRATEGY] || VOICE_A;
+  return EL_VOICES[VOICE_STRATEGY] ? VOICE_STRATEGY : "a";
 }
 
 let _elBudget = { ok: false, at: 0 };
@@ -67,10 +73,14 @@ async function elevenlabsHasBudget() {
 }
 
 async function ttsAttrsFor(override) {
+  const key = pickVoiceKey(override);
+  const ident = IDENTITY[key];
   if (await elevenlabsHasBudget()) {
-    return { attrs: ` ttsProvider="ElevenLabs" voice="${esc(pickElevenVoice(override))}"`, engine: "elevenlabs" };
+    return { attrs: ` ttsProvider="ElevenLabs" voice="${esc(EL_VOICES[key])}"`, engine: "elevenlabs", assistant: ident };
   }
-  return { attrs: ` ttsProvider="${esc(FALLBACK_PROVIDER)}" voice="${esc(FALLBACK_VOICE)}"`, engine: "twilio-fallback" };
+  // ElevenLabs aus/Budget leer -> Twilio-Stimme, geschlechtsgleich zum Namen
+  const fv = ident.gender === "m" ? FALLBACK_VOICE_M : FALLBACK_VOICE_F;
+  return { attrs: ` ttsProvider="${esc(FALLBACK_PROVIDER)}" voice="${esc(fv)}"`, engine: "twilio-fallback", assistant: ident };
 }
 const WELCOME_FALLBACK =
   process.env.WELCOME_FALLBACK ||
@@ -92,12 +102,12 @@ const dwFromCalled = (to = "") => {
 };
 
 // Eröffnungssatz vom echten Brain holen (leere History => Persona-Greeting)
-async function fetchGreeting(dw, callerId) {
+async function fetchGreeting(dw, callerId, assistant) {
   try {
     const r = await fetch(`${AGENT_BASE}/agent`, {
       method: "POST",
       headers: xhdr(),
-      body: JSON.stringify({ dw, messages: [], callerId }),
+      body: JSON.stringify({ dw, messages: [], callerId, assistant }),
     });
     if (r.ok) {
       const j = await r.json();
@@ -110,12 +120,12 @@ async function fetchGreeting(dw, callerId) {
 }
 
 // Eine Dialogantwort vom echten Brain holen
-async function fetchReply(dw, messages, callerId) {
+async function fetchReply(dw, messages, callerId, assistant) {
   try {
     const r = await fetch(`${AGENT_BASE}/agent`, {
       method: "POST",
       headers: xhdr(),
-      body: JSON.stringify({ dw, messages, callerId }),
+      body: JSON.stringify({ dw, messages, callerId, assistant }),
     });
     if (r.ok) {
       const j = await r.json();
@@ -155,9 +165,9 @@ async function inboundTwiml(req, res) {
   const dw = dwFromCalled(req.body.To || "");
   lastCall[dw] = new Date().toISOString();
   const host = PUBLIC_HOST || req.get("host");
-  const greeting = await fetchGreeting(dw, caller);
-  const { attrs: ttsAttrs, engine } = await ttsAttrsFor(req.query.voice);
-  console.log(`📞 DW ${dw} · Stimme: ${engine}`);
+  const { attrs: ttsAttrs, engine, assistant } = await ttsAttrsFor(req.query.voice);
+  const greeting = await fetchGreeting(dw, caller, assistant);
+  console.log(`📞 DW ${dw} · Stimme: ${engine} · ${assistant.name}`);
 
   res.type("text/xml").send(
     `<?xml version="1.0" encoding="UTF-8"?>
@@ -166,6 +176,8 @@ async function inboundTwiml(req, res) {
     <ConversationRelay url="wss://${host}/relay" language="${TTS_LANGUAGE}" ttsLanguage="${TTS_LANGUAGE}" transcriptionLanguage="${TTS_LANGUAGE}"${ttsAttrs} interruptible="true" welcomeGreeting="${esc(greeting)}">
       <Parameter name="caller_number" value="${esc(caller)}" />
       <Parameter name="dw" value="${dw}" />
+      <Parameter name="assistant_name" value="${esc(assistant.name)}" />
+      <Parameter name="assistant_gender" value="${esc(assistant.gender)}" />
     </ConversationRelay>
   </Connect>
 </Response>`
@@ -181,7 +193,7 @@ app.get("/health", (_req, res) =>
     uptime_s: Math.round((Date.now() - STARTED_AT) / 1000),
     agent_base: AGENT_BASE,
     api_key: !!VOICE_API_KEY,
-    tts: { strategy: VOICE_STRATEGY, a: VOICE_A, b: VOICE_B, matilda: VOICE_MATILDA, elevenlabs_key: !!ELEVENLABS_API_KEY, fallback: `${FALLBACK_PROVIDER}/${FALLBACK_VOICE}` },
+    tts: { strategy: VOICE_STRATEGY, a: VOICE_A, b: VOICE_B, matilda: VOICE_MATILDA, elevenlabs_key: !!ELEVENLABS_API_KEY, fallback: `${FALLBACK_PROVIDER}/${FALLBACK_VOICE_F}|${FALLBACK_VOICE_M}`, names: { a: NAME_A, b: NAME_B } },
     last_call_per_dw: lastCall,
   })
 );
@@ -194,7 +206,7 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: "/relay" });
 
 wss.on("connection", (ws) => {
-  const session = { dw: 0, caller: "", messages: [] };
+  const session = { dw: 0, caller: "", messages: [], assistant: undefined };
   let busy = false;
 
   ws.on("message", async (raw) => {
@@ -204,6 +216,8 @@ wss.on("connection", (ws) => {
     if (msg.type === "setup") {
       session.caller = msg.customParameters?.caller_number || msg.from || "";
       session.dw = parseInt(msg.customParameters?.dw ?? "0", 10) || 0;
+      const an = msg.customParameters?.assistant_name, ag = msg.customParameters?.assistant_gender;
+      if (an) session.assistant = { name: an, gender: ag === "m" ? "m" : "f" };
       lastCall[session.dw] = new Date().toISOString();
       console.log(`🔌 Session DW ${session.dw} (${session.caller || "unbekannt"})`);
       return;
@@ -214,7 +228,7 @@ wss.on("connection", (ws) => {
       if (busy) return;
       busy = true;
       session.messages.push({ role: "user", content: msg.voicePrompt });
-      const reply = await fetchReply(session.dw, session.messages, session.caller);
+      const reply = await fetchReply(session.dw, session.messages, session.caller, session.assistant);
       session.messages.push({ role: "assistant", content: reply });
       try {
         ws.send(JSON.stringify({ type: "text", token: reply, last: true }));

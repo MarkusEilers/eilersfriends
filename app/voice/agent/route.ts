@@ -13,5 +13,7 @@ export async function POST(req: NextRequest) {
   const b = await req.json().catch(() => ({} as Record<string, unknown>))
   const dw = Number(b.dw ?? 0)
   const messages: Msg[] = Array.isArray(b.messages) ? (b.messages as Msg[]) : []
-  const r = await runAgent(dw, messages, { source: 'cockpit' }); return NextResponse.json({ ...r, reply: stripSpeakable(r.reply) })
+  const a = (b.assistant && typeof b.assistant === 'object') ? b.assistant as { name?: string; gender?: 'f' | 'm' } : undefined
+  const callerId = b.callerId ? String(b.callerId) : undefined
+  const r = await runAgent(dw, messages, { source: 'cockpit', callerId, assistant: a }); return NextResponse.json({ ...r, reply: stripSpeakable(r.reply) })
 }

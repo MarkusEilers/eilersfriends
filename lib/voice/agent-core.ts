@@ -1,11 +1,11 @@
-import { persona } from './personas'
+import { persona, fillIdentity } from './personas'
 import { runGetSlots, runBook, runTeamStatus } from './tools'
 import { knowledgeContext } from './knowledge'
 import { logActivity } from './store'
 import { sendTeamNotification } from './notify'
 
 export type Msg = { role: 'user' | 'assistant'; content: string }
-export type Ctx = { callerId?: string; source?: string }
+export type Ctx = { callerId?: string; source?: string; assistant?: { name?: string; gender?: 'f' | 'm' } }
 
 export function stripSpeakable(t: string): string {
   return String(t || '')
@@ -110,12 +110,14 @@ async function scriptedReply(dw: number, messages: Msg[], ctx?: Ctx): Promise<{ 
 
 export async function runAgent(dw: number, messages: Msg[], ctx?: Ctx): Promise<{ reply: string; mode: string; tools?: string[] }> {
   const p = persona(dw)
-  if (!messages.length) return { reply: p.greeting, mode: 'greeting' }
+  const idName = ctx?.assistant?.name || 'Eilisabet'
+  const idGender: 'f' | 'm' = ctx?.assistant?.gender || 'f'
+  if (!messages.length) return { reply: fillIdentity(p.greeting, idName, idGender), mode: 'greeting' }
   const key = process.env.ANTHROPIC_API_KEY
   if (!key) return await scriptedReply(dw, messages, ctx)
 
   const model = process.env.VOICE_AGENT_MODEL || 'claude-sonnet-4-6'
-  const systemPrompt = p.system + '\n\n' + await knowledgeContext()
+  const systemPrompt = fillIdentity(p.system, idName, idGender) + '\n\n' + await knowledgeContext()
   const convo: Array<{ role: 'user' | 'assistant'; content: unknown }> = messages.map(m => ({ role: m.role, content: m.content }))
   const usedTools: string[] = []
   try {
