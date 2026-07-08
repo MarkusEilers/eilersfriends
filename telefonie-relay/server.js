@@ -250,6 +250,6 @@ wss.on("connection", (ws) => {
 
 server.listen(PORT, () =>
   console.log(
-    `🚀 Telefonie-Relay auf :${PORT}\n   Agent: ${AGENT_BASE}\n   Key: ${VOICE_API_KEY ? "✅" : "❌ FEHLT"}  Stimme: ${VOICE_STRATEGY} (EL-Key ${ELEVENLABS_API_KEY ? "✅" : "❌"}, Fallback ${FALLBACK_PROVIDER}/${FALLBACK_VOICE})  Host: ${PUBLIC_HOST || "(request-host)"}`
+    `🚀 Telefonie-Relay auf :${PORT}\n   Agent: ${AGENT_BASE}\n   Key: ${VOICE_API_KEY ? "✅" : "❌ FEHLT"}  Stimme: ${VOICE_STRATEGY} (EL-Key ${ELEVENLABS_API_KEY ? "✅" : "❌"}, Fallback ${FALLBACK_PROVIDER}/${FALLBACK_VOICE_F}|${FALLBACK_VOICE_M})  Host: ${PUBLIC_HOST || "(request-host)"}`
   )
 );
