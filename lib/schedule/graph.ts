@@ -129,20 +129,36 @@ async function queryBusy(accessToken: string, emails: string[], startISO: string
   return busy
 }
 
+// getSchedule hat ein Bereichs-Limit — lange Horizonte (z. B. interner 180-Tage-Modus)
+// liefern sonst KEINE Belegt-Daten (alles erscheint frei). Deshalb in <=30-Tage-Fenster
+// chunkeln und vereinigen. Fuer die oeffentlichen 35 Tage = 2 kleine Calls, kein Regress.
+const BUSY_CHUNK_MS = 30 * 864e5
+function toMs(iso: string): number { return new Date(iso + (/(Z|[+-]\d\d:?\d\d)$/.test(iso) ? '' : 'Z')).getTime() }
+async function queryBusyChunked(accessToken: string, emails: string[], startISO: string, endISO: string): Promise<Busy[]> {
+  const start = toMs(startISO), end = toMs(endISO)
+  if (!start || !end || end <= start) return await queryBusy(accessToken, emails, startISO, endISO)
+  const out: Busy[] = []
+  for (let s = start; s < end; s += BUSY_CHUNK_MS) {
+    const e = Math.min(s + BUSY_CHUNK_MS, end)
+    out.push(...await queryBusy(accessToken, emails, new Date(s).toISOString().slice(0, 19), new Date(e).toISOString().slice(0, 19)))
+  }
+  return out
+}
+
 // Belegtzeiten = Vereinigung über Primär-Kalender + alle aktiven Extra-Kalender (Schnittmengen-Filter)
 async function busyFor(slug: string, startISO: string, endISO: string): Promise<Busy[] | null> {
   const m = membersFor(slug)
   const busy: Busy[] = []
   let connected = false
   const at = await accessTokenForOwner(slug)
-  if (at) { connected = true; busy.push(...await queryBusy(at, m.map(p => p.email), startISO, endISO)) }
+  if (at) { connected = true; busy.push(...await queryBusyChunked(at, m.map(p => p.email), startISO, endISO)) }
   for (const p of m) {
     const extras = await getActiveExtraCalendars(p.slug)
     for (const cal of extras) {
       const ct = await accessTokenForCalendar(cal)
       if (!ct) continue
       connected = true
-      busy.push(...await queryBusy(ct, [cal.msEmail], startISO, endISO))
+      busy.push(...await queryBusyChunked(ct, [cal.msEmail], startISO, endISO))
     }
   }
   if (!connected) return null
