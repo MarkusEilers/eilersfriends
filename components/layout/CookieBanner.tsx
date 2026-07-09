@@ -43,6 +43,17 @@ export function CookieBanner() {
   useEffect(() => {
     const existing = getCookieConsent()
     if (!existing) setShow(true)
+    // Wieder-Oeffnen ueber Footer-Link (#cookie-settings) ODER Custom-Event —
+    // Legal-Pflicht: Widerruf so einfach wie die Zustimmung.
+    const openSettings = () => { setShow(true); setExpanded(true) }
+    const onHash = () => { if (typeof window !== 'undefined' && window.location.hash === '#cookie-settings') { openSettings(); window.history.replaceState(null, '', window.location.pathname + window.location.search) } }
+    onHash()
+    window.addEventListener('hashchange', onHash)
+    window.addEventListener('ef:open-cookie-settings', openSettings as EventListener)
+    return () => {
+      window.removeEventListener('hashchange', onHash)
+      window.removeEventListener('ef:open-cookie-settings', openSettings as EventListener)
+    }
   }, [])
 
   function save(consent: CookieConsent) {
