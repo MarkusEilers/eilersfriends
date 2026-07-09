@@ -33,7 +33,7 @@ export function MarketRealityStats() {
             </p>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/salesmade/only-the-few.png"
+              src="/salesmade/only-the-few.webp"
               alt="33 typische B2B-Verkäufer:innen — 1 voll ausgebildet, 3 ausgebildet aber ohne Sparring, 29 ohne Ausbildung"
               className="w-full h-auto"
               loading="lazy"
