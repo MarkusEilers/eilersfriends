@@ -1,6 +1,6 @@
 import { persona, fillIdentity } from './personas'
-import { runGetSlots, runBook, runTeamStatus } from './tools'
-import { knowledgeContext } from './knowledge'
+import { runBrainClaude } from '@/lib/brain/core'
+import { runGetSlots, runTeamStatus } from './tools'
 import { logActivity } from './store'
 import { sendTeamNotification } from './notify'
 
@@ -21,27 +21,6 @@ export function stripSpeakable(t: string): string {
 }
 export function renderTranscript(messages: Msg[]): string {
   return messages.map(m => (m.role === 'user' ? 'Anrufer' : 'Assistentin') + ': ' + m.content).join('\n')
-}
-
-const TOOLS = [
-  { name: 'get_slots', description: 'Holt freie Termine einer Person. person: markus|aljona|cosima|daniel.', input_schema: { type: 'object', properties: { person: { type: 'string' }, type: { type: 'string' } }, required: ['person'] } },
-  { name: 'book', description: 'Bucht einen Termin. slot_id aus get_slots. Telefonnummer Pflicht.', input_schema: { type: 'object', properties: { person: { type: 'string' }, type: { type: 'string' }, slot_id: { type: 'string' }, name: { type: 'string' }, phone: { type: 'string' }, email: { type: 'string' }, topic: { type: 'string' } }, required: ['person', 'slot_id', 'name', 'phone'] } },
-  { name: 'team_status', description: 'Aktueller Status des Teams (available|meeting|offline).', input_schema: { type: 'object', properties: {} } },
-  { name: 'send_message', description: 'Schickt der Zielperson eine E-Mail mit dem Anliegen des Anrufers (Name, Rückrufnummer, E-Mail, volles Transkript) und legt einen CRM-Anrufversuch an. Nutze es, wenn der Anrufer für jemanden eine Nachricht/einen Rückruf hinterlassen will oder die Person nicht erreichbar ist. Vorher freundlich Name und Rückrufnummer erfragen.', input_schema: { type: 'object', properties: { person: { type: 'string' }, name: { type: 'string' }, phone: { type: 'string' }, email: { type: 'string' }, summary: { type: 'string' } }, required: ['person', 'name', 'phone'] } },
-]
-
-async function execTool(name: string, input: Record<string, unknown>, extra: { dw: number; defaultPerson?: string; messages: Msg[]; ctx?: Ctx }) {
-  const person = String(input.person || extra.defaultPerson || 'markus')
-  if (name === 'get_slots') return await runGetSlots(person, input.type ? String(input.type) : undefined)
-  if (name === 'team_status') return await runTeamStatus()
-  if (name === 'book') return await runBook({ person, typeSlug: input.type ? String(input.type) : undefined, slotId: String(input.slot_id || ''), name: String(input.name || ''), phone: String(input.phone || ''), email: input.email ? String(input.email) : undefined, topic: input.topic ? String(input.topic) : undefined })
-  if (name === 'send_message') {
-    const transcript = renderTranscript(extra.messages) + (input.summary ? `\n\nZusammenfassung: ${input.summary}` : '')
-    const res = await sendTeamNotification({ person, dw: extra.dw, callerName: input.name ? String(input.name) : undefined, callerPhone: input.phone ? String(input.phone) : undefined, callerEmail: input.email ? String(input.email) : undefined, callerId: extra.ctx?.callerId, transcript, whenISO: new Date().toISOString() })
-    await logActivity({ type: 'anrufversuch', dw: extra.dw, personSlug: person, name: input.name ? String(input.name) : null, phone: input.phone ? String(input.phone) : null, email: input.email ? String(input.email) : null, topic: input.summary ? String(input.summary) : null, summary: `Nachricht an ${person} (Voice)`, transcript, meta: { callerId: extra.ctx?.callerId, emailSent: res.sent } }).catch(() => {})
-    return { ok: true, delivered: res.sent }
-  }
-  return { error: 'unknown_tool' }
 }
 
 async function scriptedReply(dw: number, messages: Msg[], ctx?: Ctx): Promise<{ reply: string; mode: string }> {
@@ -113,34 +92,7 @@ export async function runAgent(dw: number, messages: Msg[], ctx?: Ctx): Promise<
   const idName = ctx?.assistant?.name || 'Eilisabet'
   const idGender: 'f' | 'm' = ctx?.assistant?.gender || 'f'
   if (!messages.length) return { reply: fillIdentity(p.greeting, idName, idGender), mode: 'greeting' }
-  const key = process.env.ANTHROPIC_API_KEY
-  if (!key) return await scriptedReply(dw, messages, ctx)
-
-  const model = process.env.VOICE_AGENT_MODEL || 'claude-sonnet-4-6'
-  const systemPrompt = fillIdentity(p.system, idName, idGender) + '\n\n' + await knowledgeContext()
-  const convo: Array<{ role: 'user' | 'assistant'; content: unknown }> = messages.map(m => ({ role: m.role, content: m.content }))
-  const usedTools: string[] = []
-  try {
-    for (let i = 0; i < 5; i++) {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST', headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-        body: JSON.stringify({ model, max_tokens: 220, system: systemPrompt, tools: TOOLS, messages: convo }),
-      })
-      const data = await res.json()
-      if (!res.ok) { console.error('anthropic', data); return await scriptedReply(dw, messages, ctx) }
-      const content = data.content as Array<{ type: string; text?: string; id?: string; name?: string; input?: Record<string, unknown> }>
-      if (data.stop_reason === 'tool_use') {
-        convo.push({ role: 'assistant', content })
-        const results = []
-        for (const block of content) {
-          if (block.type === 'tool_use') { usedTools.push(block.name || ''); const out = await execTool(block.name || '', block.input || {}, { dw, defaultPerson: p.person, messages, ctx }); results.push({ type: 'tool_result', tool_use_id: block.id, content: JSON.stringify(out) }) }
-        }
-        convo.push({ role: 'user', content: results })
-        continue
-      }
-      const text = content.filter(c => c.type === 'text').map(c => c.text).join(' ').trim()
-      return { reply: text || 'Einen Moment bitte.', mode: 'claude', tools: usedTools }
-    }
-    return { reply: 'Einen Moment, ich verbinde Sie mit dem Team.', mode: 'claude', tools: usedTools }
-  } catch (e) { console.error(e); return await scriptedReply(dw, messages, ctx) }
+  const r = await runBrainClaude({ channel: 'voice', dw, assistant: ctx?.assistant, messages, ctx })
+  if (r) return { reply: r.reply || 'Einen Moment bitte.', mode: r.mode, tools: r.tools }
+  return await scriptedReply(dw, messages, ctx)
 }
