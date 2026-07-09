@@ -111,7 +111,7 @@ async function fetchGreeting(dw, callerId, assistant) {
     });
     if (r.ok) {
       const j = await r.json();
-      if (j?.reply) return String(j.reply);
+      if (j?.reply || j?.speech) return String(j.speech || j.reply);
     }
   } catch (e) {
     console.warn("greeting fetch failed:", e?.message || e);
@@ -129,13 +129,15 @@ async function fetchReply(dw, messages, callerId, assistant) {
     });
     if (r.ok) {
       const j = await r.json();
-      return String(j?.reply || "");
+      const text = String(j?.reply || "");
+      return { text, speech: String(j?.speech || text) };
     }
     console.warn("agent non-200:", r.status);
   } catch (e) {
     console.warn("reply fetch failed:", e?.message || e);
   }
-  return "Entschuldigung, da ist gerade etwas schiefgelaufen. Bitte hinterlassen Sie Ihren Namen und eine Rückrufnummer – das Team meldet sich.";
+  const fb = "Entschuldigung, da ist gerade etwas schiefgelaufen. Bitte hinterlassen Sie Ihren Namen und eine Rückrufnummer – das Team meldet sich.";
+  return { text: fb, speech: fb };
 }
 
 // Anruf am Ende ins CRM protokollieren (best effort)
@@ -228,10 +230,10 @@ wss.on("connection", (ws) => {
       if (busy) return;
       busy = true;
       session.messages.push({ role: "user", content: msg.voicePrompt });
-      const reply = await fetchReply(session.dw, session.messages, session.caller, session.assistant);
-      session.messages.push({ role: "assistant", content: reply });
+      const { text, speech } = await fetchReply(session.dw, session.messages, session.caller, session.assistant);
+      session.messages.push({ role: "assistant", content: text });
       try {
-        ws.send(JSON.stringify({ type: "text", token: reply, last: true }));
+        ws.send(JSON.stringify({ type: "text", token: speech, last: true }));
       } catch { /* socket closed */ }
       busy = false;
       return;

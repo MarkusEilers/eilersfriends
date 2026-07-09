@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { runAgent, stripSpeakable } from '@/lib/voice/agent-core'
+import { runAgent, speakable } from '@/lib/voice/agent-core'
 import { getCallSession, saveCallSession } from '@/lib/voice/store'
 import { logError } from '@/lib/errors/store'
 
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   const nudgeAction = `/voice/twiml?dw=${dw}&amp;voice=${encodeURIComponent(VOICE)}&amp;retry=0`
   return twiml(
     `<Gather input="speech" language="de-DE" speechTimeout="auto" timeout="8" action="${action}" method="POST">` +
-    `<Say language="de-DE" voice="${VOICE}">${esc(stripSpeakable(reply))}</Say>` +
+    `<Say language="de-DE" voice="${VOICE}">${esc(speakable(reply))}</Say>` +
     `</Gather>` +
     `<Redirect method="POST">${nudgeAction}</Redirect>`
   )

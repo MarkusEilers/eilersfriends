@@ -19,6 +19,31 @@ export function stripSpeakable(t: string): string {
     .replace(/[:;]-?[)(\]\[dpDP]/g, '')
     .replace(/\s{2,}/g, ' ').trim()
 }
+// Sprech-Normalisierung (nur fuer TTS, nicht fuer Transkript/E-Mail):
+// Telefonnummern Ziffer-fuer-Ziffer, Abkuerzungen/Namen phonetisch. Leicht erweiterbar.
+const SPEAK_MAP: [RegExp, string][] = [
+  [/\bAljona\b/gi, 'Aliona'],
+  [/\bSDR\b/g, 'Ess Dee Arr'],
+  [/\bCRM\b/g, 'Ssieh Arr Emm'],
+  [/\bCRO\b/g, 'Ssieh Arr Oh'],
+  [/\bCEO\b/g, 'Ssieh Ieh Oh'],
+  [/\bB2B\b/g, 'Bieh tu Bieh'],
+  [/\bKPIs?\b/g, 'Kah Pieh Eis'],
+  [/\bROI\b/g, 'Arr Oh Ieh'],
+]
+function spaceNumbers(t: string): string {
+  return t.replace(/\+?\d[\d\s/().\-]{5,}\d/g, (m) => {
+    const plus = m.trim().startsWith('+')
+    const digits = m.replace(/\D/g, '')
+    if (digits.length < 7) return m
+    return (plus ? 'plus ' : '') + digits.split('').join(' ')
+  })
+}
+export function speakable(t: string): string {
+  let s = stripSpeakable(t)
+  for (const [re, rep] of SPEAK_MAP) s = s.replace(re, rep)
+  return spaceNumbers(s)
+}
 export function renderTranscript(messages: Msg[]): string {
   return messages.map(m => (m.role === 'user' ? 'Anrufer' : 'Assistentin') + ': ' + m.content).join('\n')
 }
