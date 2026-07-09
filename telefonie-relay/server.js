@@ -27,6 +27,14 @@ const PUBLIC_HOST = process.env.PUBLIC_HOST || "";
 const AGENT_BASE = (process.env.AGENT_BASE || "https://www.eilersfriends.com/voice").replace(/\/$/, "");
 const VOICE_API_KEY = process.env.VOICE_API_KEY || "";
 const TTS_LANGUAGE = process.env.TTS_LANGUAGE || "de-DE";
+// ── Turn-Taking / STT (versteht alles, reagiert schnell, unterbrechbar) ──────
+// Deepgram nova-2 versteht Deutsch gut; speechTimeout = ms Wartezeit nach
+// Sprech-Ende (600-5000), niedriger = schneller, aber Nummern nicht abschneiden.
+const STT_PROVIDER = process.env.STT_PROVIDER || "Deepgram";
+const STT_MODEL = process.env.STT_MODEL || "nova-2-general";
+const SPEECH_TIMEOUT = process.env.SPEECH_TIMEOUT || "800";
+const INTERRUPTIBLE = process.env.INTERRUPTIBLE || "speech";   // none|dtmf|speech|any
+const REPORT_INPUT = process.env.REPORT_INPUT || "speech";     // none|dtmf|speech|any
 
 // ── Stimmen (ElevenLabs, umschaltbar) + Rueckfallebene ──────────────────────
 // Primaer zwei Library-Stimmen (A/B), zusaetzlich Matilda (Default-ElevenLabs).
@@ -175,7 +183,7 @@ async function inboundTwiml(req, res) {
     `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Connect>
-    <ConversationRelay url="wss://${host}/relay" language="${TTS_LANGUAGE}" ttsLanguage="${TTS_LANGUAGE}" transcriptionLanguage="${TTS_LANGUAGE}"${ttsAttrs} interruptible="true" welcomeGreeting="${esc(greeting)}">
+    <ConversationRelay url="wss://${host}/relay" language="${TTS_LANGUAGE}" ttsLanguage="${TTS_LANGUAGE}" transcriptionLanguage="${TTS_LANGUAGE}" transcriptionProvider="${STT_PROVIDER}" speechModel="${STT_MODEL}" speechTimeout="${SPEECH_TIMEOUT}"${ttsAttrs} interruptible="${INTERRUPTIBLE}" reportInputDuringAgentSpeech="${REPORT_INPUT}" welcomeGreeting="${esc(greeting)}">
       <Parameter name="caller_number" value="${esc(caller)}" />
       <Parameter name="dw" value="${dw}" />
       <Parameter name="assistant_name" value="${esc(assistant.name)}" />
