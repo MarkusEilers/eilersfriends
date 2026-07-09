@@ -172,10 +172,11 @@ function esc(s) {
 // ---------------------------------------------------------------------------
 async function inboundTwiml(req, res) {
   const caller = req.body.From || req.body.Caller || "";
-  const dw = dwFromCalled(req.body.To || "");
+  // DW aus dem Body-Param (Cockpit-WebRTC) oder aus der letzten Ziffer von To (echter Anruf)
+  const dw = req.body.dw != null && req.body.dw !== "" ? (parseInt(req.body.dw, 10) || 0) : dwFromCalled(req.body.To || "");
   lastCall[dw] = new Date().toISOString();
   const host = PUBLIC_HOST || req.get("host");
-  const { attrs: ttsAttrs, engine, assistant } = await ttsAttrsFor(req.query.voice);
+  const { attrs: ttsAttrs, engine, assistant } = await ttsAttrsFor(req.body.voice || req.query.voice);
   const greeting = await fetchGreeting(dw, caller, assistant);
   console.log(`📞 DW ${dw} · Stimme: ${engine} · ${assistant.name}`);
 
@@ -183,7 +184,7 @@ async function inboundTwiml(req, res) {
     `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Connect>
-    <ConversationRelay url="wss://${host}/relay" language="${TTS_LANGUAGE}" ttsLanguage="${TTS_LANGUAGE}" transcriptionLanguage="${TTS_LANGUAGE}" transcriptionProvider="${STT_PROVIDER}" speechModel="${STT_MODEL}" speechTimeout="${SPEECH_TIMEOUT}"${ttsAttrs} interruptible="${INTERRUPTIBLE}" reportInputDuringAgentSpeech="${REPORT_INPUT}" welcomeGreeting="${esc(greeting)}">
+    <ConversationRelay url="wss://${host}/relay" language="${TTS_LANGUAGE}" ttsLanguage="${TTS_LANGUAGE}" transcriptionLanguage="${TTS_LANGUAGE}" elevenlabsTextNormalization="on" transcriptionProvider="${STT_PROVIDER}" speechModel="${STT_MODEL}" speechTimeout="${SPEECH_TIMEOUT}"${ttsAttrs} interruptible="${INTERRUPTIBLE}" reportInputDuringAgentSpeech="${REPORT_INPUT}" welcomeGreeting="${esc(greeting)}">
       <Parameter name="caller_number" value="${esc(caller)}" />
       <Parameter name="dw" value="${dw}" />
       <Parameter name="assistant_name" value="${esc(assistant.name)}" />

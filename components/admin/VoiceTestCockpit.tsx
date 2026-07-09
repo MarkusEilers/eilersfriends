@@ -14,14 +14,6 @@ const EL_VOICES = [
   { key: 'b', label: 'AIlexander (maennlich)', name: 'Eilexander', gender: 'm' },
   { key: 'matilda', label: 'AIlisabeth \u2013 Fallback', name: 'Eilisabet', gender: 'f' },
 ]
-const TW_VOICES = [
-  { id: 'Google.de-DE-Neural2-F', label: 'Google Neural2 F (w) — natürlich' },
-  { id: 'Google.de-DE-Neural2-B', label: 'Google Neural2 B (m)' },
-  { id: 'Google.de-DE-Neural2-C', label: 'Google Neural2 C (w)' },
-  { id: 'Polly.Vicki-Neural', label: 'Amazon Vicki (neural, w)' },
-  { id: 'Polly.Daniel-Neural', label: 'Amazon Daniel (neural, m)' },
-  { id: 'Google.de-DE-Wavenet-C', label: 'Google Wavenet C (w)' },
-]
 
 export function VoiceTestCockpit() {
   const [engine, setEngine] = useState<'browser' | 'elevenlabs' | 'twilio'>('browser')
@@ -35,7 +27,6 @@ export function VoiceTestCockpit() {
   const [mode, setMode] = useState('')
   const [twStatus, setTwStatus] = useState<'idle' | 'connecting' | 'live' | 'ended' | 'error'>('idle')
   const [twMsg, setTwMsg] = useState('')
-  const [twVoice, setTwVoice] = useState('Google.de-DE-Neural2-F')
   const [elVoice, setElVoice] = useState('a')
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const recRef = useRef<any>(null)
@@ -101,7 +92,7 @@ export function VoiceTestCockpit() {
       if (!tok.configured) { setTwStatus('error'); setTwMsg('Twilio noch nicht konfiguriert: ' + (tok.missing || []).join(', ')); return }
       const { Device } = await import('@twilio/voice-sdk')
       const device = new Device(tok.token, { logLevel: 1 }); deviceRef.current = device
-      const call = await device.connect({ params: { To: String(d), dw: String(d), voice: twVoice } }); callRef.current = call
+      const call = await device.connect({ params: { To: String(d), dw: String(d), voice: elVoice } }); callRef.current = call
       call.on('accept', () => { setTwStatus('live'); setTwMsg('Verbunden — sprich einfach.') })
       call.on('disconnect', () => { setTwStatus('ended'); setTwMsg('Anruf beendet.') })
       call.on('error', (e: any) => { setTwStatus('error'); setTwMsg('Fehler: ' + (e?.message || e)) })
@@ -133,11 +124,11 @@ export function VoiceTestCockpit() {
           </div>
           {engine === 'twilio' && (
             <div className="mt-4">
-              <label className="mb-1 flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-gray-400"><Volume2 size={12} /> Twilio-Stimme</label>
-              <select value={twVoice} onChange={e => setTwVoice(e.target.value)} className="w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs">
-                {TW_VOICES.map(v => <option key={v.id} value={v.id}>{v.label}</option>)}
+              <label className="mb-1 flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-gray-400"><Volume2 size={12} /> Stimme (ElevenLabs)</label>
+              <select value={elVoice} onChange={e => setElVoice(e.target.value)} className="w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs">
+                {EL_VOICES.map(v => <option key={v.key} value={v.key}>{v.label}</option>)}
               </select>
-              <p className="mt-1 text-[10px] text-gray-400">Vor dem Anruf wählen. Google-Neural2 klingen am besten. Für wirklich menschliche Stimme + niedrige Latenz braucht es ElevenLabs über den Telefonie-Server (ConversationRelay).</p>
+              <p className="mt-1 text-[10px] text-gray-400">Echter ConversationRelay-Anruf über den Telefonie-Server: ElevenLabs-Stimme + schnelles Turn-Taking (Deepgram), unterbrechbar. Vor dem Anruf wählen.</p>
             </div>
           )}
           {engine === 'elevenlabs' && (
