@@ -4,6 +4,8 @@ import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { ensureCompanyProfile } from '@/lib/db/self-heal'
 import { ensureBauplanV2Tables } from '@/lib/db/self-heal-v2'
+import { upsertCompanyByDomain } from '@/lib/db/queries/companies'
+import { domainFromUrl, workDomain } from '@/lib/util/email'
 
 export const runtime = 'nodejs'
 export const maxDuration = 30
@@ -115,6 +117,18 @@ Antworte nur mit dem JSON-Objekt.`
         industry = EXCLUDED.industry,
         last_analysed_at = NOW()
     `)
+
+    // Kanonische Org (companies) per Domain finden/anlegen + verknuepfen (keine Duplikate)
+    try {
+      const dom = domainFromUrl(websiteUrl) || workDomain((session.user as { email?: string }).email || '')
+      if (dom) {
+        const companyId = await upsertCompanyByDomain(dom, organisationName as string, websiteUrl as string)
+        if (companyId) {
+          await db.execute(sql`UPDATE company_profile SET company_id=${companyId} WHERE user_id=${session.user.id}`)
+          await db.execute(sql`UPDATE users SET company_id=${companyId} WHERE id=${session.user.id} AND company_id IS NULL`)
+        }
+      }
+    } catch (e) { console.error('org-link', e) }
 
     return NextResponse.json({ ok: true, profile })
   } catch (err) {

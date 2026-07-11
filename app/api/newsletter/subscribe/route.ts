@@ -7,6 +7,7 @@ import { eq, and } from 'drizzle-orm'
 import { sendEmail, renderTemplate } from '@/lib/email/resend'
 import { sql } from 'drizzle-orm'
 import {
+import { workEmailAdvice } from '@/lib/util/email'
   getDefaultDoiHtml,
   getDefaultDoiText,
   DEFAULT_DOI_SUBJECT,
@@ -107,7 +108,7 @@ export async function POST(request: Request) {
         } catch { /* non-fatal */ }
       } else if (existing[0].status === 'unsubscribed') {
         // Explizit abgemeldete Subscriber nicht neu aufnehmen
-        return NextResponse.json({ success: true, resubscribe: false })
+        return NextResponse.json({ success: true, resubscribe: false, emailAdvice: workEmailAdvice(email) })
       } else if (!existing[0].doiConfirmedAt) {
         // Noch nicht bestätigt — neuen Token generieren und erneut senden
         doiToken = randomUUID()
@@ -119,7 +120,7 @@ export async function POST(request: Request) {
         isNew = false // Nicht wirklich neu, aber DOI wird erneut gesendet
       } else {
         // Bereits bestätigt — idempotent, kein erneutes Senden
-        return NextResponse.json({ success: true, alreadyConfirmed: true })
+        return NextResponse.json({ success: true, alreadyConfirmed: true , emailAdvice: workEmailAdvice(email) })
       }
     } catch (dbErr) {
       console.error('DB error:', dbErr)
@@ -226,7 +227,7 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true , emailAdvice: workEmailAdvice(email) })
   } catch (err) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: 'Ungültige Email-Adresse' }, { status: 400 })

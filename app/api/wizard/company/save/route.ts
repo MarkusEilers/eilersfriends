@@ -3,6 +3,8 @@ import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { ensureCompanyProfile } from '@/lib/db/self-heal'
+import { upsertCompanyByDomain } from '@/lib/db/queries/companies'
+import { domainFromUrl, workDomain } from '@/lib/util/email'
 
 export const runtime = 'nodejs'
 
@@ -53,7 +55,18 @@ export async function POST(request: Request) {
       updated_at = now()
   `)
 
-  return NextResponse.json({ ok: true })
+    try {
+    const dom = domainFromUrl((website as string) || '') || workDomain((session.user as { email?: string }).email || '')
+    if (dom) {
+      const companyId = await upsertCompanyByDomain(dom, organisationName as string, website as string)
+      if (companyId) {
+        await db.execute(sql`UPDATE company_profile SET company_id=${companyId} WHERE user_id=${session.user.id}`)
+        await db.execute(sql`UPDATE users SET company_id=${companyId} WHERE id=${session.user.id} AND company_id IS NULL`)
+      }
+    }
+  } catch (e) { console.error('org-link', e) }
+
+return NextResponse.json({ ok: true })
 }
 
 export async function GET() {
