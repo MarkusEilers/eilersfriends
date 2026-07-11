@@ -7,11 +7,11 @@ import { eq, and } from 'drizzle-orm'
 import { sendEmail, renderTemplate } from '@/lib/email/resend'
 import { sql } from 'drizzle-orm'
 import {
-import { workEmailAdvice } from '@/lib/util/email'
   getDefaultDoiHtml,
   getDefaultDoiText,
   DEFAULT_DOI_SUBJECT,
 } from '@/lib/email/doi-template'
+import { workEmailAdvice } from '@/lib/util/email'
 
 /**
  * Ensures every column the route reads/writes actually exists in the live
