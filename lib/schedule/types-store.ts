@@ -151,3 +151,8 @@ export function localizedType(et: EventType, locale: string): { name: string; de
   const tr = et.translations?.[locale]
   return { name: tr?.name || et.name, description: (tr?.description ?? et.description) }
 }
+
+export async function setEventTypeTranslations(ownerSlug: string, slug: string, translations: Record<string, { name?: string; description?: string }>): Promise<void> {
+  await ensureEventTypeTables()
+  await db.execute(sql`UPDATE schedule_event_types SET translations = ${JSON.stringify(translations)}::jsonb WHERE owner_slug = ${ownerSlug} AND slug = ${slug}`)
+}

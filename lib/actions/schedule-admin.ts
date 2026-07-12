@@ -2,7 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 import { auth } from '@/lib/auth'
-import { upsertEventType, deleteEventType, upsertHostProfile, type Question, type Reminder, type Visibility } from '@/lib/schedule/types-store'
+import { upsertEventType, deleteEventType, upsertHostProfile, setEventTypeTranslations, type Question, type Reminder, type Visibility } from '@/lib/schedule/types-store'
+import { translateEventType } from '@/lib/schedule/translate'
 import { setExtraCalendarActive, removeExtraCalendar } from '@/lib/schedule/store'
 import { clearAllCache } from '@/lib/schedule/availability-cache'
 import { saveWeek, type Week } from '@/lib/schedule/availability-rules'
@@ -42,6 +43,8 @@ export async function saveEventTypeAction(p: EventTypePayload) {
     visibility: (['live', 'internal', 'offline'].includes(p.visibility) ? p.visibility : 'live') as Visibility,
     infoText: (p.infoText || '').trim(), questions, reminders, sort: Math.round(p.sort || 0),
   })
+  // Auto-Übersetzung EN/ES (best-effort, blockiert den Save nicht bei Fehler)
+  try { const tr = await translateEventType(name, (p.description || '').trim()); if (tr) await setEventTypeTranslations(p.ownerSlug, slug, tr) } catch { /* ignore */ }
   revalidatePath('/admin/schedule')
   revalidatePath(`/schedule/${p.ownerSlug}`)
 }
