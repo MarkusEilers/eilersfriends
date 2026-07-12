@@ -255,4 +255,15 @@ export async function ensureBauplanV2Tables() {
     )
   `)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS idx_bauplan_events_draft ON bauplan_events(bauplan_id, created_at DESC)`)
+
+  // Phase 1b: Delivery-Felder je Baustein + Origin-Story (idempotent)
+  await db.execute(sql`ALTER TABLE bauplan_building_blocks ADD COLUMN IF NOT EXISTS preconditions jsonb DEFAULT '[]'::jsonb`)
+  await db.execute(sql`ALTER TABLE bauplan_building_blocks ADD COLUMN IF NOT EXISTS required_inputs jsonb DEFAULT '[]'::jsonb`)
+  await db.execute(sql`ALTER TABLE bauplan_building_blocks ADD COLUMN IF NOT EXISTS outputs jsonb DEFAULT '[]'::jsonb`)
+  await db.execute(sql`ALTER TABLE bauplan_building_blocks ADD COLUMN IF NOT EXISTS roles jsonb DEFAULT '[]'::jsonb`)
+  await db.execute(sql`ALTER TABLE bauplan_building_blocks ADD COLUMN IF NOT EXISTS cadence text`)
+  await db.execute(sql`ALTER TABLE bauplan_building_blocks ADD COLUMN IF NOT EXISTS interval text`)
+  await db.execute(sql`ALTER TABLE bauplan_building_blocks ADD COLUMN IF NOT EXISTS kpis jsonb DEFAULT '[]'::jsonb`)
+  await db.execute(sql`ALTER TABLE bauplan_building_blocks ADD COLUMN IF NOT EXISTS delivery_modes jsonb DEFAULT '[]'::jsonb`)
+  await db.execute(sql`ALTER TABLE bauplan_offer_identity ADD COLUMN IF NOT EXISTS origin_story text`)
 }
