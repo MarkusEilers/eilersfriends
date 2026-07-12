@@ -42,13 +42,22 @@ export async function resolveFrameworkMeta(
 
   const db = dbMeta ?? {} as CardMeta
   const i18n = (fromMessages ?? {}) as Record<string, unknown>
+  const isDe = locale === 'de'
+
+  // Lokalisierbare Textfelder: Auf DE gewinnt die DB (Admin-Edits siegen).
+  // Auf allen anderen Sprachen gewinnt die vorhandene Übersetzung — sonst
+  // würde ein auf Deutsch angelegter DB-Wert die EN/ES/RU-Version überschreiben.
+  function pickText(dbVal: string | undefined, i18nVal: string | undefined, mergedVal: string | undefined): string | undefined {
+    if (!isDe && i18nVal !== undefined && i18nVal !== null && i18nVal !== '') return i18nVal
+    return pick<string>(dbVal, i18nVal, mergedVal)
+  }
 
   return {
     ...merged,
-    posterTitle:    pick<string>(db.posterTitle,    i18n.posterTitle    as string | undefined, merged.posterTitle),
-    posterSubtitle: pick<string>(db.posterSubtitle, i18n.posterSubtitle as string | undefined, merged.posterSubtitle),
-    tagline:        pick<string>(db.tagline,        i18n.tagline        as string | undefined, merged.tagline),
-    agentLabel:     pick<string>(db.agentLabel,     i18n.agentLabel     as string | undefined, merged.agentLabel),
+    posterTitle:    pickText(db.posterTitle,    i18n.posterTitle    as string | undefined, merged.posterTitle),
+    posterSubtitle: pickText(db.posterSubtitle, i18n.posterSubtitle as string | undefined, merged.posterSubtitle),
+    tagline:        pickText(db.tagline,        i18n.tagline        as string | undefined, merged.tagline),
+    agentLabel:     pickText(db.agentLabel,     i18n.agentLabel     as string | undefined, merged.agentLabel),
     tone:           db.tone ?? merged.tone,
     deliverables:   (db.deliverables && db.deliverables.length > 0)
                       ? db.deliverables

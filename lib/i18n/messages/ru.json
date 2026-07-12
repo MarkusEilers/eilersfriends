@@ -297,59 +297,59 @@
   "frameworks": {
     "instant-influence": {
       "posterTitle": "INSTANT\nINFLUENCE",
-      "posterSubtitle": "Kunden im ersten Gespräch gewinnen",
+      "posterSubtitle": "Завоюй клиента в первом разговоре",
       "tagline": "Generator + Notes-AI",
       "agentLabel": "Discovery-Call AI",
-      "title": "Instant Influence — Kunden im ersten Gespräch gewinnen",
-      "metaDescription": "Die 3 Zutaten, die Kunden im ersten Gespräch gewinnen. Discovery-Call-Generator + Learning + Notes-AI als interaktives Tool.",
+      "title": "Instant Influence — Завоюй клиента в первом разговоре",
+      "metaDescription": "3 ингредиента, которые помогают завоевать клиента с первого разговора. Discovery-Call-Generator + обучение + Notes-AI как интерактивный инструмент.",
       "deliverables": [
         {
           "icon": "FileDown",
-          "label": "32-S. PDF: Generator-Template + 3 Notes-AI-Modi"
+          "label": "32-стр. PDF: шаблон Generator + 3 режима Notes-AI"
         },
         {
           "icon": "Video",
-          "label": "24-Min Video-Walkthrough: erstes Gespräch live"
+          "label": "24-мин Video-Walkthrough: первый разговор в прямом эфире"
         },
         {
           "icon": "ClipboardList",
-          "label": "Bonus: Discovery-Call-Score-Karte"
+          "label": "Бонус: оценочная карта Discovery-Call"
         }
       ]
     },
     "b2b-angebote": {
-      "posterTitle": "UNWIDERSTEHLICHE\nANGEBOTE",
-      "posterSubtitle": "Der 8-Schritte-Bauplan",
-      "tagline": "8-Schritte-Bauplan",
+      "posterTitle": "НЕОТРАЗИМЫЕ\nПРЕДЛОЖЕНИЯ",
+      "posterSubtitle": "План из 8 шагов",
+      "tagline": "План из 8 шагов",
       "agentLabel": "PDF + Video",
-      "title": "Unwiderstehliche B2B-Angebote",
-      "metaDescription": "Der komplette Bauplan für B2B-Angebote, die sich von selbst verkaufen — in 8 einfachen Schritten. Inkl. Video-Masterclass.",
+      "title": "Неотразимые B2B-предложения",
+      "metaDescription": "Полный план B2B-предложений, которые продают себя сами — в 8 простых шагах. Включая Video-мастер-класс.",
       "deliverables": [
         {
           "icon": "FileDown",
-          "label": "40-S. PDF: 8 Schritte zum unwiderstehlichen Angebot"
+          "label": "40-стр. PDF: 8 шагов к неотразимому предложению"
         },
         {
           "icon": "Video",
-          "label": "47-Min Video-Masterclass von Markus Eilers"
+          "label": "47-мин Video-мастер-класс от Маркуса Айлерса"
         },
         {
           "icon": "ClipboardList",
-          "label": "Bonus: Angebots-Template als Google-Doc"
+          "label": "Бонус: шаблон предложения в Google-Doc"
         }
       ]
     },
     "hailiom": {
       "posterTitle": "SOCIAL MEDIA\nROCKSTAR",
-      "posterSubtitle": "9-Schritte AI Content",
+      "posterSubtitle": "AI-контент за 9 шагов",
       "tagline": "Voice · Idea · Atomization · Drafting",
       "agentLabel": "4 GPT Engines",
-      "title": "Hailiom — 9-Step AI Content Foundation & Explosion",
-      "metaDescription": "Der vortrainierte 9-Schritte-Prozess, der 87 % deiner Content-Marketing-Arbeit eliminiert und endlich qualifizierte Leads liefert. Kostenlos als Bauplan.",
+      "title": "Hailiom — 9-шаговая AI-основа и взрыв контента",
+      "metaDescription": "Предобученный 9-шаговый процесс, который устраняет 87 % работы по контент-маркетингу и наконец приносит квалифицированные лиды. Бесплатно в виде плана.",
       "deliverables": [
         {
           "icon": "FileDown",
-          "label": "Bauplan: 9-Schritte-Content-Prozess"
+          "label": "План: 9-шаговый процесс создания контента"
         },
         {
           "icon": "Wand2",
@@ -357,95 +357,95 @@
         },
         {
           "icon": "ClipboardList",
-          "label": "Wochen-Kadenz-Template"
+          "label": "Шаблон недельного каденса"
         }
       ]
     },
     "beef-radar": {
       "posterTitle": "BEEF\nRADAR",
-      "posterSubtitle": "Konflikte sehen, bevor sie ausbrechen",
-      "tagline": "Konflikt-Diagnose",
+      "posterSubtitle": "Видеть конфликты до того, как они вспыхнут",
+      "tagline": "Диагностика конфликтов",
       "agentLabel": "Worksheet",
-      "title": "Beef Radar — Vom Merkmal zum Financial Impact",
-      "metaDescription": "Der einfache, übersehene Hack, mit dem du eine Tonne Wert kommunizierst — sodass auch der CFO zuhört. Kostenlos als Bauplan + Worksheet.",
+      "title": "Beef Radar — От характеристики к финансовому воздействию",
+      "metaDescription": "Простой, незаметный приём, с помощью которого ты транслируешь огромную ценность — так, что даже CFO слушает. Бесплатно в виде плана + Worksheet.",
       "deliverables": [
         {
           "icon": "FileDown",
-          "label": "Worksheet: 7 Signale, die andere übersehen"
+          "label": "Worksheet: 7 сигналов, которые другие упускают"
         },
         {
           "icon": "ClipboardList",
-          "label": "Diagnose-Karte für Vorstandsgespräche"
+          "label": "Диагностическая карта для разговоров с советом директоров"
         },
         {
           "icon": "Video",
-          "label": "12-Min Walk-Through mit echten Beispielen"
+          "label": "12-мин разбор с реальными примерами"
         }
       ]
     },
     "core-messages": {
       "posterTitle": "CORE 11",
-      "posterSubtitle": "Die Botschaften jedes Unternehmers",
-      "tagline": "Die 11 Botschaften",
-      "agentLabel": "18-Min AI-Worksheet",
-      "title": "Core — Die 11 Botschaften, die jede:r Unternehmer:in im Schlaf können sollte",
-      "metaDescription": "Die 11 Kern-Botschaften für planbares Wachstum — und wie du deine eigenen in 18 Minuten findest. Kostenlos als Bauplan + Worksheet.",
+      "posterSubtitle": "Послания каждого предпринимателя",
+      "tagline": "11 ключевых посланий",
+      "agentLabel": "18-мин AI-Worksheet",
+      "title": "Core — 11 посланий, которые каждый предприниматель должен знать наизусть",
+      "metaDescription": "11 ключевых посланий для планомерного роста — и как найти свои за 18 минут. Бесплатно в виде плана + Worksheet.",
       "deliverables": [
         {
           "icon": "FileDown",
-          "label": "Bauplan: Die 11 Kern-Botschaften"
+          "label": "План: 11 ключевых посланий"
         },
         {
           "icon": "ClipboardList",
-          "label": "18-Min AI-Worksheet — Deine 11 finden"
+          "label": "18-мин AI-Worksheet — найди свои 11"
         },
         {
           "icon": "Video",
-          "label": "Beispiel-Set: 11 Botschaften eines SaaS-Founders"
+          "label": "Пример-набор: 11 посланий SaaS-основателя"
         }
       ]
     },
     "strategic-preparation": {
       "posterTitle": "STRATEGIC\nPREP",
-      "posterSubtitle": "18 Min vor jedem Pitch",
-      "tagline": "Vor dem wichtigen Gespräch",
+      "posterSubtitle": "18 минут перед каждым питчем",
+      "tagline": "Перед важным разговором",
       "agentLabel": "Pre-Meeting Checklist",
-      "title": "Strategic Preparation — In 8 Schritten zu jedem wichtigen Gespräch",
-      "metaDescription": "Auch in den schwierigsten und wichtigsten Gesprächen souverän überzeugen. In 8 Schritten — mit AI-Worksheet als Beschleuniger.",
+      "title": "Strategic Preparation — 8 шагов к любому важному разговору",
+      "metaDescription": "Уверенно убеждать даже в самых сложных и важных разговорах. За 8 шагов — с AI-Worksheet в качестве ускорителя.",
       "deliverables": [
         {
           "icon": "FileDown",
-          "label": "8-Schritte-Checklist als PDF + Google-Doc"
+          "label": "Чеклист из 8 шагов в виде PDF + Google-Doc"
         },
         {
           "icon": "Wand2",
-          "label": "GPT Engine: füllt 60 % der Vorbereitung selbst"
+          "label": "GPT Engine: заполняет 60 % подготовки самостоятельно"
         },
         {
           "icon": "ClipboardList",
-          "label": "Beispiel-Prep für einen Series-A-Pitch"
+          "label": "Пример подготовки к питчу Series-A"
         }
       ]
     },
     "recommendation-pitch": {
       "posterTitle": "RECOMMENDATION\nPITCH",
-      "posterSubtitle": "Käufer:in im Driver-Seat",
-      "tagline": "Verkaufen ohne zu verkaufen",
-      "agentLabel": "Skript-Vorlage",
-      "title": "The \"Recommendation\" Pitch — Verkaufen ohne zu verkaufen",
-      "metaDescription": "Wie du Empfehlungen aussprichst statt zu pitchen — und damit den Käufer ins Driver-Seat setzt. Kostenlos als Bauplan + Skript.",
+      "posterSubtitle": "Покупатель в роли ведущего",
+      "tagline": "Продавать, не продавая",
+      "agentLabel": "Скрипт-шаблон",
+      "title": "The \"Recommendation\" Pitch — Продавать, не продавая",
+      "metaDescription": "Как давать рекомендации вместо питча — и тем самым ставить покупателя в роль ведущего. Бесплатно в виде плана + скрипта.",
       "deliverables": [
         {
           "icon": "FileDown",
-          "label": "Skript-Vorlage: 5 Recommendation-Muster"
+          "label": "Скрипт-шаблон: 5 моделей рекомендаций"
         },
         {
           "icon": "Video",
-          "label": "10-Min Coaching-Video: wie es klingt"
+          "label": "10-мин коучинг-видео: как это звучит"
         },
         {
           "icon": "ClipboardList",
-          "label": "Konversations-Karte für Live-Gespräche"
+          "label": "Карточка разговора для живых встреч"
         }
       ]
     }
