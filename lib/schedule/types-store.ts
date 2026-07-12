@@ -17,6 +17,7 @@ export type EventType = {
   slug: string
   name: string
   description: string
+  translations?: Record<string, { name?: string; description?: string }>
   durationMin: number
   bufferBeforeMin: number
   bufferAfterMin: number
@@ -44,6 +45,7 @@ export async function ensureEventTypeTables() {
       sort int NOT NULL DEFAULT 0, created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now(),
       UNIQUE(owner_slug, slug)
     )`)
+  await db.execute(sql`ALTER TABLE schedule_event_types ADD COLUMN IF NOT EXISTS translations jsonb DEFAULT '{}'::jsonb`)
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS schedule_host_profiles (
       person_slug text PRIMARY KEY, avatar_url text NOT NULL DEFAULT '', intro text NOT NULL DEFAULT '',
@@ -57,6 +59,7 @@ function mapType(r: Record<string, unknown>): EventType {
   return {
     id: String(r.id), ownerSlug: String(r.owner_slug), slug: String(r.slug), name: String(r.name),
     description: String(r.description ?? ''), durationMin: Number(r.duration_min),
+    translations: parse<Record<string, { name?: string; description?: string }>>(r.translations, {}),
     bufferBeforeMin: Number(r.buffer_before_min), bufferAfterMin: Number(r.buffer_after_min),
     maxPerDay: r.max_per_day == null ? null : Number(r.max_per_day),
     visibility: String(r.visibility) as Visibility, infoText: String(r.info_text ?? ''),
@@ -141,4 +144,10 @@ export async function upsertHostProfile(slug: string, avatarUrl: string, intro: 
   await db.execute(sql`
     INSERT INTO schedule_host_profiles (person_slug, avatar_url, intro, updated_at) VALUES (${slug}, ${avatarUrl}, ${intro}, now())
     ON CONFLICT (person_slug) DO UPDATE SET avatar_url=EXCLUDED.avatar_url, intro=EXCLUDED.intro, updated_at=now()`)
+}
+
+// Lokalisierten Namen/Beschreibung liefern (Fallback: Basis = Deutsch).
+export function localizedType(et: EventType, locale: string): { name: string; description: string } {
+  const tr = et.translations?.[locale]
+  return { name: tr?.name || et.name, description: (tr?.description ?? et.description) }
 }

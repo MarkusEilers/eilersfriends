@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
 import { entityFor } from '@/lib/schedule/config'
-import { listBookableTypes } from '@/lib/schedule/types-store'
+import { listBookableTypes, localizedType } from '@/lib/schedule/types-store'
 import { Clock, ArrowRight } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -14,6 +14,7 @@ export default async function ScheduleTypes({ params }: { params: Promise<{ pers
   if (!ent) notFound()
   const t = await getTranslations('schedule')
   const types = await listBookableTypes(person)
+  const locale = await getLocale()
   return (
     <div style={{ backgroundColor: '#FAFAF8' }}>
       <section className="px-6 py-16 sm:py-20">
@@ -28,10 +29,10 @@ export default async function ScheduleTypes({ params }: { params: Promise<{ pers
               {types.map(ty => (
                 <Link key={ty.id} href={`/schedule/${person}/${ty.slug}` as '/'} className="group rounded-2xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-md">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-bold" style={{ color: '#0D0D0B' }}>{ty.name}</h2>
+                    <h2 className="text-lg font-bold" style={{ color: '#0D0D0B' }}>{localizedType(ty, locale).name}</h2>
                     <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-bold text-blue-700"><Clock size={11} /> {ty.durationMin} {t('min')}</span>
                   </div>
-                  {ty.description && <p className="mt-2 text-sm text-gray-500">{ty.description}</p>}
+                  {localizedType(ty, locale).description && <p className="mt-2 text-sm text-gray-500">{localizedType(ty, locale).description}</p>}
                   <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold" style={{ color: '#1A5FD4' }}>{t('viewSlots')} <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" /></span>
                 </Link>
               ))}
