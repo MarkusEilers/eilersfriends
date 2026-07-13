@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { Target, Users, TrendingUp, Shield, Zap, Star, CalendarCheck, Sparkles, Check, AlertCircle } from 'lucide-react'
+import { Target, Users, TrendingUp, Shield, Zap, Star, CalendarCheck, Sparkles, Check, AlertCircle, Rocket, Gift, MessageCircle } from 'lucide-react'
 
 // ─── Shared types (mirror offer-builder/src/types/offer.ts) ────────────────────
 export interface UnderstandingData { title?: string; goals?: string[]; challenges?: string[] }
@@ -290,6 +290,80 @@ export function OfferAcceptCta({ offerSecret, status }: { offerSecret: string; s
         <p className="mt-4 text-xs" style={{ color: '#9CA3AF' }}>
           Du kannst innerhalb von 14 Tagen ohne Angabe von Gründen widerrufen.
         </p>
+      </div>
+    </section>
+  )
+}
+
+
+// ─── New Era — narrative bridge (matches backend preview) ─────────────────────
+export function OfferNewEra({ text }: { text?: string | null }) {
+  return (
+    <section className="px-6 py-20 text-center" style={{ backgroundColor: '#F0F5FF' }}>
+      <div className="mx-auto max-w-2xl">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full" style={{ backgroundColor: '#DBE6FF', color: '#1A5FD4' }}>
+          <Rocket size={22} />
+        </div>
+        <h2 className="mt-5 text-3xl font-bold" style={{ color: '#0D0D0B' }}>Eine neue Ära der Überzeugungsarbeit</h2>
+        <p className="mx-auto mt-4 text-base leading-relaxed" style={{ color: '#6B7280' }}>
+          {text?.trim() || 'Besonders Vertrieb und der Umgang mit Kunden ist ein Trust- und Networking-Game. Erfolgreiche Teams nutzen das und fordern den Status quo ihrer Branche intelligent heraus.'}
+        </p>
+      </div>
+    </section>
+  )
+}
+
+// ─── Ingredients — 3 building blocks (matches backend preview) ────────────────
+export function OfferIngredients() {
+  const cards = [
+    { icon: Users, title: 'Ideale Kunden', body: 'Wissen, mit wem ein Gespräch lohnt — Ziele, Sorgen, Entscheidungskriterien.' },
+    { icon: Gift, title: 'Unwiderstehliches Angebot', body: 'Mehr als Features und Preis — eine Story, die einlädt.' },
+    { icon: MessageCircle, title: 'Systematische Ansprache', body: 'Relevanz, Vertrauen und Begleitung zur Commitment-Entscheidung.' },
+  ]
+  return (
+    <section className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
+      <div className="mx-auto max-w-5xl">
+        <h2 className="text-center text-3xl font-bold" style={{ color: '#0D0D0B' }}>Wirksame Überzeugungsarbeit braucht nur 3 Zutaten</h2>
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {cards.map((c, i) => {
+            const Icon = c.icon
+            return (
+              <div key={i} className="rounded-3xl border border-gray-200 bg-white p-7 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full" style={{ backgroundColor: '#EBF1FF', color: i === 2 ? '#F05A1A' : '#1A5FD4' }}>
+                  <Icon size={18} />
+                </div>
+                <div className="mt-4 text-2xl font-bold" style={{ color: '#1A5FD4' }}>{i + 1}</div>
+                <h3 className="mt-2 text-base font-bold" style={{ color: '#0D0D0B' }}>{c.title}</h3>
+                <p className="mt-1 text-sm text-gray-500">{c.body}</p>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Timeline — program phases (matches backend preview) ──────────────────────
+export function OfferTimeline({ phases }: { phases: { title?: string; description?: string }[] }) {
+  if (!phases.length) return null
+  const colors = ['#0E9DDD', '#0F1E3A', '#F05A1A']
+  return (
+    <section className="px-6 py-20">
+      <div className="mx-auto max-w-3xl">
+        <h2 className="text-3xl font-bold" style={{ color: '#0D0D0B' }}>Euer Programm &amp; Timeline</h2>
+        <p className="mt-1 text-sm text-gray-500">Die integrierte Timeline mit allen Phasen.</p>
+        <div className="mt-6 space-y-3">
+          {phases.slice(0, 3).map((p, i) => (
+            <div key={i} className="flex items-center gap-4 rounded-2xl border border-gray-100 bg-gray-50 px-5 py-4">
+              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white" style={{ backgroundColor: colors[i] ?? '#1A5FD4' }}>{i + 1}</div>
+              <div className="min-w-0">
+                <h3 className="text-sm font-bold" style={{ color: '#0D0D0B' }}>Phase {i + 1}: {p.title || 'Phase'}</h3>
+                {p.description && <p className="text-xs text-gray-500">{p.description}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

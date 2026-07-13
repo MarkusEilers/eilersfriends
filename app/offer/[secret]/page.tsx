@@ -1,3 +1,4 @@
+import type * as React from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { getOfferBySalt, recordOfferEvent } from '@/lib/db/queries/offers'
@@ -9,6 +10,9 @@ import {
   OfferEconomicResults,
   OfferPricing,
   OfferAcceptCta,
+  OfferNewEra,
+  OfferIngredients,
+  OfferTimeline,
   type UnderstandingData,
   type EmpathyData,
   type EconomicResult,
@@ -41,6 +45,7 @@ interface OfferFull {
   valid_until: string
   status: string
   selected_pricing_option: string | null
+  section_order?: { type: string; enabled: boolean }[] | null
 }
 
 export default async function PublicOfferPage({ params }: { params: Promise<{ secret: string }> }) {
@@ -58,6 +63,27 @@ export default async function PublicOfferPage({ params }: { params: Promise<{ se
     getSetting('calendly.markus', '/schedule/markus/kennenlernen-30').catch(() => '/schedule/markus/kennenlernen-30'),
     getSetting('calendly.aljona', '/schedule/aljona').catch(() => '/schedule/aljona'),
   ])
+
+  // Section renderer — mirrors the backend preview. Order + enabled come from
+  // offer.section_order (Drag&Drop im Editor); Fallback = Default-Reihenfolge.
+  const DEFAULT_ORDER = ['understanding', 'empathy', 'newEra', 'ingredients', 'timeline', 'economic', 'pricing', 'accept']
+  const rawOrder = Array.isArray(offer.section_order) && offer.section_order.length
+    ? offer.section_order
+    : DEFAULT_ORDER.map((type) => ({ type, enabled: true }))
+  const sectionOrder = rawOrder.filter((sec) => sec.enabled)
+  const timelinePhases = (offer.programs?.[0]?.pricing ?? []).map((o) => ({ title: o.title, description: o.description }))
+  const sectionNodes: Record<string, React.ReactNode> = {
+    understanding: offer.understanding_section ? <OfferUnderstanding key="understanding" data={offer.understanding_section} /> : null,
+    empathy: offer.empathy_section ? <OfferEmpathy key="empathy" data={offer.empathy_section} /> : null,
+    newEra: <OfferNewEra key="newEra" text={offer.empathy_section?.successMessage} />,
+    ingredients: <OfferIngredients key="ingredients" />,
+    timeline: timelinePhases.length ? <OfferTimeline key="timeline" phases={timelinePhases} /> : null,
+    economic: offer.economic_results && offer.economic_results.length > 0 ? <OfferEconomicResults key="economic" results={offer.economic_results} /> : null,
+    pricing: (offer.programs && offer.programs.length > 0)
+      ? <div key="pricing"><GuaranteeBox text={offer.guarantee_text ?? undefined} /><OfferPricing programs={offer.programs} selectedOption={offer.selected_pricing_option} /></div>
+      : null,
+    accept: <OfferAcceptCta key="accept" offerSecret={offer.access_salt} status={offer.status} />,
+  }
 
   const validUntilDate = new Date(offer.valid_until)
 
@@ -78,7 +104,7 @@ export default async function PublicOfferPage({ params }: { params: Promise<{ se
         </div>
       </header>
 
-      {/* Premium offer narrative — same components as before, now used end-to-end */}
+      {/* Premium offer narrative — driven by section_order (mirrors backend preview) */}
       <main>
         <OfferHero
           offerNumber={offer.offer_number}
@@ -91,25 +117,7 @@ export default async function PublicOfferPage({ params }: { params: Promise<{ se
           validUntil={validUntilDate}
         />
 
-        {offer.understanding_section && (
-          <OfferUnderstanding data={offer.understanding_section} />
-        )}
-
-        {offer.empathy_section && (
-          <OfferEmpathy data={offer.empathy_section} />
-        )}
-
-        {offer.economic_results && offer.economic_results.length > 0 && (
-          <OfferEconomicResults results={offer.economic_results} />
-        )}
-
-        <GuaranteeBox text={offer.guarantee_text ?? undefined} />
-
-        {offer.programs && offer.programs.length > 0 && (
-          <OfferPricing programs={offer.programs} selectedOption={offer.selected_pricing_option} />
-        )}
-
-        <OfferAcceptCta offerSecret={offer.access_salt} status={offer.status} />
+        {sectionOrder.map(({ type }) => sectionNodes[type]).filter(Boolean)}
 
         <AboutUsFooter markusCalendly={markusCalendly} aljonaCalendly={aljonaCalendly} customerName={offer.customer_name} offerLabel={offer.offer_number} />
       </main>
