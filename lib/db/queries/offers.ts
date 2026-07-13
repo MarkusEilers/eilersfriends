@@ -92,6 +92,29 @@ async function ensureOfferSchema() {
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS customer_logo_url    TEXT`)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS customer_logo_url_bw TEXT`)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS guarantee_text       TEXT`)
+  // Wave 3 — Angebots-Annahme: freischaltbare Zahlarten + Rhythmen + Upfront-Rabatt
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS payment_card_enabled    BOOLEAN DEFAULT false`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS payment_invoice_enabled BOOLEAN DEFAULT true`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS rhythm_monthly_enabled  BOOLEAN DEFAULT true`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS rhythm_upfront_enabled  BOOLEAN DEFAULT true`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS upfront_discount_pct    NUMERIC DEFAULT 0`)
+  // Annahme-Nachweis (v.a. Rechnung): Name/E-Mail + IP + Hash(Timestamp+IP)
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS offer_acceptances (
+      id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      offer_id     UUID REFERENCES offers(id) ON DELETE CASCADE,
+      name         TEXT,
+      email        TEXT,
+      method       TEXT,          -- card | invoice
+      rhythm       TEXT,          -- upfront | monthly
+      amount       NUMERIC,
+      currency     TEXT DEFAULT 'EUR',
+      ip           TEXT,
+      accept_hash  TEXT,          -- sha256(offer_id + email + ip + ts)
+      user_agent   TEXT,
+      created_at   TIMESTAMPTZ DEFAULT now()
+    )`)
+  await db.execute(sql`CREATE INDEX IF NOT EXISTS offer_acceptances_offer_idx ON offer_acceptances (offer_id)`)
   ensured = true
 }
 
@@ -251,6 +274,12 @@ export interface OfferUpdate {
   customerLogoUrl?: string | null
   customerLogoUrlBw?: string | null
   guaranteeText?: string | null
+  // Wave 3 — Zahlarten/Rhythmen für Angebots-Annahme
+  paymentCardEnabled?: boolean
+  paymentInvoiceEnabled?: boolean
+  rhythmMonthlyEnabled?: boolean
+  rhythmUpfrontEnabled?: boolean
+  upfrontDiscountPct?: number | null
 }
 
 export async function updateOffer(id: string, update: OfferUpdate): Promise<void> {
@@ -279,6 +308,11 @@ export async function updateOffer(id: string, update: OfferUpdate): Promise<void
   if (update.customerLogoUrl !== undefined) sets.push(sql`customer_logo_url = ${update.customerLogoUrl}`)
   if (update.customerLogoUrlBw !== undefined) sets.push(sql`customer_logo_url_bw = ${update.customerLogoUrlBw}`)
   if (update.guaranteeText !== undefined) sets.push(sql`guarantee_text = ${update.guaranteeText}`)
+  if (update.paymentCardEnabled !== undefined) sets.push(sql`payment_card_enabled = ${update.paymentCardEnabled}`)
+  if (update.paymentInvoiceEnabled !== undefined) sets.push(sql`payment_invoice_enabled = ${update.paymentInvoiceEnabled}`)
+  if (update.rhythmMonthlyEnabled !== undefined) sets.push(sql`rhythm_monthly_enabled = ${update.rhythmMonthlyEnabled}`)
+  if (update.rhythmUpfrontEnabled !== undefined) sets.push(sql`rhythm_upfront_enabled = ${update.rhythmUpfrontEnabled}`)
+  if (update.upfrontDiscountPct !== undefined) sets.push(sql`upfront_discount_pct = ${update.upfrontDiscountPct}`)
   if (!sets.length) return
   sets.push(sql`updated_at = now()`)
   const joined = sql.join(sets, sql`, `)
