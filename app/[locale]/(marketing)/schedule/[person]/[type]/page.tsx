@@ -9,10 +9,12 @@ import { BookingWidget } from '@/components/schedule/BookingWidget'
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
-export default async function ScheduleBooking({ params, searchParams }: { params: Promise<{ person: string; type: string }>; searchParams: Promise<{ preview?: string }> }) {
+export default async function ScheduleBooking({ params, searchParams }: { params: Promise<{ person: string; type: string }>; searchParams: Promise<{ preview?: string; name?: string; offer?: string }> }) {
   const { person, type } = await params
   const sp = await searchParams
   const isPreview = sp?.preview != null
+  const prefillName = sp?.name?.trim() || undefined
+  const prefillNote = sp?.offer?.trim() ? `Angebot: ${sp.offer.trim()}` : undefined
 
   const ent = entityFor(person)
   const et = await getEventType(person, type)
@@ -45,7 +47,7 @@ export default async function ScheduleBooking({ params, searchParams }: { params
           <h1 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>{loc.name} {t('with')} {ent.name}</h1>
           <p className="mt-2 text-base text-gray-600">{et.durationMin} {t('minutes')}{loc.description ? ` · ${loc.description}` : ''}</p>
           <div className="mt-8">
-            <BookingWidget person={person} type={type} personName={ent.name} durationMin={et.durationMin} infoText={et.infoText} questions={et.questions} hosts={hosts} />
+            <BookingWidget person={person} type={type} personName={ent.name} durationMin={et.durationMin} infoText={et.infoText} questions={et.questions} hosts={hosts} prefillName={prefillName} prefillNote={prefillNote} />
           </div>
         </div>
       </section>

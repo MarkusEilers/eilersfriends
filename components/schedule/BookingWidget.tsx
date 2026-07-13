@@ -29,9 +29,9 @@ function firstWeekdayMon(y: number, m: number) { return (new Date(Date.UTC(y, m 
 function daysInMonth(y: number, m: number) { return new Date(Date.UTC(y, m, 0)).getUTCDate() }
 function initials(name: string) { return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase() }
 
-export function BookingWidget({ person, type, personName, durationMin, infoText, questions, hosts }: {
+export function BookingWidget({ person, type, personName, durationMin, infoText, questions, hosts, prefillName, prefillNote }: {
   person: string; type: string; personName: string; durationMin: number
-  infoText?: string; questions?: Question[]; hosts?: Host[]
+  infoText?: string; questions?: Question[]; hosts?: Host[]; prefillName?: string; prefillNote?: string
 }) {
   const t = useTranslations('schedule')
   const locale = useLocale()
@@ -43,7 +43,7 @@ export function BookingWidget({ person, type, personName, durationMin, infoText,
   const [dayKey, setDayKey] = useState<string | null>(null)
   const [slot, setSlot] = useState<string | null>(null)
   const [cursor, setCursor] = useState<{ y: number; m: number } | null>(null)
-  const [name, setName] = useState(''); const [email, setEmail] = useState(''); const [note, setNote] = useState('')
+  const [name, setName] = useState(prefillName ?? ''); const [email, setEmail] = useState(''); const [note, setNote] = useState(prefillNote ?? '')
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false); const [booked, setBooked] = useState<Booked | null>(null); const [err, setErr] = useState<string | null>(null)
 

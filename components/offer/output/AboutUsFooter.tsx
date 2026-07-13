@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Calendar, Mail } from 'lucide-react'
+import { Calendar } from 'lucide-react'
 
 /**
  * About-Us-Footer im Angebot — Markus + Aljona Avatare, Bio, Calendly-Links.
@@ -9,15 +9,27 @@ import { Calendar, Mail } from 'lucide-react'
 export function AboutUsFooter({
   markusCalendly = '/schedule/markus/kennenlernen-30',
   aljonaCalendly = '/schedule/aljona',
+  customerName,
+  offerLabel,
 }: {
   markusCalendly?: string
   aljonaCalendly?: string
+  customerName?: string
+  offerLabel?: string
 }) {
+  // Direkt-Termin: Kundenname + Angebot als Parameter an die Buchungsseite übergeben.
+  const withParams = (url: string) => {
+    const qs = new URLSearchParams()
+    if (customerName) qs.set('name', customerName)
+    if (offerLabel) qs.set('offer', offerLabel)
+    const q = qs.toString()
+    return q ? `${url}${url.includes('?') ? '&' : '?'}${q}` : url
+  }
   return (
     <section className="px-6 py-20" style={{ backgroundColor: '#0F1E3A' }}>
       <div className="mx-auto max-w-4xl">
         <div className="text-center">
-          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#5DDBF5' }}>
+          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.55)' }}>
             Wer hinter diesem Angebot steht
           </span>
           <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">
@@ -34,7 +46,7 @@ export function AboutUsFooter({
             role="Revenue Systems · B2B-Vertrieb"
             photo="/markus-photo.jpg"
             bio="Kundengewinnungs-Profi mit 25 Jahren Erfahrung im B2B-Vertrieb. Hat über 500 Gründer:innen geholfen, planbares Umsatzwachstum aufzubauen."
-            calendlyUrl={markusCalendly}
+            calendlyUrl={withParams(markusCalendly)}
             accent="#1A5FD4"
           />
           <CoachCard
@@ -42,16 +54,11 @@ export function AboutUsFooter({
             role="Liquid Leadership"
             photo="/aljona-photo.jpg"
             bio="TEDx Speaker, WSJ Bestseller-Autorin und ehemalige Bolshoi-Ballerina. Hat 500+ Führungskräfte als Leadership & Culture Coach begleitet — Transformational Leadership für Gründer:innen, die ihre nächste Stufe erreichen wollen."
-            calendlyUrl={aljonaCalendly}
+            calendlyUrl={withParams(aljonaCalendly)}
             accent="#D4192B"
           />
         </div>
 
-        <div className="mt-10 text-center">
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            Fragen zum Angebot? <Link href="mailto:markus@eilers.at" className="underline hover:text-white">markus@eilers.at</Link> — wir antworten persönlich.
-          </p>
-        </div>
       </div>
     </section>
   )

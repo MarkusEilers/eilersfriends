@@ -111,11 +111,18 @@ export default async function PublicOfferPage({ params }: { params: Promise<{ se
 
         <OfferAcceptCta offerSecret={offer.access_salt} status={offer.status} />
 
-        <AboutUsFooter markusCalendly={markusCalendly} aljonaCalendly={aljonaCalendly} />
+        <AboutUsFooter markusCalendly={markusCalendly} aljonaCalendly={aljonaCalendly} customerName={offer.customer_name} offerLabel={offer.offer_number} />
       </main>
 
       <footer className="border-t border-gray-100 bg-white py-8 text-center text-xs text-gray-400">
-        Eilers+Friends · {offer.offer_number} · Vertraulich · {new Date(offer.valid_from).toLocaleDateString('de-DE')}
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+          <span>© {new Date().getFullYear()} Eilers+Friends</span>
+          <span aria-hidden="true">·</span>
+          <a href="/impressum" className="hover:text-gray-600 hover:underline">Impressum</a>
+          <span aria-hidden="true">·</span>
+          <a href="/datenschutz" className="hover:text-gray-600 hover:underline">Datenschutz</a>
+        </div>
+        <div className="mt-2">{offer.offer_number} · Vertraulich · {new Date(offer.valid_from).toLocaleDateString('de-DE')}</div>
       </footer>
     </div>
   )
