@@ -175,15 +175,21 @@ export function OfferPricing({
 }) {
   const allOptions = programs.flatMap((p) => (p.pricing ?? []).map((o) => ({ ...o, programTitle: p.title })))
   if (!allOptions.length) return null
+  const single = allOptions.length === 1
 
   return (
     <section className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
       <div className="mx-auto max-w-5xl">
         <div className="text-center">
           <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Investment</span>
-          <h2 className="mt-2 text-3xl font-bold" style={{ color: '#0D0D0B' }}>Wähle Dein Setup.</h2>
+          <h2 className="mt-2 text-3xl font-bold" style={{ color: '#0D0D0B' }}>{single ? 'Euer Investment.' : 'Wähle Dein Setup.'}</h2>
+          {single && (
+            <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed" style={{ color: '#6B7280' }}>
+              Ein klar umrissenes Paket — transparent kalkuliert, monatlich abgerechnet.
+            </p>
+          )}
         </div>
-        <div className="mt-12 grid gap-6 lg:grid-cols-3">
+        <div className={single ? 'mx-auto mt-12 max-w-md' : 'mt-12 grid gap-6 lg:grid-cols-3'}>
           {allOptions.map((opt) => {
             const total = opt.monthlyDuration && opt.monthlyDuration > 1
               ? opt.price * opt.monthlyDuration
@@ -197,7 +203,7 @@ export function OfferPricing({
                   border: opt.recommended ? `2px solid ${accent}` : '1px solid #E5E7EB',
                   boxShadow: opt.recommended ? '0 20px 50px -20px rgba(15,30,58,0.35)' : '0 2px 12px rgba(15,30,58,0.05)',
                 }}>
-                {opt.recommended && (
+                {opt.recommended && !single && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white"
                     style={{ backgroundColor: accent }}>
                     <Star size={10} fill="#fff" /> Empfohlen
