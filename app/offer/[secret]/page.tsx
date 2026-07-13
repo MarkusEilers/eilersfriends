@@ -68,7 +68,7 @@ export default async function PublicOfferPage({ params }: { params: Promise<{ se
       {/* Slim Topbar — EF-Logo + Offer-No on right */}
       <header className="border-b border-gray-100 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <Image src="/ef-logo.png" alt="Eilers+Friends" width={160} height={40} className="h-9 w-auto object-contain" priority />
+          <Image src="/ef-logo.png" alt="Eilers+Friends" width={200} height={56} className="h-14 md:h-16 w-auto object-contain" priority />
           <div className="text-right">
             <span className="block text-[10px] font-mono text-gray-400">{offer.offer_number}</span>
             <span className="block text-[10px] text-gray-400">
