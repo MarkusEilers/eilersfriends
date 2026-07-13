@@ -158,20 +158,6 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
         />
       </Section>
 
-      {/* Garantie-Text */}
-      <Section label="Garantie">
-        <p className="mb-3 text-xs text-gray-500">
-          Erscheint vor dem Pricing als „Whatever-it-takes"-Box. Leer = Default-Text wird verwendet.
-        </p>
-        <textarea
-          rows={4}
-          placeholder="Wir bleiben dabei, bis es funktioniert..."
-          value={s.guaranteeText ?? ''}
-          onChange={(e) => patch('guaranteeText', e.target.value)}
-          className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-300"
-        />
-      </Section>
-
       {/* KI-Assistent */}
       <section className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/40 to-purple-50/30 p-6">
         <div className="mb-3 flex items-center gap-2">
@@ -281,6 +267,20 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           </div>
         )}
       </section>
+
+      {/* Garantie-Text */}
+      <Section label="Garantie">
+        <p className="mb-3 text-xs text-gray-500">
+          Erscheint vor dem Pricing als „Whatever-it-takes"-Box. Leer = Default-Text wird verwendet.
+        </p>
+        <textarea
+          rows={4}
+          placeholder="Wir bleiben dabei, bis es funktioniert..."
+          value={s.guaranteeText ?? ''}
+          onChange={(e) => patch('guaranteeText', e.target.value)}
+          className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-300"
+        />
+      </Section>
 
       {/* Pricing */}
       <Section label="Preise · DIY · DWY · DFY" onSuggest={() => suggest('pricing')} suggesting={suggesting === 'pricing'}>
