@@ -43,12 +43,12 @@ export function OfferHero({
           </div>
         )}
         <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em]"
-          style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#FFC93C', border: '1px solid rgba(255,201,60,0.35)' }}>
+          style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#5DDBF5', border: '1px solid rgba(93,219,245,0.35)' }}>
           <Sparkles size={12} /> Persönliches Angebot für {recipient}
         </span>
         <p className="mt-6 text-sm font-mono" style={{ color: 'rgba(255,255,255,0.5)' }}>{offerNumber}</p>
         {tagline && (
-          <p className="mt-3 text-base font-semibold tracking-wide" style={{ color: '#FFC93C' }}>{tagline}</p>
+          <p className="mt-3 text-base font-semibold tracking-wide" style={{ color: '#5DDBF5' }}>{tagline}</p>
         )}
         <h1 className="mt-3 text-4xl font-bold text-white sm:text-5xl lg:text-6xl" style={{ fontFamily: "'DM Serif Display', serif" }}>{title}</h1>
         {subtitle && (
@@ -124,8 +124,8 @@ export function OfferEmpathy({ data }: { data: EmpathyData }) {
           </p>
         )}
         {data.successMessage && (
-          <div className="mt-10 rounded-2xl p-5" style={{ backgroundColor: 'rgba(255,201,60,0.12)', border: '1px solid rgba(255,201,60,0.3)' }}>
-            <p className="text-sm" style={{ color: '#FFC93C' }}>
+          <div className="mt-10 rounded-2xl p-5" style={{ backgroundColor: 'rgba(93,219,245,0.12)', border: '1px solid rgba(93,219,245,0.3)' }}>
+            <p className="text-sm" style={{ color: '#5DDBF5' }}>
               <strong>Was Erfolg für uns heißt:</strong> {data.successMessage}
             </p>
           </div>
