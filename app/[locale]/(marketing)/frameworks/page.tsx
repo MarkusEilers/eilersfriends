@@ -214,7 +214,7 @@ export default async function FrameworksIndex({ params }: PageProps) {
                 }
                 const Icon = visual.icon
                 const tone = visual.tone
-                const spanClass = visual.featured ? 'sm:col-span-2 lg:col-span-2' : 'lg:col-span-1'
+                const spanClass = 'lg:col-span-1'
 
                 return (
                   <Link
@@ -277,7 +277,7 @@ export default async function FrameworksIndex({ params }: PageProps) {
                           className="font-bold leading-[0.95] tracking-tight whitespace-pre-line"
                           style={{
                             color: '#FFFFFF',
-                            fontSize: visual.featured ? '32px' : '26px',
+                            fontSize: '24px',
                             textShadow: '0 2px 14px rgba(0,0,0,0.35)',
                           }}
                         >
