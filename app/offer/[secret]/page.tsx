@@ -9,7 +9,6 @@ import {
   OfferEmpathy,
   OfferEconomicResults,
   OfferPricing,
-  OfferAcceptCta,
   OfferNewEra,
   OfferIngredients,
   OfferTimeline,
@@ -18,6 +17,7 @@ import {
   type EconomicResult,
   type ProgramSummary,
 } from '@/components/offer/sections'
+import { OfferAcceptCart } from '@/components/offer/OfferAcceptCart'
 import { ReadProgress } from '@/components/offer/output/ReadProgress'
 import { GuaranteeBox } from '@/components/offer/output/GuaranteeBox'
 import { AboutUsFooter } from '@/components/offer/output/AboutUsFooter'
@@ -46,6 +46,11 @@ interface OfferFull {
   status: string
   selected_pricing_option: string | null
   section_order?: { type: string; enabled: boolean }[] | null
+  payment_card_enabled?: boolean | null
+  payment_invoice_enabled?: boolean | null
+  rhythm_monthly_enabled?: boolean | null
+  rhythm_upfront_enabled?: boolean | null
+  upfront_discount_pct?: number | string | null
 }
 
 export default async function PublicOfferPage({ params }: { params: Promise<{ secret: string }> }) {
@@ -82,7 +87,18 @@ export default async function PublicOfferPage({ params }: { params: Promise<{ se
     pricing: (offer.programs && offer.programs.length > 0)
       ? <div key="pricing"><GuaranteeBox text={offer.guarantee_text ?? undefined} /><OfferPricing programs={offer.programs} selectedOption={offer.selected_pricing_option} /></div>
       : null,
-    accept: <OfferAcceptCta key="accept" offerSecret={offer.access_salt} status={offer.status} />,
+    accept: <OfferAcceptCart key="accept"
+      offerSecret={offer.access_salt}
+      status={offer.status}
+      programs={offer.programs ?? []}
+      paymentCardEnabled={offer.payment_card_enabled ?? false}
+      paymentInvoiceEnabled={offer.payment_invoice_enabled ?? true}
+      rhythmUpfrontEnabled={offer.rhythm_upfront_enabled ?? true}
+      rhythmMonthlyEnabled={offer.rhythm_monthly_enabled ?? true}
+      upfrontDiscountPct={offer.upfront_discount_pct != null ? Number(offer.upfront_discount_pct) : 0}
+      customerName={offer.customer_name}
+      customerEmail={offer.customer_email}
+    />,
   }
 
   const validUntilDate = new Date(offer.valid_until)

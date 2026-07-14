@@ -40,6 +40,12 @@ export interface OfferEditorState {
   // Wave 2.F
   customerLogoUrl?: string | null
   guaranteeText?: string | null
+  // Wave 3 — Zahlung & Annahme
+  paymentCardEnabled?: boolean
+  paymentInvoiceEnabled?: boolean
+  rhythmMonthlyEnabled?: boolean
+  rhythmUpfrontEnabled?: boolean
+  upfrontDiscountPct?: number | null
 }
 
 export function OfferEditor({ initial, accessSalt, offerNumber, programOptions = [] }: { initial: OfferEditorState; accessSalt?: string; offerNumber?: string; programOptions?: ProgramOption[] }) {
@@ -73,6 +79,11 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           sweatEquityPercent: s.sweatEquityPercent ?? null,
           customerLogoUrl: s.customerLogoUrl ?? null,
           guaranteeText: s.guaranteeText ?? null,
+          paymentCardEnabled: s.paymentCardEnabled ?? false,
+          paymentInvoiceEnabled: s.paymentInvoiceEnabled ?? true,
+          rhythmMonthlyEnabled: s.rhythmMonthlyEnabled ?? true,
+          rhythmUpfrontEnabled: s.rhythmUpfrontEnabled ?? true,
+          upfrontDiscountPct: s.upfrontDiscountPct ?? 0,
           sectionOrder: s.sectionOrder && s.sectionOrder.length ? s.sectionOrder : DEFAULT_SECTIONS,
         })
         setSavedAt(Date.now())
@@ -286,6 +297,37 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
       <Section label="Preise · DIY · DWY · DFY" onSuggest={() => suggest('pricing')} suggesting={suggesting === 'pricing'}>
         <PricingEditor programs={s.programs} onChange={(arr) => patch('programs', arr)} />
       </Section>
+
+      {/* Zahlung & Annahme */}
+      <section className="rounded-2xl border border-gray-200 bg-white p-6">
+        <h3 className="text-sm font-bold uppercase tracking-widest text-gray-500">Zahlung &amp; Annahme</h3>
+        <p className="mt-1 mb-4 text-xs text-gray-500">Welche Zahlweisen der Kunde im Warenkorb wählen kann. Rechnung → E-Mail-Bestätigung (Domain-geprüft) + Nachweis; Kreditkarte → Stripe.</p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2.5 text-sm">
+            <input type="checkbox" checked={s.paymentInvoiceEnabled ?? true} onChange={(e) => patch('paymentInvoiceEnabled', e.target.checked)} className="h-4 w-4" />
+            Per Rechnung
+          </label>
+          <label className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2.5 text-sm">
+            <input type="checkbox" checked={s.paymentCardEnabled ?? false} onChange={(e) => patch('paymentCardEnabled', e.target.checked)} className="h-4 w-4" />
+            Per Kreditkarte (Stripe)
+          </label>
+          <label className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2.5 text-sm">
+            <input type="checkbox" checked={s.rhythmMonthlyEnabled ?? true} onChange={(e) => patch('rhythmMonthlyEnabled', e.target.checked)} className="h-4 w-4" />
+            Monatliche Zahlung
+          </label>
+          <label className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2.5 text-sm">
+            <input type="checkbox" checked={s.rhythmUpfrontEnabled ?? true} onChange={(e) => patch('rhythmUpfrontEnabled', e.target.checked)} className="h-4 w-4" />
+            Einmalzahlung (Upfront)
+          </label>
+        </div>
+        <div className="mt-3 flex items-center gap-2">
+          <label className="text-xs text-gray-500">Upfront-Rabatt (%)</label>
+          <input type="number" min={0} max={100} value={s.upfrontDiscountPct ?? 0}
+            onChange={(e) => patch('upfrontDiscountPct', Number(e.target.value))}
+            className="w-24 rounded-xl border border-gray-200 px-3 py-2 text-sm outline-none focus:border-blue-300" />
+          <span className="text-xs text-gray-400">Rabatt auf den Gesamtbetrag bei Einmalzahlung.</span>
+        </div>
+      </section>
 
       {/* Abschnitte D&D */}
       <section className="rounded-2xl border border-gray-200 bg-white p-6">

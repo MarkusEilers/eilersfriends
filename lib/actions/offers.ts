@@ -50,6 +50,12 @@ interface UpdatePayload {
   customerLogoUrl?: string | null
   customerLogoUrlBw?: string | null
   guaranteeText?: string | null
+  // Wave 3
+  paymentCardEnabled?: boolean
+  paymentInvoiceEnabled?: boolean
+  rhythmMonthlyEnabled?: boolean
+  rhythmUpfrontEnabled?: boolean
+  upfrontDiscountPct?: number | null
 }
 
 export async function updateOfferAction(id: string, payload: UpdatePayload) {

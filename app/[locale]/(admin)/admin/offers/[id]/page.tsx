@@ -64,6 +64,11 @@ export default async function AdminOfferEditor({ params }: { params: Promise<{ i
     sweatEquityPercent: full.sweat_equity_percent ?? null,
     customerLogoUrl: (full.customer_logo_url as string | null) ?? null,
     guaranteeText: (full.guarantee_text as string | null) ?? null,
+    paymentCardEnabled: (full.payment_card_enabled as boolean | null) ?? false,
+    paymentInvoiceEnabled: (full.payment_invoice_enabled as boolean | null) ?? true,
+    rhythmMonthlyEnabled: (full.rhythm_monthly_enabled as boolean | null) ?? true,
+    rhythmUpfrontEnabled: (full.rhythm_upfront_enabled as boolean | null) ?? true,
+    upfrontDiscountPct: (full.upfront_discount_pct != null ? Number(full.upfront_discount_pct) : 0),
   }
 
   return <OfferEditor initial={initial} accessSalt={full.access_salt} offerNumber={full.offer_number} programOptions={programs} />
