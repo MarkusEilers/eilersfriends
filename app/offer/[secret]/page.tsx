@@ -53,8 +53,9 @@ interface OfferFull {
   upfront_discount_pct?: number | string | null
 }
 
-export default async function PublicOfferPage({ params }: { params: Promise<{ secret: string }> }) {
+export default async function PublicOfferPage({ params, searchParams }: { params: Promise<{ secret: string }>; searchParams: Promise<{ pending?: string; accepted?: string; error?: string }> }) {
   const { secret } = await params
+  const sp = await searchParams
   const offer = (await getOfferBySalt(secret)) as unknown as OfferFull | null
   if (!offer) notFound()
 
@@ -87,9 +88,22 @@ export default async function PublicOfferPage({ params }: { params: Promise<{ se
     pricing: (offer.programs && offer.programs.length > 0)
       ? <div key="pricing"><GuaranteeBox text={offer.guarantee_text ?? undefined} /><OfferPricing programs={offer.programs} selectedOption={offer.selected_pricing_option} /></div>
       : null,
-    accept: <OfferAcceptCart key="accept"
+    accept: sp?.pending ? (
+      <section key="accept" className="px-6 py-20" style={{ backgroundColor: '#0F1E3A' }}>
+        <div className="mx-auto max-w-2xl text-center text-white">
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full" style={{ backgroundColor: 'rgba(93,219,245,0.15)' }}>
+            <span style={{ color: '#5DDBF5', fontSize: 26 }}>✉</span>
+          </div>
+          <h2 className="mt-5 text-2xl font-bold">Fast geschafft — bitte E-Mail bestätigen.</h2>
+          <p className="mt-3 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
+            Wir haben dir eine E-Mail zur Bestätigung der Annahme geschickt. Mit einem Klick darin wird das Angebot verbindlich angenommen.
+          </p>
+        </div>
+      </section>
+    ) : (<OfferAcceptCart key="accept"
       offerSecret={offer.access_salt}
       status={offer.status}
+      noticeDomain={sp?.error === 'domain'}
       programs={offer.programs ?? []}
       paymentCardEnabled={offer.payment_card_enabled ?? false}
       paymentInvoiceEnabled={offer.payment_invoice_enabled ?? true}
@@ -98,7 +112,7 @@ export default async function PublicOfferPage({ params }: { params: Promise<{ se
       upfrontDiscountPct={offer.upfront_discount_pct != null ? Number(offer.upfront_discount_pct) : 0}
       customerName={offer.customer_name}
       customerEmail={offer.customer_email}
-    />,
+    />),
   }
 
   const validUntilDate = new Date(offer.valid_until)

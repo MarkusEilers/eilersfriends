@@ -24,7 +24,7 @@ export function OfferAcceptCart({
   offerSecret, status, programs,
   paymentCardEnabled, paymentInvoiceEnabled,
   rhythmUpfrontEnabled, rhythmMonthlyEnabled,
-  upfrontDiscountPct, customerName, customerEmail,
+  upfrontDiscountPct, customerName, customerEmail, noticeDomain,
 }: {
   offerSecret: string
   status: string
@@ -36,6 +36,7 @@ export function OfferAcceptCart({
   upfrontDiscountPct: number
   customerName?: string | null
   customerEmail?: string | null
+  noticeDomain?: boolean
 }) {
   const option = useMemo<PricingOption | null>(() => {
     const all = programs.flatMap((p) => p.pricing ?? [])
@@ -151,6 +152,11 @@ export function OfferAcceptCart({
           </div>
         </div>
 
+        {noticeDomain && (
+          <div className="mt-6 rounded-xl border px-4 py-3 text-sm" style={{ borderColor: '#F5B5B0', backgroundColor: '#FEF2F2', color: '#B42318' }}>
+            Für die Annahme per Rechnung nutzen Sie bitte eine E-Mail-Adresse Ihrer Firmen-Domain.
+          </div>
+        )}
         <form action={`/api/offers/${offerSecret}/accept`} method="POST" className="mt-8 rounded-2xl border border-gray-200 bg-white p-5">
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9CA3AF' }}>Unterschrift</p>
           <p className="mt-1 text-sm" style={{ color: '#6B7280' }}>Bestätigen Sie das Angebot mit Ihren Daten.</p>

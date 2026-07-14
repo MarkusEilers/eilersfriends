@@ -115,6 +115,10 @@ async function ensureOfferSchema() {
       created_at   TIMESTAMPTZ DEFAULT now()
     )`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS offer_acceptances_offer_idx ON offer_acceptances (offer_id)`)
+  await db.execute(sql`ALTER TABLE offer_acceptances ADD COLUMN IF NOT EXISTS status       TEXT DEFAULT 'pending'`)  -- pending | confirmed
+  await db.execute(sql`ALTER TABLE offer_acceptances ADD COLUMN IF NOT EXISTS doi_token    TEXT`)
+  await db.execute(sql`ALTER TABLE offer_acceptances ADD COLUMN IF NOT EXISTS confirmed_at TIMESTAMPTZ`)
+  await db.execute(sql`ALTER TABLE offer_acceptances ADD COLUMN IF NOT EXISTS confirmed_ip TEXT`)
   ensured = true
 }
 
