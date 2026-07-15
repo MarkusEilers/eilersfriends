@@ -28,17 +28,17 @@ export function OfferHero({
   const validStr = validUntil.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })
   const recipient = customerCompany?.trim() ? `${customerName} · ${customerCompany}` : customerName
   return (
-    <section className="px-6 py-24 sm:py-32" style={{ background: 'linear-gradient(180deg, #0F1E3A 0%, #15315E 100%)' }}>
+    <section className="px-6 py-28 sm:py-40" style={{ background: 'linear-gradient(180deg, #0F1E3A 0%, #15315E 100%)' }}>
       <div className="mx-auto max-w-3xl text-center">
-        {/* Customer logo (if uploaded) — sits at the top, soft & quiet */}
+        {/* Customer logo — prominent, oben */}
         {customerLogoUrl && (
-          <div className="mb-8 flex justify-center">
+          <div className="mb-12 flex justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={customerLogoUrl}
               alt={customerCompany || customerName}
-              className="h-12 w-auto opacity-80"
-              style={{ filter: 'brightness(0) invert(1)', maxWidth: 200 }}
+              className="h-16 w-auto opacity-90 sm:h-20"
+              style={{ filter: 'brightness(0) invert(1)', maxWidth: 260 }}
             />
           </div>
         )}
@@ -46,16 +46,17 @@ export function OfferHero({
           style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#5DDBF5', border: '1px solid rgba(93,219,245,0.35)' }}>
           <Sparkles size={12} /> Persönliches Angebot für {recipient}
         </span>
-        <p className="mt-6 text-sm font-mono" style={{ color: 'rgba(255,255,255,0.5)' }}>{offerNumber}</p>
         {tagline && (
-          <p className="mt-3 text-base font-semibold tracking-wide" style={{ color: '#5DDBF5' }}>{tagline}</p>
+          <p className="mt-8 text-sm font-bold uppercase tracking-[0.2em]" style={{ color: '#5DDBF5' }}>{tagline}</p>
         )}
-        <h1 className="mt-3 text-4xl font-bold text-white sm:text-5xl lg:text-6xl" style={{ fontFamily: "'DM Serif Display', serif" }}>{title}</h1>
+        <h1 className="mt-5 text-5xl font-bold leading-[1.05] text-white sm:text-6xl lg:text-7xl" style={{ fontFamily: "'DM Serif Display', serif" }}>{title}</h1>
         {subtitle && (
-          <p className="mt-6 text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{subtitle}</p>
+          <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed sm:text-xl" style={{ color: 'rgba(255,255,255,0.8)' }}>{subtitle}</p>
         )}
-        <p className="mt-8 inline-flex items-center gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          <CalendarCheck size={12} /> Gültig bis {validStr}
+        <p className="mt-12 flex items-center justify-center gap-4 text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
+          <span className="font-mono">{offerNumber}</span>
+          <span aria-hidden="true">·</span>
+          <span className="inline-flex items-center gap-1.5"><CalendarCheck size={12} /> Gültig bis {validStr}</span>
         </p>
       </div>
     </section>

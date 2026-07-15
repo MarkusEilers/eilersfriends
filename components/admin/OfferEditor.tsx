@@ -167,6 +167,20 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           initialUrl={s.customerLogoUrl ?? null}
           onUploaded={(url) => patch('customerLogoUrl', url || null)}
         />
+        <div className="mt-3 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              const dom = (s.customerEmail?.split('@')[1] || '').toLowerCase().trim()
+              if (!dom) { setError('Keine Kunden-E-Mail/Domain hinterlegt — für Auto-Logo bitte zuerst die E-Mail setzen.'); return }
+              patch('customerLogoUrl', `https://icon.horse/icon/${dom}`)
+            }}
+            className="rounded-full border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+          >
+            Logo per Domain finden
+          </button>
+          <span className="text-xs text-gray-400">Sucht das Logo über die Kunden-Domain (aus der E-Mail). Danach Speichern.</span>
+        </div>
       </Section>
 
       {/* KI-Assistent */}
