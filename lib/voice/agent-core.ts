@@ -22,7 +22,7 @@ export function stripSpeakable(t: string): string {
 // Sprech-Normalisierung (nur fuer TTS, nicht fuer Transkript/E-Mail):
 // Telefonnummern Ziffer-fuer-Ziffer, Abkuerzungen/Namen phonetisch. Leicht erweiterbar.
 const SPEAK_MAP: [RegExp, string][] = [
-  [/\bAljona\b/gi, 'Aliona'],
+  [/\bAlj?ona\b/gi, 'Alliohna'],  // ElevenLabs: 'Aliona' glitet zu Al-yo-na -> 'Alliohna' = All-ee-oh-na
   [/\bSDR\b/g, 'Ess Dee Arr'],
   [/\bCRM\b/g, 'Ssieh Arr Emm'],
   [/\bCRO\b/g, 'Ssieh Arr Oh'],

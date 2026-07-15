@@ -59,8 +59,10 @@ function channelRules(channel: Channel): string {
     return `KANAL: TELEFON.
 - Sprich wie am Telefon: 1–2 kurze Sätze pro Antwort, keine Aufzählungen/Listen vorlesen, keine Links buchstabieren.
 - NIEMALS Emojis/Smileys/Emoticons oder Markdown (werden vorgelesen).
-- Wiederhole nichts schon Gesagtes. Bei Terminen: 1–2 Zeiten nennen und bei Zustimmung direkt buchen (Tool book, Telefonnummer erfragen), ohne mehrfaches Rückversichern.
-- Wenn jemand eine Person nicht erreicht oder eine Nachricht hinterlassen will: Name + Rückrufnummer erfragen, dann Tool send_message.`
+- Wiederhole nichts schon Gesagtes. Bei Terminen: 1–2 Zeiten nennen und bei Zustimmung direkt buchen (Tool book), ohne mehrfaches Rückversichern.
+- RÜCKRUFNUMMER: Die Nummer des Anrufers liegt uns i.d.R. automatisch vor (Anrufer-ID). Frag NICHT extra nach der Telefonnummer — außer sie ist unterdrückt oder der Anrufer möchte unter einer anderen Nummer erreicht werden.
+- E-MAIL ist am Telefon fehleranfällig und bleibt OPTIONAL. Dräng nicht darauf. Wird eine E-Mail genannt: lies sie GENAU EINMAL ruhig zur Bestätigung zurück ("at" für @, "Punkt" für den Punkt). Sitzt sie nicht, bitte einmal, den Teil vor dem @ zu buchstabieren — höchstens ein Korrektur-Durchgang. Wenn es weiter hakt: biete an, einfach unter der vorliegenden Nummer zurückzurufen (dann keine E-Mail nötig). Niemals 3-, 4-, 5-mal nachfragen.
+- Wenn jemand eine Person nicht erreicht oder eine Nachricht hinterlassen will: Name aufnehmen (Nummer liegt vor), optional Anliegen, dann Tool send_message.`
   }
   return `KANAL: WEBSITE-CHAT.
 - Antworte kurz (2–5 Sätze). Sparsames Markdown: **fett** für einen Schlüsselbegriff, Links als [Text](url) oder als Pfad (/kontakt, /salesmade).
@@ -97,11 +99,12 @@ async function execBrainTool(name: string, input: Record<string, unknown>, extra
   if (name === 'team_status') return await runTeamStatus()
   if (name === 'book') {
     if (extra.channel !== 'voice') return { ok: false, error: 'nur_telefon' }
-    return await runBook({ person, typeSlug: input.type ? String(input.type) : undefined, slotId: String(input.slot_id || ''), name: String(input.name || ''), phone: String(input.phone || ''), email: input.email ? String(input.email) : undefined, topic: input.topic ? String(input.topic) : undefined })
+    const bookPhone = String(input.phone || '').trim() || String(extra.ctx?.callerId || '').trim()
+    return await runBook({ person, typeSlug: input.type ? String(input.type) : undefined, slotId: String(input.slot_id || ''), name: String(input.name || ''), phone: bookPhone, email: input.email ? String(input.email) : undefined, topic: input.topic ? String(input.topic) : undefined })
   }
   if (name === 'send_message') {
     const transcript = renderTranscript(extra.messages) + (input.summary ? `\n\nZusammenfassung: ${input.summary}` : '')
-    const res = await sendTeamNotification({ person, dw: extra.dw, callerName: input.name ? String(input.name) : undefined, callerPhone: input.phone ? String(input.phone) : undefined, callerEmail: input.email ? String(input.email) : undefined, callerId: extra.ctx?.callerId, transcript, whenISO: new Date().toISOString() }).catch(() => ({ sent: false }))
+    const res = await sendTeamNotification({ person, dw: extra.dw, callerName: input.name ? String(input.name) : undefined, callerPhone: (input.phone ? String(input.phone) : '') || (extra.ctx?.callerId ? String(extra.ctx.callerId) : undefined), callerEmail: input.email ? String(input.email) : undefined, callerId: extra.ctx?.callerId, transcript, whenISO: new Date().toISOString() }).catch(() => ({ sent: false }))
     await logActivity({ type: 'nachricht', dw: extra.dw, personSlug: person, name: input.name ? String(input.name) : null, phone: input.phone ? String(input.phone) : null, email: input.email ? String(input.email) : null, topic: input.summary ? String(input.summary) : null, summary: `Nachricht an ${person} (${extra.channel})`, transcript, meta: { channel: extra.channel, callerId: extra.ctx?.callerId, emailSent: res.sent } }).catch(() => {})
     return { ok: true, delivered: res.sent }
   }
@@ -109,8 +112,11 @@ async function execBrainTool(name: string, input: Record<string, unknown>, extra
 }
 
 // System-Prompt für einen Kanal zusammenbauen (EINE Quelle).
-export async function buildSystem(channel: Channel, opts: { dw?: number; assistant?: Assistant }): Promise<string> {
+export async function buildSystem(channel: Channel, opts: { dw?: number; assistant?: Assistant; callerId?: string }): Promise<string> {
   const parts = [CORE_RULES, await knowledgeContext(), channelRules(channel)]
+  if (channel === 'voice' && opts.callerId && /\d{5,}/.test(opts.callerId)) {
+    parts.push(`RÜCKRUFNUMMER LIEGT VOR: ${opts.callerId}. Nutze sie für Rückruf/Nachricht/Buchung und frag NICHT erneut nach der Telefonnummer.`)
+  }
   if (channel === 'voice') {
     const name = opts.assistant?.name || 'Eilisabet'
     const gender = opts.assistant?.gender || 'f'
@@ -124,7 +130,7 @@ export async function runBrainClaude(o: { channel: Channel; dw?: number; assista
   const key = process.env.ANTHROPIC_API_KEY
   if (!key) return null
   const model = process.env.VOICE_AGENT_MODEL || 'claude-haiku-4-5'
-  const system = await buildSystem(o.channel, { dw: o.dw, assistant: o.assistant })
+  const system = await buildSystem(o.channel, { dw: o.dw, assistant: o.assistant, callerId: o.ctx?.callerId })
   const tools = toolsFor(o.channel)
   const dw = o.dw ?? 0
   const defaultPerson = o.channel === 'voice' ? persona(dw).person : undefined
