@@ -23,6 +23,7 @@ export function stripSpeakable(t: string): string {
 // Telefonnummern Ziffer-fuer-Ziffer, Abkuerzungen/Namen phonetisch. Leicht erweiterbar.
 const SPEAK_MAP: [RegExp, string][] = [
   [/\bAlj?ona\b/gi, 'Alliohna'],  // ElevenLabs: 'Aliona' glitet zu Al-yo-na -> 'Alliohna' = All-ee-oh-na
+  [/@/g, ' at '],  // '@' wird sonst als 'agrazz' gelesen
   [/\bSDR\b/g, 'Ess Dee Arr'],
   [/\bCRM\b/g, 'Ssieh Arr Emm'],
   [/\bCRO\b/g, 'Ssieh Arr Oh'],
@@ -31,6 +32,10 @@ const SPEAK_MAP: [RegExp, string][] = [
   [/\bKPIs?\b/g, 'Kah Pieh Eis'],
   [/\bROI\b/g, 'Arr Oh Ieh'],
 ]
+function spokenTime(t: string): string {
+  // '09:00' -> '9 Uhr', '14:30' -> '14 Uhr 30' (ElevenLabs verhaspelt sich sonst bei HH:MM)
+  return t.replace(/\b(\d{1,2}):(\d{2})\b/g, (_m, h: string, mm: string) => `${Number(h)} Uhr${mm === '00' ? '' : ' ' + Number(mm)}`)
+}
 function spaceNumbers(t: string): string {
   return t.replace(/\+?\d[\d\s/().\-]{5,}\d/g, (m) => {
     const plus = m.trim().startsWith('+')
@@ -42,6 +47,7 @@ function spaceNumbers(t: string): string {
 export function speakable(t: string): string {
   let s = stripSpeakable(t)
   for (const [re, rep] of SPEAK_MAP) s = s.replace(re, rep)
+  s = spokenTime(s)
   return spaceNumbers(s)
 }
 export function renderTranscript(messages: Msg[]): string {
