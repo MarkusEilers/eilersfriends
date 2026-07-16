@@ -70,7 +70,6 @@ export default async function ProgramsPage() {
         <StatCard label="Gesamt"        value={stats.total}     color="#0F1E3A" />
         <StatCard label="Veröffentlicht" value={stats.published} color="#157A45" />
         <StatCard label="Entwürfe"      value={stats.drafts}    color="#B07C0A" />
-        <StatCard label="Archiviert"    value={stats.archived}  color="#6B7280" />
       </div>
 
       {/* Type breakdown */}
