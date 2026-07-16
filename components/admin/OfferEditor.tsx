@@ -18,7 +18,7 @@ interface EconomicResultData { icon?: 'target'|'users'|'trending-up'|'shield'|'z
 interface PricingOptData { type?: 'DIY'|'DWY'|'DFY'; title: string; description?: string; price: number; monthlyDuration?: number; features?: string[]; recommended?: boolean }
 interface ProgramData { id?: string; title: string; subtitle?: string; description?: string; pricing?: PricingOptData[] }
 
-export interface ProgramOption { id: string; name: string; slug: string; status: string }
+export interface ProgramOption { id: string; name: string; slug: string; status: string; track?: TrackPhaseE[] }
 
 export interface OfferEditorState {
   id: string
@@ -266,7 +266,25 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
 
       {/* Bausteine-Track */}
       <Section label="Bausteine-Track · Phasen & Schritte">
-        <p className="mb-3 text-xs text-gray-500">Phasen mit Schritten (Dauer, Teams, Nötiger Input, Output). Erscheint als eigener Block (Reihenfolge über „Abschnitte").</p>
+        <p className="mb-3 text-xs text-gray-500">Phasen mit Schritten (Dauer, Teams, Nötiger Input, Output). Erscheint als eigener Block (Reihenfolge über „Abschnitte"). Tipp: Track eines Programms übernehmen und dann anpassen.</p>
+        {programOptions.some((p) => (p.track?.length ?? 0) > 0) && (
+          <div className="mb-3 flex items-center gap-2">
+            <select
+              defaultValue=""
+              onChange={(e) => {
+                const prog = programOptions.find((p) => p.id === e.target.value)
+                if (prog?.track?.length) patch('track', [...(s.track ?? []), ...prog.track])
+                e.target.value = ''
+              }}
+              className="w-full rounded-xl border border-dashed border-blue-200 bg-blue-50/40 px-3 py-2 text-xs text-blue-700 outline-none focus:border-blue-400"
+            >
+              <option value="">+ Programm-Track hinzufügen …</option>
+              {programOptions.filter((p) => (p.track?.length ?? 0) > 0).map((p) => (
+                <option key={p.id} value={p.id}>{p.name} ({p.track!.length} Phasen){p.status !== 'published' ? ' · unsichtbar' : ''}</option>
+              ))}
+            </select>
+          </div>
+        )}
         <TrackEditor phases={s.track ?? []} onChange={(t) => patch('track', t)} />
       </Section>
 

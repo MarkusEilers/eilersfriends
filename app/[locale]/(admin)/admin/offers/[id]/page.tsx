@@ -22,11 +22,12 @@ interface JsonRow {
 
 async function listProgramsForSelect(): Promise<ProgramOption[]> {
   try {
-    const res = await db.execute<{ id: string; name: string; slug: string; status: string }>(
-      sql`SELECT id, name, slug, status FROM programs WHERE status IN ('published', 'draft') ORDER BY name`,
+    const res = await db.execute(
+      sql`SELECT id, name, slug, is_published, COALESCE(track, '[]'::jsonb) AS track FROM programs ORDER BY name`,
     )
-    return (res as unknown as Array<{ id: string; name: string; slug: string; status: string }>).map((p) => ({
-      id: p.id, name: p.name, slug: p.slug, status: p.status,
+    return (res as unknown as Array<{ id: string; name: string; slug: string; is_published: boolean; track: unknown }>).map((p) => ({
+      id: p.id, name: p.name, slug: p.slug, status: p.is_published ? 'published' : 'draft',
+      track: (Array.isArray(p.track) ? p.track : []) as ProgramOption['track'],
     }))
   } catch {
     return []
