@@ -2,133 +2,140 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, Plus, Trash2, Save } from 'lucide-react'
+import { addPhase, updatePhase, deletePhase, addStep, updateStep, deleteStep, addProgramFramework, removeProgramFramework } from '@/lib/actions/program-content'
 
 interface PageProps { params: Promise<{ id: string }> }
 
-interface TrackStep { title?: string; durationH?: number | string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[] }
-interface TrackPhase { name?: string; goal?: string; steps?: TrackStep[] }
-interface Row {
-  id: string; name: string; slug: string; type: string; is_published: boolean
-  category: string | null; created_at: string; updated_at: string
-  track: TrackPhase[]; coach_name: string | null
-}
+const TYPES: [string, string][] = [
+  ['lesson', 'Lesson'], ['homework', 'Homework'], ['sparring', 'Sparring Session'],
+  ['story', 'Story'], ['info_why', 'Info: Warum wichtig'], ['info_how', 'Info: Wie gelernt'],
+  ['tool_intro', 'Tool-Vorstellung'], ['exercise', 'Exercise'], ['examples', 'Beispiele'],
+  ['tool_agent', 'Tool/Agent'], ['bonus', 'Bonus'],
+]
+const FORMATS: [string, string][] = [
+  ['', '—'], ['self_paced', 'Self-paced'], ['live_group', 'Live-Gruppe'], ['one_on_one', '1:1'],
+  ['upload', 'Upload'], ['video', 'Video'], ['worksheet', 'Worksheet'], ['agent', 'Agent'],
+]
+
+interface StepRow { id: string; phase_id: string; title: string; description: string | null; type: string; format: string | null; duration_h: number | null; is_bonus: boolean; framework_id: string | null; requires_step_id: string | null }
+interface PhaseRow { id: string; name: string; goal: string | null }
+interface Fw { id: string; slug: string; title: string }
 
 export default async function ProgramDetailPage({ params }: PageProps) {
   const { id } = await params
-  let row: Row | null = null
+  let name = '', slug = '', type = '', isPublished = false
   try {
-    const res = await db.execute(sql`
-      SELECT p.id, p.name, p.slug, p.type, p.is_published, p.category,
-             p.created_at, p.updated_at, COALESCE(p.track, '[]'::jsonb) AS track, u.name AS coach_name
-      FROM programs p LEFT JOIN users u ON u.id = p.coach_id
-      WHERE p.id = ${id} LIMIT 1
-    `)
-    row = (res as unknown as Row[])[0] ?? null
-  } catch { row = null }
-  if (!row) notFound()
+    const r = (await db.execute(sql`SELECT name, slug, type, is_published FROM programs WHERE id=${id} LIMIT 1`)) as unknown as { name: string; slug: string; type: string; is_published: boolean }[]
+    if (!r[0]) notFound()
+    name = r[0].name; slug = r[0].slug; type = r[0].type; isPublished = r[0].is_published
+  } catch { notFound() }
 
-  // Relationale Phasen/Schritte (neues Modell)
-  let phases: { id: string; name: string; goal: string | null; steps: { id: string; title: string; type: string; format: string | null; duration_h: number | null; is_bonus: boolean }[] }[] = []
-  try {
-    const ph = (await db.execute(sql`SELECT id, name, goal, sort_order FROM program_phases WHERE program_id = ${id} ORDER BY sort_order`)) as unknown as { id: string; name: string; goal: string | null }[]
-    const st = (await db.execute(sql`SELECT id, phase_id, title, type, format, duration_h, is_bonus, sort_order FROM program_steps WHERE program_id = ${id} ORDER BY sort_order`)) as unknown as { id: string; phase_id: string; title: string; type: string; format: string | null; duration_h: number | null; is_bonus: boolean }[]
-    phases = ph.map((p2) => ({ ...p2, steps: st.filter((x) => x.phase_id === p2.id) }))
-  } catch { phases = [] }
+  const phases = (await db.execute(sql`SELECT id, name, goal FROM program_phases WHERE program_id=${id} ORDER BY sort_order`)) as unknown as PhaseRow[]
+  const steps = (await db.execute(sql`SELECT id, phase_id, title, description, type, format, duration_h, is_bonus, framework_id, requires_step_id FROM program_steps WHERE program_id=${id} ORDER BY sort_order`)) as unknown as StepRow[]
+  const allFw = (await db.execute(sql`SELECT id, slug, title FROM landing_pages WHERE template_key='framework-leadmagnet' ORDER BY title`)) as unknown as Fw[]
+  const linked = (await db.execute(sql`SELECT lp.id, lp.slug, lp.title FROM program_frameworks pf JOIN landing_pages lp ON lp.id=pf.framework_id WHERE pf.program_id=${id} ORDER BY pf.sort_order`)) as unknown as Fw[]
+  const linkedIds = new Set(linked.map((f) => f.id))
 
-  const p = row
-  const track = Array.isArray(p.track) ? p.track : []
-  const totalSteps = track.reduce((n, ph) => n + (ph.steps?.length ?? 0), 0)
+  const inp = 'rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm outline-none focus:border-blue-300'
 
   return (
     <div>
-      <Link href="/admin/programs" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-6">
-        <ChevronLeft size={14} /> Zurück zur Übersicht
-      </Link>
+      <Link href="/admin/programs" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-6"><ChevronLeft size={14} /> Zurück zur Übersicht</Link>
+      <h1 className="text-2xl font-bold text-gray-900">{name}</h1>
+      <p className="text-xs text-gray-400 font-mono mt-1">/{slug} · {type} · {isPublished ? 'Veröffentlicht' : 'Entwurf'}</p>
 
-      <h1 className="text-2xl font-bold text-gray-900">{p.name}</h1>
-      <p className="text-xs text-gray-400 font-mono mt-1">/{p.slug}</p>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Field label="Typ" value={p.type} />
-        <Field label="Status" value={p.is_published ? 'Veröffentlicht' : 'Entwurf'} />
-        <Field label="Kategorie" value={p.category ?? '—'} />
-        <Field label="Coach" value={p.coach_name ?? '—'} />
-        <Field label="Erstellt" value={new Date(p.created_at).toLocaleString('de-DE')} />
-        <Field label="Aktualisiert" value={new Date(p.updated_at).toLocaleString('de-DE')} />
-      </div>
-
-      {/* Relationale Phasen/Schritte */}
-      {phases.length > 0 && (
-        <div className="mt-8 rounded-2xl border border-gray-100 bg-white p-5">
-          <div className="mb-4 flex items-baseline justify-between">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Phasen &amp; Schritte</p>
-            <p className="text-xs text-gray-400">{phases.length} Phasen · {phases.reduce((n, p2) => n + p2.steps.length, 0)} Schritte</p>
-          </div>
-          <div className="space-y-5">
-            {phases.map((ph, pi) => (
-              <div key={ph.id}>
-                <h3 className="text-sm font-bold text-gray-900">{pi + 1}. {ph.name}{ph.steps.length ? ` · ${ph.steps.length}` : ''}</h3>
-                {ph.goal && <p className="text-xs text-gray-500">{ph.goal}</p>}
-                <ul className="mt-2 space-y-1 border-l-2 border-blue-100 pl-3">
-                  {ph.steps.map((st, si) => (
-                    <li key={st.id} className="flex items-center gap-2 text-xs text-gray-600">
-                      <span className="text-gray-400">{si + 1}.</span>
-                      <span className="font-semibold text-gray-800">{st.title}</span>
-                      <span className="rounded px-1.5 py-0.5 text-[10px]" style={{ backgroundColor: st.is_bonus ? '#FFF4E5' : '#EBF1FF', color: st.is_bonus ? '#B07C0A' : '#1A5FD4' }}>{st.is_bonus ? 'Bonus' : st.type}</span>
-                      {st.format ? <span className="text-[10px] text-gray-400">{st.format}</span> : null}
-                      {st.duration_h ? <span className="text-[10px] text-gray-400">· {st.duration_h}h</span> : null}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Track-Übersicht (JSONB, Legacy) */}
-      {phases.length === 0 && (
+      {/* Enthaltene Frameworks (referenziert, nicht dupliziert) */}
       <div className="mt-8 rounded-2xl border border-gray-100 bg-white p-5">
-        <div className="mb-4 flex items-baseline justify-between">
-          <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Bausteine-Track (Legacy)</p>
-          <p className="text-xs text-gray-400">{track.length} Phasen · {totalSteps} Bausteine</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">Enthaltene Frameworks</p>
+        <p className="mb-3 text-xs text-gray-400">Referenziert — Updates am Framework fließen automatisch in dieses Programm.</p>
+        <div className="flex flex-wrap gap-2">
+          {linked.map((f) => (
+            <span key={f.id} className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+              {f.title.split(' — ')[0]}
+              <form action={removeProgramFramework}>
+                <input type="hidden" name="programId" value={id} /><input type="hidden" name="frameworkId" value={f.id} />
+                <button type="submit" className="text-blue-400 hover:text-red-500"><Trash2 size={11} /></button>
+              </form>
+            </span>
+          ))}
+          {linked.length === 0 && <span className="text-xs text-gray-400">Noch keine Frameworks zugeordnet.</span>}
         </div>
-        {track.length === 0 ? (
-          <p className="text-sm text-gray-400">Noch kein Track hinterlegt.</p>
-        ) : (
-          <div className="space-y-5">
-            {track.map((ph, pi) => (
-              <div key={pi}>
-                <h3 className="text-sm font-bold text-gray-900">{pi + 1}. {ph.name}{ph.steps?.length ? ` · ${ph.steps.length} Bausteine` : ''}</h3>
-                {ph.goal && <p className="text-xs text-gray-500">{ph.goal}</p>}
-                <ul className="mt-2 space-y-1 border-l-2 border-blue-100 pl-3">
-                  {(ph.steps ?? []).map((st, si) => (
-                    <li key={si} className="text-xs text-gray-600">
-                      <span className="font-semibold text-gray-800">{st.title}</span>{st.durationH ? ` · ${st.durationH}h` : ''}
-                    </li>
-                  ))}
-                </ul>
+        <form action={addProgramFramework} className="mt-3 flex items-center gap-2">
+          <input type="hidden" name="programId" value={id} />
+          <select name="frameworkId" defaultValue="" className={inp}>
+            <option value="">+ Framework hinzufügen …</option>
+            {allFw.filter((f) => !linkedIds.has(f.id)).map((f) => (<option key={f.id} value={f.id}>{f.title.split(' — ')[0]}</option>))}
+          </select>
+          <button type="submit" className="rounded-full bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90">Hinzufügen</button>
+        </form>
+      </div>
+
+      {/* Phasen & Schritte Editor */}
+      <div className="mt-8 flex items-center justify-between">
+        <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Phasen &amp; Schritte</p>
+        <form action={addPhase}><input type="hidden" name="programId" value={id} />
+          <button type="submit" className="inline-flex items-center gap-1.5 rounded-full bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"><Plus size={12} /> Phase</button>
+        </form>
+      </div>
+
+      <div className="mt-4 space-y-5">
+        {phases.map((ph, pi) => {
+          const phSteps = steps.filter((s) => s.phase_id === ph.id)
+          return (
+            <div key={ph.id} className="rounded-2xl border border-gray-200 bg-gray-50/60 p-4">
+              <div className="flex items-start gap-2">
+                <span className="mt-1.5 text-xs font-bold text-gray-400">{pi + 1}.</span>
+                <form action={updatePhase} className="flex flex-1 flex-wrap items-center gap-2">
+                  <input type="hidden" name="id" value={ph.id} /><input type="hidden" name="programId" value={id} />
+                  <input name="name" defaultValue={ph.name} placeholder="Phasen-Name" className={`${inp} flex-1 font-semibold`} />
+                  <input name="goal" defaultValue={ph.goal ?? ''} placeholder="Ziel (optional)" className={`${inp} flex-1`} />
+                  <button type="submit" className="rounded-lg bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white hover:opacity-90"><Save size={12} /></button>
+                </form>
+                <form action={deletePhase}><input type="hidden" name="id" value={ph.id} /><input type="hidden" name="programId" value={id} />
+                  <button type="submit" className="mt-1 text-gray-400 hover:text-red-500"><Trash2 size={14} /></button>
+                </form>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-      )}
 
-      <div className="mt-8 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-6 text-center">
-        <p className="text-sm font-medium text-gray-500">Voll editierbarer Programm-Editor (Track, Module, Preise) folgt.</p>
-        <p className="mt-2 text-xs text-gray-400">Der Track wird aktuell direkt im Angebot befüllt (Picker „Programm-Track hinzufügen").</p>
+              <div className="mt-3 space-y-2 border-l-2 border-blue-100 pl-3">
+                {phSteps.map((st) => (
+                  <div key={st.id} className="rounded-xl border border-gray-200 bg-white p-3">
+                    <form action={updateStep} className="space-y-2">
+                      <input type="hidden" name="id" value={st.id} /><input type="hidden" name="programId" value={id} />
+                      <div className="flex items-center gap-2">
+                        <input name="title" defaultValue={st.title} placeholder="Schritt-Titel" className={`${inp} flex-1 font-semibold`} />
+                        <input type="number" name="durationH" defaultValue={st.duration_h ?? ''} placeholder="Std." className={`${inp} w-16`} />
+                        <button type="submit" className="rounded-lg bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white hover:opacity-90"><Save size={12} /></button>
+                      </div>
+                      <textarea name="description" defaultValue={st.description ?? ''} placeholder="Beschreibung" rows={2} className={`${inp} w-full`} />
+                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                        <select name="type" defaultValue={st.type} className={inp}>{TYPES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select>
+                        <select name="format" defaultValue={st.format ?? ''} className={inp}>{FORMATS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select>
+                        <select name="frameworkId" defaultValue={st.framework_id ?? ''} className={inp}>
+                          <option value="">Framework/Agent: —</option>
+                          {allFw.map((f) => <option key={f.id} value={f.id}>{f.title.split(' — ')[0]}</option>)}
+                        </select>
+                        <select name="requiresStepId" defaultValue={st.requires_step_id ?? ''} className={inp}>
+                          <option value="">setzt voraus: —</option>
+                          {phSteps.filter((o) => o.id !== st.id).map((o) => <option key={o.id} value={o.id}>{o.title}</option>)}
+                        </select>
+                      </div>
+                      <label className="flex items-center gap-1.5 text-xs text-gray-500"><input type="checkbox" name="isBonus" value="1" defaultChecked={st.is_bonus} className="h-3.5 w-3.5" /> Bonus</label>
+                    </form>
+                    <form action={deleteStep} className="mt-1 text-right"><input type="hidden" name="id" value={st.id} /><input type="hidden" name="programId" value={id} />
+                      <button type="submit" className="text-[11px] text-gray-400 hover:text-red-500">löschen</button>
+                    </form>
+                  </div>
+                ))}
+                <form action={addStep}><input type="hidden" name="phaseId" value={ph.id} /><input type="hidden" name="programId" value={id} />
+                  <button type="submit" className="inline-flex items-center gap-1 rounded-full border border-gray-200 px-2.5 py-1 text-xs font-semibold text-gray-600 hover:bg-white"><Plus size={11} /> Schritt</button>
+                </form>
+              </div>
+            </div>
+          )
+        })}
+        {phases.length === 0 && <p className="text-sm text-gray-400">Noch keine Phasen. Oben „Phase" hinzufügen.</p>}
       </div>
-    </div>
-  )
-}
-
-function Field({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-gray-100 bg-white p-4">
-      <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">{label}</p>
-      <p className="text-sm font-medium text-gray-900">{value}</p>
     </div>
   )
 }
