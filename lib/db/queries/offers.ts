@@ -98,6 +98,7 @@ async function ensureOfferSchema() {
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS rhythm_monthly_enabled  BOOLEAN DEFAULT true`)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS rhythm_upfront_enabled  BOOLEAN DEFAULT true`)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS upfront_discount_pct    NUMERIC DEFAULT 0`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS track JSONB DEFAULT '[]'::jsonb`)  // Bausteine-Track (Phasen -> Schritte)
   // Annahme-Nachweis (v.a. Rechnung): Name/E-Mail + IP + Hash(Timestamp+IP)
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS offer_acceptances (
@@ -284,6 +285,7 @@ export interface OfferUpdate {
   rhythmMonthlyEnabled?: boolean
   rhythmUpfrontEnabled?: boolean
   upfrontDiscountPct?: number | null
+  track?: object
 }
 
 export async function updateOffer(id: string, update: OfferUpdate): Promise<void> {
@@ -317,6 +319,7 @@ export async function updateOffer(id: string, update: OfferUpdate): Promise<void
   if (update.rhythmMonthlyEnabled !== undefined) sets.push(sql`rhythm_monthly_enabled = ${update.rhythmMonthlyEnabled}`)
   if (update.rhythmUpfrontEnabled !== undefined) sets.push(sql`rhythm_upfront_enabled = ${update.rhythmUpfrontEnabled}`)
   if (update.upfrontDiscountPct !== undefined) sets.push(sql`upfront_discount_pct = ${update.upfrontDiscountPct}`)
+  if (update.track !== undefined) sets.push(sql`track = ${JSON.stringify(update.track)}::jsonb`)
   if (!sets.length) return
   sets.push(sql`updated_at = now()`)
   const joined = sql.join(sets, sql`, `)

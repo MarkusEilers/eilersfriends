@@ -18,6 +18,7 @@ export const DEFAULT_SECTIONS: SectionOrderItem[] = [
   { id: 'empathy',       type: 'empathy',       label: 'Unsere Perspektive (Empathy)', enabled: true },
   { id: 'newEra',        type: 'newEra',        label: 'Eine neue Ära der Überzeugungsarbeit', enabled: true },
   { id: 'ingredients',   type: 'ingredients',   label: '3 Zutaten für wirksame Überzeugung', enabled: true },
+  { id: 'track',         type: 'track',         label: 'Bausteine-Track (Phasen & Schritte)', enabled: true },
   { id: 'timeline',      type: 'timeline',      label: 'Programm & Timeline', enabled: true },
   { id: 'economic',      type: 'economic',      label: 'Ökonomische Ergebnisse', enabled: true },
   { id: 'pricing',       type: 'pricing',       label: 'Preise (DIY · DWY · DFY)', enabled: true },

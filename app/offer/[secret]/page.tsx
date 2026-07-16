@@ -12,6 +12,7 @@ import {
   OfferNewEra,
   OfferIngredients,
   OfferTimeline,
+  OfferTrack,
   type UnderstandingData,
   type EmpathyData,
   type EconomicResult,
@@ -51,6 +52,7 @@ interface OfferFull {
   rhythm_monthly_enabled?: boolean | null
   rhythm_upfront_enabled?: boolean | null
   upfront_discount_pct?: number | string | null
+  track?: { name: string; goal?: string; steps?: { title: string; durationH?: number | string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[] }[] }[] | null
 }
 
 export default async function PublicOfferPage({ params, searchParams }: { params: Promise<{ secret: string }>; searchParams: Promise<{ pending?: string; accepted?: string; error?: string }> }) {
@@ -72,7 +74,7 @@ export default async function PublicOfferPage({ params, searchParams }: { params
 
   // Section renderer — mirrors the backend preview. Order + enabled come from
   // offer.section_order (Drag&Drop im Editor); Fallback = Default-Reihenfolge.
-  const DEFAULT_ORDER = ['understanding', 'empathy', 'newEra', 'ingredients', 'timeline', 'economic', 'pricing', 'accept']
+  const DEFAULT_ORDER = ['understanding', 'empathy', 'newEra', 'ingredients', 'track', 'timeline', 'economic', 'pricing', 'accept']
   const rawOrder = Array.isArray(offer.section_order) && offer.section_order.length
     ? offer.section_order
     : DEFAULT_ORDER.map((type) => ({ type, enabled: true }))
@@ -83,6 +85,7 @@ export default async function PublicOfferPage({ params, searchParams }: { params
     empathy: offer.empathy_section ? <OfferEmpathy key="empathy" data={offer.empathy_section} /> : null,
     newEra: <OfferNewEra key="newEra" text={offer.empathy_section?.successMessage} />,
     ingredients: <OfferIngredients key="ingredients" />,
+    track: (offer.track && offer.track.length) ? <OfferTrack key="track" phases={offer.track} /> : null,
     timeline: timelinePhases.length ? <OfferTimeline key="timeline" phases={timelinePhases} /> : null,
     economic: offer.economic_results && offer.economic_results.length > 0 ? <OfferEconomicResults key="economic" results={offer.economic_results} /> : null,
     pricing: (offer.programs && offer.programs.length > 0)

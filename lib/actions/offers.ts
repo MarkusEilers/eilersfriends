@@ -56,6 +56,7 @@ interface UpdatePayload {
   rhythmMonthlyEnabled?: boolean
   rhythmUpfrontEnabled?: boolean
   upfrontDiscountPct?: number | null
+  track?: unknown[]
 }
 
 export async function updateOfferAction(id: string, payload: UpdatePayload) {

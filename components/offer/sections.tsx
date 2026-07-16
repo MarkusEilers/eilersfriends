@@ -369,3 +369,69 @@ export function OfferTimeline({ phases }: { phases: { title?: string; descriptio
     </section>
   )
 }
+
+// ─── Bausteine-Track — Phasen mit Schritten (Dauer/Teams/Input/Output) ────────
+export interface TrackStep { title: string; durationH?: number | string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[] }
+export interface TrackPhase { name: string; goal?: string; steps?: TrackStep[] }
+
+export function OfferTrack({ phases, heading = 'Das bauen wir — Schritt für Schritt', intro }: { phases: TrackPhase[]; heading?: string; intro?: string }) {
+  if (!phases?.length) return null
+  const phaseColors = ['#0E9DDD', '#1A5FD4', '#0F1E3A', '#F05A1A', '#7C3AED']
+  return (
+    <section className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
+      <div className="mx-auto max-w-4xl">
+        <h2 className="text-3xl font-bold" style={{ color: '#0D0D0B' }}>{heading}</h2>
+        {intro && <p className="mt-2 max-w-2xl text-sm leading-relaxed" style={{ color: '#6B7280' }}>{intro}</p>}
+        <div className="mt-10 space-y-10">
+          {phases.map((ph, pi) => {
+            const c = phaseColors[pi % phaseColors.length]
+            return (
+              <div key={pi}>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white" style={{ backgroundColor: c }}>{pi + 1}</span>
+                  <div>
+                    <h3 className="text-lg font-bold" style={{ color: '#0D0D0B' }}>{ph.name}</h3>
+                    {ph.goal && <p className="text-xs" style={{ color: '#6B7280' }}>{ph.goal}</p>}
+                  </div>
+                  {ph.steps?.length ? <span className="ml-auto text-xs font-semibold" style={{ color: c }}>{ph.steps.length} Bausteine</span> : null}
+                </div>
+                <div className="mt-4 space-y-3 border-l-2 pl-5" style={{ borderColor: `${c}33` }}>
+                  {(ph.steps ?? []).map((st, si) => (
+                    <div key={si} className="rounded-2xl border border-gray-200 bg-white p-5">
+                      <div className="flex items-start justify-between gap-3">
+                        <h4 className="text-sm font-bold" style={{ color: '#0D0D0B' }}>{st.title}</h4>
+                        {st.durationH ? <span className="flex-shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold" style={{ backgroundColor: '#EBF1FF', color: '#1A5FD4' }}>{st.durationH}h</span> : null}
+                      </div>
+                      {st.description && <p className="mt-1.5 text-sm leading-relaxed" style={{ color: '#4B5563' }}>{st.description}</p>}
+                      {st.teams?.length ? (
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {st.teams.map((t, ti) => (<span key={ti} className="rounded-md px-2 py-0.5 text-[11px] font-medium" style={{ backgroundColor: '#F3F4F6', color: '#374151' }}>{t}</span>))}
+                        </div>
+                      ) : null}
+                      {(st.inputs?.length || st.outputs?.length) ? (
+                        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                          {st.inputs?.length ? (
+                            <div>
+                              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#9CA3AF' }}>Nötiger Input</p>
+                              <p className="mt-1 text-xs" style={{ color: '#6B7280' }}>{st.inputs.join(', ')}</p>
+                            </div>
+                          ) : null}
+                          {st.outputs?.length ? (
+                            <div>
+                              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Output</p>
+                              <p className="mt-1 text-xs" style={{ color: '#374151' }}>{st.outputs.join(', ')}</p>
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}

@@ -12,6 +12,8 @@ import { UNDERSTANDING_PRESETS, EMPATHY_PRESETS, GUARANTEE_PRESETS } from '@/lib
 interface Goal { v: string }
 interface UnderstandingData { title?: string; goals?: string[]; challenges?: string[] }
 interface EmpathyData { title?: string; statement?: string; successMessage?: string }
+interface TrackStepE { title: string; durationH?: number | string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[] }
+interface TrackPhaseE { name: string; goal?: string; steps?: TrackStepE[] }
 interface EconomicResultData { icon?: 'target'|'users'|'trending-up'|'shield'|'zap'|'star'; title: string; description?: string }
 interface PricingOptData { type?: 'DIY'|'DWY'|'DFY'; title: string; description?: string; price: number; monthlyDuration?: number; features?: string[]; recommended?: boolean }
 interface ProgramData { id?: string; title: string; subtitle?: string; description?: string; pricing?: PricingOptData[] }
@@ -41,6 +43,7 @@ export interface OfferEditorState {
   // Wave 2.F
   customerLogoUrl?: string | null
   guaranteeText?: string | null
+  track?: TrackPhaseE[]
   // Wave 3 — Zahlung & Annahme
   paymentCardEnabled?: boolean
   paymentInvoiceEnabled?: boolean
@@ -85,6 +88,7 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           rhythmMonthlyEnabled: s.rhythmMonthlyEnabled ?? true,
           rhythmUpfrontEnabled: s.rhythmUpfrontEnabled ?? true,
           upfrontDiscountPct: s.upfrontDiscountPct ?? 0,
+          track: s.track ?? [],
           sectionOrder: s.sectionOrder && s.sectionOrder.length ? s.sectionOrder : DEFAULT_SECTIONS,
         })
         setSavedAt(Date.now())
@@ -258,6 +262,12 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
         <PresetSelect label="Vorlage einfügen" options={EMPATHY_PRESETS.map((v) => v.label)} onPick={(i) => { const v = EMPATHY_PRESETS[i]; patch('empathy', { ...s.empathy, statement: v.statement, successMessage: v.successMessage }) }} />
         <Field label="Statement (großes Zitat)" value={s.empathy.statement ?? ''} onChange={(v) => patch('empathy', { ...s.empathy, statement: v })} multiline />
         <Field label="Success-Message (was Erfolg für uns heißt)" value={s.empathy.successMessage ?? ''} onChange={(v) => patch('empathy', { ...s.empathy, successMessage: v })} multiline />
+      </Section>
+
+      {/* Bausteine-Track */}
+      <Section label="Bausteine-Track · Phasen & Schritte">
+        <p className="mb-3 text-xs text-gray-500">Phasen mit Schritten (Dauer, Teams, Nötiger Input, Output). Erscheint als eigener Block (Reihenfolge über „Abschnitte").</p>
+        <TrackEditor phases={s.track ?? []} onChange={(t) => patch('track', t)} />
       </Section>
 
       {/* Economic Results */}
@@ -559,6 +569,50 @@ function PresetSelect({ label, options, onPick }: { label: string; options: stri
         <option value="">— {label} —</option>
         {options.map((o, i) => (<option key={i} value={i}>{o}</option>))}
       </select>
+    </div>
+  )
+}
+
+
+function TrackEditor({ phases, onChange }: { phases: TrackPhaseE[]; onChange: (p: TrackPhaseE[]) => void }) {
+  const csv = (a?: string[]) => (a ?? []).join(', ')
+  const toArr = (v: string) => v.split(',').map((x) => x.trim()).filter(Boolean)
+  const updPhase = (i: number, patch: Partial<TrackPhaseE>) => onChange(phases.map((p, idx) => idx === i ? { ...p, ...patch } : p))
+  const updStep = (pi: number, si: number, patch: Partial<TrackStepE>) => onChange(phases.map((p, idx) => idx === pi ? { ...p, steps: (p.steps ?? []).map((st, j) => j === si ? { ...st, ...patch } : st) } : p))
+  const addPhase = () => onChange([...phases, { name: 'Neue Phase', steps: [] }])
+  const delPhase = (i: number) => onChange(phases.filter((_, idx) => idx !== i))
+  const addStep = (pi: number) => onChange(phases.map((p, idx) => idx === pi ? { ...p, steps: [...(p.steps ?? []), { title: 'Neuer Baustein' }] } : p))
+  const delStep = (pi: number, si: number) => onChange(phases.map((p, idx) => idx === pi ? { ...p, steps: (p.steps ?? []).filter((_, j) => j !== si) } : p))
+  return (
+    <div className="space-y-4">
+      {phases.map((ph, pi) => (
+        <div key={pi} className="rounded-2xl border border-gray-200 bg-gray-50/60 p-4">
+          <div className="flex items-center gap-2">
+            <input value={ph.name} onChange={(e) => updPhase(pi, { name: e.target.value })} placeholder="Phasen-Name" className="flex-1 rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm font-semibold outline-none focus:border-blue-300" />
+            <button type="button" onClick={() => delPhase(pi)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
+          </div>
+          <input value={ph.goal ?? ''} onChange={(e) => updPhase(pi, { goal: e.target.value })} placeholder="Ziel der Phase (optional)" className="mt-2 w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs outline-none focus:border-blue-300" />
+          <div className="mt-3 space-y-2 border-l-2 border-blue-100 pl-3">
+            {(ph.steps ?? []).map((st, si) => (
+              <div key={si} className="rounded-xl border border-gray-200 bg-white p-3">
+                <div className="flex items-center gap-2">
+                  <input value={st.title} onChange={(e) => updStep(pi, si, { title: e.target.value })} placeholder="Baustein-Titel" className="flex-1 rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm outline-none focus:border-blue-300" />
+                  <input type="number" value={st.durationH ?? ''} onChange={(e) => updStep(pi, si, { durationH: e.target.value })} placeholder="Std." className="w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-blue-300" />
+                  <button type="button" onClick={() => delStep(pi, si)} className="text-gray-400 hover:text-red-500"><X size={13} /></button>
+                </div>
+                <textarea value={st.description ?? ''} onChange={(e) => updStep(pi, si, { description: e.target.value })} placeholder="Kurzbeschreibung" rows={2} className="mt-2 w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs outline-none focus:border-blue-300" />
+                <input value={csv(st.teams)} onChange={(e) => updStep(pi, si, { teams: toArr(e.target.value) })} placeholder="Teams (Komma: GP Team, E+F Strategie)" className="mt-2 w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs outline-none focus:border-blue-300" />
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <input value={csv(st.inputs)} onChange={(e) => updStep(pi, si, { inputs: toArr(e.target.value) })} placeholder="Nötiger Input (Komma)" className="rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs outline-none focus:border-blue-300" />
+                  <input value={csv(st.outputs)} onChange={(e) => updStep(pi, si, { outputs: toArr(e.target.value) })} placeholder="Output (Komma)" className="rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs outline-none focus:border-blue-300" />
+                </div>
+              </div>
+            ))}
+            <button type="button" onClick={() => addStep(pi)} className="inline-flex items-center gap-1 rounded-full border border-gray-200 px-2.5 py-1 text-xs font-semibold text-gray-600 hover:bg-white"><Plus size={11} /> Baustein</button>
+          </div>
+        </div>
+      ))}
+      <button type="button" onClick={addPhase} className="inline-flex items-center gap-1.5 rounded-full bg-gray-900 px-3.5 py-2 text-xs font-semibold text-white hover:opacity-90"><Plus size={12} /> Phase hinzufügen</button>
     </div>
   )
 }

@@ -99,6 +99,29 @@ export function OfferPreview({ s }: { s: OfferEditorState }) {
         </div>
       </section>
     ),
+    track: ((s as unknown as { track?: { name: string; goal?: string; steps?: { title: string; durationH?: number|string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[] }[] }[] }).track ?? []).length ? (
+      <section key="track" className="px-8 py-10" style={{ backgroundColor: '#FAFAF8' }}>
+        <h2 className="text-2xl font-bold" style={{ color: '#0D0D0B' }}>Das bauen wir — Schritt für Schritt</h2>
+        <div className="mt-5 space-y-6">
+          {((s as unknown as { track?: { name: string; goal?: string; steps?: { title: string; durationH?: number|string; description?: string }[] }[] }).track ?? []).map((ph, pi) => (
+            <div key={pi}>
+              <h3 className="text-sm font-bold" style={{ color: '#1A5FD4' }}>{pi + 1}. {ph.name}{ph.steps?.length ? ` · ${ph.steps.length} Bausteine` : ''}</h3>
+              <div className="mt-2 space-y-2 border-l-2 border-blue-100 pl-3">
+                {(ph.steps ?? []).map((st, si) => (
+                  <div key={si} className="rounded-xl border border-gray-200 bg-white p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className="text-xs font-bold" style={{ color: '#0D0D0B' }}>{st.title}</h4>
+                      {st.durationH ? <span className="text-[10px] text-gray-400">{st.durationH}h</span> : null}
+                    </div>
+                    {st.description && <p className="mt-1 text-xs text-gray-500">{st.description}</p>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    ) : null,
     timeline: (
       <section key="timeline" className="px-8 py-10">
         <h2 className="text-2xl font-bold" style={{ color: '#0D0D0B' }}>Ihr Programm &amp; Timeline</h2>
