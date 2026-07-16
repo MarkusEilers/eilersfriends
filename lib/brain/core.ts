@@ -61,7 +61,10 @@ function channelRules(channel: Channel): string {
 - NIEMALS Emojis/Smileys/Emoticons oder Markdown (werden vorgelesen).
 - Wiederhole nichts schon Gesagtes. Bei Terminen: 1–2 Zeiten nennen und bei Zustimmung direkt buchen (Tool book), ohne mehrfaches Rückversichern.
 - RÜCKRUFNUMMER: Die Nummer des Anrufers liegt uns i.d.R. automatisch vor (Anrufer-ID). Frag NICHT extra nach der Telefonnummer — außer sie ist unterdrückt oder der Anrufer möchte unter einer anderen Nummer erreicht werden.
-- E-MAIL ist am Telefon fehleranfällig und bleibt OPTIONAL. Dräng nicht darauf. Wird eine E-Mail genannt: lies sie GENAU EINMAL ruhig zur Bestätigung zurück ("at" für @, "Punkt" für den Punkt). Sitzt sie nicht, bitte einmal, den Teil vor dem @ zu buchstabieren — höchstens ein Korrektur-Durchgang. Wenn es weiter hakt: biete an, einfach unter der vorliegenden Nummer zurückzurufen (dann keine E-Mail nötig). Niemals 3-, 4-, 5-mal nachfragen.
+- E-MAIL FÜR TERMINE (Pflicht, weil die Kalendereinladung dorthin geht): Nimm sie STRUKTURIERT in Teilen auf, nie als ein Stück:
+  1) "Wie lautet der Teil VOR dem @?"  2) "Und der Teil NACH dem @ (der Firmen-/Anbietername)?"  3) "Und die Endung — .de, .com, …?"
+  Bei jeder Unsicherheit lass GENAU DIESEN Teil buchstabieren ("Buchstabieren Sie den Teil vor dem @ bitte kurz"). Setze die Adresse zusammen und lies sie EINMAL komplett zur Bestätigung zurück ("at" für @, "Punkt" für den Punkt). Erst nach dem "Ja" buchen. Häufige Endungen ruhig selbst anbieten ("…at gmail punkt com?").
+- E-MAIL bei reinen Rückruf-/Nachrichtenwünschen bleibt OPTIONAL (Nummer liegt ja vor) — dann nicht darauf drängen.
 - Wenn jemand eine Person nicht erreicht oder eine Nachricht hinterlassen will: Name aufnehmen (Nummer liegt vor), optional Anliegen, dann Tool send_message.`
   }
   return `KANAL: WEBSITE-CHAT.
@@ -73,7 +76,7 @@ function channelRules(channel: Channel): string {
 // ── TOOLS (geteilt; pro Kanal gefiltert) ────────────────────────────────────
 const TOOL_DEFS = {
   get_slots: { name: 'get_slots', description: 'Freie Termine + Buchungslink einer Person. person: markus (Vertrieb/Sales/AI) oder aljona (Leadership); daniel/cosima möglich. betreff optional.', input_schema: { type: 'object', properties: { person: { type: 'string' }, type: { type: 'string' }, betreff: { type: 'string' } }, required: ['person'] } },
-  book: { name: 'book', description: 'Bucht einen Termin verbindlich (nur Telefon-Kanal). slot_id aus get_slots, Telefonnummer Pflicht.', input_schema: { type: 'object', properties: { person: { type: 'string' }, type: { type: 'string' }, slot_id: { type: 'string' }, name: { type: 'string' }, phone: { type: 'string' }, email: { type: 'string' }, topic: { type: 'string' } }, required: ['person', 'slot_id', 'name', 'phone'] } },
+  book: { name: 'book', description: 'Bucht einen Termin verbindlich (nur Telefon-Kanal). slot_id aus get_slots. Telefonnummer = Anrufer-ID (liegt vor). E-Mail für die Kalendereinladung Part-für-Part erfragen und vor dem Buchen bestätigen.', input_schema: { type: 'object', properties: { person: { type: 'string' }, type: { type: 'string' }, slot_id: { type: 'string' }, name: { type: 'string' }, phone: { type: 'string' }, email: { type: 'string' }, topic: { type: 'string' } }, required: ['person', 'slot_id', 'name', 'phone'] } },
   team_status: { name: 'team_status', description: 'Aktueller Status des Teams (available|meeting|offline).', input_schema: { type: 'object', properties: {} } },
   send_message: { name: 'send_message', description: 'Schickt der Zielperson eine E-Mail mit dem Anliegen (Name, Rückrufnummer, E-Mail, Transkript) + CRM-Eintrag. Für Rückrufwünsche / Nachricht hinterlassen.', input_schema: { type: 'object', properties: { person: { type: 'string' }, name: { type: 'string' }, phone: { type: 'string' }, email: { type: 'string' }, summary: { type: 'string' } }, required: ['person', 'name'] } },
 } as const
