@@ -78,7 +78,18 @@ export default async function PublicOfferPage({ params, searchParams }: { params
   const rawOrder = Array.isArray(offer.section_order) && offer.section_order.length
     ? offer.section_order
     : DEFAULT_ORDER.map((type) => ({ type, enabled: true }))
-  const sectionOrder = rawOrder.filter((sec) => sec.enabled)
+  const enabled = rawOrder.filter((sec) => sec.enabled).map((sec) => sec.type)
+  // Neu hinzugekommene Default-Blöcke (z.B. 'track') ergänzen, wenn sie in einer
+  // älteren gespeicherten section_order noch fehlen — an ihrer natürlichen Position.
+  const present = new Set(enabled)
+  DEFAULT_ORDER.forEach((type, i) => {
+    if (present.has(type)) return
+    let insertAt = enabled.length
+    for (let j = i - 1; j >= 0; j--) { const idx = enabled.indexOf(DEFAULT_ORDER[j]); if (idx >= 0) { insertAt = idx + 1; break } }
+    enabled.splice(insertAt, 0, type)
+    present.add(type)
+  })
+  const sectionOrder = enabled.map((type) => ({ type }))
   const timelinePhases = (offer.programs?.[0]?.pricing ?? []).map((o) => ({ title: o.title, description: o.description }))
   const sectionNodes: Record<string, React.ReactNode> = {
     understanding: offer.understanding_section ? <OfferUnderstanding key="understanding" data={offer.understanding_section} /> : null,
