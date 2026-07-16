@@ -28,6 +28,14 @@ export default async function ProgramDetailPage({ params }: PageProps) {
   } catch { row = null }
   if (!row) notFound()
 
+  // Relationale Phasen/Schritte (neues Modell)
+  let phases: { id: string; name: string; goal: string | null; steps: { id: string; title: string; type: string; format: string | null; duration_h: number | null; is_bonus: boolean }[] }[] = []
+  try {
+    const ph = (await db.execute(sql`SELECT id, name, goal, sort_order FROM program_phases WHERE program_id = ${id} ORDER BY sort_order`)) as unknown as { id: string; name: string; goal: string | null }[]
+    const st = (await db.execute(sql`SELECT id, phase_id, title, type, format, duration_h, is_bonus, sort_order FROM program_steps WHERE program_id = ${id} ORDER BY sort_order`)) as unknown as { id: string; phase_id: string; title: string; type: string; format: string | null; duration_h: number | null; is_bonus: boolean }[]
+    phases = ph.map((p2) => ({ ...p2, steps: st.filter((x) => x.phase_id === p2.id) }))
+  } catch { phases = [] }
+
   const p = row
   const track = Array.isArray(p.track) ? p.track : []
   const totalSteps = track.reduce((n, ph) => n + (ph.steps?.length ?? 0), 0)
@@ -50,10 +58,40 @@ export default async function ProgramDetailPage({ params }: PageProps) {
         <Field label="Aktualisiert" value={new Date(p.updated_at).toLocaleString('de-DE')} />
       </div>
 
-      {/* Track-Übersicht */}
+      {/* Relationale Phasen/Schritte */}
+      {phases.length > 0 && (
+        <div className="mt-8 rounded-2xl border border-gray-100 bg-white p-5">
+          <div className="mb-4 flex items-baseline justify-between">
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Phasen &amp; Schritte</p>
+            <p className="text-xs text-gray-400">{phases.length} Phasen · {phases.reduce((n, p2) => n + p2.steps.length, 0)} Schritte</p>
+          </div>
+          <div className="space-y-5">
+            {phases.map((ph, pi) => (
+              <div key={ph.id}>
+                <h3 className="text-sm font-bold text-gray-900">{pi + 1}. {ph.name}{ph.steps.length ? ` · ${ph.steps.length}` : ''}</h3>
+                {ph.goal && <p className="text-xs text-gray-500">{ph.goal}</p>}
+                <ul className="mt-2 space-y-1 border-l-2 border-blue-100 pl-3">
+                  {ph.steps.map((st, si) => (
+                    <li key={st.id} className="flex items-center gap-2 text-xs text-gray-600">
+                      <span className="text-gray-400">{si + 1}.</span>
+                      <span className="font-semibold text-gray-800">{st.title}</span>
+                      <span className="rounded px-1.5 py-0.5 text-[10px]" style={{ backgroundColor: st.is_bonus ? '#FFF4E5' : '#EBF1FF', color: st.is_bonus ? '#B07C0A' : '#1A5FD4' }}>{st.is_bonus ? 'Bonus' : st.type}</span>
+                      {st.format ? <span className="text-[10px] text-gray-400">{st.format}</span> : null}
+                      {st.duration_h ? <span className="text-[10px] text-gray-400">· {st.duration_h}h</span> : null}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Track-Übersicht (JSONB, Legacy) */}
+      {phases.length === 0 && (
       <div className="mt-8 rounded-2xl border border-gray-100 bg-white p-5">
         <div className="mb-4 flex items-baseline justify-between">
-          <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Bausteine-Track</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Bausteine-Track (Legacy)</p>
           <p className="text-xs text-gray-400">{track.length} Phasen · {totalSteps} Bausteine</p>
         </div>
         {track.length === 0 ? (
@@ -76,6 +114,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
           </div>
         )}
       </div>
+      )}
 
       <div className="mt-8 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-6 text-center">
         <p className="text-sm font-medium text-gray-500">Voll editierbarer Programm-Editor (Track, Module, Preise) folgt.</p>
