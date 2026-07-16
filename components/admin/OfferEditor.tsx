@@ -7,6 +7,7 @@ import { Sparkles, Plus, X, Save, Send, Loader2, AlertCircle, EyeOff, Eye } from
 import { updateOfferAction, suggestSectionAction, setOfferStatusAction, generateOfferFromPromptAction } from '@/lib/actions/offers'
 import { OfferPreview } from './OfferPreview'
 import { SectionOrderEditor, DEFAULT_SECTIONS, type SectionOrderItem } from './SectionOrderEditor'
+import { UNDERSTANDING_PRESETS, EMPATHY_PRESETS, GUARANTEE_PRESETS } from '@/lib/offer/presets'
 
 interface Goal { v: string }
 interface UnderstandingData { title?: string; goals?: string[]; challenges?: string[] }
@@ -238,6 +239,7 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
 
       {/* Understanding */}
       <Section label="Verständnis · Ziele + Herausforderungen" onSuggest={() => suggest('understanding')} suggesting={suggesting === 'understanding'}>
+        <PresetSelect label="Vorlage einfügen" options={UNDERSTANDING_PRESETS.map((v) => v.label)} onPick={(i) => { const v = UNDERSTANDING_PRESETS[i]; patch('understanding', { title: v.title, goals: v.goals, challenges: v.challenges }) }} />
         <Field label="Titel" value={s.understanding.title ?? ''} onChange={(v) => patch('understanding', { ...s.understanding, title: v })} />
         <StringArray
           label="Ziele"
@@ -253,6 +255,7 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
 
       {/* Empathy */}
       <Section label="Empathy · Was wir verstanden haben" onSuggest={() => suggest('empathy')} suggesting={suggesting === 'empathy'}>
+        <PresetSelect label="Vorlage einfügen" options={EMPATHY_PRESETS.map((v) => v.label)} onPick={(i) => { const v = EMPATHY_PRESETS[i]; patch('empathy', { ...s.empathy, statement: v.statement, successMessage: v.successMessage }) }} />
         <Field label="Statement (großes Zitat)" value={s.empathy.statement ?? ''} onChange={(v) => patch('empathy', { ...s.empathy, statement: v })} multiline />
         <Field label="Success-Message (was Erfolg für uns heißt)" value={s.empathy.successMessage ?? ''} onChange={(v) => patch('empathy', { ...s.empathy, successMessage: v })} multiline />
       </Section>
@@ -298,6 +301,7 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
         <p className="mb-3 text-xs text-gray-500">
           Erscheint vor dem Pricing als „Whatever-it-takes"-Box. Leer = Default-Text wird verwendet.
         </p>
+        <PresetSelect label="Vorlage einfügen" options={GUARANTEE_PRESETS.map((v) => v.label)} onPick={(i) => patch('guaranteeText', GUARANTEE_PRESETS[i].text)} />
         <textarea
           rows={4}
           placeholder="Wir bleiben dabei, bis es funktioniert..."
@@ -539,6 +543,22 @@ function PricingEditor({ programs, onChange }: { programs: ProgramData[]; onChan
         className="inline-flex items-center gap-1 rounded-lg border border-dashed border-gray-300 px-3 py-1.5 text-xs text-gray-500 hover:bg-gray-50">
         <Plus size={12} /> Pricing-Option
       </button>
+    </div>
+  )
+}
+
+
+function PresetSelect({ label, options, onPick }: { label: string; options: string[]; onPick: (index: number) => void }) {
+  return (
+    <div className="mb-3">
+      <select
+        defaultValue=""
+        onChange={(e) => { const i = Number(e.target.value); if (!Number.isNaN(i) && e.target.value !== '') { onPick(i); e.target.value = '' } }}
+        className="w-full rounded-xl border border-dashed border-blue-200 bg-blue-50/40 px-3 py-2 text-xs text-blue-700 outline-none focus:border-blue-400"
+      >
+        <option value="">— {label} —</option>
+        {options.map((o, i) => (<option key={i} value={i}>{o}</option>))}
+      </select>
     </div>
   )
 }
