@@ -1,10 +1,9 @@
 import { db } from '@/lib/db'
-import { programs, users } from '@/lib/db/schema'
-import { desc, eq } from 'drizzle-orm'
+import { sql } from 'drizzle-orm'
 import Link from 'next/link'
 import {
   Plus, ExternalLink, GraduationCap, Users as UsersIcon, Briefcase,
-  FileText, Globe, Archive, Edit3,
+  FileText, Globe, Edit3,
 } from 'lucide-react'
 import { createProgram, setProgramStatus, deleteProgram } from '@/lib/actions/programs'
 
@@ -15,36 +14,26 @@ const TYPE_META: Record<string, { label: string; color: string; bg: string; icon
 }
 
 export default async function ProgramsPage() {
-  let rows: ((typeof programs.$inferSelect) & { coachName?: string | null })[] = []
+  type ProgRow = { id: string; name: string; slug: string; type: string; status: 'published' | 'draft'; description: string | null; coachName: string | null; maxParticipants: number | null; price: number | null; updatedAt: Date }
+  let rows: ProgRow[] = []
   try {
-    const res = await db
-      .select({
-        id: programs.id,
-        coachId: programs.coachId,
-        name: programs.name,
-        slug: programs.slug,
-        description: programs.description,
-        type: programs.type,
-        ctaType: programs.ctaType,
-        status: programs.status,
-        price: programs.price,
-        maxParticipants: programs.maxParticipants,
-        locale: programs.locale,
-        createdAt: programs.createdAt,
-        updatedAt: programs.updatedAt,
-        coachName: users.name,
-      })
-      .from(programs)
-      .leftJoin(users, eq(programs.coachId, users.id))
-      .orderBy(desc(programs.updatedAt))
-    rows = res as typeof rows
+    const res = await db.execute(sql`
+      SELECT p.id, p.name, p.slug, p.type, p.is_published, p.updated_at, u.name AS coach_name
+      FROM programs p LEFT JOIN users u ON u.id = p.coach_id
+      ORDER BY p.updated_at DESC
+    `)
+    rows = (res as unknown as Array<{ id: string; name: string; slug: string; type: string; is_published: boolean; updated_at: string; coach_name: string | null }>).map((r) => ({
+      id: r.id, name: r.name, slug: r.slug, type: r.type,
+      status: (r.is_published ? 'published' : 'draft') as 'published' | 'draft',
+      description: null, coachName: r.coach_name, maxParticipants: null, price: null,
+      updatedAt: new Date(r.updated_at),
+    }))
   } catch (_) {}
 
   const stats = {
     total: rows.length,
     published: rows.filter((r) => r.status === 'published').length,
     drafts: rows.filter((r) => r.status === 'draft').length,
-    archived: rows.filter((r) => r.status === 'archived').length,
     academy: rows.filter((r) => r.type === 'academy').length,
     coaching: rows.filter((r) => r.type === 'coaching').length,
     training: rows.filter((r) => r.type === 'training').length,
@@ -53,7 +42,6 @@ export default async function ProgramsPage() {
   const grouped = {
     published: rows.filter((r) => r.status === 'published'),
     draft: rows.filter((r) => r.status === 'draft'),
-    archived: rows.filter((r) => r.status === 'archived'),
   }
 
   return (
@@ -122,9 +110,7 @@ export default async function ProgramsPage() {
           {grouped.draft.length > 0 && (
             <Group title="Entwürfe" icon={<FileText size={14} />} color="orange" rows={grouped.draft} />
           )}
-          {grouped.archived.length > 0 && (
-            <Group title="Archiviert" icon={<Archive size={14} />} color="gray" rows={grouped.archived} />
-          )}
+
         </div>
       )}
     </div>
@@ -148,7 +134,7 @@ function Group({
   title: string
   icon: React.ReactNode
   color: 'green' | 'orange' | 'gray'
-  rows: ((typeof programs.$inferSelect) & { coachName?: string | null })[]
+  rows: { id: string; name: string; slug: string; type: string; status: 'published' | 'draft'; description: string | null; coachName: string | null; maxParticipants: number | null; price: number | null; updatedAt: Date }[]
 }) {
   const colorMap = {
     green: 'text-green-700 bg-green-50',
@@ -224,11 +210,11 @@ function Group({
                       <button type="submit" className="rounded-full px-2.5 py-1 text-xs font-semibold text-green-700 hover:bg-green-50" title="Veröffentlichen">Publish</button>
                     </form>
                   )}
-                  {p.status !== 'archived' && (
+                  {p.status === 'published' && (
                     <form action={setProgramStatus}>
                       <input type="hidden" name="id" value={p.id} />
-                      <input type="hidden" name="status" value="archived" />
-                      <button type="submit" className="rounded-full px-2.5 py-1 text-xs font-semibold text-gray-500 hover:bg-gray-50" title="Archivieren">Archiv</button>
+                      <input type="hidden" name="status" value="draft" />
+                      <button type="submit" className="rounded-full px-2.5 py-1 text-xs font-semibold text-gray-500 hover:bg-gray-50" title="Zurückziehen">Zurückziehen</button>
                     </form>
                   )}
                   <form action={deleteProgram}>

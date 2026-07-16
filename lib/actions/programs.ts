@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { db } from '@/lib/db'
 import { programs, users } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { auth } from '@/lib/auth'
 
 async function requireAdmin() {
@@ -22,17 +22,12 @@ export async function createProgram() {
   if (!coach) throw new Error('coach not found')
 
   const slug = `programm-${Date.now().toString(36)}`
-  const [created] = await db
-    .insert(programs)
-    .values({
-      coachId: coach.id,
-      name: 'Neues Programm',
-      slug,
-      type: 'academy',
-      ctaType: 'apply',
-      status: 'draft',
-    })
-    .returning()
+  const rows = await db.execute(sql`
+    INSERT INTO programs (name, slug, type, hero_headline, coach_id, is_published)
+    VALUES ('Neues Programm', ${slug}, 'academy', 'Neues Programm', ${coach.id}, false)
+    RETURNING id
+  `)
+  const created = (rows as unknown as Array<{ id: string }>)[0]
   redirect(`/admin/programs/${created.id}`)
 }
 
@@ -41,10 +36,8 @@ export async function setProgramStatus(formData: FormData) {
   const id = formData.get('id') as string
   const status = formData.get('status') as 'draft' | 'published' | 'archived'
   if (!id || !status) return
-  await db
-    .update(programs)
-    .set({ status, updatedAt: new Date() })
-    .where(eq(programs.id, id))
+  const pub = status === 'published'
+  await db.execute(sql`UPDATE programs SET is_published = ${pub}, published_at = ${pub ? new Date().toISOString() : null}, updated_at = now() WHERE id = ${id}`)
   revalidatePath('/admin/programs')
 }
 
