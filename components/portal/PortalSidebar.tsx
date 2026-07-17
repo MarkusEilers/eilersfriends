@@ -4,13 +4,14 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { signOutAdminAction } from '@/lib/actions/offers'
-import { LayoutDashboard, FileSignature, User, Menu, X, LogOut, BookOpen, GraduationCap, Shield } from 'lucide-react'
+import { LayoutDashboard, FileSignature, User, Menu, X, LogOut, BookOpen, GraduationCap, Shield, Receipt } from 'lucide-react'
 
 const PORTAL_NAV = [
   { label: 'Dashboard',        href: '/dashboard',            icon: LayoutDashboard },
   { label: 'Meine Frameworks', href: '/dashboard/frameworks', icon: BookOpen },
   { label: 'Meine Programme',  href: '/dashboard/programs',   icon: GraduationCap },
   { label: 'Angebote',         href: '/clients',              icon: FileSignature },
+  { label: 'Rechnungen',       href: '/dashboard/billing',    icon: Receipt },
   { label: 'Profil',           href: '/dashboard/profile',    icon: User },
 ]
 
