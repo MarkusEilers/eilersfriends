@@ -20,15 +20,8 @@ export default async function AgbPage({ params }: PageProps) {
             Allgemeine Geschäftsbedingungen
           </h1>
           <p className="mb-10 text-sm text-gray-500">
-            Für die Ausbildungs- und Coaching-Leistungen der SalesMade Academy. Stand: Juni 2026.
+            Für die Ausbildungs- und Coaching-Leistungen der SalesMade Academy. Stand: Juli 2026.
           </p>
-
-          {/* ENTWURF-Hinweis — vor Live-Verkauf anwaltlich prüfen lassen */}
-          <div className="mb-10 rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs leading-relaxed text-amber-800">
-            <strong>Entwurf.</strong> Diese Fassung ist ein erster, auf das Angebot zugeschnittener
-            Entwurf und ersetzt keine anwaltliche Prüfung. Vor dem ersten verbindlichen Verkauf bitte
-            durch eine Rechtsberatung freigeben lassen.
-          </div>
 
           <div className="space-y-8 text-sm leading-relaxed text-gray-700">
 
@@ -124,11 +117,54 @@ export default async function AgbPage({ params }: PageProps) {
             </div>
 
             <div>
-              <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>10. Schlussbestimmungen</h2>
+              <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>10. Höhere Gewalt</h2>
+              <p>
+                Wird eine Partei durch höhere Gewalt — etwa Naturereignisse, Ausfälle der Telekommunikations-
+                oder Stromversorgung, behördliche Maßnahmen, Streik oder vergleichbare, nicht vorhersehbare und
+                unabwendbare Ereignisse — an der Erfüllung ihrer Pflichten gehindert, ruhen diese für die Dauer
+                der Behinderung. Vereinbarte Termine verschieben sich entsprechend; ein Verschulden liegt insoweit
+                nicht vor.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>11. Vertraulichkeit</h2>
+              <p>
+                Beide Parteien behandeln alle im Rahmen der Zusammenarbeit erhaltenen, nicht offenkundigen
+                Informationen der anderen Partei — insbesondere Geschäfts-, Kunden-, Vertriebs- und Finanzdaten —
+                vertraulich und nutzen sie ausschließlich zur Durchführung der Leistungen. Ausgenommen sind
+                Informationen, die öffentlich bekannt sind, der empfangenden Partei bereits bekannt waren oder
+                aufgrund gesetzlicher oder behördlicher Anordnung offengelegt werden müssen. Die Vertraulichkeit
+                besteht auch nach Vertragsende fort.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>12. Datenschutz</h2>
+              <p>
+                Beide Parteien halten die geltenden Datenschutzvorschriften ein. Verarbeitet der Anbieter im
+                Auftrag des Kunden personenbezogene Daten, schließen die Parteien einen Vertrag zur
+                Auftragsverarbeitung nach Art. 28 DSGVO. Einzelheiten zur Verarbeitung durch den Anbieter ergeben
+                sich aus der <a href="/datenschutz" className="underline hover:text-gray-900">Datenschutzerklärung</a>.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>13. Nennung als Referenzkunde</h2>
+              <p>
+                Der Anbieter ist berechtigt, den Kunden nach erfolgreicher Zusammenarbeit als Referenzkunden zu
+                nennen — auch unter Nutzung des Firmennamens und -logos — auf seiner Website und in
+                Marketingmaterialien. Der Kunde kann dem jederzeit in Textform (E-Mail genügt) widersprechen.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-base font-bold mb-3" style={{ color: '#0D0D0B' }}>14. Schlussbestimmungen</h2>
               <p>
                 Nebenabreden bedürfen der Schriftform; dies gilt auch für die Aufhebung des
-                Schriftformerfordernisses. Es gilt das Recht der Bundesrepublik Deutschland. Sollte eine
-                Bestimmung unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.
+                Schriftformerfordernisses. Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des
+                UN-Kaufrechts. Sollte eine Bestimmung unwirksam sein, bleibt die Wirksamkeit der übrigen
+                Bestimmungen unberührt.
               </p>
             </div>
 

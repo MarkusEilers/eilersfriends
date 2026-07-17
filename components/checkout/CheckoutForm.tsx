@@ -103,7 +103,7 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
       {/* Tier Selector */}
       <div className="border-b border-gray-100 bg-cream px-6 py-5">
-        <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">Dein Tier</p>
+        <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">Deine Auswahl</p>
         <div className="space-y-2">
           {tiers.map((t) => {
             const isSelected = t.id === selectedTierId
