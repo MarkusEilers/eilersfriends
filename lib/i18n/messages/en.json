@@ -1754,6 +1754,18 @@
     },
     "perMonth": "/ month",
     "perYear": "/ year",
-    "oneTime": "one-time"
+    "oneTime": "one-time",
+    "success": {
+      "eyebrow": "Confirmation",
+      "title": "Welcome aboard.",
+      "intro": "Your payment was processed successfully. You are officially a Founding Member of the SalesMade Academy Premium.",
+      "whatsNext": "What happens next",
+      "step1": "You'll receive an email <b>within 5 minutes</b> with account setup + WhatsApp invitation.",
+      "step2": "<b>Onboarding call with Markus</b> within 24 hours — you pick the slot in the email.",
+      "step3": "The <b>sales simulation</b> starts right after setup — your 13-skill assessment goes live.",
+      "toMember": "To member area →",
+      "askQuestion": "Send a question",
+      "reference": "Reference"
+    }
   }
 }

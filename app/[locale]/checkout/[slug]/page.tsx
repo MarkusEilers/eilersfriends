@@ -6,6 +6,7 @@ import { ensureProgramsTables } from '@/lib/db/self-heal-programs'
 import { CheckoutForm } from '@/components/checkout/CheckoutForm'
 import { SalesFlywheel } from '@/components/sections/salesmade/SalesFlywheel'
 import Image from 'next/image'
+import { LocaleSwitcher } from '@/components/layout/LocaleSwitcher'
 import { getTranslations } from 'next-intl/server'
 
 export const runtime = 'nodejs'
@@ -93,7 +94,7 @@ export default async function CheckoutPage({
             <Image src="/ef-logo.png" alt="Eilers+Friends" width={200} height={56} className="h-12 md:h-14 w-auto object-contain" priority />
             <span className="text-xs font-medium text-muted">· Checkout</span>
           </a>
-          <span className="hidden text-xs text-muted sm:inline">Sichere Zahlung · Stripe</span>
+          <div className="flex items-center gap-3"><span className="hidden text-xs text-muted sm:inline">Sichere Zahlung · Stripe</span><LocaleSwitcher /></div>
         </div>
       </header>
 
