@@ -1766,6 +1766,63 @@
       "toMember": "Al área de miembros →",
       "askQuestion": "Enviar una pregunta",
       "reference": "Referencia"
+    },
+    "overview": {
+      "metaTitle": "Ofertas disponibles ahora — Eilers+Friends",
+      "metaDesc": "Todos los programas y talleres en curso de Eilers+Friends de un vistazo.",
+      "eyebrow": "Ofertas",
+      "title": "Ofertas disponibles ahora.",
+      "intro": "Todos los programas y talleres en curso de Eilers+Friends de un vistazo. Elige una oferta para ver los detalles y asegurar tu plaza.",
+      "toOffer": "Ver oferta",
+      "academyTag": "Academy · 12 meses",
+      "academyDesc": "Un programa de formación de 12 meses que lleva a tu equipo de ventas al nivel de vendedores excepcionales — con 1:1 mensual, frameworks y garantía de 90 días.",
+      "academyPrice": "desde 549 € / mes por plaza",
+      "workshopTag": "Taller · Solo alumni",
+      "workshopDesc": "Dos días en directo: persuasión que funciona más el stack completo de ventas con IA. Stuttgart o Berlín, máximo 20 participantes por fecha.",
+      "workshopPrice": "897 € · pago por adelantado",
+      "mysteryTag": "Servicio · Oferta de bienvenida",
+      "mysteryDesc": "Markus habla con tu equipo de ventas como cliente y evalúa cada conversación — 13 skills, 5 dimensiones. Recibes un informe de 14 páginas, el equipo feedback individual y la herramienta más importante gratis.",
+      "mysteryPrice": "1 € · prueba"
+    },
+    "common": {
+      "checkoutBadge": "· Checkout",
+      "securePayment": "Pago seguro · Stripe",
+      "bannerPre": "Esta oferta solo está disponible unos días más. Si tienes dudas,",
+      "bannerLink": "habla con nosotros",
+      "cancelled": "Has cancelado el proceso. Puedes empezar de nuevo cuando quieras.",
+      "problems": "¿Problemas?",
+      "imprint": "Aviso legal",
+      "privacy": "Privacidad",
+      "terms": "Términos"
+    },
+    "mystery": {
+      "badge": "Mystery Shopping · Oferta de bienvenida",
+      "h1pre": "Markus llama como cliente a tu",
+      "h1accent": "equipo de ventas",
+      "h1post": ".",
+      "intro": "Markus habla con tus SDRs y tu equipo de ventas como cliente potencial. Evalúa cada conversación para ti — a lo largo de 13 skills clave y 5 dimensiones.",
+      "whatYouGet": "Esto es lo que obtienes.",
+      "inc1": "Un informe de 14 páginas: evaluación de 13 skills clave y 5 dimensiones",
+      "inc2": "Feedback individual para cada persona de tu equipo",
+      "inc3": "La herramienta más importante que marca la diferencia ahora — gratis",
+      "note": "Prueba: 1 € para revisar el proceso. Oferta de bienvenida regular 297 € (en vez de 997 €)."
+    },
+    "aiIntensive": {
+      "badge": "SalesMade AI Intensive · Solo alumni",
+      "h1pre": "Persuasión que funciona — más mi completo",
+      "h1accent": "stack de ventas con IA.",
+      "intro": "Dos días con Markus, máximo 20 participantes por fecha. Elige tu ciudad, asegura tu plaza con pago por adelantado.",
+      "whatsIn": "Qué incluye.",
+      "inc1": "Dos días en directo con Markus",
+      "inc2": "Conducción de conversaciones, afinada — con tus casos",
+      "inc3": "El stack completo de ventas con IA: todos los frameworks y prompts",
+      "inc4": "Todo para llevar, listo para usar",
+      "twoCities": "Dos ciudades. Dos fechas.",
+      "stuttgartWhen": "Vie 10 – Sáb 11 jul",
+      "berlinWhen": "Vie 24 – Sáb 25 jul",
+      "smallCircle": "Máximo 20 participantes por fecha. El formato vive del grupo reducido.",
+      "tierLabel": "AI Intensive · 2 días",
+      "tierNote": "Precio alumni · pago por adelantado"
     }
   }
 }

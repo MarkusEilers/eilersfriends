@@ -1766,6 +1766,63 @@
       "toMember": "To member area →",
       "askQuestion": "Send a question",
       "reference": "Reference"
+    },
+    "overview": {
+      "metaTitle": "Currently available offers — Eilers+Friends",
+      "metaDesc": "All ongoing programs and workshops from Eilers+Friends at a glance.",
+      "eyebrow": "Offers",
+      "title": "Currently available offers.",
+      "intro": "All ongoing programs and workshops from Eilers+Friends at a glance. Pick an offer to see details and secure your spot.",
+      "toOffer": "View offer",
+      "academyTag": "Academy · 12 months",
+      "academyDesc": "A 12-month training program that brings your sales team to the level of exceptional sellers — with monthly 1:1, frameworks and a 90-day guarantee.",
+      "academyPrice": "from €549 / month per seat",
+      "workshopTag": "Workshop · Alumni only",
+      "workshopDesc": "Two days live: persuasion that lands, plus the complete AI sales stack. Stuttgart or Berlin, max 20 participants per date.",
+      "workshopPrice": "€897 · prepaid",
+      "mysteryTag": "Service · Intro offer",
+      "mysteryDesc": "Markus talks to your sales team as a customer and evaluates every conversation — 13 skills, 5 dimensions. You get a 14-page report, the team gets individual feedback, and the most important tool for free.",
+      "mysteryPrice": "€1 · trial"
+    },
+    "common": {
+      "checkoutBadge": "· Checkout",
+      "securePayment": "Secure payment · Stripe",
+      "bannerPre": "This offer is only available for a few more days. If you're unsure,",
+      "bannerLink": "talk to us",
+      "cancelled": "You cancelled the process. You can start again anytime.",
+      "problems": "Problems?",
+      "imprint": "Imprint",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    },
+    "mystery": {
+      "badge": "Mystery Shopping · Intro offer",
+      "h1pre": "Markus calls your",
+      "h1accent": "sales team",
+      "h1post": "as a customer.",
+      "intro": "Markus talks to your SDRs and sales team as a prospective customer. He evaluates every conversation for you — across 13 key skills and 5 dimensions.",
+      "whatYouGet": "Here's what you get.",
+      "inc1": "A 14-page report: evaluation across 13 key skills and 5 dimensions",
+      "inc2": "Individual feedback for every person on your team",
+      "inc3": "The most important tool that makes the difference now — free",
+      "note": "Trial: €1 to check the process. Regular intro offer €297 (instead of €997)."
+    },
+    "aiIntensive": {
+      "badge": "SalesMade AI Intensive · Alumni only",
+      "h1pre": "Persuasion that lands — plus my complete",
+      "h1accent": "AI sales stack.",
+      "intro": "Two days with Markus, max 20 participants per date. Pick your city, secure your seat by prepayment.",
+      "whatsIn": "What's included.",
+      "inc1": "Two days live with Markus",
+      "inc2": "Conversation skills, sharpened — on your cases",
+      "inc3": "The complete AI sales stack: all frameworks and prompts",
+      "inc4": "Everything to take with you, ready to use",
+      "twoCities": "Two cities. Two dates.",
+      "stuttgartWhen": "Fri Jul 10 – Sat Jul 11",
+      "berlinWhen": "Fri Jul 24 – Sat Jul 25",
+      "smallCircle": "Max 20 participants per date. The format thrives on the small circle.",
+      "tierLabel": "AI Intensive · 2 days",
+      "tierNote": "Alumni price · prepaid"
     }
   }
 }

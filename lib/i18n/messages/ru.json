@@ -1691,6 +1691,63 @@
       "toMember": "Zum Member-Bereich →",
       "askQuestion": "Frage senden",
       "reference": "Referenz"
+    },
+    "overview": {
+      "metaTitle": "Aktuell verfügbare Angebote — Eilers+Friends",
+      "metaDesc": "Alle laufenden Programme und Workshops von Eilers+Friends auf einen Blick.",
+      "eyebrow": "Angebote",
+      "title": "Aktuell verfügbare Angebote.",
+      "intro": "Alle laufenden Programme und Workshops von Eilers+Friends auf einen Blick. Wähle ein Angebot, um Details zu sehen und Deinen Platz zu sichern.",
+      "toOffer": "Zum Angebot",
+      "academyTag": "Academy · 12 Monate",
+      "academyDesc": "Ein 12-monatiges Ausbildungsprogramm, das Dein Sales-Team auf das Niveau von Ausnahme-Verkäufern bringt — mit monatlichem 1:1, Frameworks und 90-Tage-Garantie.",
+      "academyPrice": "ab 549 € / Monat pro Platz",
+      "workshopTag": "Workshop · Nur für Alumni",
+      "workshopDesc": "Zwei Tage live: Wirksam Überzeugen auf den Punkt plus der komplette AI-Sales-Stack. Stuttgart oder Berlin, maximal 20 Teilnehmer pro Termin.",
+      "workshopPrice": "897 € · Vorkasse",
+      "mysteryTag": "Service · Kennenlernangebot",
+      "mysteryDesc": "Markus spricht als Kunde mit Deinem Sales-Team und wertet jedes Gespräch aus — 13 Skills, 5 Dimensionen. Du bekommst einen 14-Seiten-Report, das Team individuelles Feedback und das wichtigste Werkzeug gratis.",
+      "mysteryPrice": "1 € · Testphase"
+    },
+    "common": {
+      "checkoutBadge": "· Checkout",
+      "securePayment": "Sichere Zahlung · Stripe",
+      "bannerPre": "Dieses Angebot ist nur noch wenige Tage verfügbar. Wenn Du unsicher bist,",
+      "bannerLink": "sprich mit uns",
+      "cancelled": "Du hast den Vorgang abgebrochen. Du kannst jederzeit neu starten.",
+      "problems": "Probleme?",
+      "imprint": "Impressum",
+      "privacy": "Datenschutz",
+      "terms": "AGB"
+    },
+    "mystery": {
+      "badge": "Mystery Shopping · Kennenlernangebot",
+      "h1pre": "Markus ruft als Kunde bei Deinem",
+      "h1accent": "Sales-Team",
+      "h1post": "an.",
+      "intro": "Markus spricht als potenzieller Kunde mit Deinen SDRs und Deinem Sales-Team. Jedes Gespräch wertet er für Dich aus — entlang 13 wichtiger Skills und über 5 Dimensionen.",
+      "whatYouGet": "Das bekommst Du.",
+      "inc1": "Ein 14-Seiten-Report: Auswertung über 13 wichtige Skills und 5 Dimensionen",
+      "inc2": "Individuelles Feedback für jede Person in Deinem Team",
+      "inc3": "Das wichtigste Werkzeug, das jetzt den Unterschied macht — gratis dazu",
+      "note": "Testphase: 1 € zum Prüfen des Ablaufs. Regulär als Kennenlernangebot 297 € (statt 997 €)."
+    },
+    "aiIntensive": {
+      "badge": "SalesMade AI Intensive · Nur für Alumni",
+      "h1pre": "Wirksam Überzeugen auf den Punkt — plus mein kompletter",
+      "h1accent": "AI-Sales-Stack.",
+      "intro": "Zwei Tage mit Markus, maximal 20 Teilnehmer pro Termin. Wähle Deine Stadt, sichere Deinen Platz per Vorkasse.",
+      "whatsIn": "Das ist drin.",
+      "inc1": "Zwei Tage live mit Markus",
+      "inc2": "Gesprächsführung, geschärft — an Deinen Fällen",
+      "inc3": "Der komplette AI-Sales-Stack: alle Frameworks und Prompts",
+      "inc4": "Alles zum Mitnehmen, sofort einsetzbar",
+      "twoCities": "Zwei Städte. Zwei Termine.",
+      "stuttgartWhen": "Fr 10. – Sa 11. Juli",
+      "berlinWhen": "Fr 24. – Sa 25. Juli",
+      "smallCircle": "Maximal 20 Teilnehmer pro Termin. Das Format lebt vom kleinen Kreis.",
+      "tierLabel": "AI Intensive · 2 Tage",
+      "tierNote": "Alumni-Preis · Vorkasse"
     }
   }
 }
