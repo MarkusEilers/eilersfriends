@@ -8,6 +8,7 @@ import { updateOfferAction, suggestSectionAction, setOfferStatusAction, generate
 import { OfferPreview } from './OfferPreview'
 import { SectionOrderEditor, DEFAULT_SECTIONS, type SectionOrderItem } from './SectionOrderEditor'
 import { UNDERSTANDING_PRESETS, EMPATHY_PRESETS, GUARANTEE_PRESETS } from '@/lib/offer/presets'
+import { TEAM } from '@/lib/offer/team'
 
 interface Goal { v: string }
 interface UnderstandingData { title?: string; goals?: string[]; challenges?: string[] }
@@ -44,6 +45,7 @@ export interface OfferEditorState {
   customerLogoUrl?: string | null
   guaranteeText?: string | null
   track?: TrackPhaseE[]
+  teamMembers?: string[]
   // Wave 3 — Zahlung & Annahme
   paymentCardEnabled?: boolean
   paymentInvoiceEnabled?: boolean
@@ -89,6 +91,7 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           rhythmUpfrontEnabled: s.rhythmUpfrontEnabled ?? true,
           upfrontDiscountPct: s.upfrontDiscountPct ?? 0,
           track: s.track ?? [],
+          teamMembers: s.teamMembers ?? ['markus', 'aljona'],
           sectionOrder: s.sectionOrder && s.sectionOrder.length ? s.sectionOrder : DEFAULT_SECTIONS,
         })
         setSavedAt(Date.now())
@@ -192,6 +195,27 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
             Logo per Domain finden
           </button>
           <span className="text-xs text-gray-400">Sucht das Logo über die Kunden-Domain (aus der E-Mail). Danach Speichern.</span>
+        </div>
+      </Section>
+
+      {/* Team im Angebot */}
+      <Section label="Team im Angebot">
+        <p className="mb-3 text-xs text-gray-500">Wer im „Wer hinter diesem Angebot steht"-Block mit Kurzbio erscheint.</p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {TEAM.map((m) => {
+            const on = (s.teamMembers ?? ['markus', 'aljona']).includes(m.key)
+            return (
+              <label key={m.key} className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-sm">
+                <input type="checkbox" checked={on} className="h-4 w-4"
+                  onChange={(e) => {
+                    const cur = s.teamMembers ?? ['markus', 'aljona']
+                    patch('teamMembers', e.target.checked ? [...cur.filter((k) => k !== m.key), m.key] : cur.filter((k) => k !== m.key))
+                  }} />
+                <span className="font-semibold text-gray-800">{m.name}</span>
+                <span className="text-xs text-gray-400">· {m.role}</span>
+              </label>
+            )
+          })}
         </div>
       </Section>
 

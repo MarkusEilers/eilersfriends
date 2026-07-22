@@ -57,6 +57,7 @@ interface UpdatePayload {
   rhythmUpfrontEnabled?: boolean
   upfrontDiscountPct?: number | null
   track?: unknown[]
+  teamMembers?: string[]
 }
 
 export async function updateOfferAction(id: string, payload: UpdatePayload) {

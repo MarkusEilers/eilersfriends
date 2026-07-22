@@ -84,6 +84,7 @@ export default async function AdminOfferEditor({ params }: { params: Promise<{ i
     rhythmUpfrontEnabled: (full.rhythm_upfront_enabled as boolean | null) ?? true,
     upfrontDiscountPct: (full.upfront_discount_pct != null ? Number(full.upfront_discount_pct) : 0),
     track: (full.track as OfferEditorState['track']) ?? [],
+    teamMembers: (full.team_members as string[] | null) ?? ['markus', 'aljona'],
   }
 
   return <OfferEditor initial={initial} accessSalt={full.access_salt} offerNumber={full.offer_number} programOptions={programs} />

@@ -286,6 +286,7 @@ export interface OfferUpdate {
   rhythmUpfrontEnabled?: boolean
   upfrontDiscountPct?: number | null
   track?: object
+  teamMembers?: string[]
 }
 
 export async function updateOffer(id: string, update: OfferUpdate): Promise<void> {
@@ -320,6 +321,7 @@ export async function updateOffer(id: string, update: OfferUpdate): Promise<void
   if (update.rhythmUpfrontEnabled !== undefined) sets.push(sql`rhythm_upfront_enabled = ${update.rhythmUpfrontEnabled}`)
   if (update.upfrontDiscountPct !== undefined) sets.push(sql`upfront_discount_pct = ${update.upfrontDiscountPct}`)
   if (update.track !== undefined) sets.push(sql`track = ${JSON.stringify(update.track)}::jsonb`)
+  if (update.teamMembers !== undefined) sets.push(sql`team_members = ${JSON.stringify(update.teamMembers)}::jsonb`)
   if (!sets.length) return
   sets.push(sql`updated_at = now()`)
   const joined = sql.join(sets, sql`, `)

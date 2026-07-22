@@ -22,6 +22,7 @@ import { OfferAcceptCart } from '@/components/offer/OfferAcceptCart'
 import { ReadProgress } from '@/components/offer/output/ReadProgress'
 import { GuaranteeBox } from '@/components/offer/output/GuaranteeBox'
 import { AboutUsFooter } from '@/components/offer/output/AboutUsFooter'
+import { membersFromKeys } from '@/lib/offer/team'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -47,6 +48,7 @@ interface OfferFull {
   status: string
   selected_pricing_option: string | null
   section_order?: { type: string; enabled: boolean }[] | null
+  team_members?: string[] | null
   payment_card_enabled?: boolean | null
   payment_invoice_enabled?: boolean | null
   rhythm_monthly_enabled?: boolean | null
@@ -71,6 +73,9 @@ export default async function PublicOfferPage({ params, searchParams }: { params
     getSetting('calendly.markus', '/schedule/markus/kennenlernen-30').catch(() => '/schedule/markus/kennenlernen-30'),
     getSetting('calendly.aljona', '/schedule/aljona').catch(() => '/schedule/aljona'),
   ])
+
+  const teamMembers = membersFromKeys(offer.team_members).map((m) =>
+    m.key === 'markus' ? { ...m, calendly: markusCalendly } : m.key === 'aljona' ? { ...m, calendly: aljonaCalendly } : m)
 
   // Section renderer — mirrors the backend preview. Order + enabled come from
   // offer.section_order (Drag&Drop im Editor); Fallback = Default-Reihenfolge.
@@ -168,7 +173,7 @@ export default async function PublicOfferPage({ params, searchParams }: { params
 
         {sectionOrder.map(({ type }) => sectionNodes[type]).filter(Boolean)}
 
-        <AboutUsFooter markusCalendly={markusCalendly} aljonaCalendly={aljonaCalendly} customerName={offer.customer_name} offerLabel={offer.offer_number} />
+        <AboutUsFooter members={teamMembers} customerName={offer.customer_name} offerLabel={offer.offer_number} />
       </main>
 
       <footer className="border-t border-gray-100 bg-white py-8 text-center text-xs text-gray-400">
