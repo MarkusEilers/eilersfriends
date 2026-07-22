@@ -374,7 +374,7 @@ export function OfferTimeline({ phases }: { phases: { title?: string; descriptio
 export interface TrackStep { title: string; durationH?: number | string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[] }
 export interface TrackPhase { name: string; goal?: string; steps?: TrackStep[] }
 
-export function OfferTrack({ phases, heading = 'Das bauen wir — Schritt für Schritt', intro }: { phases: TrackPhase[]; heading?: string; intro?: string }) {
+export function OfferTrack({ phases, heading = 'Beauftragte Leistungen im Überblick', intro }: { phases: TrackPhase[]; heading?: string; intro?: string }) {
   if (!phases?.length) return null
   const phaseColors = ['#0E9DDD', '#1A5FD4', '#0F1E3A', '#F05A1A', '#7C3AED']
   return (

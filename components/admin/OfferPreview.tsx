@@ -101,7 +101,7 @@ export function OfferPreview({ s }: { s: OfferEditorState }) {
     ),
     track: ((s as unknown as { track?: { name: string; goal?: string; steps?: { title: string; durationH?: number|string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[] }[] }[] }).track ?? []).length ? (
       <section key="track" className="px-8 py-10" style={{ backgroundColor: '#FAFAF8' }}>
-        <h2 className="text-2xl font-bold" style={{ color: '#0D0D0B' }}>Das bauen wir — Schritt für Schritt</h2>
+        <h2 className="text-2xl font-bold" style={{ color: '#0D0D0B' }}>Beauftragte Leistungen im Überblick</h2>
         <div className="mt-5 space-y-6">
           {((s as unknown as { track?: { name: string; goal?: string; steps?: { title: string; durationH?: number|string; description?: string }[] }[] }).track ?? []).map((ph, pi) => (
             <div key={pi}>
