@@ -1867,5 +1867,25 @@
       "guaranteeText": "garantía de satisfacción de 90 días",
       "guaranteeBadge": "90 días de devolución"
     }
+  },
+  "promo": {
+    "eyebrow": "Ahora en Eilers+Friends",
+    "heading": "Lo que hay ahora.",
+    "quizTag": "Análisis de 2 minutos",
+    "quizTitle": "¿Es realmente posible duplicar tus ventas en los próximos tres meses?",
+    "quizDesc": "Descúbrelo — un breve análisis te da el Analysis & Growth Kit gratis y los Top 5 Frameworks. A medida de tu deal size, tamaño de equipo y situación.",
+    "quizCta": "Empezar el análisis",
+    "academyTag": "Founding 30",
+    "academyTitle": "SalesMade Academy · Premium",
+    "academyDesc": "Solo 30 plazas founding — precio congelado de por vida. Un programa de 12 meses que lleva a tu equipo al nivel de vendedores excepcionales.",
+    "academyCta": "Asegurar plaza",
+    "jumpstartTag": "SDR · 6 meses",
+    "jumpstartTitle": "Market-Breakthrough · Outreach JumpStart",
+    "jumpstartDesc": "Oportunidades cualificadas de forma predecible: ICP, hipótesis, la lista objetivo correcta y trabajo de mercado sistemático.",
+    "jumpstartCta": "Saber más",
+    "frameworksTag": "Gratis",
+    "frameworksTitle": "Roba nuestros frameworks — con agentes de IA.",
+    "frameworksDesc": "Beef Radar, Ofertas B2B irresistibles, Instant Influence y más — cada uno con plano y un agente de IA entrenado.",
+    "frameworksCta": "Ver los frameworks"
   }
 }

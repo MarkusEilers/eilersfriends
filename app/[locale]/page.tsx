@@ -6,6 +6,7 @@ import { SalesMadeAcademySection } from '@/components/sections/SalesMadeAcademyS
 import { ProgrammeSection } from '@/components/sections/ProgrammeSection'
 import { CoachesSection } from '@/components/sections/CoachesSection'
 import { HVCOSection } from '@/components/sections/HVCOSection'
+import { PromoSection } from '@/components/sections/PromoSection'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { CtaBlock } from '@/components/sections/CtaBlock'
 import { NewsletterSection } from '@/components/sections/NewsletterSection'
@@ -28,6 +29,7 @@ export default async function HomePage() {
         <BentoGrid />
         <SalesMadeAcademySection />
         <HVCOSection />
+        <PromoSection />
         <CoachesSection />
         <ProgrammeSection />
         <TestimonialsSection />
