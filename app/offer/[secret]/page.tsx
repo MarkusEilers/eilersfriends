@@ -81,7 +81,7 @@ export default async function PublicOfferPage({ params, searchParams }: { params
   const enabled = rawOrder.filter((sec) => sec.enabled).map((sec) => sec.type)
   // Neu hinzugekommene Default-Blöcke (z.B. 'track') ergänzen, wenn sie in einer
   // älteren gespeicherten section_order noch fehlen — an ihrer natürlichen Position.
-  const present = new Set(enabled)
+  const present = new Set(rawOrder.map((sec) => sec.type))
   DEFAULT_ORDER.forEach((type, i) => {
     if (present.has(type)) return
     let insertAt = enabled.length
@@ -139,11 +139,17 @@ export default async function PublicOfferPage({ params, searchParams }: { params
       <header className="border-b border-gray-100 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <Image src="/ef-logo.png" alt="Eilers+Friends" width={200} height={56} className="h-14 md:h-16 w-auto object-contain" priority />
-          <div className="text-right">
-            <span className="block text-[10px] font-mono text-gray-400">{offer.offer_number}</span>
-            <span className="block text-[10px] text-gray-400">
-              Gültig bis {validUntilDate.toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })}
-            </span>
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <span className="block text-[10px] font-mono text-gray-400">{offer.offer_number}</span>
+              <span className="block text-[10px] text-gray-400">
+                Gültig bis {validUntilDate.toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </span>
+            </div>
+            {offer.customer_logo_url && (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={offer.customer_logo_url} alt={offer.customer_company || offer.customer_name} className="h-9 w-auto object-contain" style={{ maxWidth: 150 }} />
+            )}
           </div>
         </div>
       </header>
@@ -157,7 +163,6 @@ export default async function PublicOfferPage({ params, searchParams }: { params
           tagline={offer.tagline}
           customerName={offer.customer_name}
           customerCompany={offer.customer_company}
-          customerLogoUrl={offer.customer_logo_url}
           validUntil={validUntilDate}
         />
 

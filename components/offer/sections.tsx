@@ -14,7 +14,7 @@ const ICONS: Record<string, LucideIcon> = {
 
 // ─── 1. Hero ────────────────────────────────────────────────────────────────
 export function OfferHero({
-  offerNumber, title, subtitle, tagline, customerName, customerCompany, customerLogoUrl, validUntil,
+  offerNumber, title, subtitle, tagline, customerName, customerCompany, validUntil,
 }: {
   offerNumber: string
   title: string
@@ -22,7 +22,6 @@ export function OfferHero({
   tagline?: string | null
   customerName: string
   customerCompany?: string | null
-  customerLogoUrl?: string | null
   validUntil: Date
 }) {
   const validStr = validUntil.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })
@@ -30,18 +29,6 @@ export function OfferHero({
   return (
     <section className="px-6 py-28 sm:py-40" style={{ background: 'linear-gradient(180deg, #0F1E3A 0%, #15315E 100%)' }}>
       <div className="mx-auto max-w-3xl text-center">
-        {/* Customer logo — prominent, oben */}
-        {customerLogoUrl && (
-          <div className="mb-12 flex justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={customerLogoUrl}
-              alt={customerCompany || customerName}
-              className="h-16 w-auto opacity-90 sm:h-20"
-              style={{ filter: 'brightness(0) invert(1)', maxWidth: 260 }}
-            />
-          </div>
-        )}
         <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em]"
           style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#5DDBF5', border: '1px solid rgba(93,219,245,0.35)' }}>
           <Sparkles size={12} /> Persönliches Angebot für {recipient}

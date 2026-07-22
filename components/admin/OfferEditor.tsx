@@ -102,6 +102,13 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
     })
   }
 
+  const STATUSES = ['draft', 'sent', 'signed', 'paid', 'expired', 'cancelled'] as const
+  function changeStatus(next: string) {
+    startTransition(async () => {
+      try { await setOfferStatusAction(s.id, next as (typeof STATUSES)[number]); patch('status', next) } catch (e) { setError(String(e)) }
+    })
+  }
+
   async function suggest(section: 'title' | 'understanding' | 'empathy' | 'economic' | 'pricing', extra?: string) {
     setSuggesting(section); setError(null)
     try {
@@ -398,7 +405,11 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <div className="min-w-0"><h2 className="truncate text-xl font-bold text-gray-900">{s.title || 'Neues Angebot erstellen'}</h2>{offerNumber && <p className="truncate text-xs font-mono text-gray-400">{offerNumber}{accessSalt ? " · /offer/" + accessSalt.slice(0,8) + "…" : ""}</p>}</div>
-            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-gray-700">{s.status}</span>
+            <select value={s.status} onChange={(e) => changeStatus(e.target.value)} disabled={pending}
+              className="rounded-full border border-gray-200 bg-gray-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-gray-700 outline-none focus:border-blue-300"
+              title="Status ändern (z.B. Bestätigung zurücknehmen)">
+              {STATUSES.map((st) => <option key={st} value={st}>{st}</option>)}
+            </select>
             {savedAt && <span className="hidden text-xs text-gray-500 sm:inline">Gespeichert {new Date(savedAt).toLocaleTimeString('de-DE')}</span>}
             {error && <span className="inline-flex items-center gap-1 text-xs text-red-600"><AlertCircle size={12} />{error}</span>}
           </div>
