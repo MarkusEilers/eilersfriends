@@ -74,7 +74,7 @@ export function OfferAcceptCart({
             <Check size={28} style={{ color: '#5DDBF5' }} />
           </div>
           <h2 className="mt-5 text-2xl font-bold">Bestätigt — vielen Dank!</h2>
-          <p className="mt-3 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>Wir melden uns mit den nächsten Schritten und dem Onboarding bei Dir.</p>
+          <p className="mt-3 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>Wir melden uns mit den nächsten Schritten und dem Onboarding bei Euch.</p>
         </div>
       </section>
     )

@@ -4,7 +4,7 @@ import { Shield } from 'lucide-react'
  * Garantie-Box vor Pricing — "Whatever it takes". Niemand-bleibt-allein.
  */
 export function GuaranteeBox({ text }: { text?: string }) {
-  const body = text?.trim() || 'Wir bleiben dabei, bis es funktioniert. Wenn unser Programm nicht den Mehrwert liefert, den wir Dir versprechen, machen wir weiter — auf unseren Kosten. Whatever it takes.'
+  const body = text?.trim() || 'Wir bleiben dabei, bis es funktioniert. Wenn unser Programm nicht den Mehrwert liefert, den wir Euch versprechen, machen wir weiter — auf unseren Kosten. Whatever it takes.'
   return (
     <section className="px-6 py-16" style={{ backgroundColor: '#FAFAF8' }}>
       <div className="mx-auto max-w-3xl">

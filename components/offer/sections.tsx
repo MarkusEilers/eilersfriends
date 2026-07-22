@@ -80,7 +80,7 @@ export function OfferUnderstanding({ data }: { data: UnderstandingData }) {
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           {goals.length > 0 && (
             <div className="rounded-3xl bg-white p-8" style={{ border: '1px solid #BBCFF5', boxShadow: '0 4px 20px rgba(15,30,58,0.05)' }}>
-              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Deine Ziele</p>
+              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Eure Ziele</p>
               <ul className="mt-4 space-y-3">
                 {goals.map((g, i) => (
                   <li key={i} className="flex gap-3 text-sm" style={{ color: '#374151' }}>
@@ -93,7 +93,7 @@ export function OfferUnderstanding({ data }: { data: UnderstandingData }) {
           )}
           {challenges.length > 0 && (
             <div className="rounded-3xl bg-white p-8" style={{ border: '1px solid #FECDBB', boxShadow: '0 4px 20px rgba(15,30,58,0.05)' }}>
-              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#F05A1A' }}>Deine aktuellen Herausforderungen</p>
+              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#F05A1A' }}>Eure aktuellen Herausforderungen</p>
               <ul className="mt-4 space-y-3">
                 {challenges.map((c, i) => (
                   <li key={i} className="flex gap-3 text-sm" style={{ color: '#374151' }}>
@@ -143,7 +143,7 @@ export function OfferEconomicResults({ results }: { results: EconomicResult[] })
     <section className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
       <div className="mx-auto max-w-5xl">
         <div className="text-center">
-          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Was Du dadurch erreichst</span>
+          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Was Ihr dadurch erreicht</span>
           <h2 className="mt-2 text-3xl font-bold" style={{ color: '#0D0D0B' }}>Messbare Ergebnisse.</h2>
         </div>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -183,7 +183,7 @@ export function OfferPricing({
       <div className="mx-auto max-w-5xl">
         <div className="text-center">
           <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#1A5FD4' }}>Investment</span>
-          <h2 className="mt-2 text-3xl font-bold" style={{ color: '#0D0D0B' }}>{single ? 'Euer Investment.' : 'Wähle Dein Setup.'}</h2>
+          <h2 className="mt-2 text-3xl font-bold" style={{ color: '#0D0D0B' }}>{single ? 'Euer Investment.' : 'Wählt Euer Setup.'}</h2>
           {single && (
             <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed" style={{ color: '#6B7280' }}>
               Ein klar umrissenes Paket — transparent kalkuliert, monatlich abgerechnet.
@@ -244,7 +244,7 @@ export function OfferPricing({
                 )}
                 {isSelected && (
                   <p className="mt-4 inline-flex items-center gap-1 text-xs font-bold" style={{ color: accent }}>
-                    <Check size={12} /> Du hast diese Variante gewählt
+                    <Check size={12} /> Ihr habt diese Variante gewählt
                   </p>
                 )}
               </div>
@@ -268,7 +268,7 @@ export function OfferAcceptCta({ offerSecret, status }: { offerSecret: string; s
           </div>
           <h2 className="mt-5 text-2xl font-bold">Bestätigt — vielen Dank!</h2>
           <p className="mt-3 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            Wir melden uns mit den nächsten Schritten und dem Onboarding bei Dir.
+            Wir melden uns mit den nächsten Schritten und dem Onboarding bei Euch.
           </p>
         </div>
       </section>
@@ -279,7 +279,7 @@ export function OfferAcceptCta({ offerSecret, status }: { offerSecret: string; s
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-bold" style={{ color: '#0D0D0B' }}>Bereit zum Start?</h2>
         <p className="mt-4 text-base" style={{ color: '#6B7280' }}>
-          Mit einem Klick bestätigst Du das Angebot. Nach der Bestätigung startet Stripe-Checkout für die erste Rate.
+          Mit einem Klick bestätigt Ihr das Angebot. Nach der Bestätigung startet Stripe-Checkout für die erste Rate.
         </p>
         <form action={`/api/offers/${offerSecret}/accept`} method="POST" className="mt-8">
           <button type="submit"
@@ -289,7 +289,7 @@ export function OfferAcceptCta({ offerSecret, status }: { offerSecret: string; s
           </button>
         </form>
         <p className="mt-4 text-xs" style={{ color: '#9CA3AF' }}>
-          Du kannst innerhalb von 14 Tagen ohne Angabe von Gründen widerrufen.
+          Ihr könnt innerhalb von 14 Tagen ohne Angabe von Gründen widerrufen.
         </p>
       </div>
     </section>
