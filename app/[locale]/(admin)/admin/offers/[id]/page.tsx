@@ -22,9 +22,22 @@ interface JsonRow {
 
 async function listProgramsForSelect(): Promise<ProgramOption[]> {
   try {
-    const res = await db.execute(
-      sql`SELECT id, name, slug, is_published, COALESCE(track, '[]'::jsonb) AS track FROM programs ORDER BY name`,
-    )
+    const res = await db.execute(sql`
+      SELECT p.id, p.name, p.slug, p.is_published,
+        COALESCE(
+          (SELECT jsonb_agg(jsonb_build_object(
+              'name', ph.name, 'goal', ph.goal,
+              'steps', COALESCE((SELECT jsonb_agg(jsonb_build_object(
+                    'title', st.title, 'description', st.description, 'durationH', st.duration_h,
+                    'teams', COALESCE(st.meta->'teams','[]'::jsonb),
+                    'inputs', COALESCE(st.meta->'inputs','[]'::jsonb),
+                    'outputs', COALESCE(st.meta->'outputs','[]'::jsonb)
+                  ) ORDER BY st.sort_order) FROM program_steps st WHERE st.phase_id = ph.id), '[]'::jsonb)
+            ) ORDER BY ph.sort_order) FROM program_phases ph WHERE ph.program_id = p.id),
+          NULLIF(p.track, '[]'::jsonb), '[]'::jsonb
+        ) AS track
+      FROM programs p ORDER BY p.name
+    `)
     return (res as unknown as Array<{ id: string; name: string; slug: string; is_published: boolean; track: unknown }>).map((p) => ({
       id: p.id, name: p.name, slug: p.slug, status: p.is_published ? 'published' : 'draft',
       track: (Array.isArray(p.track) ? p.track : []) as ProgramOption['track'],
