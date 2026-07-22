@@ -70,8 +70,8 @@ export function OfferAcceptCart({
     return (
       <section className="px-6 py-20" style={{ backgroundColor: '#0F1E3A' }}>
         <div className="mx-auto max-w-2xl text-center text-white">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full" style={{ backgroundColor: 'rgba(93,219,245,0.15)' }}>
-            <Check size={28} style={{ color: '#5DDBF5' }} />
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full" style={{ backgroundColor: 'rgba(147, 184, 245,0.15)' }}>
+            <Check size={28} style={{ color: '#93B8F5' }} />
           </div>
           <h2 className="mt-5 text-2xl font-bold">Bestätigt — vielen Dank!</h2>
           <p className="mt-3 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>Wir melden uns mit den nächsten Schritten und dem Onboarding bei Euch.</p>

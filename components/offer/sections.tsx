@@ -30,11 +30,11 @@ export function OfferHero({
     <section className="px-6 py-28 sm:py-40" style={{ background: 'linear-gradient(180deg, #0F1E3A 0%, #15315E 100%)' }}>
       <div className="mx-auto max-w-3xl text-center">
         <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em]"
-          style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#5DDBF5', border: '1px solid rgba(93,219,245,0.35)' }}>
+          style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#93B8F5', border: '1px solid rgba(147, 184, 245,0.35)' }}>
           <Sparkles size={12} /> Persönliches Angebot für {recipient}
         </span>
         {tagline && (
-          <p className="mt-8 text-sm font-bold uppercase tracking-[0.2em]" style={{ color: '#5DDBF5' }}>{tagline}</p>
+          <p className="mt-8 text-sm font-bold uppercase tracking-[0.2em]" style={{ color: '#93B8F5' }}>{tagline}</p>
         )}
         <h1 className="mt-5 text-5xl font-bold leading-[1.05] text-white sm:text-6xl lg:text-7xl" style={{ fontFamily: "'DM Serif Display', serif" }}>{title}</h1>
         {subtitle && (
@@ -112,8 +112,8 @@ export function OfferEmpathy({ data }: { data: EmpathyData }) {
           </p>
         )}
         {data.successMessage && (
-          <div className="mt-10 rounded-2xl p-5" style={{ backgroundColor: 'rgba(93,219,245,0.12)', border: '1px solid rgba(93,219,245,0.3)' }}>
-            <p className="text-sm" style={{ color: '#5DDBF5' }}>
+          <div className="mt-10 rounded-2xl p-5" style={{ backgroundColor: 'rgba(147, 184, 245,0.12)', border: '1px solid rgba(147, 184, 245,0.3)' }}>
+            <p className="text-sm" style={{ color: '#93B8F5' }}>
               <strong>Was Erfolg für uns heißt:</strong> {data.successMessage}
             </p>
           </div>
@@ -250,8 +250,8 @@ export function OfferAcceptCta({ offerSecret, status }: { offerSecret: string; s
     return (
       <section className="px-6 py-20" style={{ backgroundColor: '#0F1E3A' }}>
         <div className="mx-auto max-w-2xl text-center text-white">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full" style={{ backgroundColor: 'rgba(93,219,245,0.15)' }}>
-            <Check size={28} style={{ color: '#5DDBF5' }} />
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full" style={{ backgroundColor: 'rgba(147, 184, 245,0.15)' }}>
+            <Check size={28} style={{ color: '#93B8F5' }} />
           </div>
           <h2 className="mt-5 text-2xl font-bold">Bestätigt — vielen Dank!</h2>
           <p className="mt-3 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>

@@ -110,8 +110,8 @@ export default async function PublicOfferPage({ params, searchParams }: { params
     accept: sp?.pending ? (
       <section key="accept" className="px-6 py-20" style={{ backgroundColor: '#0F1E3A' }}>
         <div className="mx-auto max-w-2xl text-center text-white">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full" style={{ backgroundColor: 'rgba(93,219,245,0.15)' }}>
-            <span style={{ color: '#5DDBF5', fontSize: 26 }}>✉</span>
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full" style={{ backgroundColor: 'rgba(147, 184, 245,0.15)' }}>
+            <span style={{ color: '#93B8F5', fontSize: 26 }}>✉</span>
           </div>
           <h2 className="mt-5 text-2xl font-bold">Fast geschafft — bitte E-Mail bestätigen.</h2>
           <p className="mt-3 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
