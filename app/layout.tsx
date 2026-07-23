@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import '@/app/globals.css'
+import { StructuredData } from '@/components/seo/StructuredData'
 
 export const metadata: Metadata = {
   title: {
@@ -20,6 +21,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap"
           rel="stylesheet"
         />
+        <meta name="theme-color" content="#1A5FD4" />
+        <StructuredData />
       </head>
       <body>{children}</body>
     </html>
