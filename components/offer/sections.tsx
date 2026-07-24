@@ -14,7 +14,7 @@ const ICONS: Record<string, LucideIcon> = {
 
 // ─── 1. Hero ────────────────────────────────────────────────────────────────
 export function OfferHero({
-  offerNumber, title, subtitle, tagline, customerName, customerCompany, validUntil,
+  offerNumber, title, subtitle, tagline, customerName, customerCompany, validUntil, heroImage,
 }: {
   offerNumber: string
   title: string
@@ -23,12 +23,19 @@ export function OfferHero({
   customerName: string
   customerCompany?: string | null
   validUntil: Date
+  heroImage?: string | null
 }) {
   const validStr = validUntil.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })
   const recipient = customerCompany?.trim() ? `${customerName} · ${customerCompany}` : customerName
   return (
-    <section className="px-6 py-28 sm:py-40" style={{ background: 'linear-gradient(180deg, #0F1E3A 0%, #15315E 100%)' }}>
-      <div className="mx-auto max-w-3xl text-center">
+    <section className="relative overflow-hidden px-6 py-28 sm:py-40" style={{ backgroundColor: '#0F1E3A' }}>
+      {heroImage && (
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroImage})` }} aria-hidden="true" />
+      )}
+      {/* ~75% blaues Overlay über dem Motiv */}
+      <div className="absolute inset-0" aria-hidden="true"
+        style={{ background: heroImage ? 'linear-gradient(180deg, rgba(15,30,58,0.72) 0%, rgba(21,49,94,0.82) 100%)' : 'linear-gradient(180deg, #0F1E3A 0%, #15315E 100%)' }} />
+      <div className="relative mx-auto max-w-3xl text-center">
         <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em]"
           style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#93B8F5', border: '1px solid rgba(147, 184, 245,0.35)' }}>
           <Sparkles size={12} /> Persönliches Angebot für {recipient}
@@ -220,6 +227,9 @@ export function OfferPricing({
                     Gesamt: €{total.toLocaleString('de-DE')} über {opt.monthlyDuration} Monate
                   </p>
                 )}
+                <p className="mt-1 text-xs" style={{ color: '#9CA3AF' }}>
+                  zuzüglich der gesetzlichen Umsatzsteuer (derzeit 19&nbsp;%)
+                </p>
                 {opt.features && opt.features.length > 0 && (
                   <ul className="mt-5 flex-1 space-y-2 text-sm">
                     {opt.features.map((f, i) => (
@@ -335,18 +345,39 @@ export function OfferIngredients() {
 // ─── Timeline — program phases (matches backend preview) ──────────────────────
 export function OfferTimeline({ phases }: { phases: { title?: string; description?: string }[] }) {
   if (!phases.length) return null
-  const colors = ['#0E9DDD', '#0F1E3A', '#F05A1A']
+  const colors = ['#0E9DDD', '#1A5FD4', '#0F1E3A', '#F05A1A', '#7C3AED', '#0E9DDD']
   return (
     <section className="px-6 py-20">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-4xl">
         <h2 className="text-3xl font-bold" style={{ color: '#0D0D0B' }}>Euer Programm &amp; Timeline</h2>
         <p className="mt-1 text-sm text-gray-500">Die integrierte Timeline mit allen Phasen.</p>
-        <div className="mt-6 space-y-3">
-          {phases.slice(0, 3).map((p, i) => (
+
+        {/* Horizontale Timeline (ab sm) */}
+        <div className="mt-10 hidden sm:flex">
+          {phases.map((p, i) => {
+            const c = colors[i % colors.length]
+            return (
+              <div key={i} className="relative min-w-0 flex-1">
+                {i < phases.length - 1 && (
+                  <span className="absolute left-1/2 top-4 h-0.5 w-full" style={{ backgroundColor: '#D8DEE9' }} aria-hidden="true" />
+                )}
+                <div className="relative flex flex-col items-center px-2 text-center">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white" style={{ backgroundColor: c }}>{i + 1}</span>
+                  <h3 className="mt-3 text-sm font-bold leading-snug" style={{ color: '#0D0D0B' }}>{p.title || `Phase ${i + 1}`}</h3>
+                  {p.description && <p className="mt-1 text-xs leading-relaxed text-gray-500">{p.description}</p>}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Vertikaler Fallback (mobil) */}
+        <div className="mt-6 space-y-3 sm:hidden">
+          {phases.map((p, i) => (
             <div key={i} className="flex items-center gap-4 rounded-2xl border border-gray-100 bg-gray-50 px-5 py-4">
-              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white" style={{ backgroundColor: colors[i] ?? '#1A5FD4' }}>{i + 1}</div>
+              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white" style={{ backgroundColor: colors[i % colors.length] }}>{i + 1}</div>
               <div className="min-w-0">
-                <h3 className="text-sm font-bold" style={{ color: '#0D0D0B' }}>Phase {i + 1}: {p.title || 'Phase'}</h3>
+                <h3 className="text-sm font-bold" style={{ color: '#0D0D0B' }}>{p.title || `Phase ${i + 1}`}</h3>
                 {p.description && <p className="text-xs text-gray-500">{p.description}</p>}
               </div>
             </div>
@@ -382,7 +413,7 @@ export function OfferTrack({ phases, heading = 'Beauftragte Leistungen im Überb
                   </div>
                   {ph.steps?.length ? <span className="ml-auto text-xs font-semibold" style={{ color: c }}>{ph.steps.length} Bausteine</span> : null}
                 </div>
-                <div className="mt-4 space-y-3 border-l-2 pl-5" style={{ borderColor: `${c}33` }}>
+                <div className="mt-4 ml-4 space-y-3 border-l-2 pl-5" style={{ borderColor: `${c}33` }}>
                   {(ph.steps ?? []).map((st, si) => (
                     <div key={si} className="rounded-2xl border border-gray-200 bg-white p-5">
                       <div className="flex items-start justify-between gap-3">

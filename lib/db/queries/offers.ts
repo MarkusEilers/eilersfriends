@@ -99,6 +99,8 @@ async function ensureOfferSchema() {
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS rhythm_upfront_enabled  BOOLEAN DEFAULT true`)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS upfront_discount_pct    NUMERIC DEFAULT 0`)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS track JSONB DEFAULT '[]'::jsonb`)  // Bausteine-Track (Phasen -> Schritte)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS team_heading   TEXT`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS hero_image_url TEXT`)
   // Annahme-Nachweis (v.a. Rechnung): Name/E-Mail + IP + Hash(Timestamp+IP)
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS offer_acceptances (
@@ -287,6 +289,8 @@ export interface OfferUpdate {
   upfrontDiscountPct?: number | null
   track?: object
   teamMembers?: string[]
+  teamHeading?: string | null
+  heroImageUrl?: string | null
 }
 
 export async function updateOffer(id: string, update: OfferUpdate): Promise<void> {
@@ -322,6 +326,8 @@ export async function updateOffer(id: string, update: OfferUpdate): Promise<void
   if (update.upfrontDiscountPct !== undefined) sets.push(sql`upfront_discount_pct = ${update.upfrontDiscountPct}`)
   if (update.track !== undefined) sets.push(sql`track = ${JSON.stringify(update.track)}::jsonb`)
   if (update.teamMembers !== undefined) sets.push(sql`team_members = ${JSON.stringify(update.teamMembers)}::jsonb`)
+  if (update.teamHeading !== undefined) sets.push(sql`team_heading = ${update.teamHeading}`)
+  if (update.heroImageUrl !== undefined) sets.push(sql`hero_image_url = ${update.heroImageUrl}`)
   if (!sets.length) return
   sets.push(sql`updated_at = now()`)
   const joined = sql.join(sets, sql`, `)

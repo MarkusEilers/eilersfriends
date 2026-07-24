@@ -58,6 +58,8 @@ interface UpdatePayload {
   upfrontDiscountPct?: number | null
   track?: unknown[]
   teamMembers?: string[]
+  teamHeading?: string | null
+  heroImageUrl?: string | null
 }
 
 export async function updateOfferAction(id: string, payload: UpdatePayload) {

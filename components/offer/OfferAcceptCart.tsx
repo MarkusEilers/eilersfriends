@@ -150,6 +150,7 @@ export function OfferAcceptCart({
             <span className="text-sm font-semibold" style={{ color: INK }}>Gesamt {method === 'invoice' ? '(Rechnung)' : '(Kreditkarte)'}</span>
             <span className="text-2xl font-bold" style={{ color: INK }}>{eur(chosenTotal)}</span>
           </div>
+          <p className="mt-2 text-xs" style={{ color: '#9CA3AF' }}>zuzüglich der gesetzlichen Umsatzsteuer (derzeit 19&nbsp;%)</p>
         </div>
 
         {noticeDomain && (

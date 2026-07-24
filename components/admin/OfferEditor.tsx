@@ -46,6 +46,8 @@ export interface OfferEditorState {
   guaranteeText?: string | null
   track?: TrackPhaseE[]
   teamMembers?: string[]
+  teamHeading?: string | null
+  heroImageUrl?: string | null
   // Wave 3 — Zahlung & Annahme
   paymentCardEnabled?: boolean
   paymentInvoiceEnabled?: boolean
@@ -92,6 +94,8 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           upfrontDiscountPct: s.upfrontDiscountPct ?? 0,
           track: s.track ?? [],
           teamMembers: s.teamMembers ?? ['markus', 'aljona'],
+          teamHeading: s.teamHeading ?? null,
+          heroImageUrl: s.heroImageUrl ?? null,
           sectionOrder: s.sectionOrder && s.sectionOrder.length ? s.sectionOrder : DEFAULT_SECTIONS,
         })
         setSavedAt(Date.now())
@@ -200,7 +204,9 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
 
       {/* Team im Angebot */}
       <Section label="Team im Angebot">
-        <p className="mb-3 text-xs text-gray-500">Wer im „Wer hinter diesem Angebot steht"-Block mit Kurzbio erscheint.</p>
+        <p className="mb-3 text-xs text-gray-500">Wer im „Wer hinter diesem Angebot steht"-Block mit Kurzbio erscheint — in der gewählten Reihenfolge.</p>
+        <Field label="Überschrift des Blocks (optional)" value={s.teamHeading ?? ''} onChange={(v) => patch('teamHeading', v)} placeholder="z.B. Zwei Menschen. Eine Mission." />
+        <p className="mb-2 mt-4 text-xs font-semibold text-gray-600">Auswählen</p>
         <div className="grid gap-2 sm:grid-cols-2">
           {TEAM.map((m) => {
             const on = (s.teamMembers ?? ['markus', 'aljona']).includes(m.key)
@@ -216,6 +222,39 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
               </label>
             )
           })}
+        </div>
+        {(s.teamMembers ?? ['markus', 'aljona']).length > 1 && (
+          <>
+            <p className="mb-2 mt-4 text-xs font-semibold text-gray-600">Reihenfolge</p>
+            <ol className="space-y-2">
+              {(s.teamMembers ?? ['markus', 'aljona']).map((key, i, arr) => {
+                const m = TEAM.find((t) => t.key === key)
+                if (!m) return null
+                const move = (dir: -1 | 1) => {
+                  const next = [...arr]
+                  const j = i + dir
+                  if (j < 0 || j >= next.length) return
+                  ;[next[i], next[j]] = [next[j], next[i]]
+                  patch('teamMembers', next)
+                }
+                return (
+                  <li key={key} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">{i + 1}</span>
+                    <span className="font-semibold text-gray-800">{m.name}</span>
+                    <span className="text-xs text-gray-400">· {m.role}</span>
+                    <span className="ml-auto flex gap-1">
+                      <button type="button" onClick={() => move(-1)} disabled={i === 0} className="rounded-md border border-gray-200 px-2 py-0.5 text-xs disabled:opacity-30">↑</button>
+                      <button type="button" onClick={() => move(1)} disabled={i === arr.length - 1} className="rounded-md border border-gray-200 px-2 py-0.5 text-xs disabled:opacity-30">↓</button>
+                    </span>
+                  </li>
+                )
+              })}
+            </ol>
+          </>
+        )}
+        <div className="mt-5 border-t border-gray-100 pt-4">
+          <Field label="Hero-Hintergrundbild (URL, optional)" value={s.heroImageUrl ?? ''} onChange={(v) => patch('heroImageUrl', v)} placeholder="/offer-hero.jpg" />
+          <p className="mt-1 text-xs text-gray-400">Wird im Hero hinter einem 75%-Blau-Overlay angezeigt. Leer = ohne Bild.</p>
         </div>
       </Section>
 
@@ -493,15 +532,15 @@ function Section({ label, children, onSuggest, suggesting }: { label: string; ch
   )
 }
 
-function Field({ label, value, onChange, multiline }: { label: string; value: string; onChange: (v: string) => void; multiline?: boolean }) {
+function Field({ label, value, onChange, multiline, placeholder }: { label: string; value: string; onChange: (v: string) => void; multiline?: boolean; placeholder?: string }) {
   return (
     <div>
       <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">{label}</label>
       {multiline ? (
-        <textarea value={value ?? ''} onChange={(e) => onChange(e.target.value)} rows={2}
+        <textarea value={value ?? ''} onChange={(e) => onChange(e.target.value)} rows={2} placeholder={placeholder}
           className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm" />
       ) : (
-        <input value={value ?? ''} onChange={(e) => onChange(e.target.value)}
+        <input value={value ?? ''} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
           className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm" />
       )}
     </div>

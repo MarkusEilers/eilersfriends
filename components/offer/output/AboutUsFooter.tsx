@@ -4,7 +4,7 @@ import { Calendar } from 'lucide-react'
 import type { TeamMember } from '@/lib/offer/team'
 
 /** About-Us-Footer im Angebot — gewählte Team-Mitglieder mit Bio + Direkt-Termin. */
-export function AboutUsFooter({ members, customerName, offerLabel }: { members: TeamMember[]; customerName?: string; offerLabel?: string }) {
+export function AboutUsFooter({ members, customerName, offerLabel, heading: headingOverride }: { members: TeamMember[]; customerName?: string; offerLabel?: string; heading?: string | null }) {
   const withParams = (url: string) => {
     const qs = new URLSearchParams()
     if (customerName) qs.set('name', customerName)
@@ -14,7 +14,7 @@ export function AboutUsFooter({ members, customerName, offerLabel }: { members: 
   }
   const list = members.length ? members : []
   if (!list.length) return null
-  const heading = list.length === 2 ? 'Zwei Menschen. Eine Mission.' : 'Die Menschen hinter diesem Angebot.'
+  const heading = headingOverride?.trim() || (list.length === 2 ? 'Zwei Menschen. Eine Mission.' : 'Die Menschen hinter diesem Angebot.')
   const cols = list.length === 1 ? 'md:grid-cols-1 md:max-w-md md:mx-auto' : list.length >= 3 ? 'md:grid-cols-3' : 'md:grid-cols-2'
 
   return (

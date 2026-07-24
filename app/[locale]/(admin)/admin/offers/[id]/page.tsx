@@ -85,6 +85,8 @@ export default async function AdminOfferEditor({ params }: { params: Promise<{ i
     upfrontDiscountPct: (full.upfront_discount_pct != null ? Number(full.upfront_discount_pct) : 0),
     track: (full.track as OfferEditorState['track']) ?? [],
     teamMembers: (full.team_members as string[] | null) ?? ['markus', 'aljona'],
+    teamHeading: (full.team_heading as string | null) ?? null,
+    heroImageUrl: (full.hero_image_url as string | null) ?? null,
   }
 
   return <OfferEditor initial={initial} accessSalt={full.access_salt} offerNumber={full.offer_number} programOptions={programs} />

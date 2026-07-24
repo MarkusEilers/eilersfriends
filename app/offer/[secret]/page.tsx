@@ -49,6 +49,8 @@ interface OfferFull {
   selected_pricing_option: string | null
   section_order?: { type: string; enabled: boolean }[] | null
   team_members?: string[] | null
+  team_heading?: string | null
+  hero_image_url?: string | null
   payment_card_enabled?: boolean | null
   payment_invoice_enabled?: boolean | null
   rhythm_monthly_enabled?: boolean | null
@@ -95,7 +97,9 @@ export default async function PublicOfferPage({ params, searchParams }: { params
     present.add(type)
   })
   const sectionOrder = enabled.map((type) => ({ type }))
-  const timelinePhases = (offer.programs?.[0]?.pricing ?? []).map((o) => ({ title: o.title, description: o.description }))
+  const timelinePhases = (offer.track && offer.track.length)
+    ? offer.track.map((ph) => ({ title: ph.name, description: ph.goal }))
+    : (offer.programs?.[0]?.pricing ?? []).map((o) => ({ title: o.title, description: o.description }))
   const sectionNodes: Record<string, React.ReactNode> = {
     understanding: offer.understanding_section ? <OfferUnderstanding key="understanding" data={offer.understanding_section} /> : null,
     empathy: offer.empathy_section ? <OfferEmpathy key="empathy" data={offer.empathy_section} /> : null,
@@ -142,20 +146,21 @@ export default async function PublicOfferPage({ params, searchParams }: { params
 
       {/* Slim Topbar — EF-Logo + Offer-No on right */}
       <header className="border-b border-gray-100 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+        <div className="relative mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <Image src="/ef-logo.png" alt="Eilers+Friends" width={200} height={56} className="h-14 md:h-16 w-auto object-contain" priority />
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <span className="block text-[10px] font-mono text-gray-400">{offer.offer_number}</span>
-              <span className="block text-[10px] text-gray-400">
-                Gültig bis {validUntilDate.toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })}
-              </span>
-            </div>
-            {offer.customer_logo_url && (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={offer.customer_logo_url} alt={offer.customer_company || offer.customer_name} className="h-9 w-auto object-contain" style={{ maxWidth: 150 }} />
-            )}
+          {/* Dokument-Infos mittig zentriert */}
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+            <span className="block text-[10px] font-mono text-gray-400">{offer.offer_number}</span>
+            <span className="block text-[10px] text-gray-400">
+              Gültig bis {validUntilDate.toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })}
+            </span>
           </div>
+          {offer.customer_logo_url ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={offer.customer_logo_url} alt={offer.customer_company || offer.customer_name} className="h-14 md:h-16 w-auto object-contain" style={{ maxWidth: 200 }} />
+          ) : (
+            <span aria-hidden="true" />
+          )}
         </div>
       </header>
 
@@ -169,11 +174,12 @@ export default async function PublicOfferPage({ params, searchParams }: { params
           customerName={offer.customer_name}
           customerCompany={offer.customer_company}
           validUntil={validUntilDate}
+          heroImage={offer.hero_image_url ?? '/offer-hero.jpg'}
         />
 
         {sectionOrder.map(({ type }) => sectionNodes[type]).filter(Boolean)}
 
-        <AboutUsFooter members={teamMembers} customerName={offer.customer_name} offerLabel={offer.offer_number} />
+        <AboutUsFooter members={teamMembers} customerName={offer.customer_name} offerLabel={offer.offer_number} heading={offer.team_heading} />
       </main>
 
       <footer className="border-t border-gray-100 bg-white py-8 text-center text-xs text-gray-400">
