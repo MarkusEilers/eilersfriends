@@ -87,6 +87,7 @@ export default async function AdminOfferEditor({ params }: { params: Promise<{ i
     teamMembers: (full.team_members as string[] | null) ?? ['markus', 'aljona'],
     teamHeading: (full.team_heading as string | null) ?? null,
     heroImageUrl: (full.hero_image_url as string | null) ?? null,
+    validUntil: full.valid_until ? new Date(full.valid_until as string).toISOString().slice(0, 10) : '',
   }
 
   return <OfferEditor initial={initial} accessSalt={full.access_salt} offerNumber={full.offer_number} programOptions={programs} />

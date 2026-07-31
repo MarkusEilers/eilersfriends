@@ -49,12 +49,20 @@ export interface OfferEditorState {
   teamMembers?: string[]
   teamHeading?: string | null
   heroImageUrl?: string | null
+  validUntil?: string
   // Wave 3 — Zahlung & Annahme
   paymentCardEnabled?: boolean
   paymentInvoiceEnabled?: boolean
   rhythmMonthlyEnabled?: boolean
   rhythmUpfrontEnabled?: boolean
   upfrontDiscountPct?: number | null
+}
+
+/** Datum in N Wochen ab heute als YYYY-MM-DD. */
+function plusWeeks(weeks: number): string {
+  const d = new Date()
+  d.setDate(d.getDate() + weeks * 7)
+  return d.toISOString().slice(0, 10)
 }
 
 export function OfferEditor({ initial, accessSalt, offerNumber, programOptions = [] }: { initial: OfferEditorState; accessSalt?: string; offerNumber?: string; programOptions?: ProgramOption[] }) {
@@ -97,6 +105,7 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           teamMembers: s.teamMembers ?? ['markus', 'aljona'],
           teamHeading: s.teamHeading ?? null,
           heroImageUrl: s.heroImageUrl ?? null,
+          ...(s.validUntil ? { validUntil: s.validUntil } : {}),
           sectionOrder: s.sectionOrder && s.sectionOrder.length ? s.sectionOrder : DEFAULT_SECTIONS,
         })
         setSavedAt(Date.now())
@@ -174,6 +183,24 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           <Field label="Name" value={s.customerName} onChange={(v) => patch('customerName', v)} />
           <Field label="Firma" value={s.customerCompany} onChange={(v) => patch('customerCompany', v)} />
           <Field label="E-Mail" value={s.customerEmail} onChange={(v) => patch('customerEmail', v)} />
+        </div>
+        <div className="mt-3">
+          <label className="mb-1 block text-[10px] uppercase tracking-widest text-gray-400">Gültig bis</label>
+          <div className="flex flex-wrap items-center gap-2">
+            <input type="date" value={s.validUntil ?? ''} onChange={(e) => patch('validUntil', e.target.value)}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm" />
+            {[2, 3, 4].map((w) => (
+              <button key={w} type="button" onClick={() => patch('validUntil', plusWeeks(w))}
+                className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100">
+                +{w} Wochen
+              </button>
+            ))}
+            {s.validUntil && (
+              <span className="text-xs text-gray-400">
+                {new Date(s.validUntil).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })}
+              </span>
+            )}
+          </div>
         </div>
       </Section>
 

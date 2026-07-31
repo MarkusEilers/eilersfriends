@@ -61,6 +61,7 @@ interface UpdatePayload {
   teamMembers?: string[]
   teamHeading?: string | null
   heroImageUrl?: string | null
+  validUntil?: string
 }
 
 export async function updateOfferAction(id: string, payload: UpdatePayload) {
