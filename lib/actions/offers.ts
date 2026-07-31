@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { createOffer, updateOffer, getOfferById } from '@/lib/db/queries/offers'
+import { HERO_STYLE_BRIEF, type HeroStyle } from '@/lib/offer/hero-styles'
 
 async function requireAdmin() {
   const session = await auth()
@@ -159,6 +160,58 @@ export async function suggestSectionAction(req: SuggestRequest): Promise<{ ok: t
   } catch {
     return { ok: false, error: 'invalid JSON from OpenAI' }
   }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Hero-Bild-Prompt vorschlagen — baut aus Angebotsinhalt (Ziele, Ergebnisse,
+ * Kunde/Branche) + gewähltem Stil einen fertigen Bild-Prompt für gpt-image-2.
+ * ────────────────────────────────────────────────────────────────────── */
+export async function suggestHeroPromptAction(req: { offerId: string; style: HeroStyle; extra?: string }):
+  Promise<{ ok: true; prompt: string } | { ok: false; error: string }> {
+  await requireAdmin()
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) return { ok: false, error: 'OPENAI_API_KEY not set' }
+
+  const offer = await getOfferById(req.offerId)
+  if (!offer) return { ok: false, error: 'offer not found' }
+
+  const o = offer as Record<string, unknown>
+  const understanding = (o.understanding_section ?? {}) as { goals?: string[]; challenges?: string[] }
+  const economic = (o.economic_results ?? []) as Array<{ title?: string; description?: string }>
+  const ctx = [
+    `Kunde: ${o.customer_name}${o.customer_company ? ` (${o.customer_company})` : ''}`,
+    `Angebot: ${o.title}${o.subtitle ? ` — ${o.subtitle}` : ''}`,
+    understanding.goals?.length ? `Ziele des Kunden: ${understanding.goals.join('; ')}` : '',
+    economic.length ? `Versprochene Ergebnisse: ${economic.map((e) => e.title).filter(Boolean).join('; ')}` : '',
+  ].filter(Boolean).join('\n')
+
+  const sys = 'Du bist Art Director und schreibst Prompts für fotorealistische Bildgenerierung (gpt-image-2). '
+    + 'Du lieferst EINEN englischen Prompt für ein Hero-Hintergrundbild einer B2B-Angebotsseite. '
+    + 'Pflicht: kein Text/keine Buchstaben/keine Logos im Bild; 3:2 Querformat; dunkle, ruhige Bildbereiche oben für weiße Headline; '
+    + 'das Motiv wird später mit 75% dunkelblauem Overlay (#0F1E3A) überlagert, muss also mit dunklen Blautönen harmonieren und darf nicht zu hell oder zu bunt sein. '
+    + 'Das Bild soll den ERREICHTEN Erfolgszustand des Kunden visualisieren, nicht das Problem. Keine Menschen mit erkennbaren Gesichtern in Nahaufnahme.'
+  const user = `Kontext des Angebots:\n${ctx}\n\nGewünschter Stil: ${HERO_STYLE_BRIEF[req.style]}`
+    + (req.extra?.trim() ? `\n\nZusätzliche Wünsche: ${req.extra.trim()}` : '')
+    + '\n\nAntworte als JSON: {"prompt": string}'
+
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'system', content: sys }, { role: 'user', content: user }],
+      response_format: { type: 'json_object' },
+      temperature: 0.8,
+    }),
+  })
+  if (!res.ok) return { ok: false, error: `OpenAI ${res.status}` }
+  const data = await res.json()
+  try {
+    const parsed = JSON.parse(data.choices?.[0]?.message?.content ?? '{}')
+    const prompt = typeof parsed.prompt === 'string' ? parsed.prompt : ''
+    if (!prompt) return { ok: false, error: 'empty prompt' }
+    return { ok: true, prompt }
+  } catch { return { ok: false, error: 'invalid JSON' } }
 }
 
 /* ──────────────────────────────────────────────────────────────────────

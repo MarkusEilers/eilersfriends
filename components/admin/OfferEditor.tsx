@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { CustomerLogoUpload } from './CustomerLogoUpload'
 import { Sparkles, Plus, X, Save, Send, Loader2, AlertCircle, EyeOff, Eye } from 'lucide-react'
-import { updateOfferAction, suggestSectionAction, setOfferStatusAction, generateOfferFromPromptAction } from '@/lib/actions/offers'
+import { updateOfferAction, suggestSectionAction, setOfferStatusAction, generateOfferFromPromptAction, suggestHeroPromptAction } from '@/lib/actions/offers'
+import { HERO_STYLES, type HeroStyle } from '@/lib/offer/hero-styles'
 import { OfferPreview } from './OfferPreview'
 import { SectionOrderEditor, DEFAULT_SECTIONS, type SectionOrderItem } from './SectionOrderEditor'
 import { UNDERSTANDING_PRESETS, EMPATHY_PRESETS, GUARANTEE_PRESETS } from '@/lib/offer/presets'
@@ -253,8 +254,11 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           </>
         )}
         <div className="mt-5 border-t border-gray-100 pt-4">
-          <Field label="Hero-Hintergrundbild (URL, optional)" value={s.heroImageUrl ?? ''} onChange={(v) => patch('heroImageUrl', v)} placeholder="/offer-hero.jpg" />
-          <p className="mt-1 text-xs text-gray-400">Wird im Hero hinter einem 75%-Blau-Overlay angezeigt. Leer = ohne Bild.</p>
+          <HeroImagePanel
+            offerId={s.id}
+            value={s.heroImageUrl ?? ''}
+            onChange={(v) => patch('heroImageUrl', v)}
+          />
         </div>
       </Section>
 
@@ -529,6 +533,102 @@ function Section({ label, children, onSuggest, suggesting }: { label: string; ch
       </div>
       <div className="space-y-3">{children}</div>
     </section>
+  )
+}
+
+
+/* ── Hero-Bild: Vorschau + KI-Prompt-Vorschlag + Generierung (gpt-image-2) ── */
+function HeroImagePanel({ offerId, value, onChange }: { offerId: string; value: string; onChange: (v: string) => void }) {
+  const [style, setStyle] = useState<HeroStyle>('cinematic')
+  const [prompt, setPrompt] = useState('')
+  const [extra, setExtra] = useState('')
+  const [busy, setBusy] = useState<null | 'prompt' | 'image'>(null)
+  const [err, setErr] = useState<string | null>(null)
+
+  async function proposePrompt() {
+    setBusy('prompt'); setErr(null)
+    try {
+      const res = await suggestHeroPromptAction({ offerId, style, extra: extra || undefined })
+      if (res.ok) setPrompt(res.prompt); else setErr(res.error)
+    } catch (e) { setErr(String(e)) } finally { setBusy(null) }
+  }
+
+  async function generate() {
+    if (!prompt.trim()) { setErr('Erst einen Prompt vorschlagen lassen oder selbst schreiben.'); return }
+    setBusy('image'); setErr(null)
+    try {
+      const r = await fetch(`/api/admin/offers/${offerId}/hero-image`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, model: 'gpt-image-2', quality: 'high' }),
+      })
+      const j = await r.json()
+      if (!r.ok) setErr(j.error || `Fehler ${r.status}`)
+      else onChange(j.imageUrl)
+    } catch (e) { setErr(String(e)) } finally { setBusy(null) }
+  }
+
+  return (
+    <div>
+      <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-1">Hero-Hintergrundbild</label>
+
+      {/* Vorschau — zeigt das Motiv so, wie es im Angebot erscheint (75% Blau-Overlay + Headline) */}
+      <div className="relative overflow-hidden rounded-xl border border-gray-200" style={{ backgroundColor: '#0F1E3A', aspectRatio: '3 / 1.4' }}>
+        {value ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={value} alt="Hero-Vorschau" className="absolute inset-0 h-full w-full object-cover" />
+        ) : null}
+        <div className="absolute inset-0" style={{ background: value ? 'linear-gradient(180deg, rgba(15,30,58,0.72) 0%, rgba(21,49,94,0.82) 100%)' : 'linear-gradient(180deg, #0F1E3A 0%, #15315E 100%)' }} />
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
+          <span className="text-[9px] font-bold uppercase tracking-[0.2em]" style={{ color: '#93B8F5' }}>So sieht der Hero aus</span>
+          <span className="mt-1 text-lg font-bold text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>Euer Angebot</span>
+          {!value && <span className="mt-1 text-[10px] text-white/50">Noch kein Bild — Default wird verwendet</span>}
+        </div>
+      </div>
+
+      {/* Stil-Auswahl */}
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {HERO_STYLES.map((st) => (
+          <button key={st.key} type="button" onClick={() => setStyle(st.key)} title={st.hint}
+            className="rounded-full border px-3 py-1 text-xs font-semibold transition-colors"
+            style={style === st.key
+              ? { borderColor: '#1A5FD4', backgroundColor: '#EBF1FF', color: '#1A5FD4' }
+              : { borderColor: '#E5E7EB', backgroundColor: '#fff', color: '#6B7280' }}>
+            {st.label}
+          </button>
+        ))}
+      </div>
+      <p className="mt-1.5 text-xs text-gray-400">{HERO_STYLES.find((x) => x.key === style)?.hint}</p>
+
+      <input value={extra} onChange={(e) => setExtra(e.target.value)}
+        placeholder="Optional: Branche/Motiv-Wunsch (z.B. Softwarehaus, Verlagsumfeld)"
+        className="mt-2 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm" />
+
+      <div className="mt-2 flex flex-wrap gap-2">
+        <button type="button" onClick={proposePrompt} disabled={busy !== null}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 disabled:opacity-50">
+          <Sparkles size={13} /> {busy === 'prompt' ? 'Denke nach …' : 'Prompt vorschlagen'}
+        </button>
+        <button type="button" onClick={generate} disabled={busy !== null || !prompt.trim()}
+          className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40"
+          style={{ backgroundColor: '#1A5FD4' }}>
+          {busy === 'image' ? 'Generiere Bild … (bis ~2 Min.)' : 'Bild generieren (gpt-image-2)'}
+        </button>
+        {value && (
+          <button type="button" onClick={() => onChange('')}
+            className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-500">Bild entfernen</button>
+        )}
+      </div>
+
+      <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={4}
+        placeholder="Bild-Prompt (englisch) — per „Prompt vorschlagen" füllen oder selbst schreiben."
+        className="mt-2 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 font-mono text-xs" />
+
+      <input value={value} onChange={(e) => onChange(e.target.value)} placeholder="oder Bild-URL direkt eintragen (/offer-hero.jpg)"
+        className="mt-2 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs" />
+
+      {err && <p className="mt-2 text-xs font-semibold text-red-600">{err}</p>}
+      <p className="mt-1 text-xs text-gray-400">Bild erscheint im Hero hinter einem 75%-Blau-Overlay. Nach dem Generieren noch speichern.</p>
+    </div>
   )
 }
 
