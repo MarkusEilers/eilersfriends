@@ -620,7 +620,7 @@ function HeroImagePanel({ offerId, value, onChange }: { offerId: string; value: 
       </div>
 
       <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={4}
-        placeholder="Bild-Prompt (englisch) — per „Prompt vorschlagen" füllen oder selbst schreiben."
+        placeholder="Bild-Prompt (englisch) — per Prompt-Vorschlag füllen oder selbst schreiben."
         className="mt-2 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 font-mono text-xs" />
 
       <input value={value} onChange={(e) => onChange(e.target.value)} placeholder="oder Bild-URL direkt eintragen (/offer-hero.jpg)"
