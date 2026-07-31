@@ -4,6 +4,7 @@ import { Link } from '@/lib/i18n/navigation'
 import { auth } from '@/lib/auth'
 import { entityFor, membersFor } from '@/lib/schedule/config'
 import { getEventType, getHostProfile, localizedType } from '@/lib/schedule/types-store'
+import { TEAM as OFFER_TEAM } from '@/lib/offer/team'
 import { BookingWidget } from '@/components/schedule/BookingWidget'
 
 export const dynamic = 'force-dynamic'
@@ -30,7 +31,8 @@ export default async function ScheduleBooking({ params, searchParams }: { params
   const members = membersFor(person)
   const hosts = await Promise.all(members.map(async m => {
     const hp = await getHostProfile(m.slug)
-    return { name: m.name, role: m.role || '', avatarUrl: hp?.avatarUrl || '', intro: hp?.intro || '' }
+    const staticPhoto = OFFER_TEAM.find((t) => t.key === m.slug)?.photo || ''
+    return { name: m.name, role: m.role || '', avatarUrl: hp?.avatarUrl || staticPhoto, intro: hp?.intro || '' }
   }))
   const visLabel = et.visibility === 'live' ? t('visLive') : et.visibility === 'internal' ? t('visInternal') : t('visOffline')
 

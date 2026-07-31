@@ -16,7 +16,7 @@ export const TEAM: TeamMember[] = [
     accent: '#0E9DDD', calendly: '/schedule/cosima' },
   { key: 'daniel', name: 'Daniel', role: 'Sales Development',
     bio: 'Verantwortet die systematische Erstansprache und Qualifizierung — der Motor für eine planbare Pipeline.',
-    accent: '#7C3AED', calendly: '/schedule/daniel' },
+    photo: '/daniel-photo.jpg', accent: '#7C3AED', calendly: '/schedule/daniel' },
 ]
 
 export function membersFromKeys(keys?: string[] | null): TeamMember[] {
