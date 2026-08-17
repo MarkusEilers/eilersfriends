@@ -1738,7 +1738,7 @@
     "payNow": "Continue to payment →",
     "noTiers": "No options available.",
     "seatsLimit": "Only {n} seats",
-    "seatsLimitDeadline": "the first {n} end on {date}",
+    "seatsLimitDeadline": "the current launch phase ends on {date}",
     "freeSeatOne": "free seat",
     "freeSeatMany": "free seats",
     "errorSession": "Error creating the Stripe session.",

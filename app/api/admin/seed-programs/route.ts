@@ -16,7 +16,8 @@ const ACADEMY_PREMIUM = {
   brand_color: '#1A5FD4',
   delivery_format: 'hybrid',
   enrollment_limit: 30,
-  enrollment_deadline: '2026-07-31T23:59:59Z',
+  // Kein festes Datum mehr — das Launch-Fenster rolliert (lib/programs/launch-window.ts)
+  enrollment_deadline: null as string | null,
   pricing_tiers: [
     {
       id: 'yearly-upfront',
@@ -90,7 +91,7 @@ const ACADEMY_PREMIUM = {
     why_now: {
       headline: 'Warum jetzt.',
       bullets: [
-        '<strong>Founding-Phase läuft.</strong> Cohort 1 schließt am 31. Juli 2026 — danach ist nur noch der reguläre Tier verfügbar.',
+        '<strong>Aktuelle Launch-Phase läuft.</strong> Nach Ablauf des Fensters startet die nächste Runde zum dann gültigen Preis.',
         '<strong>Lifetime Bonus gilt jetzt.</strong> Dein Jahres-Preis von 5.800 € bleibt für immer eingefroren — auch wenn die Academy später teurer wird.',
         '<strong>Markus persönlich, bis 30.</strong> Über 30 Founding-Member skaliert Markus\' Zeit nicht mehr ohne Wartelisten.',
         '<strong>Der nächste Pitch zählt jetzt.</strong> Wer das Bauplan-Framework nach Tag 7 anwendet, sieht den Effekt im nächsten Kunden-Gespräch.',

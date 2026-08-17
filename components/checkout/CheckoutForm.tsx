@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { effectiveDeadline, formatDeadline } from '@/lib/programs/launch-window'
 import { useTranslations } from 'next-intl'
 import { Loader2 } from 'lucide-react'
 
@@ -95,7 +96,8 @@ export function CheckoutForm({ programSlug, programName, tiers, enrollmentLimit,
     }
   }
 
-  const deadlineDate = enrollmentDeadline ? new Date(enrollmentDeadline).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }) : null
+  // Nie ein Datum aus der Vergangenheit zeigen — sonst rolliert das Launch-Fenster.
+  const deadlineDate = formatDeadline(effectiveDeadline(enrollmentDeadline))
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
