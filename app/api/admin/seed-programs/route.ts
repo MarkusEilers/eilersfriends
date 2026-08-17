@@ -21,7 +21,7 @@ const ACADEMY_PREMIUM = {
     {
       id: 'yearly-upfront',
       label: 'Yearly Upfront',
-      price: 5485,
+      price: 5800,
       currency: 'EUR',
       billing: 'yearly',
       stripe_price_id: process.env.STRIPE_PRICE_ACADEMY_YEARLY ?? '',
@@ -32,7 +32,7 @@ const ACADEMY_PREMIUM = {
     {
       id: 'monthly',
       label: 'Monatlich',
-      price: 549,
+      price: 580,
       currency: 'EUR',
       billing: 'monthly',
       stripe_price_id: process.env.STRIPE_PRICE_ACADEMY_MONTHLY ?? '',
@@ -91,14 +91,14 @@ const ACADEMY_PREMIUM = {
       headline: 'Warum jetzt.',
       bullets: [
         '<strong>Founding-Phase läuft.</strong> Cohort 1 schließt am 31. Juli 2026 — danach ist nur noch der reguläre Tier verfügbar.',
-        '<strong>Lifetime Bonus gilt jetzt.</strong> Dein Jahres-Preis von 5.485 € bleibt für immer eingefroren — auch wenn die Academy später teurer wird.',
+        '<strong>Lifetime Bonus gilt jetzt.</strong> Dein Jahres-Preis von 5.800 € bleibt für immer eingefroren — auch wenn die Academy später teurer wird.',
         '<strong>Markus persönlich, bis 30.</strong> Über 30 Founding-Member skaliert Markus\' Zeit nicht mehr ohne Wartelisten.',
         '<strong>Der nächste Pitch zählt jetzt.</strong> Wer das Bauplan-Framework nach Tag 7 anwendet, sieht den Effekt im nächsten Kunden-Gespräch.',
       ],
     },
     faqs: [
       { q: 'Was passiert nach dem Kauf?', a: 'Du bekommst eine Email mit Account-Setup, WhatsApp-Einladung und dem ersten Onboarding-Call-Link binnen 24 Stunden.' },
-      { q: 'Was bedeutet der „Lifetime Bonus" konkret?', a: 'Du zahlst jährlich 5.485 € für Deine Premium Membership. Der Lifetime Bonus, den Du als Founding-30-Member bekommst: Dein Jahres-Preis bleibt für immer eingefroren. Selbst wenn die Academy in zwei Jahren auf 8.000 € oder 12.000 € pro Jahr steigt — Du zahlst weiter Deine 5.485 €, solange Du dabei bist.' },
+      { q: 'Was bedeutet der „Lifetime Bonus" konkret?', a: 'Du zahlst jährlich 5.800 € für Deine Premium Membership. Der Lifetime Bonus, den Du als Founding-30-Member bekommst: Dein Jahres-Preis bleibt für immer eingefroren. Selbst wenn die Academy in zwei Jahren auf 8.000 € oder 12.000 € pro Jahr steigt — Du zahlst weiter Deine 5.800 €, solange Du dabei bist.' },
       { q: 'Risikoumkehr?', a: '14 Tage Geld zurück, ohne Frage. Wenn Du nach den ersten zwei Sessions feststellst, dass das nicht passt — Email an team@eilersfriends.com, voller Refund.' },
       { q: 'Wie funktioniert die Reverse-Charge bei UStID?', a: 'Wenn Du eine gültige UStID außerhalb DE angibst, stellen wir steuerfrei (Reverse-Charge §13b UStG). Bei DE-UStID gilt 19 % MwSt.' },
     ],
