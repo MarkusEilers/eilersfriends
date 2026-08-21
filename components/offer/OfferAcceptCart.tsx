@@ -25,6 +25,8 @@ export function OfferAcceptCart({
   paymentCardEnabled, paymentInvoiceEnabled,
   rhythmUpfrontEnabled, rhythmMonthlyEnabled,
   upfrontDiscountPct, customerName, customerEmail, noticeDomain,
+  signerToken = null, signerName = null, signerStatus = null,
+  signers = [], lockedRhythm = null, lockedMethod = null,
 }: {
   offerSecret: string
   status: string
