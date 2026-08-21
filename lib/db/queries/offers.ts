@@ -101,6 +101,33 @@ async function ensureOfferSchema() {
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS track JSONB DEFAULT '[]'::jsonb`)  // Bausteine-Track (Phasen -> Schritte)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS team_heading   TEXT`)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS hero_image_url TEXT`)
+  // Mehrfach-Unterschrift: parallel | sequential + gewaehlte Zahlweise (Erstunterzeichner)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS signing_order   TEXT DEFAULT 'parallel'`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS chosen_rhythm   TEXT`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS chosen_method   TEXT`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS chosen_amount   NUMERIC`)
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS offer_signers (
+      id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      offer_id     UUID REFERENCES offers(id) ON DELETE CASCADE,
+      name         TEXT NOT NULL,
+      email        TEXT NOT NULL,
+      role         TEXT,
+      sort_order   INTEGER NOT NULL DEFAULT 0,
+      sign_token   TEXT UNIQUE NOT NULL,
+      status       TEXT NOT NULL DEFAULT 'pending',   -- pending | invited | opened | awaiting_confirm | signed
+      doi_token    TEXT,
+      invited_at   TIMESTAMPTZ,
+      opened_at    TIMESTAMPTZ,
+      submitted_at TIMESTAMPTZ,
+      signed_at    TIMESTAMPTZ,
+      ip           TEXT,
+      user_agent   TEXT,
+      accept_hash  TEXT,
+      created_at   TIMESTAMPTZ DEFAULT now(),
+      updated_at   TIMESTAMPTZ DEFAULT now()
+    )`)
+  await db.execute(sql`CREATE INDEX IF NOT EXISTS offer_signers_offer_idx ON offer_signers (offer_id, sort_order)`)
   // Annahme-Nachweis (v.a. Rechnung): Name/E-Mail + IP + Hash(Timestamp+IP)
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS offer_acceptances (
@@ -291,6 +318,7 @@ export interface OfferUpdate {
   teamMembers?: string[]
   teamHeading?: string | null
   heroImageUrl?: string | null
+  signingOrder?: 'parallel' | 'sequential'
 }
 
 export async function updateOffer(id: string, update: OfferUpdate): Promise<void> {
@@ -328,6 +356,7 @@ export async function updateOffer(id: string, update: OfferUpdate): Promise<void
   if (update.teamMembers !== undefined) sets.push(sql`team_members = ${JSON.stringify(update.teamMembers)}::jsonb`)
   if (update.teamHeading !== undefined) sets.push(sql`team_heading = ${update.teamHeading}`)
   if (update.heroImageUrl !== undefined) sets.push(sql`hero_image_url = ${update.heroImageUrl}`)
+  if (update.signingOrder !== undefined) sets.push(sql`signing_order = ${update.signingOrder}`)
   if (!sets.length) return
   sets.push(sql`updated_at = now()`)
   const joined = sql.join(sets, sql`, `)
@@ -338,4 +367,80 @@ export async function getOfferById(id: string): Promise<OfferRow | null> {
   await ensureOfferSchema()
   const res = await db.execute<OfferRow>(sql`SELECT * FROM offers WHERE id = ${id} LIMIT 1`)
   return (res as unknown as OfferRow[])[0] ?? null
+}
+
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Unterzeichner — mehrere Personen muessen dasselbe Angebot zeichnen.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+export interface OfferSigner {
+  id: string
+  offer_id: string
+  name: string
+  email: string
+  role: string | null
+  sort_order: number
+  sign_token: string
+  status: 'pending' | 'invited' | 'opened' | 'awaiting_confirm' | 'signed'
+  doi_token: string | null
+  invited_at: string | null
+  signed_at: string | null
+  ip: string | null
+  accept_hash: string | null
+}
+
+export async function listSigners(offerId: string): Promise<OfferSigner[]> {
+  await ensureOfferSchema()
+  const res = await db.execute(sql`SELECT * FROM offer_signers WHERE offer_id = ${offerId} ORDER BY sort_order, created_at`)
+  return res as unknown as OfferSigner[]
+}
+
+export async function getSignerByToken(token: string): Promise<OfferSigner | null> {
+  await ensureOfferSchema()
+  const res = await db.execute(sql`SELECT * FROM offer_signers WHERE sign_token = ${token} LIMIT 1`)
+  return (res as unknown as OfferSigner[])[0] ?? null
+}
+
+export async function getSignerByDoi(token: string): Promise<OfferSigner | null> {
+  await ensureOfferSchema()
+  const res = await db.execute(sql`SELECT * FROM offer_signers WHERE doi_token = ${token} LIMIT 1`)
+  return (res as unknown as OfferSigner[])[0] ?? null
+}
+
+/** Setzt die Unterzeichner-Liste neu (bestehende Unterschriften bleiben erhalten). */
+export async function replaceSigners(offerId: string, people: { id?: string; name: string; email: string; role?: string | null }[]) {
+  await ensureOfferSchema()
+  const keep = people.map((p) => p.id).filter(Boolean) as string[]
+  if (keep.length) {
+    await db.execute(sql`DELETE FROM offer_signers WHERE offer_id = ${offerId} AND id NOT IN (${sql.join(keep.map((k) => sql`${k}::uuid`), sql`, `)}) AND status <> 'signed'`)
+  } else {
+    await db.execute(sql`DELETE FROM offer_signers WHERE offer_id = ${offerId} AND status <> 'signed'`)
+  }
+  for (let i = 0; i < people.length; i++) {
+    const p = people[i]
+    if (p.id) {
+      await db.execute(sql`
+        UPDATE offer_signers SET name = ${p.name}, email = ${p.email}, role = ${p.role ?? null},
+          sort_order = ${i}, updated_at = now()
+        WHERE id = ${p.id} AND offer_id = ${offerId}`)
+    } else {
+      await db.execute(sql`
+        INSERT INTO offer_signers (offer_id, name, email, role, sort_order, sign_token)
+        VALUES (${offerId}, ${p.name}, ${p.email}, ${p.role ?? null}, ${i}, ${genSalt()})`)
+    }
+  }
+}
+
+/** Wer ist als naechstes dran? Bei 'sequential' nur der erste offene, sonst alle offenen. */
+export async function pendingSigners(offerId: string, order: string | null): Promise<OfferSigner[]> {
+  const all = await listSigners(offerId)
+  const open = all.filter((s) => s.status !== 'signed')
+  if (order === 'sequential') return open.slice(0, 1)
+  return open
+}
+
+export async function allSigned(offerId: string): Promise<boolean> {
+  const all = await listSigners(offerId)
+  return all.length > 0 && all.every((s) => s.status === 'signed')
 }

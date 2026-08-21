@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
-import { createOffer, updateOffer, getOfferById } from '@/lib/db/queries/offers'
+import { createOffer, updateOffer, getOfferById, listSigners, replaceSigners } from '@/lib/db/queries/offers'
 import { HERO_STYLE_BRIEF, type HeroStyle } from '@/lib/offer/hero-styles'
 
 async function requireAdmin() {
@@ -62,6 +62,7 @@ interface UpdatePayload {
   teamHeading?: string | null
   heroImageUrl?: string | null
   validUntil?: string
+  signingOrder?: 'parallel' | 'sequential'
 }
 
 export async function updateOfferAction(id: string, payload: UpdatePayload) {
@@ -344,4 +345,23 @@ Generiere ein vollständiges Angebot in JSON nach dem Schema.`
 
   revalidatePath(`/admin/offers/${offerId}`)
   return { ok: true }
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Unterzeichner verwalten (zwei oder mehr Personen zeichnen ein Angebot)
+ * ────────────────────────────────────────────────────────────────────── */
+export async function listSignersAction(offerId: string) {
+  await requireAdmin()
+  return listSigners(offerId)
+}
+
+export async function saveSignersAction(offerId: string, people: { id?: string; name: string; email: string; role?: string | null }[]) {
+  await requireAdmin()
+  const clean = people
+    .map((p) => ({ ...p, name: p.name.trim(), email: p.email.trim().toLowerCase() }))
+    .filter((p) => p.name && /.+@.+\..+/.test(p.email))
+  await replaceSigners(offerId, clean)
+  revalidatePath(`/admin/offers/${offerId}`)
+  return listSigners(offerId)
 }

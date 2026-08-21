@@ -36,6 +36,12 @@ export function OfferAcceptCart({
   upfrontDiscountPct: number
   customerName?: string | null
   customerEmail?: string | null
+  signerToken?: string | null
+  signerName?: string | null
+  signerStatus?: string | null
+  signers?: { name: string; status: string }[]
+  lockedRhythm?: string | null
+  lockedMethod?: string | null
   noticeDomain?: boolean
 }) {
   const option = useMemo<PricingOption | null>(() => {
@@ -58,9 +64,10 @@ export function OfferAcceptCart({
     paymentCardEnabled ? 'card' : null,
   ].filter(Boolean)) as Method[]
 
-  const [rhythm, setRhythm] = useState<Rhythm>(rhythms[0] ?? 'upfront')
-  const [method, setMethod] = useState<Method>(methods[0] ?? 'invoice')
-  const [name, setName] = useState(customerName ?? '')
+  const locked = Boolean(lockedRhythm && lockedMethod)
+  const [rhythm, setRhythm] = useState<Rhythm>((lockedRhythm as Rhythm) ?? rhythms[0] ?? 'upfront')
+  const [method, setMethod] = useState<Method>((lockedMethod as Method) ?? methods[0] ?? 'invoice')
+  const [name, setName] = useState(signerName ?? customerName ?? '')
   const [email, setEmail] = useState(customerEmail ?? '')
 
   const chosenTotal = rhythm === 'monthly' ? totalMonthly : upfrontTotal
@@ -80,20 +87,55 @@ export function OfferAcceptCart({
     )
   }
 
+  if (signerStatus === 'signed') {
+    return (
+      <section className="px-6 py-20" style={{ backgroundColor: '#0F1E3A' }}>
+        <div className="mx-auto max-w-2xl text-center text-white">
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full" style={{ backgroundColor: 'rgba(147,184,245,0.15)' }}>
+            <Check size={28} style={{ color: '#93B8F5' }} />
+          </div>
+          <h2 className="mt-5 text-2xl font-bold">Danke — Deine Unterschrift liegt vor.</h2>
+          <p className="mt-3 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
+            {signers.filter((p) => p.status !== 'signed').length > 0
+              ? `Sobald ${signers.filter((p) => p.status !== 'signed').map((p) => p.name).join(' und ')} unterschrieben ${signers.filter((p) => p.status !== 'signed').length > 1 ? 'haben' : 'hat'}, ist das Angebot verbindlich angenommen.`
+              : 'Alle Unterschriften liegen vor. Wir melden uns mit den nächsten Schritten.'}
+          </p>
+        </div>
+      </section>
+    )
+  }
+
   if (!option) return null
 
   return (
     <section className="px-6 py-20" style={{ background: 'linear-gradient(180deg, #FAFAF8 0%, #FFFFFF 100%)' }}>
       <div className="mx-auto max-w-3xl">
+        {signers.length > 1 && (
+          <div className="mb-8 rounded-2xl border px-5 py-4" style={{ borderColor: '#BBCFF5', backgroundColor: '#F5F8FF' }}>
+            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: ACCENT }}>Unterschriften</p>
+            <p className="mt-1 text-sm" style={{ color: INK }}>
+              Dieses Angebot wird von {signers.length} Personen gezeichnet. Es gilt als angenommen, sobald alle unterschrieben haben.
+            </p>
+            <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
+              {signers.map((p, i) => (
+                <li key={i} className="flex items-center gap-1.5 text-sm" style={{ color: p.status === 'signed' ? '#067647' : '#6B7280' }}>
+                  {p.status === 'signed' ? <Check size={13} /> : <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: '#D1D5DB' }} />}
+                  {p.name}{p.status === 'signed' ? '' : ' — offen'}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="text-center">
-          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: ACCENT }}>Angebot annehmen</span>
+          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: ACCENT }}>{signerName ? `Unterschrift von ${signerName}` : 'Angebot annehmen'}</span>
           <h2 className="mt-2 text-3xl font-bold" style={{ color: INK }}>Zahlweise wählen und bestätigen.</h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed" style={{ color: '#6B7280' }}>
             Wählen Sie Ihre bevorzugte Zahlweise und bestätigen Sie das Angebot mit Ihren Daten.
           </p>
         </div>
 
-        {rhythms.length > 1 && (
+        {rhythms.length > 1 && !locked && (
           <div className="mt-10">
             <p className="mb-3 text-xs font-bold uppercase tracking-widest" style={{ color: '#9CA3AF' }}>Zahlungsrhythmus</p>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -120,7 +162,7 @@ export function OfferAcceptCart({
           </div>
         )}
 
-        {methods.length > 1 && (
+        {methods.length > 1 && !locked && (
           <div className="mt-8">
             <p className="mb-3 text-xs font-bold uppercase tracking-widest" style={{ color: '#9CA3AF' }}>Zahlart</p>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -161,6 +203,7 @@ export function OfferAcceptCart({
         <form action={`/api/offers/${offerSecret}/accept`} method="POST" className="mt-8 rounded-2xl border border-gray-200 bg-white p-5">
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9CA3AF' }}>Unterschrift</p>
           <p className="mt-1 text-sm" style={{ color: '#6B7280' }}>Bestätigen Sie das Angebot mit Ihren Daten.</p>
+          {signerToken && <input type="hidden" name="signerToken" value={signerToken} />}
           <input type="hidden" name="method" value={method} />
           <input type="hidden" name="rhythm" value={rhythm} />
           <input type="hidden" name="selectedPricingOption" value={option.type ?? ''} />

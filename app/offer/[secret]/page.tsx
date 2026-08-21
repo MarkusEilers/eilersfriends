@@ -1,7 +1,7 @@
 import type * as React from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-import { getOfferBySalt, recordOfferEvent } from '@/lib/db/queries/offers'
+import { getOfferBySalt, recordOfferEvent, getSignerByToken, listSigners } from '@/lib/db/queries/offers'
 import { getSetting } from '@/lib/db/queries/settings'
 import {
   OfferHero,
@@ -59,7 +59,7 @@ interface OfferFull {
   track?: { name: string; goal?: string; steps?: { title: string; durationH?: number | string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[] }[] }[] | null
 }
 
-export default async function PublicOfferPage({ params, searchParams }: { params: Promise<{ secret: string }>; searchParams: Promise<{ pending?: string; accepted?: string; error?: string }> }) {
+export default async function PublicOfferPage({ params, searchParams }: { params: Promise<{ secret: string }>; searchParams: Promise<{ pending?: string; accepted?: string; error?: string; s?: string; signed?: string; waiting?: string; already?: string }> }) {
   const { secret } = await params
   const sp = await searchParams
   const offer = (await getOfferBySalt(secret)) as unknown as OfferFull | null
@@ -75,6 +75,14 @@ export default async function PublicOfferPage({ params, searchParams }: { params
     getSetting('calendly.markus', '/schedule/markus/kennenlernen-30').catch(() => '/schedule/markus/kennenlernen-30'),
     getSetting('calendly.aljona', '/schedule/aljona').catch(() => '/schedule/aljona'),
   ])
+
+  // Personalisierter Signing-Link (?s=TOKEN) + Stand der Unterschriften
+  const signers = await listSigners(offer.id).catch(() => [])
+  const activeSigner = sp?.s ? await getSignerByToken(sp.s).catch(() => null) : null
+  const validSigner = activeSigner && activeSigner.offer_id === offer.id ? activeSigner : null
+  if (validSigner && validSigner.status === 'invited') {
+    recordOfferEvent(offer.id, 'signer_opened', validSigner.email, { signerId: validSigner.id }).catch(() => {})
+  }
 
   const teamMembers = membersFromKeys(offer.team_members).map((m) =>
     m.key === 'markus' ? { ...m, calendly: markusCalendly } : m.key === 'aljona' ? { ...m, calendly: aljonaCalendly } : m)
@@ -124,6 +132,12 @@ export default async function PublicOfferPage({ params, searchParams }: { params
         </div>
       </section>
     ) : (<OfferAcceptCart key="accept"
+      signerToken={validSigner?.sign_token ?? null}
+      signerName={validSigner?.name ?? null}
+      signerStatus={validSigner?.status ?? null}
+      signers={signers.map((x) => ({ name: x.name, status: x.status }))}
+      lockedRhythm={(offer as unknown as { chosen_rhythm?: string | null }).chosen_rhythm ?? null}
+      lockedMethod={(offer as unknown as { chosen_method?: string | null }).chosen_method ?? null}
       offerSecret={offer.access_salt}
       status={offer.status}
       noticeDomain={sp?.error === 'domain'}

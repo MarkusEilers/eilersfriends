@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createHash, randomUUID } from 'crypto'
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
-import { getOfferBySalt, recordOfferEvent } from '@/lib/db/queries/offers'
+import { getOfferBySalt, recordOfferEvent, getSignerByToken, listSigners } from '@/lib/db/queries/offers'
 import { getStripe } from '@/lib/stripe'
 import { sendEmail } from '@/lib/email/resend'
 
@@ -31,6 +31,54 @@ export async function POST(req: Request, ctx: { params: Promise<{ secret: string
   const method = (form?.get('method')?.toString() === 'card') ? 'card' : 'invoice'
   const rhythm = (form?.get('rhythm')?.toString() === 'monthly') ? 'monthly' : 'upfront'
   const amount = Number(form?.get('amount')?.toString() || '0') || 0
+
+  const signerToken = form?.get('signerToken')?.toString().trim() || null
+
+  // ── Mehrfach-Unterschrift: personalisierter Link ──────────────────────────
+  if (signerToken) {
+    const signer = await getSignerByToken(signerToken)
+    if (!signer || signer.offer_id !== offer.id) {
+      return NextResponse.redirect(new URL(`/offer/${secret}?error=signer`, req.url), 303)
+    }
+    if (signer.status === 'signed') {
+      return NextResponse.redirect(new URL(`/offer/${secret}?s=${signerToken}&already=1`, req.url), 303)
+    }
+    const ipS = clientIp(req)
+    const tsS = new Date().toISOString()
+    const hashS = createHash('sha256').update(`${offer.id}|${signer.email}|${ipS}|${tsS}`).digest('hex').slice(0, 32)
+    const doi = randomUUID()
+
+    // Zahlweise setzt der Erstunterzeichner — danach ist sie fix.
+    const existing = await listSigners(offer.id)
+    const firstChoice = existing.some((x) => x.status === 'signed')
+    if (!firstChoice) {
+      await db.execute(sql`UPDATE offers SET chosen_rhythm=${rhythm}, chosen_method=${method}, chosen_amount=${amount || null}, updated_at=now() WHERE id=${offer.id}`)
+    }
+
+    await db.execute(sql`
+      UPDATE offer_signers SET status='awaiting_confirm', doi_token=${doi}, submitted_at=now(),
+        ip=${ipS}, user_agent=${req.headers.get('user-agent')}, accept_hash=${hashS}, updated_at=now()
+      WHERE id=${signer.id}`)
+    await recordOfferEvent(offer.id, 'signer_submitted', signer.email, { signerId: signer.id })
+
+    const confirmUrl = `${baseUrl}/api/offers/${secret}/confirm?token=${doi}`
+    try {
+      await sendEmail({
+        to: signer.email,
+        subject: `Bitte bestätigen: Unterschrift Angebot ${offer.offer_number}`,
+        html: `<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;color:#0D0D0B">
+            <p>Hallo ${signer.name},</p>
+            <p>bitte bestätige Deine Unterschrift unter dem Angebot <strong>${offer.offer_number}</strong> mit einem Klick:</p>
+            <p style="margin:28px 0"><a href="${confirmUrl}" style="background:#0F1E3A;color:#fff;text-decoration:none;padding:14px 28px;border-radius:999px;font-weight:bold">Unterschrift bestätigen</a></p>
+            <p style="font-size:13px;color:#6B7280">Nachweis: ${tsS} · Referenz ${hashS}</p>
+          </div>`,
+        text: `Bitte bestätige Deine Unterschrift unter Angebot ${offer.offer_number}: ${confirmUrl}\nNachweis: ${tsS} · Referenz ${hashS}`,
+      })
+    } catch (err) {
+      await recordOfferEvent(offer.id, 'signer_mail_failed', signer.email, { error: err instanceof Error ? err.message : 'mail_error' })
+    }
+    return NextResponse.redirect(new URL(`/offer/${secret}?s=${signerToken}&pending=1`, req.url), 303)
+  }
 
   const baseUrl = new URL(req.url).origin
   const ip = clientIp(req)

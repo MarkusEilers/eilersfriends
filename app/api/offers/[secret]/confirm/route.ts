@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
-import { getOfferBySalt, recordOfferEvent } from '@/lib/db/queries/offers'
+import { getOfferBySalt, recordOfferEvent, getSignerByDoi, listSigners } from '@/lib/db/queries/offers'
+import { finalizeOffer } from '@/lib/offer/finalize'
 
 export const runtime = 'nodejs'
 
@@ -18,6 +19,34 @@ export async function GET(req: Request, ctx: { params: Promise<{ secret: string 
 
   const offer = await getOfferBySalt(secret)
   if (!offer) return NextResponse.redirect(new URL(`/offer/${secret}?error=confirm`, req.url), 303)
+
+  // ── Bestätigung eines einzelnen Unterzeichners ───────────────────────────
+  const signer = await getSignerByDoi(token)
+  if (signer && signer.offer_id === offer.id) {
+    const ipC = clientIp(req)
+    await db.execute(sql`
+      UPDATE offer_signers SET status='signed', signed_at=now(), ip=COALESCE(${ipC}, ip), doi_token=NULL, updated_at=now()
+      WHERE id=${signer.id}`)
+    await recordOfferEvent(offer.id, 'signer_signed', signer.email, { signerId: signer.id, ip: ipC })
+
+    const all = await listSigners(offer.id)
+    const open = all.filter((s) => s.status !== 'signed')
+    if (open.length === 0) {
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? new URL(req.url).origin
+      const res = await finalizeOffer(offer.id, baseUrl)
+      if (res.checkoutUrl) return NextResponse.redirect(res.checkoutUrl, 303)
+      return NextResponse.redirect(new URL(`/offer/${secret}?accepted=1`, req.url), 303)
+    }
+    // Bei 'sequential' den Nächsten einladen
+    const order = (offer as unknown as { signing_order?: string }).signing_order ?? 'parallel'
+    if (order === 'sequential') {
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? new URL(req.url).origin
+      try {
+        await fetch(`${baseUrl}/api/admin/offers/${offer.id}/signers/send`, { method: 'POST' }).catch(() => {})
+      } catch { /* Einladung wird sonst manuell ausgelöst */ }
+    }
+    return NextResponse.redirect(new URL(`/offer/${secret}?s=${signer.sign_token}&signed=1&waiting=${open.length}`, req.url), 303)
+  }
 
   const rows = (await db.execute(sql`
     SELECT id, email, name, status FROM offer_acceptances
