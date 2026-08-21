@@ -32,6 +32,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ secret: string
   const rhythm = (form?.get('rhythm')?.toString() === 'monthly') ? 'monthly' : 'upfront'
   const amount = Number(form?.get('amount')?.toString() || '0') || 0
 
+  const baseUrl = new URL(req.url).origin
   const signerToken = form?.get('signerToken')?.toString().trim() || null
 
   // ── Mehrfach-Unterschrift: personalisierter Link ──────────────────────────
@@ -80,7 +81,6 @@ export async function POST(req: Request, ctx: { params: Promise<{ secret: string
     return NextResponse.redirect(new URL(`/offer/${secret}?s=${signerToken}&pending=1`, req.url), 303)
   }
 
-  const baseUrl = new URL(req.url).origin
   const ip = clientIp(req)
   const ts = new Date().toISOString()
   const acceptHash = createHash('sha256').update(`${offer.id}|${signedByEmail ?? ''}|${ip}|${ts}`).digest('hex').slice(0, 32)
