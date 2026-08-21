@@ -55,6 +55,7 @@ export interface OfferEditorState {
   signingOrder?: 'parallel' | 'sequential'
   signers?: SignerRow[]
   blocks?: BlockRow[]
+  guaranteeTiers?: { threshold: string; consequence: string }[]
   // Wave 3 — Zahlung & Annahme
   paymentCardEnabled?: boolean
   paymentInvoiceEnabled?: boolean
@@ -101,6 +102,7 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           sweatEquityPercent: s.sweatEquityPercent ?? null,
           customerLogoUrl: s.customerLogoUrl ?? null,
           guaranteeText: s.guaranteeText ?? null,
+          guaranteeTiers: s.guaranteeTiers ?? [],
           paymentCardEnabled: s.paymentCardEnabled ?? false,
           paymentInvoiceEnabled: s.paymentInvoiceEnabled ?? true,
           rhythmMonthlyEnabled: s.rhythmMonthlyEnabled ?? true,
