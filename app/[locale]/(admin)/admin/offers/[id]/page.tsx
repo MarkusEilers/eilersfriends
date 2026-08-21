@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { getOfferById, listSigners } from '@/lib/db/queries/offers'
+import { listBlocks as listOfferBlocks } from '@/lib/db/queries/offer-blocks'
 import { OfferEditor, type OfferEditorState, type ProgramOption } from '@/components/admin/OfferEditor'
 
 export const dynamic = 'force-dynamic'
@@ -49,10 +50,11 @@ async function listProgramsForSelect(): Promise<ProgramOption[]> {
 
 export default async function AdminOfferEditor({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const [offer, programs, signers] = await Promise.all([
+  const [offer, programs, signers, blocks] = await Promise.all([
     getOfferById(id),
     listProgramsForSelect(),
     listSigners(id).catch(() => []),
+    listOfferBlocks(id).catch(() => []),
   ])
   if (!offer) notFound()
   const full = offer as Awaited<ReturnType<typeof getOfferById>> & JsonRow
@@ -91,6 +93,7 @@ export default async function AdminOfferEditor({ params }: { params: Promise<{ i
     validUntil: full.valid_until ? new Date(full.valid_until as string).toISOString().slice(0, 10) : '',
     signingOrder: ((full.signing_order as string) === 'sequential' ? 'sequential' : 'parallel'),
     signers: signers as unknown as OfferEditorState['signers'],
+    blocks: blocks as unknown as OfferEditorState['blocks'],
   }
 
   return <OfferEditor initial={initial} accessSalt={full.access_salt} offerNumber={full.offer_number} programOptions={programs} />

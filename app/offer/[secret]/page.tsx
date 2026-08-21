@@ -23,6 +23,8 @@ import { ReadProgress } from '@/components/offer/output/ReadProgress'
 import { GuaranteeBox } from '@/components/offer/output/GuaranteeBox'
 import { AboutUsFooter } from '@/components/offer/output/AboutUsFooter'
 import { membersFromKeys } from '@/lib/offer/team'
+import { listVisibleBlocks, programSteps, type ProgramStepGroup } from '@/lib/db/queries/offer-blocks'
+import { OfferBlockView } from '@/components/offer/OfferBlocks'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -87,6 +89,16 @@ export default async function PublicOfferPage({ params, searchParams }: { params
   const teamMembers = membersFromKeys(offer.team_members).map((m) =>
     m.key === 'markus' ? { ...m, calendly: markusCalendly } : m.key === 'aljona' ? { ...m, calendly: aljonaCalendly } : m)
 
+  // Freie Inhalts-Bloecke (Trust-Bar, Checkliste, Zahlen, FAQ, Programm-Schritte …)
+  const blocks = await listVisibleBlocks(offer.id).catch(() => [])
+  const stepsByBlock: Record<string, ProgramStepGroup[]> = {}
+  for (const b of blocks) {
+    if (b.kind === 'program_steps') {
+      const pid = (b.data as { programId?: string })?.programId
+      if (pid) stepsByBlock[b.id] = await programSteps(pid).catch(() => [])
+    }
+  }
+
   // Section renderer — mirrors the backend preview. Order + enabled come from
   // offer.section_order (Drag&Drop im Editor); Fallback = Default-Reihenfolge.
   const DEFAULT_ORDER = ['understanding', 'empathy', 'newEra', 'ingredients', 'track', 'timeline', 'economic', 'pricing', 'accept']
@@ -104,10 +116,17 @@ export default async function PublicOfferPage({ params, searchParams }: { params
     enabled.splice(insertAt, 0, type)
     present.add(type)
   })
-  const sectionOrder = enabled.map((type) => ({ type }))
+  const sectionExtras: Record<string, React.ReactNode> = {}
+  // Bloecke haengen als eigene Eintraege in der Reihenfolge (block:<id>)
+  const blockOrder = blocks.map((b) => `block:${b.id}`)
+  const sectionOrder = [...enabled, ...blockOrder.filter((k) => !enabled.includes(k))].map((type) => ({ type }))
   const timelinePhases = (offer.track && offer.track.length)
     ? offer.track.map((ph) => ({ title: ph.name, description: ph.goal }))
     : (offer.programs?.[0]?.pricing ?? []).map((o) => ({ title: o.title, description: o.description }))
+  blocks.forEach((b) => {
+    sectionExtras[`block:${b.id}`] = <OfferBlockView key={b.id} block={b} programSteps={stepsByBlock[b.id]} />
+  })
+
   const sectionNodes: Record<string, React.ReactNode> = {
     understanding: offer.understanding_section ? <OfferUnderstanding key="understanding" data={offer.understanding_section} /> : null,
     empathy: offer.empathy_section ? <OfferEmpathy key="empathy" data={offer.empathy_section} /> : null,
@@ -191,7 +210,7 @@ export default async function PublicOfferPage({ params, searchParams }: { params
           heroImage={offer.hero_image_url ?? '/offer-hero.jpg'}
         />
 
-        {sectionOrder.map(({ type }) => sectionNodes[type]).filter(Boolean)}
+        {sectionOrder.map(({ type }) => sectionNodes[type] ?? sectionExtras[type]).filter(Boolean)}
 
         <AboutUsFooter members={teamMembers} customerName={offer.customer_name} offerLabel={offer.offer_number} heading={offer.team_heading} />
       </main>

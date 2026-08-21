@@ -365,3 +365,51 @@ export async function saveSignersAction(offerId: string, people: { id?: string; 
   revalidatePath(`/admin/offers/${offerId}`)
   return listSigners(offerId)
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Freie Inhalts-Blöcke + lernende FAQ-Bibliothek
+ * ────────────────────────────────────────────────────────────────────── */
+export async function listOfferBlocksAction(offerId: string) {
+  await requireAdmin()
+  const { listBlocks } = await import('@/lib/db/queries/offer-blocks')
+  return listBlocks(offerId)
+}
+
+export async function saveOfferBlocksAction(offerId: string, blocks: Array<{
+  id?: string; kind: string; title?: string | null; subtitle?: string | null
+  body?: string | null; data?: unknown; isVisible?: boolean
+}>) {
+  await requireAdmin()
+  const { replaceBlocks, learnFaqs } = await import('@/lib/db/queries/offer-blocks')
+  const saved = await replaceBlocks(offerId, blocks as never)
+  // FAQ-Blöcke schreiben ihre Fragen in die Bibliothek zurück — sie lernt mit.
+  for (const b of blocks) {
+    if (b.kind !== 'faq') continue
+    const items = ((b.data as { items?: { question: string; answer: string }[] })?.items) ?? []
+    if (items.length) await learnFaqs(items, offerId)
+  }
+  revalidatePath(`/admin/offers/${offerId}`)
+  return saved
+}
+
+export async function searchFaqLibraryAction(search?: string) {
+  await requireAdmin()
+  const { listFaqLibrary } = await import('@/lib/db/queries/offer-blocks')
+  return listFaqLibrary(search)
+}
+
+export async function listTrustLogosAction() {
+  await requireAdmin()
+  const { db } = await import('@/lib/db')
+  const { sql } = await import('drizzle-orm')
+  const res = await db.execute(sql`SELECT slug, name, src, src_bw FROM trust_logos WHERE is_visible ORDER BY "order"`)
+  return res as unknown as { slug: string; name: string; src: string | null; src_bw: string | null }[]
+}
+
+export async function listProgramsForBlocksAction() {
+  await requireAdmin()
+  const { db } = await import('@/lib/db')
+  const { sql } = await import('drizzle-orm')
+  const res = await db.execute(sql`SELECT id, name FROM programs ORDER BY name`)
+  return res as unknown as { id: string; name: string }[]
+}

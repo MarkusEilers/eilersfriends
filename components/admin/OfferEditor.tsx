@@ -11,6 +11,7 @@ import { SectionOrderEditor, DEFAULT_SECTIONS, type SectionOrderItem } from './S
 import { UNDERSTANDING_PRESETS, EMPATHY_PRESETS, GUARANTEE_PRESETS } from '@/lib/offer/presets'
 import { TEAM } from '@/lib/offer/team'
 import { SignerEditor, type SignerRow } from './SignerEditor'
+import { OfferBlockEditor, type BlockRow } from './OfferBlockEditor'
 
 interface Goal { v: string }
 interface UnderstandingData { title?: string; goals?: string[]; challenges?: string[] }
@@ -53,6 +54,7 @@ export interface OfferEditorState {
   validUntil?: string
   signingOrder?: 'parallel' | 'sequential'
   signers?: SignerRow[]
+  blocks?: BlockRow[]
   // Wave 3 — Zahlung & Annahme
   paymentCardEnabled?: boolean
   paymentInvoiceEnabled?: boolean
@@ -291,6 +293,11 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
             onChange={(v) => patch('heroImageUrl', v)}
           />
         </div>
+      </Section>
+
+      {/* Freie Inhalts-Bloecke */}
+      <Section label="Weitere Abschnitte">
+        <OfferBlockEditor offerId={s.id} initial={s.blocks ?? []} />
       </Section>
 
       {/* Unterzeichner */}
