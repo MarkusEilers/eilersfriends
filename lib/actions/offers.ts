@@ -64,6 +64,7 @@ interface UpdatePayload {
   heroImageUrl?: string | null
   validUntil?: string
   signingOrder?: 'parallel' | 'sequential'
+  hideTotal?: boolean
 }
 
 export async function updateOfferAction(id: string, payload: UpdatePayload) {

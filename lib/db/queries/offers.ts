@@ -101,6 +101,7 @@ async function ensureOfferSchema() {
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS track JSONB DEFAULT '[]'::jsonb`)  // Bausteine-Track (Phasen -> Schritte)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS team_heading   TEXT`)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS hero_image_url TEXT`)
+  await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS hide_total BOOLEAN DEFAULT false`)
   // Mehrfach-Unterschrift: parallel | sequential + gewaehlte Zahlweise (Erstunterzeichner)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS signing_order   TEXT DEFAULT 'parallel'`)
   await db.execute(sql`ALTER TABLE offers ADD COLUMN IF NOT EXISTS chosen_rhythm   TEXT`)
@@ -320,6 +321,7 @@ export interface OfferUpdate {
   teamHeading?: string | null
   heroImageUrl?: string | null
   signingOrder?: 'parallel' | 'sequential'
+  hideTotal?: boolean
 }
 
 export async function updateOffer(id: string, update: OfferUpdate): Promise<void> {
@@ -359,6 +361,7 @@ export async function updateOffer(id: string, update: OfferUpdate): Promise<void
   if (update.teamHeading !== undefined) sets.push(sql`team_heading = ${update.teamHeading}`)
   if (update.heroImageUrl !== undefined) sets.push(sql`hero_image_url = ${update.heroImageUrl}`)
   if (update.signingOrder !== undefined) sets.push(sql`signing_order = ${update.signingOrder}`)
+  if (update.hideTotal !== undefined) sets.push(sql`hide_total = ${update.hideTotal}`)
   if (!sets.length) return
   sets.push(sql`updated_at = now()`)
   const joined = sql.join(sets, sql`, `)

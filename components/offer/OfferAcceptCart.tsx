@@ -26,7 +26,7 @@ export function OfferAcceptCart({
   rhythmUpfrontEnabled, rhythmMonthlyEnabled,
   upfrontDiscountPct, customerName, customerEmail, noticeDomain,
   signerToken = null, signerName = null, signerStatus = null,
-  signers = [], lockedRhythm = null, lockedMethod = null,
+  signers = [], lockedRhythm = null, lockedMethod = null, hideTotal = false,
 }: {
   offerSecret: string
   status: string
@@ -44,6 +44,7 @@ export function OfferAcceptCart({
   signers?: { name: string; status: string }[]
   lockedRhythm?: string | null
   lockedMethod?: string | null
+  hideTotal?: boolean
   noticeDomain?: boolean
 }) {
   const option = useMemo<PricingOption | null>(() => {
@@ -155,7 +156,7 @@ export function OfferAcceptCart({
                       {isMonthly && <span className="text-sm font-normal" style={{ color: '#6B7280' }}> / Monat</span>}
                     </p>
                     <p className="mt-1 text-xs" style={{ color: '#6B7280' }}>
-                      {isMonthly ? `Gesamt ${eur(totalMonthly)} über ${duration} Monate` : (discount > 0 ? `${discount}% Rabatt · einmalig statt ${eur(totalMonthly)}` : 'einmalig')}
+                      {isMonthly ? (hideTotal ? `Laufzeit ${duration} Monate` : `Gesamt ${eur(totalMonthly)} über ${duration} Monate`) : (discount > 0 && !hideTotal ? `${discount}% Rabatt · einmalig statt ${eur(totalMonthly)}` : 'einmalig')}
                     </p>
                   </button>
                 )
@@ -190,10 +191,20 @@ export function OfferAcceptCart({
             <span className="text-sm" style={{ color: INK }}>{programs[0]?.title ?? option.title}</span>
             <span className="text-sm" style={{ color: '#6B7280' }}>{rhythm === 'monthly' ? `${eur(monthlyRate)} / Monat · ${duration} Mon.` : `${eur(upfrontTotal)} einmalig`}</span>
           </div>
-          <div className="mt-2 flex items-baseline justify-between border-t border-gray-100 pt-3">
-            <span className="text-sm font-semibold" style={{ color: INK }}>Gesamt {method === 'invoice' ? '(Rechnung)' : '(Kreditkarte)'}</span>
-            <span className="text-2xl font-bold" style={{ color: INK }}>{eur(chosenTotal)}</span>
-          </div>
+          {!(hideTotal && rhythm === 'monthly') && (
+            <div className="mt-2 flex items-baseline justify-between border-t border-gray-100 pt-3">
+              <span className="text-sm font-semibold" style={{ color: INK }}>
+                {hideTotal ? 'Monatlich' : 'Gesamt'} {method === 'invoice' ? '(Rechnung)' : '(Kreditkarte)'}
+              </span>
+              <span className="text-2xl font-bold" style={{ color: INK }}>{eur(hideTotal ? monthlyRate : chosenTotal)}</span>
+            </div>
+          )}
+          {hideTotal && rhythm === 'monthly' && (
+            <div className="mt-2 flex items-baseline justify-between border-t border-gray-100 pt-3">
+              <span className="text-sm font-semibold" style={{ color: INK }}>Monatlich {method === 'invoice' ? '(Rechnung)' : '(Kreditkarte)'}</span>
+              <span className="text-2xl font-bold" style={{ color: INK }}>{eur(monthlyRate)}</span>
+            </div>
+          )}
           <p className="mt-2 text-xs" style={{ color: '#9CA3AF' }}>zuzüglich der gesetzlichen Umsatzsteuer (derzeit 19&nbsp;%)</p>
         </div>
 

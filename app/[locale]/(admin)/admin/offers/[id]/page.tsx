@@ -95,6 +95,7 @@ export default async function AdminOfferEditor({ params }: { params: Promise<{ i
     signers: signers as unknown as OfferEditorState['signers'],
     blocks: blocks as unknown as OfferEditorState['blocks'],
     guaranteeTiers: (full.guarantee_tiers as OfferEditorState['guaranteeTiers']) ?? [],
+    hideTotal: (full.hide_total as boolean | null) ?? false,
   }
 
   return <OfferEditor initial={initial} accessSalt={full.access_salt} offerNumber={full.offer_number} programOptions={programs} />

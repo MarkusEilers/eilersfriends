@@ -46,6 +46,7 @@ interface OfferFull {
   economic_results: EconomicResult[] | null
   guarantee_text?: string | null
   guarantee_tiers?: { threshold: string; consequence: string }[] | null
+  hide_total?: boolean | null
   valid_from: string
   valid_until: string
   status: string
@@ -137,7 +138,7 @@ export default async function PublicOfferPage({ params, searchParams }: { params
     timeline: timelinePhases.length ? <OfferTimeline key="timeline" phases={timelinePhases} /> : null,
     economic: offer.economic_results && offer.economic_results.length > 0 ? <OfferEconomicResults key="economic" results={offer.economic_results} /> : null,
     pricing: (offer.programs && offer.programs.length > 0)
-      ? <div key="pricing"><GuaranteeBox text={offer.guarantee_text ?? undefined} tiers={offer.guarantee_tiers ?? []} /><OfferPricing programs={offer.programs} selectedOption={offer.selected_pricing_option} /></div>
+      ? <div key="pricing"><GuaranteeBox text={offer.guarantee_text ?? undefined} tiers={offer.guarantee_tiers ?? []} /><OfferPricing programs={offer.programs} selectedOption={offer.selected_pricing_option} hideTotal={offer.hide_total ?? false} /></div>
       : null,
     accept: sp?.pending ? (
       <section key="accept" className="px-6 py-20" style={{ backgroundColor: '#0F1E3A' }}>
@@ -167,6 +168,7 @@ export default async function PublicOfferPage({ params, searchParams }: { params
       rhythmUpfrontEnabled={offer.rhythm_upfront_enabled ?? true}
       rhythmMonthlyEnabled={offer.rhythm_monthly_enabled ?? true}
       upfrontDiscountPct={offer.upfront_discount_pct != null ? Number(offer.upfront_discount_pct) : 0}
+      hideTotal={offer.hide_total ?? false}
       customerName={offer.customer_name}
       customerEmail={offer.customer_email}
     />),

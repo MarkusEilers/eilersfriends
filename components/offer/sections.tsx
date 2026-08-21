@@ -163,10 +163,12 @@ export function OfferEconomicResults({ results }: { results: EconomicResult[] })
 
 // ─── 5. Pricing ─────────────────────────────────────────────────────────────
 export function OfferPricing({
-  programs, selectedOption,
+  programs, selectedOption, hideTotal = false,
 }: {
   programs: ProgramSummary[]
   selectedOption?: string | null
+  /** Nur die monatliche Rate zeigen — keine Gesamtsumme. */
+  hideTotal?: boolean
 }) {
   const allOptions = programs.flatMap((p) => (p.pricing ?? []).map((o) => ({ ...o, programTitle: p.title })))
   if (!allOptions.length) return null
@@ -224,7 +226,7 @@ export function OfferPricing({
                 </div>
                 {opt.monthlyDuration && opt.monthlyDuration > 1 && (
                   <p className="mt-1 text-xs" style={{ color: '#6B7280' }}>
-                    Gesamt: €{total.toLocaleString('de-DE')} über {opt.monthlyDuration} Monate
+                    {hideTotal ? `Laufzeit ${opt.monthlyDuration} Monate` : `Gesamt: €${total.toLocaleString('de-DE')} über ${opt.monthlyDuration} Monate`}
                   </p>
                 )}
                 <p className="mt-1 text-xs" style={{ color: '#9CA3AF' }}>

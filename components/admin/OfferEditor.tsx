@@ -56,6 +56,7 @@ export interface OfferEditorState {
   signers?: SignerRow[]
   blocks?: BlockRow[]
   guaranteeTiers?: { threshold: string; consequence: string }[]
+  hideTotal?: boolean
   // Wave 3 — Zahlung & Annahme
   paymentCardEnabled?: boolean
   paymentInvoiceEnabled?: boolean
@@ -103,6 +104,7 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           customerLogoUrl: s.customerLogoUrl ?? null,
           guaranteeText: s.guaranteeText ?? null,
           guaranteeTiers: s.guaranteeTiers ?? [],
+          hideTotal: s.hideTotal ?? false,
           paymentCardEnabled: s.paymentCardEnabled ?? false,
           paymentInvoiceEnabled: s.paymentInvoiceEnabled ?? true,
           rhythmMonthlyEnabled: s.rhythmMonthlyEnabled ?? true,
@@ -490,6 +492,12 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
 
       {/* Pricing */}
       <Section label="Preise · DIY · DWY · DFY" onSuggest={() => suggest('pricing')} suggesting={suggesting === 'pricing'}>
+        <label className="mb-3 flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
+          <input type="checkbox" checked={s.hideTotal ?? false} className="h-4 w-4"
+            onChange={(e) => patch('hideTotal', e.target.checked)} />
+          <span className="font-semibold text-gray-800">Nur monatliche Kosten zeigen</span>
+          <span className="text-xs text-gray-400">keine Gesamtsumme im Angebot und im Warenkorb</span>
+        </label>
         <PricingEditor programs={s.programs} onChange={(arr) => patch('programs', arr)} />
       </Section>
 
