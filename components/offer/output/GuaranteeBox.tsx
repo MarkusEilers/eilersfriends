@@ -3,7 +3,9 @@ import { Shield } from 'lucide-react'
 /**
  * Garantie-Box vor Pricing — "Whatever it takes". Niemand-bleibt-allein.
  */
-export function GuaranteeBox({ text }: { text?: string }) {
+export interface GuaranteeTier { threshold: string; consequence: string }
+
+export function GuaranteeBox({ text, tiers = [] }: { text?: string; tiers?: GuaranteeTier[] }) {
   const body = text?.trim() || 'Wir bleiben dabei, bis es funktioniert. Wenn unser Programm nicht den Mehrwert liefert, den wir Euch versprechen, machen wir weiter — auf unseren Kosten. Whatever it takes.'
   return (
     <section className="px-6 py-16" style={{ backgroundColor: '#FAFAF8' }}>
@@ -33,6 +35,16 @@ export function GuaranteeBox({ text }: { text?: string }) {
               <p className="mt-3 text-base leading-relaxed" style={{ color: '#374151' }}>
                 {body}
               </p>
+              {tiers.length > 0 && (
+                <div className="mt-5 overflow-hidden rounded-2xl border" style={{ borderColor: '#BBCFF5', backgroundColor: '#fff' }}>
+                  {tiers.map((t, i) => (
+                    <div key={i} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b px-4 py-3 last:border-0" style={{ borderColor: '#EBF1FF' }}>
+                      <span className="text-sm font-semibold" style={{ color: '#0D0D0B' }}>{t.threshold}</span>
+                      <span className="text-sm" style={{ color: '#374151' }}>{t.consequence}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

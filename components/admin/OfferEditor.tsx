@@ -302,6 +302,10 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
 
       {/* Unterzeichner */}
       <Section label="Unterschriften">
+        <a href={`/admin/offers/${s.id}/audit`}
+          className="mb-3 inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50">
+          Beweiskette und Archiv ansehen
+        </a>
         <SignerEditor
           offerId={s.id}
           accessSalt={accessSalt}
@@ -460,6 +464,26 @@ export function OfferEditor({ initial, accessSalt, offerNumber, programOptions =
           onChange={(e) => patch('guaranteeText', e.target.value)}
           className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-300"
         />
+
+        <div className="mt-4">
+          <p className="mb-2 text-[10px] uppercase tracking-widest text-gray-400">Garantie-Staffel (optional)</p>
+          <div className="space-y-1.5">
+            {(s.guaranteeTiers ?? []).map((t, i) => (
+              <div key={i} className="flex gap-1.5">
+                <input value={t.threshold} onChange={(e) => {
+                  const a = [...(s.guaranteeTiers ?? [])]; a[i] = { ...t, threshold: e.target.value }; patch('guaranteeTiers', a)
+                }} placeholder="Schwelle, z.B. Unter 70 % des Ziels" className="w-64 rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm outline-none focus:border-blue-300" />
+                <input value={t.consequence} onChange={(e) => {
+                  const a = [...(s.guaranteeTiers ?? [])]; a[i] = { ...t, consequence: e.target.value }; patch('guaranteeTiers', a)
+                }} placeholder="Folge, z.B. halber Preis" className="min-w-0 flex-1 rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm outline-none focus:border-blue-300" />
+                <button type="button" onClick={() => patch('guaranteeTiers', (s.guaranteeTiers ?? []).filter((_, j) => j !== i))}
+                  className="rounded-lg border border-red-200 bg-white px-2 text-red-600"><X size={13} /></button>
+              </div>
+            ))}
+          </div>
+          <button type="button" onClick={() => patch('guaranteeTiers', [...(s.guaranteeTiers ?? []), { threshold: '', consequence: '' }])}
+            className="mt-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-semibold text-gray-600">+ Stufe</button>
+        </div>
       </Section>
 
       {/* Pricing */}

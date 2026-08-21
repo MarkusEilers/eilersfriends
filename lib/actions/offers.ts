@@ -51,6 +51,7 @@ interface UpdatePayload {
   customerLogoUrl?: string | null
   customerLogoUrlBw?: string | null
   guaranteeText?: string | null
+  guaranteeTiers?: { threshold: string; consequence: string }[]
   // Wave 3
   paymentCardEnabled?: boolean
   paymentInvoiceEnabled?: boolean

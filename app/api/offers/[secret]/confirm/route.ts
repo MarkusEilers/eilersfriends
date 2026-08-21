@@ -3,6 +3,7 @@ import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { getOfferBySalt, recordOfferEvent, getSignerByDoi, listSigners } from '@/lib/db/queries/offers'
 import { finalizeOffer } from '@/lib/offer/finalize'
+import { appendAudit } from '@/lib/offer/audit'
 
 export const runtime = 'nodejs'
 
@@ -28,6 +29,11 @@ export async function GET(req: Request, ctx: { params: Promise<{ secret: string 
       UPDATE offer_signers SET status='signed', signed_at=now(), ip=COALESCE(${ipC}, ip), doi_token=NULL, updated_at=now()
       WHERE id=${signer.id}`)
     await recordOfferEvent(offer.id, 'signer_signed', signer.email, { signerId: signer.id, ip: ipC })
+    await appendAudit({
+      offerId: offer.id, signerId: signer.id, event: 'signed',
+      actorName: signer.name, actorEmail: signer.email, ip: ipC,
+      userAgent: req.headers.get('user-agent'), payload: { confirmedVia: 'doi-link', acceptHash: signer.accept_hash },
+    })
 
     const all = await listSigners(offer.id)
     const open = all.filter((s) => s.status !== 'signed')

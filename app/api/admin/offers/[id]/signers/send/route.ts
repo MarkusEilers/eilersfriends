@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
 import { getOfferById, listSigners, pendingSigners, recordOfferEvent } from '@/lib/db/queries/offers'
 import { sendEmail } from '@/lib/email/resend'
+import { appendAudit } from '@/lib/offer/audit'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -51,6 +52,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
       })
       await db.execute(sql`UPDATE offer_signers SET status = CASE WHEN status='pending' THEN 'invited' ELSE status END, invited_at = now(), updated_at = now() WHERE id = ${s.id}`)
       await recordOfferEvent(id, 'signer_invited', s.email, { signerId: s.id })
+      await appendAudit({ offerId: id, signerId: s.id, event: 'invited', actorName: s.name, actorEmail: s.email, payload: { order } })
       sent++
     } catch (err) {
       await recordOfferEvent(id, 'signer_invite_failed', s.email, { error: err instanceof Error ? err.message : 'mail_error' })

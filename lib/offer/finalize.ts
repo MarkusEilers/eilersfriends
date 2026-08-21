@@ -3,6 +3,8 @@ import { db } from '@/lib/db'
 import { getOfferById, listSigners, recordOfferEvent } from '@/lib/db/queries/offers'
 import { getStripe } from '@/lib/stripe'
 import { sendEmail } from '@/lib/email/resend'
+import { appendAudit, listAudit, verifyChain, saveArchive, sha256 } from './audit'
+import { buildCertificatePdf } from './certificate'
 
 interface PricingOption { type?: string; title?: string; price?: number; monthlyDuration?: number; recommended?: boolean }
 
@@ -28,6 +30,50 @@ export async function finalizeOffer(offerId: string, baseUrl: string): Promise<{
     WHERE id=${offerId} AND status <> 'paid'
   `)
   await recordOfferEvent(offerId, 'signed', emails[0] ?? null, { signers: signers.length, names })
+
+  // ── Beweiskette abschliessen, Inhalt einfrieren, PDF archivieren ────────
+  await appendAudit({
+    offerId, event: 'finalized', actorName: names, actorEmail: emails[0] ?? null,
+    payload: { method, rhythm, amount, signers: signers.map((s) => ({ name: s.name, email: s.email, signedAt: s.signed_at, ip: s.ip })) },
+  })
+  const chain = await verifyChain(offerId)
+  const audit = await listAudit(offerId)
+  const snapshot = {
+    offer_number: o.offer_number, title: o.title, subtitle: o.subtitle,
+    customer_name: o.customer_name, customer_company: o.customer_company,
+    understanding_section: o.understanding_section, empathy_section: o.empathy_section,
+    programs: o.programs, economic_results: o.economic_results, track: o.track,
+    guarantee_text: o.guarantee_text, guarantee_tiers: o.guarantee_tiers,
+    chosen_method: method, chosen_rhythm: rhythm, chosen_amount: amount,
+    frozen_at: new Date().toISOString(),
+  }
+  try {
+    const pdfBytes = await buildCertificatePdf({
+      offerNumber: String(o.offer_number),
+      title: String(o.title ?? ''),
+      customer: String(o.customer_company || o.customer_name || ''),
+      amountLabel: amount ? `${amount.toLocaleString('de-DE')} EUR (${rhythm === 'monthly' ? 'monatlich' : 'einmalig'})` : undefined,
+      signers: signers.map((s) => ({ name: s.name, email: s.email, signedAt: s.signed_at, ip: s.ip, hash: s.accept_hash })),
+      audit, chainHead: chain.head,
+    })
+    const buf = Buffer.from(pdfBytes)
+    const digest = sha256(buf)
+    let url: string | null = null
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+    if (blobToken) {
+      const { put } = await import('@vercel/blob')
+      const blob = await put(`offers/${String(o.offer_number)}-${digest.slice(0, 12)}.pdf`, buf, {
+        access: 'public', contentType: 'application/pdf', token: blobToken,
+      })
+      url = blob.url
+    }
+    await saveArchive({ offerId, url, sha256: digest, byteSize: buf.length, snapshot, chainHead: chain.head ?? null })
+    await recordOfferEvent(offerId, 'archived', emails[0] ?? null, { sha256: digest, url, chainOk: chain.ok })
+  } catch (err) {
+    // Archivierung darf den Abschluss nicht blockieren — Snapshot trotzdem sichern.
+    await saveArchive({ offerId, kind: 'snapshot_only', url: null, sha256: sha256(JSON.stringify(snapshot)), snapshot, chainHead: chain.head ?? null }).catch(() => {})
+    await recordOfferEvent(offerId, 'archive_failed', emails[0] ?? null, { error: err instanceof Error ? err.message : 'pdf_error' })
+  }
 
   const method = String(o.chosen_method ?? 'invoice')
   const rhythm = String(o.chosen_rhythm ?? 'upfront')

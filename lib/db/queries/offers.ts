@@ -308,6 +308,7 @@ export interface OfferUpdate {
   customerLogoUrl?: string | null
   customerLogoUrlBw?: string | null
   guaranteeText?: string | null
+  guaranteeTiers?: { threshold: string; consequence: string }[]
   // Wave 3 — Zahlarten/Rhythmen für Angebots-Annahme
   paymentCardEnabled?: boolean
   paymentInvoiceEnabled?: boolean
@@ -347,6 +348,7 @@ export async function updateOffer(id: string, update: OfferUpdate): Promise<void
   if (update.customerLogoUrl !== undefined) sets.push(sql`customer_logo_url = ${update.customerLogoUrl}`)
   if (update.customerLogoUrlBw !== undefined) sets.push(sql`customer_logo_url_bw = ${update.customerLogoUrlBw}`)
   if (update.guaranteeText !== undefined) sets.push(sql`guarantee_text = ${update.guaranteeText}`)
+  if (update.guaranteeTiers !== undefined) sets.push(sql`guarantee_tiers = ${JSON.stringify(update.guaranteeTiers)}::jsonb`)
   if (update.paymentCardEnabled !== undefined) sets.push(sql`payment_card_enabled = ${update.paymentCardEnabled}`)
   if (update.paymentInvoiceEnabled !== undefined) sets.push(sql`payment_invoice_enabled = ${update.paymentInvoiceEnabled}`)
   if (update.rhythmMonthlyEnabled !== undefined) sets.push(sql`rhythm_monthly_enabled = ${update.rhythmMonthlyEnabled}`)

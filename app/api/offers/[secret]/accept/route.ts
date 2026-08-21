@@ -5,6 +5,7 @@ import { db } from '@/lib/db'
 import { getOfferBySalt, recordOfferEvent, getSignerByToken, listSigners } from '@/lib/db/queries/offers'
 import { getStripe } from '@/lib/stripe'
 import { sendEmail } from '@/lib/email/resend'
+import { appendAudit } from '@/lib/offer/audit'
 
 export const runtime = 'nodejs'
 
@@ -61,6 +62,11 @@ export async function POST(req: Request, ctx: { params: Promise<{ secret: string
         ip=${ipS}, user_agent=${req.headers.get('user-agent')}, accept_hash=${hashS}, updated_at=now()
       WHERE id=${signer.id}`)
     await recordOfferEvent(offer.id, 'signer_submitted', signer.email, { signerId: signer.id })
+    await appendAudit({
+      offerId: offer.id, signerId: signer.id, event: 'submitted',
+      actorName: signer.name, actorEmail: signer.email, ip: ipS,
+      userAgent: req.headers.get('user-agent'), payload: { method, rhythm, amount, hash: hashS },
+    })
 
     const confirmUrl = `${baseUrl}/api/offers/${secret}/confirm?token=${doi}`
     try {
