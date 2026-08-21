@@ -31,6 +31,9 @@ export async function finalizeOffer(offerId: string, baseUrl: string): Promise<{
   `)
   await recordOfferEvent(offerId, 'signed', emails[0] ?? null, { signers: signers.length, names })
 
+  const method = String(o.chosen_method ?? 'invoice')
+  const rhythm = String(o.chosen_rhythm ?? 'upfront')
+  const amount = Number(o.chosen_amount ?? 0) || 0
   // ── Beweiskette abschliessen, Inhalt einfrieren, PDF archivieren ────────
   await appendAudit({
     offerId, event: 'finalized', actorName: names, actorEmail: emails[0] ?? null,
@@ -75,9 +78,7 @@ export async function finalizeOffer(offerId: string, baseUrl: string): Promise<{
     await recordOfferEvent(offerId, 'archive_failed', emails[0] ?? null, { error: err instanceof Error ? err.message : 'pdf_error' })
   }
 
-  const method = String(o.chosen_method ?? 'invoice')
-  const rhythm = String(o.chosen_rhythm ?? 'upfront')
-  const amount = Number(o.chosen_amount ?? 0) || 0
+
 
   // Alle Beteiligten informieren
   for (const s of signers) {
