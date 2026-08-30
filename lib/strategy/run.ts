@@ -1,6 +1,7 @@
 import { assemble } from './prompt'
 import { putFacts, type FactInput } from './facts'
 import { noteTemplateUse } from './templates'
+import { recordUsage } from './usage'
 import { logAiRun } from '@/lib/db/queries/strategy'
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
@@ -113,6 +114,14 @@ export async function runAgent(input: {
   }).catch(() => undefined)
 
   await noteTemplateUse(asm.usedTemplates.map((t) => t.id)).catch(() => {})
+
+  // Verbrauch aufs Kundenkonto buchen — Kosten aus der Preistabelle, Betrag mit Aufschlag.
+  await recordUsage({
+    companyId: input.companyId, productId: input.productId ?? null,
+    action: `${input.stepKey} · ${input.agentKey}`, agentKey: input.agentKey, model: asm.model,
+    tokensIn: data.usage?.prompt_tokens ?? 0, tokensOut: data.usage?.completion_tokens ?? 0,
+    aiRunId: runId ?? null,
+  }).catch(() => {})
 
   // Nur Fakten-Prompts füttern das Datenmodell. Kritik und Voice-Check legen
   // Befunde ab, das Sounding Board speichert nichts.
