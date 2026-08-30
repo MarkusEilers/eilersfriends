@@ -34,7 +34,7 @@ export async function ensureUsageSchema() {
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS billing_settings (
       company_id       UUID PRIMARY KEY REFERENCES companies(id) ON DELETE CASCADE,
-      markup_factor    NUMERIC(6,2) NOT NULL DEFAULT 3.0,
+      markup_factor    NUMERIC(6,2) NOT NULL DEFAULT 10.0,
       base_fee_monthly NUMERIC(10,2) NOT NULL DEFAULT 0,
       currency         TEXT NOT NULL DEFAULT 'EUR',
       mode             TEXT NOT NULL DEFAULT 'prepaid',   -- prepaid | postpaid
@@ -119,7 +119,7 @@ export async function recordUsage(input: {
     ? (input.tokensIn / 1_000_000) * price.input_per_1m + (input.tokensOut / 1_000_000) * price.output_per_1m
     : 0
   const s = await settingsFor(input.companyId)
-  const amount = -(cost * (s?.markup_factor ?? 3))
+  const amount = -(cost * (s?.markup_factor ?? 10))
   const balance = (await balanceOf(input.companyId)) + amount
 
   await db.execute(sql`
@@ -127,7 +127,7 @@ export async function recordUsage(input: {
       tokens_in, tokens_out, cost_eur, amount_eur, markup_factor, balance_after, ai_run_id)
     VALUES (${input.companyId}, ${input.productId ?? null}, ${at.toISOString()}, 'usage', ${input.action},
       ${input.agentKey ?? null}, ${input.model}, ${input.tokensIn}, ${input.tokensOut},
-      ${cost}, ${amount}, ${s?.markup_factor ?? 3}, ${balance}, ${input.aiRunId ?? null})`)
+      ${cost}, ${amount}, ${s?.markup_factor ?? 10}, ${balance}, ${input.aiRunId ?? null})`)
   return { costEur: cost, amountEur: amount, balance }
 }
 
