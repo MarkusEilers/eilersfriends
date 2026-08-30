@@ -149,3 +149,54 @@ export async function factHistory(companyId: string, key: string, productId?: st
     ORDER BY version DESC`)
   return res as unknown as Fact[]
 }
+
+/**
+ * Einzelne Einträge innerhalb eines Listen-Fakts bestätigen oder verwerfen.
+ *
+ * Pains und Gains kommen als Liste. Jeder Eintrag trägt eine eigene Konfidenz —
+ * der Kunde bestätigt einzeln, nicht das ganze Bündel. Erst wenn mindestens ein
+ * Eintrag bestätigt ist, gilt der Fakt insgesamt als bestätigt.
+ */
+export async function setFactItemStatus(input: {
+  factId: string; index: number; status: 'confirmed' | 'rejected'; userId?: string | null
+}) {
+  await ensureFactSchema()
+  const res = await db.execute(sql`SELECT value FROM strategy_facts WHERE id = ${input.factId} LIMIT 1`)
+  const row = (res as unknown as { value: unknown }[])[0]
+  if (!row || !Array.isArray(row.value)) throw new Error('Fakt ist keine Liste')
+
+  const items = [...(row.value as Record<string, unknown>[])]
+  if (!items[input.index]) throw new Error('Eintrag nicht gefunden')
+  items[input.index] = {
+    ...items[input.index],
+    status: input.status,
+    confidence: input.status === 'confirmed' ? 1 : 0,
+    reviewed_at: new Date().toISOString(),
+  }
+
+  const anyConfirmed = items.some((i) => i.status === 'confirmed')
+  await db.execute(sql`
+    UPDATE strategy_facts
+    SET value = ${JSON.stringify(items)}::jsonb,
+        status = ${anyConfirmed ? 'confirmed' : 'draft'},
+        created_by = COALESCE(${input.userId ?? null}, created_by),
+        updated_at = now()
+    WHERE id = ${input.factId}`)
+  return items[input.index]
+}
+
+/** Einträge eines Listen-Fakts, die noch auf Bestätigung warten. */
+export async function pendingItems(companyId: string, productId?: string | null) {
+  await ensureFactSchema()
+  const rows = await getFacts(companyId, productId)
+  const out: Array<{ factId: string; key: string; index: number; item: Record<string, unknown> }> = []
+  for (const f of rows) {
+    if (!Array.isArray(f.value)) continue
+    ;(f.value as Record<string, unknown>[]).forEach((item, index) => {
+      if (item?.status !== 'confirmed' && item?.status !== 'rejected') {
+        out.push({ factId: f.id, key: f.key, index, item })
+      }
+    })
+  }
+  return out
+}
