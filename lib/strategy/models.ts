@@ -15,12 +15,14 @@ export type ModelRole =
   | 'voice_check'    // prüft Stimm-Konsistenz gegen Charta und Verbotsliste
 
 export const ROLE_MODEL: Record<ModelRole, string> = {
-  strategie: 'gpt-5.5',
-  copy: 'gpt-5.5',
-  recherche: 'gpt-5.5',
-  sounding_board: 'gpt-5.5',
-  kritik: 'gpt-5.5',
-  voice_check: 'gpt-5.5',
+  strategie: 'gpt-4.1',
+  copy: 'gpt-4.1',
+  // Recherche bekommt das Material vorbereitet übergeben — der Agent sammelt
+  // und belegt, er sucht nicht selbst. Deshalb reicht dasselbe Modell.
+  recherche: 'gpt-4.1',
+  sounding_board: 'gpt-4.1',
+  kritik: 'gpt-4.1',
+  voice_check: 'gpt-4.1',
 }
 
 export const ROLE_LABEL: Record<ModelRole, string> = {
