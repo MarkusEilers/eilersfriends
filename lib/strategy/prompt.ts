@@ -4,6 +4,7 @@ import { ensureFactSchema } from './schema'
 import { factMap, listFactKeys } from './facts'
 import { forStep, renderTemplates, type StrategyTemplate } from './templates'
 import { resolveModel, ROLE_DEFAULT_KIND, type ModelRole, type PromptKind } from './models'
+import { splitForPrompt, titleOf, visibleItems, type FactItem } from './items'
 
 export interface PromptRow {
   id: string; agent_key: string; version: number
@@ -63,17 +64,54 @@ export function renderTemplateString(str: string, facts: Record<string, unknown>
   })
 }
 
+/** Verworfene Einträge gehören nicht in den Brief — nur in die Negativliste. */
+function renderValue(v: unknown): string {
+  if (typeof v === 'string') return v
+  if (Array.isArray(v)) return JSON.stringify(visibleItems(v), null, 2)
+  return JSON.stringify(v, null, 2)
+}
+
 /** Die Fakten als lesbarer Brief — das, was wir über diesen Kunden wissen. */
 export function renderFactBrief(facts: Record<string, unknown>, labels: Record<string, string>): string {
   const keys = Object.keys(facts)
   if (!keys.length) return 'Zu diesem Kunden liegen noch keine gesicherten Angaben vor.'
-  const lines = keys.map((k) => {
-    const v = facts[k]
-    const label = labels[k] ?? k
-    const text = typeof v === 'string' ? v : JSON.stringify(v, null, 2)
-    return `**${label}** (${k})\n${text}`
-  })
+  const lines = keys.map((k) => `**${labels[k] ?? k}** (${k})\n${renderValue(facts[k])}`)
   return lines.join('\n\n')
+}
+
+function bullets(items: FactItem[]): string {
+  return items.map((i) => `- ${titleOf(i)}`).join('\n')
+}
+
+/**
+ * Was zu den Schlüsseln, die dieser Agent schreibt, bereits entschieden ist.
+ *
+ * Ohne diesen Block fängt jeder Lauf bei null an: er formuliert Bestätigtes neu
+ * und schlägt Verworfenes wieder vor. Beides lässt das System dumm wirken.
+ */
+export function renderDecided(facts: Record<string, unknown>, labels: Record<string, string>): string {
+  const parts: string[] = []
+  for (const [key, value] of Object.entries(facts)) {
+    if (!Array.isArray(value)) continue
+    const { settled, rejected } = splitForPrompt(value)
+    if (!settled.length && !rejected.length) continue
+    const label = labels[key] ?? key
+    const block: string[] = [`### ${label} (${key})`]
+    if (settled.length) {
+      block.push(
+        'Diese Punkte stehen — vom Kunden gesetzt oder bestätigt. Wiederhole sie nicht und formuliere sie nicht um. Ergänze, was daneben fehlt. Wenn Du einen davon für falsch hältst, sag es einmal und begründe es.',
+        bullets(settled),
+      )
+    }
+    if (rejected.length) {
+      block.push(
+        'Diese Punkte hat der Kunde verworfen. Schlage sie nicht erneut vor — auch nicht anders formuliert.',
+        bullets(rejected),
+      )
+    }
+    parts.push(block.join('\n'))
+  }
+  return parts.join('\n\n')
 }
 
 export interface AssembledPrompt {
@@ -113,6 +151,10 @@ export async function assemble(input: {
   const templates = await forStep(input.stepKey, { tags: p.template_tags, companyId: input.companyId })
   const templateBlock = renderTemplates(templates)
 
+  // Auch die Schlüssel laden, die dieser Agent schreibt — für den Entschieden-Block.
+  const produced = await factMap(input.companyId, input.productId, p.produces?.length ? p.produces : undefined)
+  const decided = renderDecided(produced, labels)
+
   const brief = renderFactBrief(facts, labels)
   const task = p.user_template ? renderTemplateString(p.user_template, facts) : 'Erarbeite das Ergebnis für diesen Schritt.'
 
@@ -148,6 +190,7 @@ export async function assemble(input: {
     '## Was wir über diesen Kunden wissen',
     brief,
     missing.length ? `\n## Noch offen\nZu diesen Punkten liegt nichts vor: ${missing.join(', ')}. Arbeite ohne sie und kennzeichne, wo sie fehlen.` : '',
+    decided ? `\n## Dazu ist schon entschieden\n${decided}` : '',
     templateBlock ? `\n## Orientierung\n${templateBlock}` : '',
     `\n## Auftrag\n${task}`,
     input.extraInstruction ? `\n## Zusätzlich\n${input.extraInstruction}` : '',

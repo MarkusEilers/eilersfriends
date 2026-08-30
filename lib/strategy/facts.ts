@@ -2,6 +2,7 @@ import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { ensureFactSchema } from './schema'
 import { AUTO_CONFIRM_THRESHOLD } from './models'
+import { mergeItems, normalizeItems, type FactItem, type ItemOrigin } from './items'
 
 export interface FactKey {
   key: string; label: string; scope: 'company' | 'product'
@@ -88,11 +89,20 @@ export async function putFacts(input: {
     if (status === 'draft') drafts++
 
     const prevRes = await db.execute(sql`
-      SELECT id, version FROM strategy_facts
+      SELECT id, version, value FROM strategy_facts
       WHERE company_id = ${input.companyId} AND key = ${f.key}
         AND product_id IS NOT DISTINCT FROM ${input.productId ?? null}::uuid
         AND is_current LIMIT 1`)
-    const prev = (prevRes as unknown as { id: string; version: number }[])[0]
+    const prev = (prevRes as unknown as { id: string; version: number; value: unknown }[])[0]
+
+    // Listen werden zusammengefuehrt, nicht ersetzt: was der Kunde ergaenzt,
+    // bestaetigt oder verworfen hat, ueberlebt jeden weiteren Agent-Lauf.
+    let value = f.value
+    if (Array.isArray(value)) {
+      value = prev && Array.isArray(prev.value)
+        ? mergeItems(prev.value, value, source as ItemOrigin).items
+        : normalizeItems(value, source as ItemOrigin)
+    }
 
     if (prev) {
       await db.execute(sql`UPDATE strategy_facts SET is_current = false, updated_at = now() WHERE id = ${prev.id}`)
@@ -100,7 +110,7 @@ export async function putFacts(input: {
     await db.execute(sql`
       INSERT INTO strategy_facts (company_id, product_id, key, value, source, source_step_id, source_block_id,
                                   ai_run_id, evidence, confidence, status, version, supersedes_id, created_by)
-      VALUES (${input.companyId}, ${input.productId ?? null}, ${f.key}, ${JSON.stringify(f.value)}::jsonb,
+      VALUES (${input.companyId}, ${input.productId ?? null}, ${f.key}, ${JSON.stringify(value)}::jsonb,
               ${source}, ${input.stepId ?? null}, ${input.blockId ?? null}, ${input.aiRunId ?? null},
               ${f.evidence ?? null}, ${confidence}, ${status}, ${(prev?.version ?? 0) + 1},
               ${prev?.id ?? null}, ${input.userId ?? null})`)
@@ -199,4 +209,37 @@ export async function pendingItems(companyId: string, productId?: string | null)
     })
   }
   return out
+}
+
+/**
+ * Eigene Eintraege des Kunden an einen Listen-Fakt anhaengen.
+ *
+ * Sie gelten sofort als bestaetigt — der Kunde weiss Dinge ueber seine Kunden,
+ * die in keinem Forum stehen. Belegart ist 'kundenwissen'.
+ */
+export async function addUserItems(input: {
+  companyId: string; productId?: string | null; key: string
+  items: FactItem[]; userId?: string | null
+}): Promise<{ total: number; added: number }> {
+  await ensureFactSchema()
+  const res = await db.execute(sql`
+    SELECT id, version, value FROM strategy_facts
+    WHERE company_id = ${input.companyId} AND key = ${input.key}
+      AND product_id IS NOT DISTINCT FROM ${input.productId ?? null}::uuid
+      AND is_current LIMIT 1`)
+  const prev = (res as unknown as { id: string; version: number; value: unknown }[])[0]
+
+  const fresh = normalizeItems(input.items, 'user')
+  const items = prev && Array.isArray(prev.value)
+    ? [...normalizeItems(prev.value, 'agent'), ...fresh]
+    : fresh
+
+  if (prev) {
+    await db.execute(sql`UPDATE strategy_facts SET is_current=false, updated_at=now() WHERE id=${prev.id}`)
+  }
+  await db.execute(sql`
+    INSERT INTO strategy_facts (company_id, product_id, key, value, source, confidence, status, version, supersedes_id, created_by)
+    VALUES (${input.companyId}, ${input.productId ?? null}, ${input.key}, ${JSON.stringify(items)}::jsonb,
+            'user', 1.0, 'confirmed', ${(prev?.version ?? 0) + 1}, ${prev?.id ?? null}, ${input.userId ?? null})`)
+  return { total: items.length, added: fresh.length }
 }
