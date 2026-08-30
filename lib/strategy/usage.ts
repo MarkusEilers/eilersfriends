@@ -35,7 +35,7 @@ export async function ensureUsageSchema() {
     CREATE TABLE IF NOT EXISTS billing_settings (
       company_id       UUID PRIMARY KEY REFERENCES companies(id) ON DELETE CASCADE,
       markup_factor    NUMERIC(6,2) NOT NULL DEFAULT 10.0,
-      base_fee_monthly NUMERIC(10,2) NOT NULL DEFAULT 0,
+      base_fee_monthly NUMERIC(10,2) NOT NULL DEFAULT 97.00,
       currency         TEXT NOT NULL DEFAULT 'EUR',
       mode             TEXT NOT NULL DEFAULT 'prepaid',   -- prepaid | postpaid
       low_balance_at   NUMERIC(10,2) NOT NULL DEFAULT 10, -- Warnschwelle
