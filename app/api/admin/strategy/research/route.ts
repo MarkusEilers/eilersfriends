@@ -1,0 +1,41 @@
+import { NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
+import { researchVoc } from '@/lib/strategy/research/voc'
+
+export const runtime = 'nodejs'
+export const maxDuration = 800
+
+/**
+ * Die Recherche-Stufe: sammeln, ablegen, auswerten.
+ *
+ * Sie laeuft lange — acht Suchanfragen nacheinander, danach drei Agenten. Das ist
+ * Absicht: die Alternative waere, alles parallel zu feuern und bei einem Fehler
+ * nicht mehr zu wissen, welche Quelle geschwiegen hat.
+ */
+export async function POST(req: Request) {
+  const session = await auth()
+  if (!session?.user?.role || (session.user.role !== 'admin' && session.user.role !== 'coach')) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  }
+  const { companyId, productId, stepKey } = (await req.json().catch(() => ({}))) ?? {}
+  if (!companyId) return NextResponse.json({ error: 'companyId ist Pflicht' }, { status: 400 })
+
+  try {
+    const res = await researchVoc({
+      companyId, productId: productId ?? null, stepKey: stepKey ?? 'research',
+      userId: session.user.id ?? null,
+    })
+    return NextResponse.json({
+      ok: true,
+      quellen: res.findings.map((f) => ({
+        quelle: f.source, belege: f.citations.length, zeichen: f.text.length, fehler: f.error ?? null,
+      })),
+      leer: res.empty, fehlgeschlagen: res.failed,
+      agenten: Object.fromEntries(
+        Object.entries(res.agents ?? {}).map(([k, v]) => [k, { ok: v.ok, facts: v.facts, error: v.error }]),
+      ),
+    })
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 })
+  }
+}
