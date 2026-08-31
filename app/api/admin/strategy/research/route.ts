@@ -3,7 +3,10 @@ import { auth } from '@/lib/auth'
 import { researchVoc } from '@/lib/strategy/research/voc'
 
 export const runtime = 'nodejs'
-export const maxDuration = 800
+// 300 Sekunden ist die Obergrenze des Tarifs. Die Kaskade braucht heute rund 75:
+// acht Suchanfragen nacheinander, danach drei Agenten. Wenn sie waechst, wird der
+// Sammellauf in zwei Aufrufe geteilt — nicht die Grenze erhoeht.
+export const maxDuration = 300
 
 /**
  * Die Recherche-Stufe: sammeln, ablegen, auswerten.
