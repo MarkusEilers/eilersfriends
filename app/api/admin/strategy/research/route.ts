@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { researchVoc } from '@/lib/strategy/research/voc'
 import { researchCompete } from '@/lib/strategy/research/compete'
+import { researchCompany } from '@/lib/strategy/research/company'
 
 export const runtime = 'nodejs'
 // 300 Sekunden ist die Obergrenze des Tarifs. Die Kaskade braucht heute rund 75:
@@ -66,6 +67,29 @@ export async function PUT(req: Request) {
       agenten: Object.fromEntries(
         Object.entries(res.agents ?? {}).map(([k, v]) => [k, { ok: v.ok, facts: v.facts, error: v.error }]),
       ),
+    })
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 })
+  }
+}
+
+/** Die Unternehmens-Recherche: wie stellt sich dieser Kunde selbst dar? */
+export async function PATCH(req: Request) {
+  const session = await auth()
+  if (!session?.user?.role || (session.user.role !== 'admin' && session.user.role !== 'coach')) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  }
+  const { companyId, productId, stepKey } = (await req.json().catch(() => ({}))) ?? {}
+  if (!companyId) return NextResponse.json({ error: 'companyId ist Pflicht' }, { status: 400 })
+  try {
+    const res = await researchCompany({
+      companyId, productId: productId ?? null, stepKey: stepKey ?? 'foundation',
+      userId: session.user.id ?? null,
+    })
+    return NextResponse.json({
+      ok: true,
+      quellen: res.findings.map((f) => ({ quelle: f.source, belege: f.citations.length, fehler: f.error ?? null })),
+      agent: { ok: res.agent?.ok, facts: res.agent?.facts, error: res.agent?.error },
     })
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 })

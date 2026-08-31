@@ -111,6 +111,8 @@ export function vocQueries(ctx: VocContext): Array<{ source: string; query: stri
     { source: 'frageportale', query: `site:quora.com OR site:gutefrage.net ${seg} ${term} — die meistgestellten Fragen` },
     { source: 'people-also-ask', query: `Welche Fragen stellen Menschen bei Google zu "${term}" und zu "${term2}"? Nenne die tatsaechlich erscheinenden Folgefragen.` },
     { source: 'bewertungen', query: `Negative Bewertungen (1 und 2 Sterne) zu ${ctx.competitorNames.slice(0, 3).join(', ') || term} auf Trustpilot, ProvenExpert, Google oder Capterra — woran hat es gehakt?` },
+    // Die Namen kommen aus compete.their_story, sobald der Wettbewerbs-Schritt gelaufen
+    // ist. Vorher bleibt die Anfrage beim Produktbegriff — schwaecher, aber nicht falsch.
     { source: 'linkedin', query: `site:linkedin.com Beitraege von ${seg2} ueber ${term} mit vielen Reaktionen — was beschaeftigt sie` },
     { source: 'youtube', query: `Kommentare unter YouTube-Videos zu ${term} — was fragen und kritisieren die Zuschauer` },
     { source: 'ereignisse', query: `Was hat sich in den letzten 18 Monaten fuer ${seg} geaendert: neue Regelungen, Urteile, Preisentwicklungen, Marktaustritte, Studien — mit Datum` },

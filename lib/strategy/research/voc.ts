@@ -22,14 +22,14 @@ import { collectVoc, renderFindings, type SearchFinding, type VocContext } from 
 /** Was die Anfragen brauchen: Branche, Segmente, Produktbegriffe, Wettbewerber. */
 async function buildContext(companyId: string, productId?: string | null): Promise<VocContext> {
   const facts = await factMap(companyId, productId, [
-    'company.industry', 'product.description', 'icp.segments', 'research.competitors',
+    'company.industry', 'product.description', 'icp.segments', 'compete.their_story',
   ])
   const segments = Array.isArray(facts['icp.segments'])
     ? (facts['icp.segments'] as Array<Record<string, unknown>>)
         .map((s) => String(s.name ?? s.label ?? s.topic ?? '')).filter(Boolean)
     : []
-  const competitors = Array.isArray(facts['research.competitors'])
-    ? (facts['research.competitors'] as Array<Record<string, unknown> | string>)
+  const competitors = Array.isArray(facts['compete.their_story'])
+    ? (facts['compete.their_story'] as Array<Record<string, unknown> | string>)
         .map((c) => (typeof c === 'string' ? c : String(c.name ?? ''))).filter(Boolean)
     : []
 

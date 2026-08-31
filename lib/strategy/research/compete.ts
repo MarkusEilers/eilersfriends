@@ -83,9 +83,9 @@ export async function researchCompete(input: {
   companyId: string; productId?: string | null; stepKey?: string; userId?: string | null
 }): Promise<CompeteResult> {
   const facts = await factMap(input.companyId, input.productId, [
-    'company.industry', 'icp.segments', 'research.competitors',
+    'company.industry', 'icp.segments', 'compete.their_story',
   ])
-  let competitors = usableNames(facts['research.competitors'])
+  let competitors = usableNames(facts['compete.their_story'])
   const segment = Array.isArray(facts['icp.segments'])
     ? String((facts['icp.segments'] as Array<Record<string, unknown>>)[0]?.name ?? '')
     : ''
