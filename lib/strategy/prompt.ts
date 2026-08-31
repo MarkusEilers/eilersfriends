@@ -39,6 +39,27 @@ export async function publishPrompt(p: {
   allowResearch?: boolean; templateTags?: string[]; notes?: string | null; userId?: string | null
 }) {
   await ensureFactSchema()
+
+  // Der Fehler, der uns zweimal passiert ist und beide Male tagelang unbemerkt
+  // blieb: Der Prompt sagt, er schreibe 'icp.anti_persona', das Schema nennt das
+  // Feld aber 'anti_personas'. Der Lauf meldet Erfolg, das Modell antwortet
+  // sauber — und es entsteht kein Fakt. Niemand merkt es, bis ein spaeterer
+  // Schritt den Eingang vermisst.
+  const kind = p.promptKind ?? ROLE_DEFAULT_KIND[p.modelRole ?? 'strategie']
+  if (kind === 'facts' && p.produces?.length) {
+    const props = new Set(Object.keys((p.outputSchema as { properties?: object })?.properties ?? {}))
+    const orphans = p.produces.filter((key) => {
+      const short = key.includes('.') ? key.split('.').slice(1).join('.') : key
+      return !props.has(short) && !props.has(key)
+    })
+    if (orphans.length) {
+      throw new Error(
+        `Prompt ${p.agentKey}: ${orphans.join(', ')} steht unter produces, hat aber kein Feld im Ausgabe-Schema. ` +
+        `Vorhandene Felder: ${[...props].join(', ') || 'keine'}. So entstuende ein Lauf ohne Ergebnis.`,
+      )
+    }
+  }
+
   const cur = await db.execute(sql`SELECT COALESCE(MAX(version),0) AS v FROM strategy_prompts WHERE agent_key = ${p.agentKey}`)
   const next = ((cur as unknown as { v: number }[])[0]?.v ?? 0) + 1
   await db.execute(sql`UPDATE strategy_prompts SET is_active=false, updated_at=now() WHERE agent_key=${p.agentKey} AND is_active`)
