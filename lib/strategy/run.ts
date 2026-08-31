@@ -69,10 +69,11 @@ export async function runAgent(input: {
       ? { type: 'json_schema', json_schema: { name: 'ergebnis', schema: asm.outputSchema, strict: false } }
       : { type: 'json_object' },
   }
-  if (asm.allowResearch) {
-    // Web-Recherche: der Agent darf die Website des Kunden und den Wettbewerb ansehen.
-    body.tools = [{ type: 'web_search' }]
-  }
+  // Recherche laeuft nicht hier. Die Chat-Completions-Schnittstelle kennt keine
+  // Websuche — der Versuch, ihr trotzdem ein web_search-Werkzeug mitzugeben, ist
+  // stillschweigend wirkungslos geblieben. Gesucht wird in lib/strategy/research/web.ts,
+  // in einem eigenen Schritt, dessen Ergebnis als Fakt gespeichert und diesem
+  // Agenten als Material uebergeben wird. Sammeln und Urteilen bleiben getrennt.
 
   let res: Response
   try {
