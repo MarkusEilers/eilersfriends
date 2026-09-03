@@ -20,16 +20,17 @@ const CENTER: [number, number] = [10.9, 49.6]
 const DACH_BOUNDS: [[number, number], [number, number]] = [[5.6, 45.6], [17.4, 55.2]]
 
 /**
- * Ohne Mapbox-Zugangsschluessel laeuft die Karte auf einem freien dunklen Stil.
- * (Der erste Versuch lief auf einen Stil, den es dort nicht gibt — 404, schwarze
- * Flaeche, Radar sichtbar, Laender nicht.) Liegt
+ * Ohne Mapbox-Zugangsschluessel laeuft die Karte auf einem freien Stil, der
+ * anschliessend eingefaerbt wird. Zwei Umwege lagen dazwischen: ein Stilname,
+ * den es nicht gibt, und ein dunkler Stil, dessen Kacheln von aussen nicht
+ * erreichbar sind. Hier laufen Stil und Kacheln aus derselben Quelle. Liegt
  * ein Schluessel vor, wird der Mapbox-Stil genommen — die Ueberlagerung mit
  * Radar, Kreisen und Beruehrung bleibt in beiden Faellen dieselbe.
  */
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
 const STYLE = MAPBOX_TOKEN
   ? `https://api.mapbox.com/styles/v1/mapbox/dark-v11?access_token=${MAPBOX_TOKEN}`
-  : 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
+  : 'https://tiles.openfreemap.org/styles/positron'
 
 /**
  * Der dunkle Stil ist fuer sich genommen fast schwarz — unter der Radar-Ebene
@@ -45,21 +46,29 @@ function radarize(m: MLMap) {
       if (layer.type === 'background') {
         m.setPaintProperty(layer.id, 'background-color', '#050B10')
       } else if (id.includes('boundary') || id.includes('admin') || id.includes('border')) {
-        const country = id.includes('0') || id.includes('country')
-        m.setPaintProperty(layer.id, 'line-color', country ? 'rgba(0,229,160,0.75)' : 'rgba(0,229,160,0.22)')
-        m.setPaintProperty(layer.id, 'line-width', country ? 1.4 : 0.6)
+        // Landesgrenzen kraeftig, alles Kleinere nur angedeutet.
+        const country = /_?0|country|state/.test(id)
+        m.setPaintProperty(layer.id, 'line-color', country ? 'rgba(0,229,160,0.8)' : 'rgba(0,229,160,0.18)')
+        m.setPaintProperty(layer.id, 'line-width', country ? 1.3 : 0.5)
         m.setPaintProperty(layer.id, 'line-opacity', 1)
-      } else if (id.includes('water') || id.includes('ocean')) {
-        m.setPaintProperty(layer.id, 'fill-color', '#020609')
-      } else if (id.includes('landcover') || id.includes('landuse') || id.includes('park')) {
-        m.setPaintProperty(layer.id, 'fill-opacity', 0.08)
+        m.setPaintProperty(layer.id, 'line-dasharray', country ? [1, 0] : [2, 2])
+      } else if (id.includes('water') || id.includes('ocean') || id.includes('sea')) {
+        if (layer.type === 'fill') m.setPaintProperty(layer.id, 'fill-color', '#01151A')
+        if (layer.type === 'line') m.setPaintProperty(layer.id, 'line-color', 'rgba(0,229,160,0.10)')
+      } else if (layer.type === 'fill') {
+        // Der helle Stil wuerde die Flaechen weiss malen — hier wird alles Land
+        // zu einem dunklen Grund, auf dem der Schirm ueberhaupt erst wirkt.
+        m.setPaintProperty(layer.id, 'fill-color', '#08131A')
+        m.setPaintProperty(layer.id, 'fill-opacity', 0.9)
       } else if (layer.type === 'symbol') {
-        // Beschriftungen bleiben, aber leise: der Schirm soll nicht zutexten.
-        const place = id.includes('place') || id.includes('city') || id.includes('country')
-        m.setPaintProperty(layer.id, 'text-color', place ? 'rgba(180,235,215,0.55)' : 'rgba(160,190,180,0.18)')
-        if (!place) m.setLayoutProperty(layer.id, 'visibility', 'none')
+        const place = id.includes('place') || id.includes('city') || id.includes('country') || id.includes('town')
+        if (!place) { m.setLayoutProperty(layer.id, 'visibility', 'none'); continue }
+        m.setPaintProperty(layer.id, 'text-color', 'rgba(170,230,210,0.5)')
+        m.setPaintProperty(layer.id, 'text-halo-color', 'rgba(0,0,0,0.85)')
+        m.setPaintProperty(layer.id, 'text-halo-width', 1.2)
       } else if (layer.type === 'line') {
-        m.setPaintProperty(layer.id, 'line-opacity', 0.12)
+        m.setPaintProperty(layer.id, 'line-opacity', 0.10)
+        m.setPaintProperty(layer.id, 'line-color', 'rgba(120,180,160,0.5)')
       }
     } catch { /* Stile aendern sich; ein Fehlschlag darf die Karte nicht kosten */ }
   }
