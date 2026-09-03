@@ -15,13 +15,13 @@ export const maxDuration = 120
 /** Nur so viel HTML, wie aus einem Word-Dokument herauskommt. */
 function htmlToMarkdown(html: string): string {
   return html
-    .replace(/<h1[^>]*>(.*?)<\/h1>/gis, '\n# $1\n')
-    .replace(/<h2[^>]*>(.*?)<\/h2>/gis, '\n## $1\n')
-    .replace(/<h3[^>]*>(.*?)<\/h3>/gis, '\n### $1\n')
-    .replace(/<blockquote[^>]*>(.*?)<\/blockquote>/gis, (_m, s) => `\n> ${String(s).replace(/<[^>]+>/g, '').trim()}\n`)
-    .replace(/<li[^>]*>(.*?)<\/li>/gis, '- $1\n')
-    .replace(/<(strong|b)[^>]*>(.*?)<\/\1>/gis, '**$2**')
-    .replace(/<(em|i)[^>]*>(.*?)<\/\1>/gis, '*$2*')
+    .replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, '\n# $1\n')
+    .replace(/<h2[^>]*>([\s\S]*?)<\/h2>/gi, '\n## $1\n')
+    .replace(/<h3[^>]*>([\s\S]*?)<\/h3>/gi, '\n### $1\n')
+    .replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (_m, s) => `\n> ${String(s).replace(/<[^>]+>/g, '').trim()}\n`)
+    .replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, '- $1\n')
+    .replace(/<(strong|b)[^>]*>([\s\S]*?)<\/\1>/gi, '**$2**')
+    .replace(/<(em|i)[^>]*>([\s\S]*?)<\/\1>/gi, '*$2*')
     .replace(/<\/p>/gi, '\n\n')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<[^>]+>/g, '')

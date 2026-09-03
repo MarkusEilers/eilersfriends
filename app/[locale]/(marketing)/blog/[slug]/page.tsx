@@ -240,5 +240,7 @@ function inline(s: string) {
   return s
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
-    .replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>')
+    // Kursiv erst nach der Fettung, damit die doppelten Sterne schon weg sind —
+    // ein Rueckblick im Muster braeuchte ein hoeheres Sprachziel.
+    .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
 }
