@@ -38,7 +38,7 @@
     },
     {
       "path": "/api/cron/blog-publish",
-      "schedule": "5 * * * *"
+      "schedule": "0 5 * * *"
     }
   ]
 }
