@@ -108,12 +108,20 @@ export function RadarMap({
       attributionControl: { compact: true },
     })
     m.on('load', () => {
-      m.fitBounds(DACH_BOUNDS, { padding: 40, duration: 0 })
       radarize(m)
+      m.resize()
+      m.fitBounds(DACH_BOUNDS, { padding: 40, duration: 0 })
       setReady(true)
     })
     map.current = m
-    return () => { m.remove(); map.current = null }
+
+    // Die Karte wurde gebaut, bevor der Rahmen seine endgueltige Hoehe hatte —
+    // sie zeichnete danach nur in den oberen 300 Pixeln weiter. Ein Beobachter
+    // auf der Groesse ist hier keine Vorsichtsmassnahme, sondern Pflicht.
+    const ro = new ResizeObserver(() => m.resize())
+    ro.observe(holder.current)
+
+    return () => { ro.disconnect(); m.remove(); map.current = null }
   }, [])
 
   // Radar, Kreise und Beruehrung liegen auf einer eigenen Leinwand ueber der
