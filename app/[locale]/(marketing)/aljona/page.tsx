@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
+import { AuthorLatest } from '@/components/blog/AuthorLatest'
 import {
   Calendar, ArrowRight, Heart, MessageCircle, Shield, Sparkles,
   Mic, AlertTriangle, Check, Star,
@@ -374,6 +375,9 @@ export default async function AljonaPage({ params }: PageProps) {
         </div>
       </section>
 
-    </main>
+          {/* Blog-Block: drei Karten als Beweis, der Rest liegt im Briefing. */}
+      <AuthorLatest slug="aljona" />
+
+</main>
   )
 }

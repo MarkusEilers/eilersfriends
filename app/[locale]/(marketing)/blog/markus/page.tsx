@@ -1,23 +1,24 @@
 import type { Metadata } from 'next'
 import { BlogHome } from '@/components/blog/BlogHome'
 import { listPosts, countsByAuthor } from '@/lib/blog/posts'
+import { AUTHORS } from '@/lib/blog/authors'
 
 export const dynamic = 'force-dynamic'
 
+const author = AUTHORS.markus
+
 export const metadata: Metadata = {
-  title: 'Blog · Was wir diese Woche gelernt haben',
-  description:
-    'Zwei Handschriften, ein Absender. Markus Eilers über Angebote, Pfade und Garantien. Aljona Eilers über Führung, Selbstführung und Kultur.',
+  title: `Blog von ${author.name}`,
+  description: author.bio,
 }
 
-export default async function BlogIndexPage({
+export default async function AuthorBlogPage({
   searchParams,
 }: { searchParams: Promise<{ preview?: string }> }) {
   const sp = await searchParams
-  const preview = sp.preview === '1'
   const [posts, counts] = await Promise.all([
-    listPosts({ limit: 24, includeDrafts: preview }),
+    listPosts({ author: author.slug, limit: 24, includeDrafts: sp.preview === '1' }),
     countsByAuthor(),
   ])
-  return <BlogHome posts={posts} counts={counts} />
+  return <BlogHome posts={posts} author={author} counts={counts} />
 }
