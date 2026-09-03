@@ -20,14 +20,16 @@ const CENTER: [number, number] = [10.9, 49.6]
 const DACH_BOUNDS: [[number, number], [number, number]] = [[5.6, 45.6], [17.4, 55.2]]
 
 /**
- * Ohne Mapbox-Zugangsschluessel laeuft die Karte auf einem freien Stil. Liegt
+ * Ohne Mapbox-Zugangsschluessel laeuft die Karte auf einem freien dunklen Stil.
+ * (Der erste Versuch lief auf einen Stil, den es dort nicht gibt — 404, schwarze
+ * Flaeche, Radar sichtbar, Laender nicht.) Liegt
  * ein Schluessel vor, wird der Mapbox-Stil genommen — die Ueberlagerung mit
  * Radar, Kreisen und Beruehrung bleibt in beiden Faellen dieselbe.
  */
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
 const STYLE = MAPBOX_TOKEN
   ? `https://api.mapbox.com/styles/v1/mapbox/dark-v11?access_token=${MAPBOX_TOKEN}`
-  : 'https://tiles.openfreemap.org/styles/dark'
+  : 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
 
 const isFresh = (lead: RadarLead) => Date.now() - new Date(lead.found_at).getTime() < 24 * 3600 * 1000
 
