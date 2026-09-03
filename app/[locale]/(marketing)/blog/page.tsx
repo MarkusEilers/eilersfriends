@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 }
 
 export default async function BlogIndexPage({
-  searchParams,
-}: { searchParams: Promise<{ preview?: string }> }) {
-  const sp = await searchParams
+  params, searchParams,
+}: { params: Promise<{ locale: string }>; searchParams: Promise<{ preview?: string }> }) {
+  const [{ locale }, sp] = await Promise.all([params, searchParams])
   const preview = sp.preview === '1'
   const [posts, counts] = await Promise.all([
-    listPosts({ limit: 24, includeDrafts: preview }),
+    listPosts({ limit: 24, includeDrafts: preview, locale }),
     countsByAuthor(),
   ])
   return <BlogHome posts={posts} counts={counts} />

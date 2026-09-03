@@ -6,6 +6,7 @@ import { ArrowLeft, Clock, Calendar, ArrowUpRight } from 'lucide-react'
 import { getPost, listPosts, relatedPosts, type Post } from '@/lib/blog/posts'
 import { authorOf } from '@/lib/blog/authors'
 import { BlogCta } from '@/components/blog/BlogCta'
+import { Comments } from '@/components/blog/Comments'
 
 export const dynamic = 'force-dynamic'
 
@@ -148,6 +149,10 @@ export default async function PostPage({
             {related.map((r) => <RelatedCard key={r.slug} post={r} />)}
           </div>
         </section>
+      )}
+
+      {post.status === 'published' && (
+        <Comments postId={post.id} author={a} open={(post as { comments_open?: boolean }).comments_open !== false} />
       )}
 
       <div className="pb-20">

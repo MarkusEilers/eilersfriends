@@ -39,6 +39,7 @@
     "drizzle-orm": "^0.38.0",
     "framer-motion": "^12.0.0",
     "lucide-react": "^0.469.0",
+    "mammoth": "^1.8.0",
     "maplibre-gl": "^4.7.1",
     "next": "^15.2.0",
     "next-auth": "^5.0.0-beta.25",
