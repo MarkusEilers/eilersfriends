@@ -12,6 +12,24 @@ export const maxDuration = 120
  * wenn es keine gibt, die erste Zeile — was danach kommt, ist Text. Kein
  * Ratespiel um Metadaten: alles Weitere setzt man im Editor, wo man es sieht.
  */
+/** Nur so viel HTML, wie aus einem Word-Dokument herauskommt. */
+function htmlToMarkdown(html: string): string {
+  return html
+    .replace(/<h1[^>]*>(.*?)<\/h1>/gis, '\n# $1\n')
+    .replace(/<h2[^>]*>(.*?)<\/h2>/gis, '\n## $1\n')
+    .replace(/<h3[^>]*>(.*?)<\/h3>/gis, '\n### $1\n')
+    .replace(/<blockquote[^>]*>(.*?)<\/blockquote>/gis, (_m, s) => `\n> ${String(s).replace(/<[^>]+>/g, '').trim()}\n`)
+    .replace(/<li[^>]*>(.*?)<\/li>/gis, '- $1\n')
+    .replace(/<(strong|b)[^>]*>(.*?)<\/\1>/gis, '**$2**')
+    .replace(/<(em|i)[^>]*>(.*?)<\/\1>/gis, '*$2*')
+    .replace(/<\/p>/gi, '\n\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
 export async function POST(req: Request) {
   const s = await auth()
   if (s?.user?.role !== 'admin' && s?.user?.role !== 'coach') {
@@ -25,10 +43,18 @@ export async function POST(req: Request) {
   let text = ''
   try {
     if (name.endsWith('.docx')) {
-      const mammoth = await import('mammoth')
+      // mammoth kennt in den Typen nur convertToHtml — der Markdown-Wandler
+      // existiert zur Laufzeit, steht aber nicht in der Typdefinition.
+      const mammoth = (await import('mammoth')) as unknown as {
+        convertToMarkdown?: (o: { buffer: Buffer }) => Promise<{ value: string }>
+        convertToHtml: (o: { buffer: Buffer }) => Promise<{ value: string }>
+      }
       const buf = Buffer.from(await file.arrayBuffer())
-      const res = await mammoth.convertToMarkdown({ buffer: buf })
-      text = res.value
+      if (mammoth.convertToMarkdown) {
+        text = (await mammoth.convertToMarkdown({ buffer: buf })).value
+      } else {
+        text = htmlToMarkdown((await mammoth.convertToHtml({ buffer: buf })).value)
+      }
     } else if (name.endsWith('.md') || name.endsWith('.markdown') || name.endsWith('.txt')) {
       text = await file.text()
     } else {
