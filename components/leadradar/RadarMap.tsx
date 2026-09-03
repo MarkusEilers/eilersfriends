@@ -246,7 +246,16 @@ export function RadarMap({
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-xl" style={{ background: RADAR.bg }}>
-      <div ref={holder} className="absolute inset-0" />
+      {/*
+        Die Masse stehen direkt am Element und nicht in einer Klasse: das
+        Stylesheet von MapLibre setzt fuer .maplibregl-map position: relative und
+        gewinnt gegen die Hilfsklasse. Ergebnis war ein Container mit Hoehe 0 —
+        Kacheln wurden geladen, gezeichnet wurde nichts.
+      */}
+      <div
+        ref={holder}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+      />
       <canvas
         ref={canvas}
         className="absolute inset-0 h-full w-full"
