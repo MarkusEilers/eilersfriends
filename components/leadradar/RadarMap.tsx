@@ -31,6 +31,40 @@ const STYLE = MAPBOX_TOKEN
   ? `https://api.mapbox.com/styles/v1/mapbox/dark-v11?access_token=${MAPBOX_TOKEN}`
   : 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
 
+/**
+ * Der dunkle Stil ist fuer sich genommen fast schwarz — unter der Radar-Ebene
+ * verschwindet er ganz. Statt eines helleren Stils faerben wir die Grenzen
+ * gruen ein und daempfen alles andere. Ergebnis: Umrisse wie auf einem Schirm,
+ * nicht wie auf einer Strassenkarte.
+ */
+function radarize(m: MLMap) {
+  const style = m.getStyle()
+  for (const layer of style?.layers ?? []) {
+    const id = layer.id.toLowerCase()
+    try {
+      if (layer.type === 'background') {
+        m.setPaintProperty(layer.id, 'background-color', '#050B10')
+      } else if (id.includes('boundary') || id.includes('admin') || id.includes('border')) {
+        const country = id.includes('0') || id.includes('country')
+        m.setPaintProperty(layer.id, 'line-color', country ? 'rgba(0,229,160,0.75)' : 'rgba(0,229,160,0.22)')
+        m.setPaintProperty(layer.id, 'line-width', country ? 1.4 : 0.6)
+        m.setPaintProperty(layer.id, 'line-opacity', 1)
+      } else if (id.includes('water') || id.includes('ocean')) {
+        m.setPaintProperty(layer.id, 'fill-color', '#020609')
+      } else if (id.includes('landcover') || id.includes('landuse') || id.includes('park')) {
+        m.setPaintProperty(layer.id, 'fill-opacity', 0.08)
+      } else if (layer.type === 'symbol') {
+        // Beschriftungen bleiben, aber leise: der Schirm soll nicht zutexten.
+        const place = id.includes('place') || id.includes('city') || id.includes('country')
+        m.setPaintProperty(layer.id, 'text-color', place ? 'rgba(180,235,215,0.55)' : 'rgba(160,190,180,0.18)')
+        if (!place) m.setLayoutProperty(layer.id, 'visibility', 'none')
+      } else if (layer.type === 'line') {
+        m.setPaintProperty(layer.id, 'line-opacity', 0.12)
+      }
+    } catch { /* Stile aendern sich; ein Fehlschlag darf die Karte nicht kosten */ }
+  }
+}
+
 const isFresh = (lead: RadarLead) => Date.now() - new Date(lead.found_at).getTime() < 24 * 3600 * 1000
 
 export function RadarMap({
@@ -66,6 +100,7 @@ export function RadarMap({
     })
     m.on('load', () => {
       m.fitBounds(DACH_BOUNDS, { padding: 40, duration: 0 })
+      radarize(m)
       setReady(true)
     })
     map.current = m
