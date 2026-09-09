@@ -67,7 +67,7 @@ export default async function AdminMeetingsPage() {
                           </span>
                         ) : null}
                         <span>{String(m.org_name ?? '—')}</span>
-                        <span>{m.participants} Teilnehmer</span>
+                        <span>{String(m.participants)} Teilnehmer</span>
                       </div>
                     </div>
                     <div className="shrink-0 text-right text-[11px] text-gray-400">
