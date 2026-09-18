@@ -15,9 +15,21 @@ async function guard() {
   return r === 'admin' || r === 'coach'
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   if (!(await guard())) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   await ensureAgentSchema()
+
+  // Einen abgelegten Auftrag abholen — praktisch, um einen langen Handoff nicht
+  // durch das Formular tippen zu muessen.
+  const pack = new URL(req.url).searchParams.get('pack')
+  if (pack) {
+    const rows = await db.execute(sql`
+      SELECT i.body FROM knowledge_items i JOIN knowledge_packs p ON p.id = i.pack_id
+      WHERE p.key = ${pack} AND i.key = 'payload' LIMIT 1`)
+    const body = (rows as unknown as { body: string }[])[0]?.body
+    if (!body) return NextResponse.json({ error: 'nicht gefunden' }, { status: 404 })
+    return NextResponse.json({ ok: true, payload: JSON.parse(body) })
+  }
   const runs = await db.execute(sql`
     SELECT r.id, r.agent_key, r.status, r.started_at, r.finished_at, r.tokens_in, r.tokens_out,
            r.amount_eur, c.name AS org_name
