@@ -126,15 +126,16 @@ export async function advance(runId: string): Promise<RunHandle> {
   const ctx: Ctx = {
     runId, def, orgId: run.org_id, productId: run.product_id,
     input: run.input, assumptions: [...(run.assumptions ?? [])],
-    results: {}, packs: '', banned: [], material: '',
+    results: {}, packs: '', packsKurz: '', banned: [], material: '',
   }
   // Ergebnisse der bereits erledigten Schritte einsammeln.
   for (const s of loaded.steps) {
     if (s.status === 'fertig' && s.output) ctx.results[String(s.step_key)] = s.output
   }
   if (ctx.results.kontext) {
-    const k = ctx.results.kontext as { packs?: string; banned?: string[]; material?: string }
+    const k = ctx.results.kontext as { packs?: string; packs_kurz?: string; banned?: string[]; material?: string }
     ctx.packs = k.packs ?? ''
+    ctx.packsKurz = k.packs_kurz ?? ''
     ctx.banned = k.banned ?? []
     ctx.material = k.material ?? ''
   }
@@ -157,8 +158,9 @@ export async function advance(runId: string): Promise<RunHandle> {
       const out = await runStep(step, ctx)
       ctx.results[step.key] = out.value
       if (step.kind === 'kontext') {
-        const k = out.value as { packs?: string; banned?: string[]; material?: string }
-        ctx.packs = k.packs ?? ''; ctx.banned = k.banned ?? []; ctx.material = k.material ?? ''
+        const k = out.value as { packs?: string; packs_kurz?: string; banned?: string[]; material?: string }
+        ctx.packs = k.packs ?? ''; ctx.packsKurz = k.packs_kurz ?? ''
+        ctx.banned = k.banned ?? []; ctx.material = k.material ?? ''
       }
       await finishStep(runId, cursor, 'fertig', out.value, {
         model: out.model, tokensIn: out.tokensIn, tokensOut: out.tokensOut,
@@ -234,7 +236,7 @@ interface Ctx {
   input: Record<string, unknown>
   assumptions: string[]
   results: Record<string, unknown>
-  packs: string; banned: string[]; material: string
+  packs: string; packsKurz: string; banned: string[]; material: string
 }
 
 interface StepOut { value: unknown; model?: string; tokensIn?: number; tokensOut?: number }
@@ -314,9 +316,15 @@ async function kontext(ctx: Ctx): Promise<StepOut> {
     if (rendered) parts.push(`### ${rendered}`)
   }
 
+  // Fuer die Abschnitts-Aufrufe reicht die Haltung plus die Verbote. Der ganze
+  // Wissensblock in jedem der zehn Aufrufe kostet Minutenbudget und verduennt
+  // die Aufmerksamkeit auf das, was in diesem Abschnitt zu tun ist.
+  const kurz = renderPacks(packs.filter((p) => p.kind === 'voice' || p.kind === 'verbote'))
+
   return {
     value: {
       packs: parts.filter(Boolean).join('\n\n---\n\n'),
+      packs_kurz: kurz,
       banned: bannedWords(packs),
       material: String(ctx.input.context_md ?? ctx.input.kontext ?? ''),
       pack_keys: packs.map((p) => p.key),
@@ -355,6 +363,7 @@ async function recherche(step: StepDef, ctx: Ctx): Promise<StepOut> {
 function render(tpl: string, ctx: Ctx, extra?: Record<string, unknown>): string {
   return tpl.replace(/\{\{([a-z0-9_.]+)\}\}/gi, (_m, path: string) => {
     if (path === 'wissen') return ctx.packs
+    if (path === 'wissen_kurz') return ctx.packsKurz || ctx.packs
     if (path === 'material') return ctx.material
     const [head, ...rest] = path.split('.')
     const base = head === 'eingabe' ? ctx.input : (extra?.[head] ?? ctx.results[head])
@@ -365,27 +374,51 @@ function render(tpl: string, ctx: Ctx, extra?: Record<string, unknown>): string 
   })
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+/**
+ * Ein Modellaufruf, mit Geduld.
+ *
+ * Die Organisation hat ein Minutenlimit. Ein langer Text besteht aus acht bis
+ * zehn Aufrufen kurz hintereinander und laeuft zuverlaessig hinein. Das ist kein
+ * Fehler des Agenten, sondern eine Eigenschaft des Kontos — und weil sie sich
+ * ankuendigt ("try again in 9s"), wird gewartet statt abgebrochen. Ein Lauf, der
+ * an einem Minutenlimit stirbt, hat alles davor umsonst bezahlt.
+ */
 async function ask(step: StepDef, ctx: Ctx, extra?: Record<string, unknown>) {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) throw new Error('OPENAI_API_KEY fehlt')
   const model = resolveModel((step.modelRole ?? ctx.def.default_model_role) as never, null)
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model,
-      temperature: step.temperature ?? 0.5,
-      max_tokens: step.maxTokens ?? 4000,
-      messages: [
-        { role: 'system', content: render(step.system ?? '', ctx, extra) },
-        { role: 'user', content: render(step.user ?? '', ctx, extra) },
-      ],
-      response_format: step.schema
-        ? { type: 'json_schema', json_schema: { name: 'ergebnis', schema: step.schema, strict: false } }
-        : { type: 'json_object' },
-    }),
+  const body = JSON.stringify({
+    model,
+    temperature: step.temperature ?? 0.5,
+    max_tokens: step.maxTokens ?? 4000,
+    messages: [
+      { role: 'system', content: render(step.system ?? '', ctx, extra) },
+      { role: 'user', content: render(step.user ?? '', ctx, extra) },
+    ],
+    response_format: step.schema
+      ? { type: 'json_schema', json_schema: { name: 'ergebnis', schema: step.schema, strict: false } }
+      : { type: 'json_object' },
   })
-  if (!res.ok) throw new Error(`Modell ${res.status}: ${(await res.text()).slice(0, 200)}`)
+
+  let res: Response | null = null
+  let lastText = ''
+  for (let versuch = 0; versuch < 4; versuch++) {
+    res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body,
+    })
+    if (res.ok) break
+    lastText = await res.text()
+    if (res.status !== 429 && res.status < 500) break
+    // Die Antwort nennt die Wartezeit selbst — wenn nicht, verdoppeln wir.
+    const hint = /try again in ([\d.]+)s/i.exec(lastText)
+    const waitMs = hint ? Math.ceil(Number(hint[1]) * 1000) + 800 : 2500 * (versuch + 1)
+    await sleep(Math.min(waitMs, 30_000))
+  }
+  if (!res || !res.ok) throw new Error(`Modell ${res?.status ?? 0}: ${lastText.slice(0, 200)}`)
   const data = await res.json()
   return {
     value: JSON.parse(data.choices?.[0]?.message?.content ?? '{}'),
@@ -456,6 +489,9 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
       return String((res.value as { text?: string }).text ?? '')
     }
 
+    // Etwas Luft zwischen den Aufrufen: das Minutenlimit der Organisation ist
+    // knapper als die Geduld des Lesers.
+    if (out.length) await sleep(1200)
     let text = await write({})
     let words = text.trim().split(/\s+/).filter(Boolean).length
     let nachgelegt = false

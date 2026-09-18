@@ -471,7 +471,11 @@ Material:
       {
         key: 'text', kind: 'sektionen', title: 'Abschnitt für Abschnitt',
         sections: 'struktur', minRatio: 0.85, temperature: 0.7, maxTokens: 2000,
-        system: `${LANG_BASE}
+        system: `Du schreibst fuer Eilers+Friends.
+
+{{wissen_kurz}}
+
+SUBSTANZ WOERTLICH, FORMULIERUNG FREI. Zahlen, Beispiele, Eigennamen und Verfahren bleiben exakt wie im Material. Nichts dazuerfinden.
 
 Du schreibst genau einen Abschnitt. Nicht den ganzen Text.
 
