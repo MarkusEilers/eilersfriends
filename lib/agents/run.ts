@@ -979,15 +979,50 @@ async function revision(step: StepDef, ctx: Ctx): Promise<StepOut> {
   const out: Array<Record<string, unknown>> = []
   let tin = 0, tout = 0, model: string | undefined
 
+  const zaehl = (t: string) => t.trim().split(/\s+/).filter(Boolean).length
+
   for (let i = 0; i < drafts.length; i++) {
     const findings = reports[i]?.findings ?? []
     if (!findings.length) { out.push(drafts[i]); continue }
+
+    // Der Titel geht nicht durch die Revision. Er wurde vorgegeben oder eigens
+    // geschrieben; eine Revision, die Befunde beheben soll, hat ihn zweimal
+    // stillschweigend ersetzt. Also wird er vorher abgenommen und hinterher
+    // wieder davorgesetzt.
+    const vorher = String((drafts[i] as { text?: string }).text ?? '')
+    const kopfEnde = /^(#\s.*\n(?:\n\*.*\*\n)?)/.exec(vorher)
+    const kopf = kopfEnde?.[1] ?? ''
+    const koerper = kopf ? vorher.slice(kopf.length) : vorher
+
     const r = await ask(step, ctx, {
-      variante: drafts[i],
+      variante: { ...drafts[i], text: koerper },
       befunde: { liste: lintReport(findings as never) },
     })
     tin += r.tokensIn; tout += r.tokensOut; model = r.model
-    out.push({ ...drafts[i], ...(r.value as object) })
+
+    let neuerText = String((r.value as { text?: string }).text ?? '')
+    if (kopf && !neuerText.startsWith('#')) neuerText = kopf + neuerText
+
+    /**
+     * Die Laengenbremse.
+     *
+     * Eine Revision soll Befunde beheben, nicht kuerzen. Beobachtet: 1.556
+     * Woerter gingen hinein, 1.159 kamen heraus — ein Viertel des Textes war
+     * weg, samt einem ganzen Abschnitt. Wer so kuerzt, hat nicht korrigiert,
+     * sondern neu geschrieben. Dann ist der Entwurf davor der bessere.
+     */
+    const alt = zaehl(vorher), neu = zaehl(neuerText)
+    if (alt > 200 && neu < alt * 0.92) {
+      out.push({
+        ...drafts[i],
+        revision_verworfen:
+          `Die Revision kürzte von ${alt} auf ${neu} Wörter. Beheben heißt nicht kürzen — `
+          + 'der Entwurf davor bleibt stehen.',
+      })
+      continue
+    }
+
+    out.push({ ...drafts[i], ...(r.value as object), text: neuerText })
   }
   return { value: { varianten: out }, model, tokensIn: tin, tokensOut: tout }
 }

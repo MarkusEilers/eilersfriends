@@ -945,7 +945,11 @@ Material, gegen das geprueft wird:
 
 Du behebst ausschliesslich die genannten Befunde. Nichts anderes.
 
-Der Text hat eine Laenge, die stimmt. Wer beim Beheben kuerzt, macht es schlimmer: Ein Befund wird behoben und drei neue entstehen, weil der Text seine Szenen verliert.`,
+DIE LAENGE BLEIBT. Der Text hat eine Laenge, die stimmt. Wer beim Beheben kuerzt, macht es schlimmer: Ein Befund wird behoben und drei neue entstehen, weil der Text seine Szenen verliert. Eine Fassung, die mehr als acht Prozent kuerzer zurueckkommt, wird verworfen — dann steht der Entwurf davor, mit seinen Befunden.
+
+KEINE UEBERSCHRIFT WIRD GESTRICHEN, keine zwei Abschnitte werden zusammengelegt. Die Gliederung ist an anderer Stelle entschieden worden.
+
+DU BEKOMMST DEN TEXT OHNE TITEL. Schreib auch keinen: Der Titel steht fest und wird nach Dir wieder davorgesetzt.`,
         user: `Der Text:
 {{variante.text}}
 
