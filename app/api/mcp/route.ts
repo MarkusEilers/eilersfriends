@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { verifyApiKey, hasScope } from '@/lib/events/auth'
+import { listAgents, activeAgent, startRun, advance, getRun } from '@/lib/agents/run'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -184,7 +185,17 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   if (body.method === 'tools/list') {
-    return NextResponse.json({ jsonrpc: '2.0', id, result: { tools: TOOLS } } as JsonRpcResponse)
+    // Jeder aktive Agent erscheint von selbst als Werkzeug. Damit kostet ein
+    // neuer Agent keine Zeile Arbeit an dieser Stelle — er steht in der
+    // Datenbank, und Claude sieht ihn beim naechsten Verbinden.
+    const agentTools = hasScope(ctx, 'agents:run')
+      ? (await listAgents().catch(() => [])).map((a) => ({
+          name: `agent_${a.key.replace(/-/g, '_')}`,
+          description: `${a.title} — ${a.description ?? ''}`.trim(),
+          inputSchema: a.input_schema,
+        }))
+      : []
+    return NextResponse.json({ jsonrpc: '2.0', id, result: { tools: [...TOOLS, ...agentTools] } } as JsonRpcResponse)
   }
 
   if (body.method === 'tools/call') {
@@ -193,6 +204,53 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ jsonrpc: '2.0', id, error: { code: -32602, message: 'name_required' } } as JsonRpcResponse, { status: 400 })
     }
     try {
+      // Agenten-Werkzeuge laufen ueber den Kern und nicht ueber callTool.
+      if (params.name.startsWith('agent_')) {
+        if (!hasScope(ctx, 'agents:run')) {
+          return NextResponse.json({
+            jsonrpc: '2.0', id, error: { code: -32002, message: 'forbidden:agents:run' },
+          } as JsonRpcResponse, { status: 403 })
+        }
+        const key = params.name.slice('agent_'.length).replace(/_/g, '-')
+        const agent = await activeAgent(key)
+        if (!agent) throw new Error(`unknown_agent:${key}`)
+        const args = (params.arguments ?? {}) as Record<string, unknown>
+        const run = await startRun({
+          agentKey: key, input: args,
+          orgId: (args.orgId as string) ?? null, productId: (args.productId as string) ?? null,
+          via: 'mcp',
+        })
+        // Solange treiben, bis fertig oder das Budget aufgebraucht ist. Der
+        // Aufrufer sieht entweder das Ergebnis oder die Kennung zum Nachfragen.
+        let state = await advance(run.id)
+        for (let i = 0; i < 4 && state.status === 'offen'; i++) state = await advance(run.id)
+        const full = await getRun(run.id)
+        return NextResponse.json({
+          jsonrpc: '2.0', id,
+          result: {
+            content: [{
+              type: 'text',
+              text: JSON.stringify({
+                run_id: run.id, status: state.status,
+                output: full?.run.output ?? null,
+                annahmen: full?.run.assumptions ?? [],
+                hinweis: state.status === 'offen'
+                  ? 'Noch nicht fertig — mit agent_run_status weiterfragen.'
+                  : undefined,
+              }, null, 2),
+            }],
+          },
+        } as JsonRpcResponse)
+      }
+      if (params.name === 'agent_run_status') {
+        const runId = String((params.arguments ?? {}).run_id ?? '')
+        const full = await getRun(runId)
+        if (!full) throw new Error('run_not_found')
+        return NextResponse.json({
+          jsonrpc: '2.0', id,
+          result: { content: [{ type: 'text', text: JSON.stringify(full, null, 2) }] },
+        } as JsonRpcResponse)
+      }
       const result = await callTool(params.name, params.arguments ?? {})
       return NextResponse.json({
         jsonrpc: '2.0',
