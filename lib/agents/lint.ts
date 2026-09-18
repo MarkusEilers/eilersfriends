@@ -36,6 +36,25 @@ const EMPTY = /\b(der (kunde|mensch) im mittelpunkt|innovation und qualität|gem
 const around = (text: string, i: number, len = 70) =>
   text.slice(Math.max(0, i - 25), Math.min(text.length, i + len)).replace(/\s+/g, ' ').trim()
 
+/** Zeichen-Dreiergruppen — faengt Wiederholungen, die kein Wort teilen. */
+function trigrams(s: string): Map<string, number> {
+  const t = ` ${s.toLowerCase().replace(/[^a-zà-ÿ0-9äöüß ]/gi, ' ').replace(/\s+/g, ' ').trim()} `
+  const m = new Map<string, number>()
+  for (let i = 0; i <= t.length - 3; i++) {
+    const k = t.slice(i, i + 3)
+    m.set(k, (m.get(k) ?? 0) + 1)
+  }
+  return m
+}
+
+function similarity(a: string, b: string): number {
+  const ga = trigrams(a), gb = trigrams(b)
+  let inter = 0, sa = 0, sb = 0
+  for (const [k, v] of ga) { sa += v; if (gb.has(k)) inter += Math.min(v, gb.get(k) as number) }
+  for (const [, v] of gb) sb += v
+  return sa + sb === 0 ? 0 : (2 * inter) / (sa + sb)
+}
+
 export function lint(input: LintInput): { findings: Finding[]; stats: Record<string, number> } {
   const text = input.text ?? ''
   const findings: Finding[] = []
@@ -92,10 +111,43 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
     if (got && got !== want) {
       push({ rule: 'falsche Ansprache', severity: 'fehler', quote: `${got} statt ${want}`, hint: `Gewünscht war ${want}.` })
     }
+    // Formal richtig und in der Wirkung daneben: die Ansprache taucht erst am
+    // Ende auf, davor redet der Text nur ueber sich selbst.
+    const re = want === 'du' ? /\b(du|dich|dir|dein)/i : want === 'ihr' ? /\b(ihr|euch|eure|euer)/i : /\bSie\b/
+    const first = text.search(re)
+    if (first > 0 && first / text.length > 0.55) {
+      push({
+        rule: 'Ansprache kommt spät', severity: 'warnung',
+        quote: `erst nach ${Math.round((first / text.length) * 100)} % des Textes`,
+        hint: 'Bis dahin redet der Text über sich. Den Leser früher adressieren.',
+      })
+    }
   }
 
   const words = text.trim().split(/\s+/).filter(Boolean).length
   const sentences = text.split(/[.!?]+\s/).filter((s) => s.trim().length > 1)
+
+  /**
+   * Wiederholung.
+   *
+   * Der haeufigste Fehler nach der Revision: derselbe Gedanke steht zweimal
+   * hintereinander, einmal als Satz und einmal als Variante davon. Ein Modell
+   * sieht das nicht, weil es beim zweiten Mal denselben Gedanken hatte.
+   */
+  for (let i = 0; i < sentences.length; i++) {
+    for (let j = i + 1; j < Math.min(sentences.length, i + 5); j++) {
+      const a = sentences[i].trim(), b = sentences[j].trim()
+      if (a.split(/\s+/).length < 5 || b.split(/\s+/).length < 5) continue
+      if (similarity(a, b) >= 0.62) {
+        push({
+          rule: 'Wiederholung', severity: 'fehler',
+          quote: `${a.slice(0, 60)}… / ${b.slice(0, 60)}…`,
+          hint: 'Derselbe Gedanke zweimal. Einen streichen, den anderen schaerfen.',
+        })
+        break
+      }
+    }
+  }
   const mini = sentences.filter((s) => s.trim().split(/\s+/).length <= 4).length
   if (sentences.length > 8 && mini < 2) {
     push({

@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { signOutAdminAction } from '@/lib/actions/offers'
 import {
   LayoutDashboard, Mail, LayoutTemplate, ListOrdered, Users, FileText, Settings,
-  BookOpen, Image as ImageIcon, FileSignature, LogOut, Menu, X, Webhook, UserCircle, CalendarClock, AlertTriangle, PhoneCall, ShoppingCart, PenLine, CalendarDays
+  BookOpen, Image as ImageIcon, FileSignature, LogOut, Menu, X, Webhook, UserCircle, CalendarClock, AlertTriangle, PhoneCall, ShoppingCart, PenLine, CalendarDays, Cpu
 } from 'lucide-react'
 
 type NavGroup = {
@@ -23,6 +23,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Frameworks',    href: '/admin/frameworks',     icon: BookOpen },
       { label: 'Blog',          href: '/admin/blog',           icon: PenLine },
       { label: 'Meetings',      href: '/admin/meetings',       icon: CalendarDays },
+      { label: 'Agenten',       href: '/admin/agents',         icon: Cpu },
       { label: 'Programme',     href: '/admin/programs',       icon: FileText },
     ],
   },

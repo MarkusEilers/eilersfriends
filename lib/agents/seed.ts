@@ -183,61 +183,50 @@ Recherche:
         },
       },
       {
-        key: 'skelett', kind: 'modell', title: 'Skelett', temperature: 0.4, maxTokens: 2500,
-        system: `${SYSTEM_BASE}
-
-Du baust das Skelett. Abschnitte mit Beats, kein Fließtext.
-
-Verteile das Längenbudget jetzt auf die Abschnitte. Was am Ende gekürzt wird, sind immer die Szenen — und übrig bleiben die Behauptungen.
-
-Jeder Abschnitt trägt genau eine Stufe der Kette und nennt den Beleg, mit dem sie gedreht wird.`,
-        user: `Zielgröße: {{aufnahme.ziel_woerter}} Wörter
-Textart: {{aufnahme.textart}}
-
-Die Kette:
-{{kette.stufen}}
-
-Material:
-{{aufnahme.inhalte}}`,
-        schema: {
-          type: 'object', required: ['abschnitte'],
-          properties: {
-            titel_vorschlag: { type: 'string' },
-            abschnitte: {
-              type: 'array',
-              items: {
-                type: 'object', required: ['name', 'beats', 'woerter'],
-                properties: {
-                  name: { type: 'string' }, stufe: { type: 'string' },
-                  beats: { type: 'array', items: { type: 'string' } },
-                  beleg: { type: 'string' }, woerter: { type: 'number' },
-                },
-              },
-            },
-          },
-        },
-      },
-      {
-        key: 'entwuerfe', kind: 'faecher', title: 'Drei Entwürfe', temperature: 0.75, maxTokens: 4000,
+        key: 'entwuerfe', kind: 'faecher', title: 'Drei Wege', temperature: 0.8, maxTokens: 5000,
         fanout: 3, variants: ['Szene', 'Beobachtung', 'Frage'],
         system: `${SYSTEM_BASE}
 
-Du schreibst jetzt den Text entlang des Skeletts. Fließtext in Markdown.
+Du baust einen eigenen Text. Erst das Skelett, dann die Prosa — beides in einem Zug.
 
-Dein Einstieg ist vorgegeben: {{variante.ansatz}}. Bei Szene beginnst Du mit einem Moment, bei Beobachtung mit etwas, das Dir aufgefallen ist, bei Frage mit einer, die der Leser sich selbst schon gestellt hat.
+Dein Zugang ist vorgegeben: {{variante.ansatz}}. Bei Szene beginnst Du mit einem Moment mit Zeit, Ort und Detail. Bei Beobachtung mit etwas, das Dir aufgefallen ist und das der Leser teilt. Bei Frage mit einer, die er sich selbst schon gestellt hat.
 
-Halte die Wortzahl der Abschnitte ein. Die Zielgröße ist keine Empfehlung.`,
-        user: `Skelett:
-{{skelett.abschnitte}}
+Der Zugang bestimmt nicht nur den ersten Satz, sondern die Dramaturgie: Eine Szene laeuft auf eine Erkenntnis zu. Eine Beobachtung laeuft auf eine Probe zu. Eine Frage laeuft auf eine zweite Frage zu. Wer nur den Einstieg tauscht und den Rest gleich laesst, liefert dreimal denselben Text in drei Farben.
 
-Titelvorschlag: {{skelett.titel_vorschlag}}
+Verteile die Zielgroesse auf Deine Abschnitte, bevor Du schreibst. Was am Ende gekuerzt wird, sind immer die Szenen — uebrig bleiben die Behauptungen.
+
+Die Ansprache steht von Anfang an im Text, nicht erst im letzten Absatz. Ein Text, der erst am Ende jemanden anspricht, hat vorher ueber sich selbst geredet.`,
+        user: `Die Ueberzeugungskette, die alle Fassungen teilen:
+{{kette.stufen}}
+
+Material:
+{{aufnahme.inhalte}}
+
+Kontext:
+{{material}}
+
+Recherche:
+{{recherche.material}}
+
+Textart: {{aufnahme.textart}}
 Ansprache: {{aufnahme.ansprache}}
-Tonalität: {{aufnahme.tonalitaet}}
-Zielgröße: {{aufnahme.ziel_woerter}} Wörter`,
+Tonalitaet: {{aufnahme.tonalitaet}}
+Zielgroesse: {{aufnahme.ziel_woerter}} Woerter`,
         schema: {
-          type: 'object', required: ['titel', 'text'],
+          type: 'object', required: ['titel', 'text', 'skelett'],
           properties: {
-            titel: { type: 'string' }, hook: { type: 'string' },
+            titel: { type: 'string' },
+            hook: { type: 'string' },
+            skelett: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['name', 'woerter'],
+                properties: {
+                  name: { type: 'string' }, stufe: { type: 'string' },
+                  beats: { type: 'array', items: { type: 'string' } }, woerter: { type: 'number' },
+                },
+              },
+            },
             text: { type: 'string', description: 'Der vollständige Text in Markdown' },
             worin_anders: { type: 'string', description: 'Ein Satz: wodurch unterscheidet sich diese Fassung' },
           },
@@ -263,6 +252,6 @@ Die Befunde:
       },
       { key: 'ergebnis', kind: 'sammeln', title: 'Zusammenstellen' },
     ],
-    notes: 'v1 — Kette, Skelett, drei Entwürfe, deterministische Prüfung, Revision nur auf Befunde.',
+    notes: 'v2 — der Fächer steht jetzt vor dem Skelett: jede Fassung baut ihren eigenen Aufbau. In v1 teilten sich alle drei ein Skelett und fingen deshalb mit demselben Satz an.',
   })
 }
