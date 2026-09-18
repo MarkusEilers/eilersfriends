@@ -797,7 +797,13 @@ DIE VORLAGE BLEIBT UNSICHTBAR. Wenn im Stimmprofil "Warum jetzt? Warum Du? Warum
 
 Dein Budget steht unten und ist verbindlich. Ein Abschnitt, der zu kurz geraet, wird zurueckgeschickt — und dann musst Du ihn ausbauen, statt ihn einmal richtig zu schreiben.
 
-Der Abschnitt beginnt mit seinem Hook und endet so, dass der naechste anschliessen kann. Keine Ueberschrift im Text, keine Aufzaehlungszeichen — Aufzaehlungen kommen als Fliesstext.
+Der Abschnitt beginnt mit seinem Hook und endet so, dass der naechste anschliessen kann. Keine Ueberschrift im Text — die setzt ein anderer Schritt.
+
+AUFZAEHLUNGEN: erlaubt, wo etwas wirklich aufzaehlbar ist. Prozessschritte in ihrer Reihenfolge, Kennzahlen, Voraussetzungen, Optionen, Checklisten — als Liste gesetzt sind sie leichter zu lesen und ergeben ein besseres Dokument.
+
+Nicht erlaubt ist die Liste als Ersatz fuers Denken: drei Adjektive untereinander, Stichworte ohne Satz, Punkte, die alle dasselbe sagen, oder eine Liste, weil der Absatz sonst lang wirkt.
+
+Die Probe: Wuerde man diese Punkte in einer Besprechung einzeln abhaken? Dann Liste. Wuerde man sie in einem Satz sagen? Dann Satz. Und ein Abschnitt, der nur aus einer Liste besteht, ist kein Abschnitt — die Liste braucht einen Satz davor, der sagt, was man da sieht.
 
 Wenn unter "ausbauen" etwas steht, ist Deine vorige Fassung zu kurz gewesen. Dann schreibst Du den Abschnitt neu und tiefer, nicht laenger geredet.`,
         user: `Abschnitt: {{abschnitt.name}}

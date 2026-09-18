@@ -330,9 +330,14 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
    * macht: jemanden zeigen, irgendwo, zu einer Zeit.
    */
   {
+    // Listen sind erlaubt und zaehlen nicht als Absatz: Eine Aufzaehlung von
+    // Prozessschritten oder Kennzahlen ist eine Darstellungsform, kein Gedanke,
+    // der einen Einstieg braucht.
+    const istListe = (p: string) => /^\s*([-*+]|\d+[.)])\s/.test(p)
     const absaetze = text.split(/\n{2,}/)
       .map((p) => p.trim())
-      .filter((p) => p && !p.startsWith('#') && !p.startsWith('*') && p.split(/\s+/).length > 12)
+      .filter((p) => p && !p.startsWith('#') && !p.startsWith('*') && !istListe(p)
+        && p.split(/\s+/).length > 12)
     const ersterSatz = (p: string) => p.split(/(?<=[.!?])\s/)[0] ?? p
     const fragt = absaetze.map((p) => ersterSatz(p).trimEnd().endsWith('?'))
     const anzahl = fragt.filter(Boolean).length
