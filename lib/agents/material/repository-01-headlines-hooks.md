@@ -1,0 +1,29 @@
+# Headlines & Hooks · HL-
+
+- **HL-01:** "Damit Dein Team die wichtigen Erwartungen erfüllen kann, braucht es diese Skills." (Landing Page Hero)
+- **HL-02:** "Von Unsicherheit zu planbaren Umsätzen." (Landing Page Sub) · Variante Founders Letter: "Von Unsicherheit zu absoluter Klarheit."
+- **HL-03:** "Ohne Wissen und ohne Können, bringt alles Machen wenig." (Landing Page + OnePager — Signature-Satz)
+- **HL-04:** "Verkaufen ist keine Magie. Es ist ein exaktes Handwerk — das man lernen kann." (Landing Page)
+- **HL-05:** "Die Spielregeln haben sich geändert." (Landing Page, Markt-Shift-Sektion)
+- **HL-06:** "Drei von hundert arbeiten wie ein Profi-Team." (Landing Page)
+- **HL-07:** "Die Herausforderung ist lösbar." (Landing Page / Founders Letter "Some Good News")
+- **HL-08:** "Wir schließen alle drei Lücken. Gleichzeitig." (Landing Page — Wissen/Können/Machen)
+- **HL-09:** "Kein Kurs. Ein sich selbst verstärkendes System." (Landing Page, Flywheel)
+- **HL-10:** "Die SalesMade Academy ist kein Seminar." (Landing Page)
+- **HL-11:** "Sechs Stufen. Eine Karriere im Verkauf." (Landing Page, Level-System)
+- **HL-12:** "Zwei Wege. Eine Entscheidung." (Landing Page — harter Weg / einfacher Weg)
+- **HL-13:** "Der Unterschied ist im nächsten Gespräch spürbar." (Landing Page, Before/After)
+- **HL-14:** "45 Minuten für Deine nächsten 36 Monate." (Landing Page + Founders Letter, Benchmark-CTA)
+- **HL-15:** "Schließen wir das Sales Education Gap." (Landing Page Closing) · Founders-Letter-Titel: "Defusing the Sales Trap / Bridging the Sales Education Gap"
+- **HL-16:** "Courses teach knowledge. We build skill." / "Kurse vermitteln Wissen. Wir bauen Können." (Landing Page Vergleichstabelle)
+- **HL-17:** "So erreichen B2B-Technologieunternehmen vorhersehbare, planbare Umsätze in unter sechs Monaten — garantiert, ohne Risiko, ohne Methoden- und Technologie-Overwhelm." (User-Pitch-Text 2026-07, Lead-Satz)
+- **HL-18:** "Discount as a Service." (Landing Page, Problem-Katalog — benannter Schmerz)
+- **HL-19:** "Funnel fills. Closes don't." / "Der Funnel füllt sich. Die Abschlüsse nicht." (Landing Page)
+- **HL-20:** "Lass uns das intern besprechen." (Landing Page — der Satz nach der Demo, als benannter Schmerz)
+- **HL-21:** "Das Investment amortisiert sich mit dem ersten zusätzlichen Deal." (Landing Page Pricing)
+- **HL-22:** "Rechne es selbst." (Landing Page, Kalkulator)
+- **HL-23 (Betreff):** "Vor zwei Jahren hast Du gefragt" (SoftLaunch Mail 1A) — Pre-Header: "30 Platinum-Plätze. Vier Tage. Dann öffnet der Cart."
+- **HL-24 (Hook-Mechanik):** "Spannend. Gerade nicht." — der häufigste Satz nach einem Benchmark-Call; Anchor: "Du bist einer der 38 von 400." (SoftLaunch-Sequenz)
+- **HL-25 (Hook, Partner):** "Das ist die Mail, die vor allen anderen rausgeht." (SoftLaunch — Vorsprung als Wertschätzung)
+- **HL-26 (Hook, Bestandskunden):** "Du hast mitgebaut, ohne es zu wissen." (SoftLaunch — Methodik aus gemeinsamer Arbeit destilliert)
+- **HL-27:** "Eine Tür. Ein Link. Keine Erklärung." (SoftLaunch, Cart-Open-Prinzip)

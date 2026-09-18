@@ -3,11 +3,12 @@ import { auth } from '@/lib/auth'
 import { listAgents } from '@/lib/agents/run'
 import { seedWriterKnowledge, seedWriterAgent, seedHandoffKnowledge, seedLongformAgent, seedVeredelnAgent } from '@/lib/agents/seed'
 import { ensureAgentSchema } from '@/lib/agents/schema'
+import { ingestMaterial } from '@/lib/agents/ingest'
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 
 export const runtime = 'nodejs'
-export const maxDuration = 120
+export const maxDuration = 300
 
 async function guard() {
   const s = await auth()
@@ -53,8 +54,14 @@ export async function POST(req: Request) {
   // Startbestueckung unter denselben Schluesseln.
   if (was === 'basis') await seedWriterKnowledge()
   else await seedHandoffKnowledge()
+  // Zuletzt das Material aus den Skill-Ordnern — es ersetzt jedes Paket, das
+  // es selbst besitzt (Kernregelwerk, Verbotsliste, Stimmen, Vorlagen, Hooks).
+  // Die Reihenfolge ist Absicht: die Dateien sind die Quelle, die
+  // Startbestueckung nur das, was ohne sie da waere.
+  const material = await ingestMaterial()
+
   const writer = await seedWriterAgent()
   const longform = await seedLongformAgent()
   const veredeln = await seedVeredelnAgent()
-  return NextResponse.json({ ok: true, agents: { writer, longform, veredeln } })
+  return NextResponse.json({ ok: true, agents: { writer, longform, veredeln }, material })
 }

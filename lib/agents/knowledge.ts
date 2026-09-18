@@ -49,7 +49,10 @@ export async function loadPacks(keys: string[], orgId?: string | null): Promise<
  * Wer die Beispiele nach oben stellt, bekommt Nachahmung statt Anwendung.
  */
 export function renderPacks(packs: Pack[]): string {
-  const order = ['methode', 'voice', 'verbote', 'kanal', 'beispiele']
+  // Haltung zuerst, Verbote danach, Beispiele zuletzt. Wer die Beispiele nach
+  // oben stellt, bekommt Nachahmung statt Anwendung.
+  const order = ['methode', 'voice', 'verbote', 'kanal', 'vorlage', 'hook', 'cta',
+                 'material', 'anleitung', 'beispiele']
   const sorted = [...packs].sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind))
   const blocks: string[] = []
   for (const p of sorted) {
@@ -92,13 +95,21 @@ export async function upsertPack(input: {
   const packId = rows[0].id
 
   if (input.replace) await db.execute(sql`DELETE FROM knowledge_items WHERE pack_id = ${packId}`)
-  let sort = 0
-  for (const it of input.items) {
+
+  // In einem Rutsch statt Zeile fuer Zeile: die Vorlagensammlungen bringen je
+  // Paket bis zu sechzig Bausteine mit, und sechzig Hin- und Rueckwege zur
+  // Datenbank kosten mehr Zeit als das ganze uebrige Bestuecken.
+  const rowsJson = input.items.map((it, sort) => ({
+    key: it.key ?? null, title: it.title ?? null, body: it.body,
+    tags: it.tags ?? [], weight: it.weight ?? 50, is_gold: Boolean(it.isGold), sort,
+  }))
+  for (let i = 0; i < rowsJson.length; i += 200) {
+    const chunk = rowsJson.slice(i, i + 200)
     await db.execute(sql`
       INSERT INTO knowledge_items (pack_id, key, title, body, tags, weight, is_gold, sort)
-      VALUES (${packId}, ${it.key ?? null}, ${it.title ?? null}, ${it.body},
-              ${JSON.stringify(it.tags ?? [])}::jsonb, ${it.weight ?? 50},
-              ${Boolean(it.isGold)}, ${sort++})`)
+      SELECT ${packId}, x.key, x.title, x.body, x.tags, x.weight, x.is_gold, x.sort
+      FROM jsonb_to_recordset(${JSON.stringify(chunk)}::jsonb)
+        AS x(key text, title text, body text, tags jsonb, weight int, is_gold boolean, sort int)`)
   }
   return packId
 }
@@ -132,7 +143,7 @@ export async function catalogIndex(input: {
         ? sql`AND i.tags ?| ARRAY(SELECT jsonb_array_elements_text(${JSON.stringify(input.tags)}::jsonb))`
         : sql``}
     ORDER BY p.kind, p.key, i.sort
-    LIMIT ${input.limit ?? 400}`)
+    LIMIT ${input.limit ?? 800}`)
   return rows as unknown as IndexRow[]
 }
 
@@ -146,7 +157,7 @@ export async function loadItems(refs: Array<{ pack: string; key: string }>, orgI
     WHERE p.is_active AND (p.org_id IS NULL OR p.org_id = ${orgId ?? null}::uuid)
       AND (p.key || '/' || COALESCE(i.key,'')) IN (
         SELECT jsonb_array_elements_text(${JSON.stringify(refs.map((r) => `${r.pack}/${r.key}`))}::jsonb))
-    LIMIT 12`)
+    LIMIT 24`)
   return rows as unknown as Array<{
     pack: string; kind: string; pack_name: string; key: string; title: string; body: string
   }>

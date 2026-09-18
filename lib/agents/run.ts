@@ -485,7 +485,11 @@ ${(step.pick ?? []).map((p) => `- ${p.anzahl} × ${p.kind} (als "${p.als}")`).jo
 
 Du siehst nur Titel und Schluessel. Waehle, was zu Auftrag, Zielgruppe und Textart passt, und begruende jede Wahl in einem Satz. Eine Wahl ohne Begruendung ist ein Zufall.
 
-Nimm nicht, was am bekanntesten klingt, sondern was zu dieser Aufgabe passt. Zwei Beispiele derselben Handschrift sind eine Wahl zu wenig.`,
+Nimm nicht, was am bekanntesten klingt, sondern was zu dieser Aufgabe passt. Zwei Beispiele derselben Handschrift sind eine Wahl zu wenig.
+
+ZU DEN STIMMEN. Die Stimme von Markus Eilers gilt immer und steht nicht zur Wahl. Was Du hier waehlst, ist eine zweite Stimme fuer die STRUKTUR: Kennedy fuer Direct Response und Angebote, Welsh fuer Kurzform, Graziosi fuer Geschichte, Vosler fuer Langform und Belief-Chains, Kern fuer Video und den Ueberschriften-Bogen, Braun fuer Kaltkontakt.
+
+Guru-Profile liefern Struktur, nie Klang. Bei Kollision gewinnt Markus. Kennedy-Urgency, Drohkulissen und Hype sind in jedem Framework verboten.`,
     user: `Textart: ${a?.textart ?? ''}
 Zielgruppe: ${a?.audience ?? ''}
 Ueberzeugungsziel: ${a?.ueberzeugungsziel ?? ''}

@@ -1,3 +1,5 @@
+import { VERBOTENE_BEGRIFFE } from './verbote.generated'
+
 /**
  * Der Linter.
  *
@@ -93,17 +95,29 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
   const findings: Finding[] = []
   const push = (f: Finding) => findings.push(f)
 
-  for (const w of input.banned ?? []) {
-    if (!w) continue
-    const re = new RegExp(`(^|[^a-zà-ÿ])(${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})([^a-zà-ÿ]|$)`, 'gi')
+  // Die Verbotsliste kommt aus forbidden-words.md und wird erzeugt, nicht
+  // getippt (scripts/verbote-generieren.py). Dazu, was ein Mandant zusaetzlich
+  // gesperrt hat.
+  const verbote: Array<{ wort: string; gruppe: string; kontext?: boolean }> = [
+    ...VERBOTENE_BEGRIFFE,
+    ...(input.banned ?? []).filter(Boolean).map((w) => ({ wort: w, gruppe: 'eigene Sperre' })),
+  ]
+  for (const v of verbote) {
+    const re = new RegExp(
+      `(^|[^a-zà-ÿ])(${v.wort.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})([^a-zà-ÿ]|$)`, 'gi')
     let m: RegExpExecArray | null
     while ((m = re.exec(text))) {
       push({
-        rule: 'verbotenes Wort', severity: 'fehler', quote: around(text, m.index),
-        hint: `„${w}“ ist gesperrt.`, position: m.index,
+        rule: v.kontext ? 'Wort nur in einer Lesart erlaubt' : 'verbotenes Wort',
+        severity: v.kontext ? 'warnung' : 'fehler',
+        quote: around(text, m.index), position: m.index,
+        hint: v.kontext
+          ? `„${v.wort}“ ist bildlos gesperrt (${v.gruppe}). Wenn es hier woertlich gemeint ist, bleibt es.`
+          : `„${v.wort}“ ist gesperrt (${v.gruppe}).`,
       })
-      if (findings.length > 60) break
+      if (findings.length > 80) break
     }
+    if (findings.length > 80) break
   }
 
   const scan = (re: RegExp, rule: string, severity: Severity, hint: string) => {

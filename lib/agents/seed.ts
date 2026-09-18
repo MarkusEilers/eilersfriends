@@ -1,4 +1,5 @@
 import { upsertPack } from './knowledge'
+import { PFLICHT_PACKS } from './material'
 import { publishAgent } from './run'
 
 /**
@@ -11,7 +12,7 @@ import { publishAgent } from './run'
 
 export async function seedWriterKnowledge() {
   await upsertPack({
-    key: 'voice.markus', kind: 'voice', name: 'Voice-Charta',
+    key: 'voice.markus.basis', kind: 'voice', name: 'Voice-Charta (Startbestückung)',
     description: 'Wie hier geschrieben wird. Vor jedem Satz anzuwenden, nicht danach zu prüfen.',
     replace: true,
     items: [
@@ -37,7 +38,7 @@ export async function seedWriterKnowledge() {
   })
 
   await upsertPack({
-    key: 'verbote', kind: 'verbote', name: 'Was nicht vorkommt',
+    key: 'verbote.basis', kind: 'verbote', name: 'Was nicht vorkommt (Startbestückung)',
     description: 'Harte Verbote. Der Linter prüft sie deterministisch, nicht der Geschmack.',
     replace: true,
     items: [
@@ -111,7 +112,9 @@ export async function seedWriterAgent() {
     title: 'Content-Writer',
     description:
       'Nimmt Briefing, Kontext und Stimme auf, recherchiert bei Bedarf, baut die Überzeugungskette und liefert drei Varianten mit Lint-Bericht und offengelegten Annahmen.',
-    knowledge: ['voice.markus', 'verbote', 'methode.belief', 'kanal'],
+    // PFLICHT_PACKS = Kernregelwerk, Verbotsliste, Markus-Stimme, Selbstprüfung.
+    // Sie kommen aus den Skill-Dateien und gelten ohne Auswahl.
+    knowledge: [...PFLICHT_PACKS, 'voice.markus.patterns', 'verbote.ergaenzung', 'methode.belief', 'kanal'],
     scopes: ['agents:run'],
     default_model_role: 'copy',
     input_schema: {
@@ -275,7 +278,7 @@ sind, und schreib besser, wo sie es nicht sind:
  */
 export async function seedHandoffKnowledge() {
   await upsertPack({
-    key: 'voice.markus', kind: 'voice', name: 'Voice-Charta · 12 Patterns',
+    key: 'voice.markus.patterns', kind: 'voice', name: 'Voice-Charta · 12 Patterns',
     description:
       'Mindestens fünf Patterns sind aktiv, mindestens drei Mini-Sätze. Bei Konflikt zwischen einer allgemeinen Schreibregel und diesem Profil gewinnt dieses Profil.',
     replace: true,
@@ -294,8 +297,8 @@ export async function seedHandoffKnowledge() {
   })
 
   await upsertPack({
-    key: 'verbote', kind: 'verbote', name: 'Harte Verbote',
-    description: 'Der Linter prüft, was sich prüfen lässt. Der Rest steht hier, weil es trotzdem gilt.',
+    key: 'verbote.ergaenzung', kind: 'verbote', name: 'Ergänzungen zur Verbotsliste',
+    description: 'Was aus einzelnen Sessions dazukam und noch nicht in forbidden-words.md steht. Die Liste selbst ist die Quelle — dieses Paket nur der Zulauf.',
     replace: true,
     items: [
       { title: '„aber" als Konjunktion', weight: 100, body:
@@ -367,7 +370,8 @@ export async function seedLongformAgent() {
     title: 'Langform-Writer',
     description:
       'Für Nachbereitungen, Reports und Magazintexte ab 800 Wörtern. Baut Überzeugungsziele und Gliederung mit Wortbudget, schreibt dann Abschnitt für Abschnitt und legt nach, wo ein Abschnitt zu kurz bleibt.',
-    knowledge: ['voice.markus', 'verbote', 'slop', 'methode.belief', 'beispiele.markus', 'kanal'],
+    knowledge: [...PFLICHT_PACKS, 'voice.markus.patterns', 'verbote.ergaenzung', 'slop',
+                'methode.belief', 'beispiele.markus', 'kanal'],
     scopes: ['agents:run'],
     default_model_role: 'copy',
     input_schema: {
@@ -405,9 +409,12 @@ export async function seedLongformAgent() {
       {
         key: 'auswahl', kind: 'auswahl', title: 'Beispiele und Vorlage wählen', optional: true,
         pick: [
+          { kind: 'voice', anzahl: 1, als: 'stimme' },
           { kind: 'beispiele', anzahl: 2, als: 'beispiele' },
           { kind: 'vorlage', anzahl: 1, als: 'vorlage' },
-          { kind: 'hook', anzahl: 1, als: 'hooks' },
+          { kind: 'hook', anzahl: 2, als: 'hooks' },
+          { kind: 'cta', anzahl: 1, als: 'schluss' },
+          { kind: 'methode', anzahl: 1, als: 'methode' },
         ],
       },
       {
@@ -469,6 +476,12 @@ Textart: {{aufnahme.textart}}
 
 Gewaehlte Vorlage als Geruest:
 {{auswahl.vorlage}}
+
+Gewaehlte zweite Stimme — sie liefert Struktur, nie Klang. Bei Kollision gewinnt Markus:
+{{auswahl.stimme}}
+
+Gewaehlte Methode:
+{{auswahl.methode}}
 
 Hook-Muster, aus denen Du schoepfen kannst:
 {{auswahl.hooks}}
@@ -539,7 +552,8 @@ Die Abschnitte in ihrer Reihenfolge, mit Arbeitstitel, Hook und Insight:
 
 Kernaussage: {{kette.kernaussage}}
 
-Hook-Muster, aus denen Du schoepfen kannst:
+Hook-Muster, aus denen Du schoepfen kannst — Platzhalter in {…} fuellen,
+danach durch die Verbotsliste filtern:
 {{auswahl.hooks}}
 
 Was die Recherche an Farbe gebracht hat — Zahlen, Zitate, Worte der Zielgruppe:
@@ -596,6 +610,13 @@ Material, aus dem alles stammen muss:
 
 Klangmassstab:
 {{auswahl.beispiele}}
+
+Zweite Stimme fuer die Struktur dieses Abschnitts (Klang bleibt Markus):
+{{auswahl.stimme}}
+
+Wenn dies der letzte Abschnitt ist — Muster fuer den Schluss. Keine Frage, die
+niemand beantwortet, keine Einladungsformel:
+{{auswahl.schluss}}
 
 Recherchierte Farbe — Zahlen, Zitate, Worte der Zielgruppe. Nur nutzen, wenn es
 zu diesem Abschnitt gehoert, und nur woertlich mit der Fundstelle, die dabeisteht:
@@ -715,7 +736,8 @@ export async function seedVeredelnAgent() {
     title: 'Veredeln',
     description:
       'Nimmt einen bestehenden Text und macht ihn besser, statt einen neuen zu schreiben. Räumt Füllwörter und Stilkapriolen weg, behält jede Botschaft, ergänzt wo eine Lücke klafft und hebt an, wo es sich lohnt. Für Transkripte, Diktate und eigene Entwürfe.',
-    knowledge: ['voice.markus', 'verbote', 'slop', 'beispiele.markus', 'kanal'],
+    knowledge: [...PFLICHT_PACKS, 'voice.markus.patterns', 'verbote.ergaenzung', 'slop',
+                'beispiele.markus', 'kanal'],
     scopes: ['agents:run'],
     default_model_role: 'copy',
     input_schema: {
