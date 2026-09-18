@@ -381,7 +381,7 @@ function Result({ data }: { data: Record<string, unknown> }) {
               <h3 className="text-xl font-bold text-gray-900" style={{ fontFamily: "'DM Serif Display', serif" }}>
                 {String(variants[open].titel ?? '')}
               </h3>
-              {variants[open].worin_anders && (
+              {Boolean(variants[open].worin_anders) && (
                 <p className="mt-1 text-[12px] text-gray-500">{String(variants[open].worin_anders)}</p>
               )}
             </div>
