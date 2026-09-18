@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { ensureAgentSchema, type AgentDef, type StepDef } from './schema'
+import { PFLICHT_PACKS } from './material'
 import { loadPacks, renderPacks, bannedWords, catalogIndex, loadItems, renderIndex } from './knowledge'
 import { lint, lintReport } from './lint'
 import { resolveModel } from '@/lib/strategy/models'
@@ -318,10 +319,16 @@ async function kontext(ctx: Ctx): Promise<StepOut> {
     if (rendered) parts.push(`### ${rendered}`)
   }
 
-  // Fuer die Abschnitts-Aufrufe reicht die Haltung plus die Verbote. Der ganze
-  // Wissensblock in jedem der zehn Aufrufe kostet Minutenbudget und verduennt
-  // die Aufmerksamkeit auf das, was in diesem Abschnitt zu tun ist.
-  const kurz = renderPacks(packs.filter((p) => p.kind === 'voice' || p.kind === 'verbote'))
+  // Fuer die Abschnitts-Aufrufe reicht das Pflichtwissen: Kernregelwerk,
+  // Verbotsliste, Markus-Stimme, Selbstpruefung. Der ganze Block in jedem der
+  // zehn Aufrufe kostet Minutenbudget und verduennt die Aufmerksamkeit auf
+  // das, was in diesem Abschnitt zu tun ist.
+  //
+  // Die Auswahl laeuft ueber den Paketschluessel, nicht ueber die Art: Das
+  // Kernregelwerk ist eine "methode" und waere sonst genau da weggefallen, wo
+  // es am meisten gebraucht wird — beim Schreiben.
+  const pflicht = new Set(PFLICHT_PACKS)
+  const kurz = renderPacks(packs.filter((p) => pflicht.has(p.key)))
 
   return {
     value: {
