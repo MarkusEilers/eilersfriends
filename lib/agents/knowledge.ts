@@ -25,7 +25,8 @@ export async function loadPacks(keys: string[], orgId?: string | null): Promise<
   const rows = (await db.execute(sql`
     SELECT DISTINCT ON (p.key) p.key, p.kind, p.name, p.description, p.id
     FROM knowledge_packs p
-    WHERE p.is_active AND p.key = ANY(${keys}::text[])
+    WHERE p.is_active
+      AND p.key IN (SELECT jsonb_array_elements_text(${JSON.stringify(keys)}::jsonb))
       AND (p.org_id IS NULL OR p.org_id = ${orgId ?? null}::uuid)
     ORDER BY p.key, (p.org_id IS NOT NULL) DESC`)) as unknown as
     Array<{ id: string; key: string; kind: string; name: string; description: string | null }>
