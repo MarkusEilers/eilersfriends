@@ -106,6 +106,22 @@ export async function ensureAgentSchema() {
     )`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS agent_artifacts_idx ON agent_artifacts (run_id, kind)`)
 
+  /**
+   * Das Minutenfenster.
+   *
+   * Das Konto hat ein Token-Limit je Minute. Wer es nur im Speicher fuehrt,
+   * fuehrt es je Lambda-Instanz — und zwei Instanzen, die sich fuer allein
+   * halten, verbrauchen zusammen das Doppelte. Also steht es in der Datenbank.
+   */
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS model_window (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      model TEXT NOT NULL,
+      tokens INT NOT NULL,
+      at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )`)
+  await db.execute(sql`CREATE INDEX IF NOT EXISTS model_window_idx ON model_window (model, at DESC)`)
+
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS knowledge_packs (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

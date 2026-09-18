@@ -424,22 +424,37 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
  * und halten den naechsten Aufruf an, bis er hineinpasst. Das macht lange Laeufe
  * langsam und zuverlaessig — in dieser Reihenfolge.
  */
-const TPM = Number(process.env.OPENAI_TPM ?? 27_000)
-const fenster: Array<{ t: number; n: number }> = []
+const TPM = Number(process.env.OPENAI_TPM ?? 26_000)
 
-function verbraucht(): number {
-  const jetzt = Date.now()
-  while (fenster.length && jetzt - fenster[0].t > 60_000) fenster.shift()
-  return fenster.reduce((a, x) => a + x.n, 0)
+/**
+ * Was in der letzten Minute verbraucht wurde — und wann der aelteste Eintrag
+ * aus dem Fenster faellt.
+ *
+ * Steht in der Datenbank, nicht im Speicher: Zwei Lambda-Instanzen, die sich
+ * beide fuer allein halten, verbrauchen zusammen das Doppelte.
+ */
+async function verbraucht(model: string): Promise<{ summe: number; freiIn: number }> {
+  const rows = (await db.execute(sql`
+    SELECT COALESCE(SUM(tokens), 0)::int AS summe,
+           COALESCE(EXTRACT(EPOCH FROM (MIN(at) + interval '61 seconds' - now())), 0)::float AS frei_in
+    FROM model_window WHERE model = ${model} AND at > now() - interval '60 seconds'`)) as unknown as
+    Array<{ summe: number; frei_in: number }>
+  return { summe: rows[0]?.summe ?? 0, freiIn: Math.max(0, rows[0]?.frei_in ?? 0) }
 }
 
-async function bremse(geschaetzt: number): Promise<void> {
-  for (let i = 0; i < 12; i++) {
-    const frei = TPM - verbraucht()
-    if (geschaetzt <= frei || !fenster.length) return
-    // So lange warten, bis der aelteste Eintrag aus dem Fenster faellt.
-    const wartet = Math.min(62_000 - (Date.now() - fenster[0].t) + 500, 20_000)
-    await sleep(Math.max(1_000, wartet))
+async function bremse(model: string, geschaetzt: number): Promise<void> {
+  for (let i = 0; i < 10; i++) {
+    const { summe, freiIn } = await verbraucht(model)
+    if (geschaetzt + summe <= TPM || summe === 0) return
+    await sleep(Math.min(Math.max(1_500, Math.ceil(freiIn * 1000) + 500), 20_000))
+  }
+}
+
+async function merkeVerbrauch(model: string, tokens: number) {
+  await db.execute(sql`INSERT INTO model_window (model, tokens) VALUES (${model}, ${tokens})`)
+  // Aufraeumen, damit die Tabelle nicht waechst.
+  if (Math.random() < 0.05) {
+    await db.execute(sql`DELETE FROM model_window WHERE at < now() - interval '10 minutes'`)
   }
 }
 
@@ -471,7 +486,7 @@ async function ask(step: StepDef, ctx: Ctx, extra?: Record<string, unknown>) {
 
   // Grob geschaetzt: gut drei Zeichen je Token, plus was die Antwort kosten darf.
   const geschaetzt = Math.ceil(body.length / 3.2) + (step.maxTokens ?? 4000)
-  await bremse(geschaetzt)
+  await bremse(model, geschaetzt)
 
   let res: Response | null = null
   let lastText = ''
@@ -491,10 +506,7 @@ async function ask(step: StepDef, ctx: Ctx, extra?: Record<string, unknown>) {
   }
   if (!res || !res.ok) throw new Error(`Modell ${res?.status ?? 0}: ${lastText.slice(0, 200)}`)
   const data = await res.json()
-  fenster.push({
-    t: Date.now(),
-    n: (data.usage?.prompt_tokens ?? 0) + (data.usage?.completion_tokens ?? 0),
-  })
+  await merkeVerbrauch(model, (data.usage?.prompt_tokens ?? 0) + (data.usage?.completion_tokens ?? 0))
   return {
     value: JSON.parse(data.choices?.[0]?.message?.content ?? '{}'),
     model,
