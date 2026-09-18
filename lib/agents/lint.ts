@@ -187,6 +187,35 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
     }
   }
 
+  /**
+   * Zwischenueberschriften.
+   *
+   * Nach der Ueberschrift ueberfliegt der Leser als Erstes alle
+   * Zwischenueberschriften — sie sind der zweite Text im Text. Ein Etikett wie
+   * „Ursache 2: Wissen und Koennen" sagt, was kommt. „Er steht also jetzt
+   * morgens um vier da" laesst weiterlesen. Der Doppelpunkt ist fast immer das
+   * Zeichen, dass es ein Etikett geworden ist.
+   */
+  {
+    const heads = (text.match(/^#{2,3}\s+(.+)$/gm) ?? []).map((h) => h.replace(/^#+\s+/, '').trim())
+    const etiketten = heads.filter((h) => /:/.test(h) && h.split(':')[0].split(/\s+/).length <= 4)
+    if (etiketten.length >= 2) {
+      push({
+        rule: 'Überschriften als Etikett', severity: 'warnung',
+        quote: etiketten.slice(0, 3).join(' · '),
+        hint: 'Sagt, was kommt, statt weiterlesen zu lassen. Der Doppelpunkt ist meist das Zeichen.',
+      })
+    }
+    const nummeriert = heads.filter((h) => /^(teil|kapitel|schritt|ursache|punkt)\s*\d|^\d+[.)]/i.test(h))
+    if (nummeriert.length >= 2) {
+      push({
+        rule: 'Überschriften durchnummeriert', severity: 'hinweis',
+        quote: nummeriert.slice(0, 3).join(' · '),
+        hint: 'Eine Nummer baut keine Spannung. Was macht diesen Abschnitt lesenswert?',
+      })
+    }
+  }
+
   const words = text.trim().split(/\s+/).filter(Boolean).length
   const sentences = text.split(/[.!?]+\s/).filter((s) => s.trim().length > 1)
 

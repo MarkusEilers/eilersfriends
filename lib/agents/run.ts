@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { ensureAgentSchema, type AgentDef, type StepDef } from './schema'
-import { loadPacks, renderPacks, bannedWords } from './knowledge'
+import { loadPacks, renderPacks, bannedWords, catalogIndex, loadItems, renderIndex } from './knowledge'
 import { lint, lintReport } from './lint'
 import { resolveModel } from '@/lib/strategy/models'
 import { recordUsage } from '@/lib/strategy/usage'
@@ -249,6 +249,7 @@ async function runStep(step: StepDef, ctx: Ctx): Promise<StepOut> {
     case 'modell': return callModel(step, ctx)
     case 'faecher': return fanout(step, ctx)
     case 'sektionen': return sections(step, ctx)
+    case 'auswahl': return choose(step, ctx)
     case 'lint': return linter(step, ctx)
     case 'revision': return revision(step, ctx)
     case 'sammeln': return collect(ctx)
@@ -448,6 +449,82 @@ async function fanout(step: StepDef, ctx: Ctx): Promise<StepOut> {
     tokensIn: runs.reduce((s, r) => s + r.tokensIn, 0),
     tokensOut: runs.reduce((s, r) => s + r.tokensOut, 0),
   }
+}
+
+/**
+ * Aus dem Katalog waehlen.
+ *
+ * Erst das Verzeichnis — Titel und Schlagworte, keine Ruempfe. Dann eine
+ * Entscheidung, dann werden nur die gewaehlten Bausteine geladen. 514 Eintraege
+ * vollstaendig in den Prompt zu kippen waere ein halbes Buch und wuerde die
+ * Aufmerksamkeit auf das Eigentliche ersticken.
+ *
+ * Und die Begruendung wird mitverlangt. Eine Wahl ohne Begruendung ist ein
+ * Zufall, den man spaeter nicht pruefen kann.
+ */
+async function choose(step: StepDef, ctx: Ctx): Promise<StepOut> {
+  const a = ctx.results.aufnahme as { textart?: string; audience?: string; ueberzeugungsziel?: string } | undefined
+  const kinds = (step.pick ?? []).map((p) => p.kind)
+  const index = await catalogIndex({
+    kinds, orgId: ctx.orgId,
+    tags: a?.textart ? [String(a.textart)] : undefined,
+    limit: 400,
+  })
+  // Ohne Treffer auf die Textart: noch einmal ohne Schlagwort-Filter.
+  const rows = index.length > 8 ? index : await catalogIndex({ kinds, orgId: ctx.orgId, limit: 400 })
+  if (!rows.length) return { value: { gewaehlt: [], begruendung: 'Der Katalog ist leer.' } }
+
+  const res = await ask({
+    ...step,
+    system: `Du waehlst aus einem Verzeichnis. Du schreibst nichts.
+
+${(step.pick ?? []).map((p) => `- ${p.anzahl} × ${p.kind} (als "${p.als}")`).join('\n')}
+
+Du siehst nur Titel und Schluessel. Waehle, was zu Auftrag, Zielgruppe und Textart passt, und begruende jede Wahl in einem Satz. Eine Wahl ohne Begruendung ist ein Zufall.
+
+Nimm nicht, was am bekanntesten klingt, sondern was zu dieser Aufgabe passt. Zwei Beispiele derselben Handschrift sind eine Wahl zu wenig.`,
+    user: `Textart: ${a?.textart ?? ''}
+Zielgruppe: ${a?.audience ?? ''}
+Ueberzeugungsziel: ${a?.ueberzeugungsziel ?? ''}
+
+Verzeichnis:
+${renderIndex(rows)}`,
+    schema: {
+      type: 'object', required: ['gewaehlt'],
+      properties: {
+        gewaehlt: {
+          type: 'array',
+          items: {
+            type: 'object', required: ['pack', 'key', 'als', 'warum'],
+            properties: {
+              pack: { type: 'string' }, key: { type: 'string' },
+              als: { type: 'string' }, warum: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+    temperature: 0.3, maxTokens: 900,
+  }, ctx)
+
+  const picked = ((res.value as { gewaehlt?: Array<{ pack: string; key: string; als: string; warum: string }> }).gewaehlt ?? [])
+  const bodies = await loadItems(picked.map((p) => ({ pack: p.pack, key: p.key })), ctx.orgId)
+
+  const gruppen: Record<string, string[]> = {}
+  for (const p of picked) {
+    const body = bodies.find((b) => b.pack === p.pack && b.key === p.key)
+    if (!body) continue
+    ;(gruppen[p.als] ??= []).push(`**${body.title}** _(${body.pack_name})_\n_Gewählt, weil: ${p.warum}_\n\n${body.body}`)
+  }
+
+  await db.execute(sql`
+    INSERT INTO agent_artifacts (run_id, step_key, kind, label, payload)
+    VALUES (${ctx.runId}, ${step.key}, 'auswahl', ${`${picked.length} gewählt`},
+            ${JSON.stringify(picked)}::jsonb)`)
+
+  const value: Record<string, unknown> = { gewaehlt: picked }
+  for (const [als, texte] of Object.entries(gruppen)) value[als] = texte.join('\n\n---\n\n')
+  return { value, model: res.model, tokensIn: res.tokensIn, tokensOut: res.tokensOut }
 }
 
 /**

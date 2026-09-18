@@ -388,6 +388,14 @@ export async function seedLongformAgent() {
       { key: 'kontext', kind: 'kontext', title: 'Wissen laden' },
       { key: 'recherche', kind: 'recherche', title: 'Nachsehen', onlyIf: 'recherche', optional: true },
       {
+        key: 'auswahl', kind: 'auswahl', title: 'Beispiele und Vorlage wählen', optional: true,
+        pick: [
+          { kind: 'beispiele', anzahl: 2, als: 'beispiele' },
+          { kind: 'vorlage', anzahl: 1, als: 'vorlage' },
+          { kind: 'hook', anzahl: 1, als: 'hooks' },
+        ],
+      },
+      {
         key: 'kette', kind: 'modell', title: 'Überzeugungsziele', temperature: 0.4, maxTokens: 2500,
         system: `${LANG_BASE}
 
@@ -406,7 +414,10 @@ Material:
 {{aufnahme.inhalte}}
 
 Recherche:
-{{recherche.material}}`,
+{{recherche.material}}
+
+Zwei Beispieltexte als Klangmassstab — Haltung und Satzbau uebernehmen, nicht den Inhalt:
+{{auswahl.beispiele}}`,
         schema: {
           type: 'object', required: ['ziele'],
           properties: {
@@ -437,9 +448,25 @@ Je Abschnitt gehoert ein Hook — eine Frage oder eine Szene, keine Absichtserkl
 
 Rechne mit sechs bis zehn Abschnitten. Ein Abschnitt unter 120 Woertern traegt keinen eigenen Gedanken, einer ueber 260 zerfaellt.
 
-Nenne zwei Stellen, an denen Du von der Reihenfolge des Materials abweichst, und warum.`,
+DIE ZWISCHENUEBERSCHRIFTEN SIND KEIN BEIWERK.
+
+Nach der Ueberschrift ueberfliegt der Leser als Erstes alle Zwischenueberschriften. Sie sind der zweite Text im Text. Sie muessen fuer sich gelesen einen Bogen ergeben: Atmosphaere aufbauen, neugierig machen, aufeinander aufbauen.
+
+Die Probe: Lies nur die Ueberschrift und die Zwischenueberschriften hintereinander. Ergibt das eine Geschichte mit Anfang, Wendung und Schluss — oder ist es ein Inhaltsverzeichnis? Wenn es ein Inhaltsverzeichnis ist, schreib sie neu.
+
+Was eine Zwischenueberschrift nicht ist: ein Etikett fuer den Inhalt darunter. "Ursache 2: Wissen und Koennen" sagt, was kommt. "Er steht also jetzt morgens um vier da" laesst weiterlesen. Der Doppelpunkt ist fast immer das Zeichen, dass es ein Etikett geworden ist.
+
+Starke Ueberschriften sind erlaubt und erwuenscht — sie muessen nur inhaltlich stimmen und neugierig machen. Nimm die Muster aus den gewaehlten Hooks, wo sie passen.
+
+Liefere die Ueberschriften-Folge zusaetzlich als eigene Liste, damit sie sich am Stueck lesen laesst.`,
         user: `Zielgroesse: {{aufnahme.ziel_woerter}} Woerter — verbindlich, die Summe der Budgets muss sie ergeben.
 Textart: {{aufnahme.textart}}
+
+Gewaehlte Vorlage als Geruest:
+{{auswahl.vorlage}}
+
+Hook-Muster, aus denen Du schoepfen kannst:
+{{auswahl.hooks}}
 
 Die Ueberzeugungsziele:
 {{kette.ziele}}
@@ -449,9 +476,14 @@ Kernaussage: {{kette.kernaussage}}
 Material:
 {{aufnahme.inhalte}}`,
         schema: {
-          type: 'object', required: ['abschnitte'],
+          type: 'object', required: ['abschnitte', 'ueberschriften_folge'],
           properties: {
             titel_vorschlag: { type: 'string' },
+            ueberschriften_folge: {
+              type: 'array', items: { type: 'string' },
+              description: 'Titel und alle Zwischenüberschriften am Stück — der zweite Text im Text',
+            },
+            skim_probe: { type: 'string', description: 'Ergibt die Folge eine Geschichte? In einem Satz.' },
             abweichungen: { type: 'array', items: { type: 'string' } },
             abschnitte: {
               type: 'array',
@@ -500,6 +532,9 @@ Tonalitaet: {{aufnahme.tonalitaet}}
 Material, aus dem alles stammen muss:
 {{aufnahme.inhalte}}
 
+Klangmassstab:
+{{auswahl.beispiele}}
+
 {{ausbauen.auftrag}}
 {{ausbauen.bisher}}`,
         schema: {
@@ -530,6 +565,6 @@ Die Befunde:
       { key: 'ergebnis', kind: 'sammeln', title: 'Zusammenstellen' },
     ],
     notes:
-      'v1 — schreibt Abschnitt fuer Abschnitt mit eigenem Wortbudget und legt einmal nach, wo ein Abschnitt unter 85 Prozent bleibt. Ein einzelner Aufruf um 1.500 Woerter liefert verlaesslich 400.',
+      'v2 — waehlt zwei Beispieltexte, eine Vorlage und ein Hook-Muster aus dem Katalog und begruendet die Wahl; die Zwischenueberschriften werden als eigener Bogen geschrieben und als Folge ausgegeben. v1 — schreibt Abschnitt fuer Abschnitt mit eigenem Wortbudget und legt einmal nach, wo ein Abschnitt unter 85 Prozent bleibt. Ein einzelner Aufruf um 1.500 Woerter liefert verlaesslich 400.',
   })
 }

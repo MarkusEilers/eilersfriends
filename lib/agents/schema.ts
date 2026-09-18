@@ -149,6 +149,7 @@ export type StepKind =
   | 'modell'      // ein Modellaufruf mit Schema
   | 'faecher'     // derselbe Modellaufruf mehrfach, mit Variation
   | 'sektionen'   // Abschnitt fuer Abschnitt, jeder mit eigenem Wortbudget
+  | 'auswahl'     // aus dem Katalog waehlen: Beispiele und eine Vorlage
   | 'lint'        // Code: deterministische Pruefung
   | 'revision'    // Modell, nur Befunde beheben
   | 'sammeln'     // Code: Ergebnis zusammenstellen
@@ -172,6 +173,8 @@ export interface StepDef {
   /** Fuer 'sektionen': woher die Gliederung kommt und wie eng das Budget gilt */
   sections?: string
   minRatio?: number
+  /** Fuer 'auswahl': welche Arten zur Wahl stehen und wie viele je Art */
+  pick?: Array<{ kind: string; anzahl: number; als: string }>
   /**
    * Woher die Fassungen kommen, die dieser Schritt prueft oder ueberarbeitet.
    * Ohne Angabe: die Entwuerfe. Damit laesst sich dieselbe Schrittart zweimal in
