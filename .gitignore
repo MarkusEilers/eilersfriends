@@ -33,3 +33,6 @@ npm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 telefonie-relay/node_modules
+
+node_modules/
+package-lock.json
