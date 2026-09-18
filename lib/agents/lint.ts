@@ -38,6 +38,34 @@ const HONESTY = /\b(ganz ehrlich|klartext|ohne bullshit|die ehrliche (rechnung|b
 const HYPE = /\b(game.?changer|revolutionär|bahnbrechend|explosive? (ergebnisse|wachstum)|auf steroiden|absolut einzigartig)\b/gi
 const EMPTY = /\b(der (kunde|mensch) im mittelpunkt|innovation und qualität|gemeinsam in die zukunft|ganzheitliche lösung)\b/gi
 
+/**
+ * Virtue-Signalling.
+ *
+ * Saetze, die beteuern, dass wir nichts verkaufen wollen. Sie erreichen das
+ * Gegenteil: Wer sagt „ohne versteckten Pitch", erinnert den Leser daran, dass
+ * ein Pitch moeglich waere. Die Absicht zeigt sich im Verhalten, nicht in der
+ * Ankuendigung.
+ */
+const VIRTUE = /\b(ohne (versteckten |verdeckten )?(pitch|hintergedanken|agenda)|wir (wollen|haben) (auch )?nicht vor,? (Dich|Sie|euch)|nicht überzeugen|kein verkaufsgespräch|kostet (logischerweise |natürlich )?nichts|wir sind (herstellerneutral|unabhängig)|ganz ohne verpflichtung|unverbindlich und kostenlos)\b/gi
+
+/**
+ * Unterstellungen.
+ *
+ * Der Text erklaert dem Leser, was er weiss, fuehlt oder kennt. Manchmal als
+ * Schmeichelei („Wer draussen Verantwortung traegt, weiss…"), manchmal als
+ * Vertraulichkeit („Du kennst das"). Beides nimmt ihm die Antwort ab, bevor er
+ * sie geben konnte.
+ */
+const PRESUME = /(wer [^.!?]{5,70}[,:]? wei(ß|ss)t?[ ,]|jede(r|n)?,? der [^.!?]{5,60}[,:]? wei(ß|ss)|du kennst das|sie kennen das|wir alle wissen|das kennst du|sicher kennst du|wie du (sicher |vermutlich )?wei(ß|ss)t|du (spürst|merkst|weißt) (das |es )?(längst|selbst|genau))/gi
+
+/**
+ * Fake-Contradiction.
+ *
+ * „nicht X, sondern Y", wo niemand X behauptet hat. Klingt nach Haltung und ist
+ * ein Strohmann.
+ */
+const FAKE_CONTRA = /\b(nicht\s+\w+(?:en|n)?,\s*sondern\s+\w+)/gi
+
 const around = (text: string, i: number, len = 70) =>
   text.slice(Math.max(0, i - 25), Math.min(text.length, i + len)).replace(/\s+/g, ' ').trim()
 
@@ -91,6 +119,49 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
   scan(HYPE, 'Lautstärke ohne Beleg', 'warnung', 'Belegen oder streichen.')
   scan(EMPTY, 'Floskel ohne mögliches Gegenteil', 'warnung',
     'Wenn niemand widersprechen würde, steht da nichts.')
+  scan(VIRTUE, 'Virtue-Signalling', 'fehler',
+    'Wer beteuert, nichts zu wollen, erinnert an das Gegenteil. Die Absicht zeigt sich im Verhalten.')
+  scan(PRESUME, 'Unterstellung', 'fehler',
+    'Der Text sagt dem Leser, was er weiß oder fühlt. Das nimmt ihm die Antwort ab. Beobachtung statt Zuschreibung.')
+  scan(FAKE_CONTRA, 'Fake-Contradiction', 'warnung',
+    'Hat jemand das Gegenteil behauptet? Wenn nein, ist es ein Strohmann.')
+
+  {
+    const re = /(^|[^a-zà-ÿ])(Leute)([^a-zà-ÿ]|$)/g
+    let m: RegExpExecArray | null
+    while ((m = re.exec(text))) {
+      push({
+        rule: 'Leute', severity: 'warnung', quote: around(text, m.index), position: m.index,
+        hint: 'Klingt im geschriebenen Text herablassend. „Menschen" trägt dieselbe Bedeutung ohne den Beiklang.',
+      })
+    }
+  }
+
+  /**
+   * Der Schluss.
+   *
+   * Hier sammeln sich die Klischees, weil der Text zu Ende ist und noch etwas
+   * passieren soll. Eine Frage, die niemand beantwortet, ist kein Schluss.
+   */
+  {
+    const last = text.trim().split(/\n{2,}/).slice(-1)[0] ?? ''
+    const KLISCHEE = [
+      /was würde passieren, wenn/i, /die einladung steht/i, /lass uns (gemeinsam|reden)/i,
+      /melde dich (einfach )?(gern|jederzeit)/i, /ich freue mich auf (den austausch|deine nachricht)/i,
+      /was denkst du\?/i, /wie siehst du das\?/i, /sprich mich an/i,
+    ]
+    for (const re of KLISCHEE) {
+      const m = re.exec(last)
+      if (m) {
+        push({
+          rule: 'Klischee im Schluss', severity: 'fehler',
+          quote: last.slice(Math.max(0, m.index - 20), m.index + 70).trim(),
+          hint: 'Eine Frage, die niemand beantwortet, ist kein Schluss. Etwas Konkretes anbieten oder aufhören.',
+        })
+        break
+      }
+    }
+  }
 
   const bangs = (text.match(/!/g) ?? []).length
   if (bangs > 0) {

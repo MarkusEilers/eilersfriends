@@ -252,6 +252,7 @@ async function runStep(step: StepDef, ctx: Ctx): Promise<StepOut> {
     case 'auswahl': return choose(step, ctx)
     case 'lint': return linter(step, ctx)
     case 'revision': return revision(step, ctx)
+    case 'zerlegen': return zerlegen(step, ctx)
     case 'sammeln': return collect(ctx)
     default: throw new Error(`Unbekannte Schrittart: ${step.kind}`)
   }
@@ -337,7 +338,9 @@ async function recherche(step: StepDef, ctx: Ctx): Promise<StepOut> {
   const a = ctx.results.aufnahme as Record<string, unknown> | undefined
   const thema = String(a?.inhalte ?? ctx.input.inhalte ?? '')
   const audience = String(a?.audience ?? '')
-  const queries = step.queries?.length ? step.queries : [
+  // Suchfragen duerfen Platzhalter tragen — die Farb-Recherche fragt nach dem,
+  // was in der Gliederung steht, nicht nach dem Thema im Allgemeinen.
+  const queries = step.queries?.length ? step.queries.map((q) => render(q, ctx)) : [
     `Belege, Zahlen und Studien zu: ${thema}`,
     `Was ${audience} dazu öffentlich schreibt — Foren, Bewertungen, Beiträge`,
   ]
@@ -540,14 +543,70 @@ ${renderIndex(rows)}`,
  * eigenen Auftrag. Wer trotzdem zu kurz bleibt, wird einmal zum Ausbauen
  * zurueckgeschickt — mit der Auflage, zu vertiefen und nicht zu wiederholen.
  */
+/**
+ * Zerlegen — der Einstieg fuer "Stay the course".
+ *
+ * Kein Modellaufruf. Der Originaltext wird an seinen eigenen Absaetzen in
+ * Passagen geschnitten, und jede Passage bekommt als Budget ihre eigene
+ * Laenge. Das ist der ganze Unterschied zum Neuschreiben: Das Mass kommt vom
+ * Original, nicht von einer Zielgroesse.
+ */
+async function zerlegen(step: StepDef, ctx: Ctx): Promise<StepOut> {
+  const quelle = String((ctx.input as Record<string, unknown>).inhalte ?? '').trim()
+  if (!quelle) throw new Error('Kein Originaltext zum Veredeln')
+
+  const roh = quelle.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean)
+  const teile: string[] = []
+  let puffer = ''
+  const zaehl = (t: string) => t.split(/\s+/).filter(Boolean).length
+
+  for (const p of roh) {
+    // Eine Ueberschrift beginnt immer eine neue Passage.
+    const istKopf = /^#{1,6}\s/.test(p) || (zaehl(p) <= 12 && !/[.!?]$/.test(p))
+    if (istKopf && puffer) { teile.push(puffer); puffer = p; continue }
+    puffer = puffer ? `${puffer}\n\n${p}` : p
+    if (zaehl(puffer) >= 220) { teile.push(puffer); puffer = '' }
+  }
+  if (puffer) teile.push(puffer)
+
+  const abschnitte = teile.map((t, i) => {
+    const kopf = t.match(/^#{1,6}\s*(.+)$/m)?.[1]
+    return {
+      name: kopf ?? `Passage ${i + 1}`,
+      woerter: zaehl(t),
+      quelle: t,
+      beats: [] as string[],
+    }
+  })
+
+  return { value: { abschnitte, passagen: abschnitte.length, woerter: zaehl(quelle) } }
+}
+
 async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
   const from = step.sections ?? 'struktur'
   const plan = (ctx.results[from] as {
-    abschnitte?: Array<{ name: string; woerter: number; beats?: string[]; beleg?: string; stufe?: string }>
+    abschnitte?: Array<{
+      name: string; woerter: number; beats?: string[]
+      beleg?: string; stufe?: string; quelle?: string
+    }>
     titel_vorschlag?: string
   }) ?? {}
   const parts = plan.abschnitte ?? []
   if (!parts.length) throw new Error(`Keine Gliederung in "${from}"`)
+
+  // Die Zwischenueberschriften koennen aus einem eigenen Schritt kommen, der
+  // nach der Farb-Recherche laeuft. Dann gewinnen sie gegen die Arbeitstitel
+  // aus der Gliederung — Position fuer Position.
+  if (step.headings) {
+    const h = (ctx.results[step.headings] as { ueberschriften?: string[] }) ?? {}
+    const list = h.ueberschriften ?? []
+    parts.forEach((s, i) => { if (list[i]) s.name = list[i] })
+  }
+
+  // Ein vom Auftraggeber gesetzter Titel ist keine Anregung. Er steht so da,
+  // wie er uebergeben wurde.
+  const fixTitel = String((ctx.input as Record<string, unknown>).titel ?? '').trim()
+  const fixUnter = String((ctx.input as Record<string, unknown>).untertitel ?? '').trim()
 
   const minRatio = step.minRatio ?? 0.85
   const out: Array<{ name: string; text: string; woerter: number; budget: number; nachgelegt: boolean }> = []
@@ -596,7 +655,15 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
     out.push({ name: s.name, text, woerter: words, budget, nachgelegt })
   }
 
-  const full = out.map((s) => s.text.trim()).join('\n\n')
+  // Ueberschriften setzt nur, wer welche geschrieben hat. Beim Veredeln eines
+  // Originals stehen sie schon im Text.
+  const body = out
+    .map((s, i) => (step.headings && i > 0 ? `## ${s.name}\n\n${s.text.trim()}` : s.text.trim()))
+    .join('\n\n')
+  const kopf = fixTitel
+    ? `# ${fixTitel}\n\n${fixUnter ? `*${fixUnter}*\n\n` : ''}`
+    : plan.titel_vorschlag ? `# ${plan.titel_vorschlag}\n\n` : ''
+  const full = `${kopf}${body}`
   const total = full.trim().split(/\s+/).filter(Boolean).length
   const soll = parts.reduce((a, s) => a + (Number(s.woerter) || 0), 0)
 
@@ -609,7 +676,7 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
     value: {
       varianten: [{
         ansatz: 'Langform',
-        titel: plan.titel_vorschlag ?? '',
+        titel: fixTitel || plan.titel_vorschlag || '',
         text: full,
         abschnitte: out,
         worin_anders: `${total} Wörter über ${out.length} Abschnitte, Ziel ${soll}.`,

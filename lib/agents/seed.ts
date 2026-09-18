@@ -244,8 +244,13 @@ Kein Umschreiben, kein Verbessern, kein Glätten. Wer bei der Revision den ganze
         user: `Der Text:
 {{variante.text}}
 
-Die Befunde:
-{{befunde.liste}}`,
+Die Befunde des Linters:
+{{befunde.liste}}
+
+Was die Bild-Pruefung gefunden hat — Vergleiche, die kippen, Saetze, die ein
+Laie nicht versteht, und der Schluss. Uebernimm die Vorschlaege, wo sie besser
+sind, und schreib besser, wo sie es nicht sind:
+{{bild.befunde}}`,
         schema: {
           type: 'object', required: ['text'],
           properties: { text: { type: 'string' }, geaendert: { type: 'array', items: { type: 'string' } } },
@@ -304,7 +309,15 @@ export async function seedHandoffKnowledge() {
       { title: 'Zeichensetzung', weight: 80, body:
         'Maximal ein Ausrufezeichen pro 500 Wörter. Kein ALLCAPS zur Betonung.' },
       { title: 'Anti-Patterns', weight: 85, body:
-        'Drohrhetorik („wer wartet, holt nicht auf"), Hype („explosive Ergebnisse"), Plakat-Headlines in Versalien, Gotcha-Schlüsse, die den Leser in die schlechte Gruppe sortieren, Comment-Bait, Virtue-Signalling ohne Beleg.' },
+        'Drohrhetorik („wer wartet, holt nicht auf"), Hype („explosive Ergebnisse"), Plakat-Headlines in Versalien, Gotcha-Schlüsse, die den Leser in die schlechte Gruppe sortieren, Comment-Bait.' },
+      { title: 'Virtue-Signalling', weight: 100, body:
+        'Kein Satz, der beteuert, dass wir nichts verkaufen wollen. „Ohne versteckten Pitch", „wir wollen Dich nicht überzeugen", „ganz unverbindlich", „kostet nichts" — das erreicht das Gegenteil: Wer es sagt, erinnert daran, dass ein Pitch möglich wäre. Die Absicht zeigt sich im Verhalten. Wenn wir nichts verkaufen, merkt der Leser das daran, dass nichts verkauft wird.' },
+      { title: 'Unterstellungen', weight: 100, body:
+        'Wir erklären dem Leser nicht, was er weiß, fühlt oder kennt. Nicht als Vertraulichkeit („Du kennst das"), nicht als Schmeichelei („Wer draußen Verantwortung trägt, weiß, wie selten solche Räume sind"). Beides nimmt ihm die Antwort ab, bevor er sie geben konnte, und beides ist geraten. Stattdessen: beobachten, was tatsächlich passiert, und ihn selbst schließen lassen.' },
+      { title: 'Der letzte Absatz', weight: 95, body:
+        'Der Schluss zieht Klischees an wie kein anderer Absatz. Keine Frage, die niemand beantwortet („Was würde passieren, wenn…?", „Wie siehst Du das?"), keine Einladungsformel („Die Einladung steht", „Melde Dich gern"), keine Fake-Contradiction („teilen, nicht überzeugen"). Entweder steht dort etwas Konkretes — ein Termin, ein Ort, ein nächster Schritt — oder der Text hört nach dem letzten Gedanken auf. Aufhören ist erlaubt.' },
+      { title: '„Leute"', weight: 70, body:
+        'Im gesprochenen Wort in Ordnung, im geschriebenen Text herablassend. „Menschen" trägt dieselbe Bedeutung ohne den Beiklang.' },
     ],
   })
 
@@ -362,6 +375,8 @@ export async function seedLongformAgent() {
       required: ['inhalte'],
       properties: {
         audience: { type: 'string' },
+        titel: { type: 'string', description: 'Wenn gesetzt, steht dieser Titel wörtlich über dem Text. Kein Vorschlag.' },
+        untertitel: { type: 'string', description: 'Zeile unter dem Titel, z.B. „Webcast-Zusammenfassung"' },
         context_md: { type: 'string', description: 'Der Handoff: Auftrag, Zahlen mit Herkunft, Reaktionen, Quellmaterial' },
         inhalte: { type: 'string', description: 'Das Ausgangsmaterial, aus dem der Text entsteht' },
         tonalitaet: { type: 'string' },
@@ -448,17 +463,7 @@ Je Abschnitt gehoert ein Hook — eine Frage oder eine Szene, keine Absichtserkl
 
 Rechne mit sechs bis zehn Abschnitten. Ein Abschnitt unter 120 Woertern traegt keinen eigenen Gedanken, einer ueber 260 zerfaellt.
 
-DIE ZWISCHENUEBERSCHRIFTEN SIND KEIN BEIWERK.
-
-Nach der Ueberschrift ueberfliegt der Leser als Erstes alle Zwischenueberschriften. Sie sind der zweite Text im Text. Sie muessen fuer sich gelesen einen Bogen ergeben: Atmosphaere aufbauen, neugierig machen, aufeinander aufbauen.
-
-Die Probe: Lies nur die Ueberschrift und die Zwischenueberschriften hintereinander. Ergibt das eine Geschichte mit Anfang, Wendung und Schluss — oder ist es ein Inhaltsverzeichnis? Wenn es ein Inhaltsverzeichnis ist, schreib sie neu.
-
-Was eine Zwischenueberschrift nicht ist: ein Etikett fuer den Inhalt darunter. "Ursache 2: Wissen und Koennen" sagt, was kommt. "Er steht also jetzt morgens um vier da" laesst weiterlesen. Der Doppelpunkt ist fast immer das Zeichen, dass es ein Etikett geworden ist.
-
-Starke Ueberschriften sind erlaubt und erwuenscht — sie muessen nur inhaltlich stimmen und neugierig machen. Nimm die Muster aus den gewaehlten Hooks, wo sie passen.
-
-Liefere die Ueberschriften-Folge zusaetzlich als eigene Liste, damit sie sich am Stueck lesen laesst.`,
+Gib jedem Abschnitt einen Arbeitstitel. Der ist nur fuer Dich — die echten Zwischenueberschriften schreibt ein spaeterer Schritt, wenn er mehr weiss als Du jetzt.`,
         user: `Zielgroesse: {{aufnahme.ziel_woerter}} Woerter — verbindlich, die Summe der Budgets muss sie ergeben.
 Textart: {{aufnahme.textart}}
 
@@ -476,14 +481,9 @@ Kernaussage: {{kette.kernaussage}}
 Material:
 {{aufnahme.inhalte}}`,
         schema: {
-          type: 'object', required: ['abschnitte', 'ueberschriften_folge'],
+          type: 'object', required: ['abschnitte'],
           properties: {
             titel_vorschlag: { type: 'string' },
-            ueberschriften_folge: {
-              type: 'array', items: { type: 'string' },
-              description: 'Titel und alle Zwischenüberschriften am Stück — der zweite Text im Text',
-            },
-            skim_probe: { type: 'string', description: 'Ergibt die Folge eine Geschichte? In einem Satz.' },
             abweichungen: { type: 'array', items: { type: 'string' } },
             abschnitte: {
               type: 'array',
@@ -501,8 +501,70 @@ Material:
         },
       },
       {
+        key: 'farbe', kind: 'recherche', title: 'Farbe suchen',
+        optional: true,
+        queries: [
+          'Belastbare Zahlen, Studien und Datenpunkte mit Jahr und Quelle zu: {{kette.kernaussage}}',
+          'Treffende Zitate von namentlich benannten Personen zu: {{kette.kernaussage}} — mit Fundstelle',
+          'Womit sich {{aufnahme.audience}} im Alltag herumschlaegt: Foren, Bewertungen, Beitraege, eigene Worte',
+        ],
+      },
+      {
+        key: 'ueberschriften', kind: 'modell', title: 'Der zweite Text im Text',
+        temperature: 0.7, maxTokens: 2000,
+        system: `${LANG_BASE}
+
+Du schreibst die Ueberschrift und die Zwischenueberschriften. Sonst nichts.
+
+DAS IST KEIN BEIWERK.
+
+Nach der Ueberschrift ueberfliegt der Leser als Erstes alle Zwischenueberschriften. Sie sind der zweite Text im Text — oft der einzige, den er ganz liest.
+
+Sie muessen fuer sich gelesen einen Bogen ergeben: Atmosphaere aufbauen, neugierig machen, aufeinander aufbauen. Anfang, Wendung, Schluss.
+
+Die Probe: Lies nur die Folge hintereinander. Ist das eine Geschichte oder ein Inhaltsverzeichnis? Wenn es ein Inhaltsverzeichnis ist, schreib sie neu.
+
+Was eine Zwischenueberschrift nicht ist: ein Etikett fuer den Inhalt darunter. "Ursache 2: Wissen und Koennen" sagt, was kommt. "Er steht also jetzt morgens um vier da" laesst weiterlesen. Der Doppelpunkt ist fast immer das Zeichen, dass ein Etikett daraus geworden ist. Nummerierte Ueberschriften sind immer ein Etikett.
+
+Starke Ueberschriften sind erwuenscht. Sie muessen nur stimmen: Was drueber steht, muss drunter auch passieren.
+
+Du lieferst genau so viele Zwischenueberschriften, wie es Abschnitte gibt, in derselben Reihenfolge. Der erste Abschnitt bekommt auch eine — sie wird im Text nicht gesetzt, aber sie gehoert in die Folge, damit der Bogen stimmt.
+
+Wenn ein Titel vorgegeben ist, ist er gesetzt. Du schreibst dann keinen eigenen und baust die Folge unter ihn.`,
+        user: `Vorgegebener Titel (wenn leer, schlaegst Du einen vor): {{eingabe.titel}}
+Untertitel: {{eingabe.untertitel}}
+
+Die Abschnitte in ihrer Reihenfolge, mit Arbeitstitel, Hook und Insight:
+{{struktur.abschnitte}}
+
+Kernaussage: {{kette.kernaussage}}
+
+Hook-Muster, aus denen Du schoepfen kannst:
+{{auswahl.hooks}}
+
+Was die Recherche an Farbe gebracht hat — Zahlen, Zitate, Worte der Zielgruppe:
+{{farbe.material}}
+
+Ansprache: {{aufnahme.ansprache}}`,
+        schema: {
+          type: 'object', required: ['ueberschriften', 'skim_probe'],
+          properties: {
+            titel: { type: 'string' },
+            ueberschriften: {
+              type: 'array', items: { type: 'string' },
+              description: 'Genau eine je Abschnitt, in derselben Reihenfolge',
+            },
+            skim_probe: {
+              type: 'string',
+              description: 'Die Folge am Stück gelesen — ergibt sie eine Geschichte? In einem Satz, ehrlich.',
+            },
+          },
+        },
+      },
+      {
         key: 'text', kind: 'sektionen', title: 'Abschnitt für Abschnitt',
-        sections: 'struktur', minRatio: 0.85, temperature: 0.7, maxTokens: 2000,
+        sections: 'struktur', headings: 'ueberschriften',
+        minRatio: 0.85, temperature: 0.7, maxTokens: 2000,
         system: `Du schreibst fuer Eilers+Friends.
 
 {{wissen_kurz}}
@@ -535,6 +597,10 @@ Material, aus dem alles stammen muss:
 Klangmassstab:
 {{auswahl.beispiele}}
 
+Recherchierte Farbe — Zahlen, Zitate, Worte der Zielgruppe. Nur nutzen, wenn es
+zu diesem Abschnitt gehoert, und nur woertlich mit der Fundstelle, die dabeisteht:
+{{farbe.material}}
+
 {{ausbauen.auftrag}}
 {{ausbauen.bisher}}`,
         schema: {
@@ -543,6 +609,65 @@ Klangmassstab:
         },
       },
       { key: 'pruefung', kind: 'lint', title: 'Prüfung', source: 'text' },
+      {
+        key: 'bild', kind: 'modell', title: 'Bilder und Verständlichkeit',
+        temperature: 0.2, maxTokens: 2500,
+        system: `${LANG_BASE}
+
+Du pruefst nicht die Sprache — das hat der Linter getan. Du pruefst, ob der Text
+etwas sagt, und ob ein Vergleich haelt.
+
+VERGLEICHE UND BILDER. Nimm jeden Vergleich einzeln und rechne ihn zu Ende.
+
+Das echte Beispiel, an dem Du Dich orientierst: "Planung laeuft oft in eine
+Richtung, wie ein Paket im Tracking. Wir schicken es raus. Ob es ankommt, sagt
+uns keiner." Das Bild kippt: Tracking ist genau das Verfahren, das einem sagt,
+wo das Paket ist. Der Vergleich behauptet das Gegenteil von dem, wofuer das Wort
+steht. Ein Leser, der einmal stolpert, liest den naechsten Absatz misstrauisch.
+
+Also je Bild drei Fragen: Stimmt es, wenn man es zu Ende denkt? Sagen wir das
+ueberhaupt, oder ist es nur schoen? Geht es einfacher?
+
+VERSTAENDLICHKEIT. Der Massstab ist nicht der Fachmann. Der Massstab ist ein
+kluger Mensch, der von unserem Gebiet nichts weiss — ein Vorstand aus einer
+anderen Branche, ein Kind, das gut zuhoert. Wo er raten muesste, ist der Satz zu
+schreiben, nicht der Leser zu dumm.
+
+Markiere jede Stelle, an der er raten muesste, und schreib den Satz einfacher
+hin. Keine Bedeutung wegnehmen — nur die Umwege.
+
+DER SCHLUSS. Der letzte Absatz zieht Klischees an wie kein anderer. Pruefe ihn
+gesondert: Steht dort etwas Konkretes, oder eine Frage, die niemand beantwortet?
+
+Du aenderst nichts. Du lieferst Befunde mit Fundstelle und einem Vorschlag.
+Findest Du nichts, ist die Liste leer — das ist ein erlaubtes Ergebnis.`,
+        user: `Der Text:
+{{text.varianten.0.text}}
+
+Material, gegen das geprueft wird:
+{{aufnahme.inhalte}}`,
+        schema: {
+          type: 'object', required: ['befunde'],
+          properties: {
+            befunde: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['art', 'stelle', 'warum', 'vorschlag'],
+                properties: {
+                  art: { type: 'string', enum: ['bild kippt', 'sagt nichts', 'zu verschachtelt', 'schluss'] },
+                  stelle: { type: 'string', description: 'Der Satz, wörtlich' },
+                  warum: { type: 'string' },
+                  vorschlag: { type: 'string', description: 'Der Satz, einfacher — nicht ärmer' },
+                },
+              },
+            },
+            laien_probe: {
+              type: 'string',
+              description: 'Was ein Laie nach dem Lesen sagen würde, in einem Satz. Ehrlich.',
+            },
+          },
+        },
+      },
       {
         key: 'revision', kind: 'revision', title: 'Revision', temperature: 0.4, maxTokens: 6000,
         source: 'text', reports: 'pruefung',
@@ -566,5 +691,205 @@ Die Befunde:
     ],
     notes:
       'v2 — waehlt zwei Beispieltexte, eine Vorlage und ein Hook-Muster aus dem Katalog und begruendet die Wahl; die Zwischenueberschriften werden als eigener Bogen geschrieben und als Folge ausgegeben. v1 — schreibt Abschnitt fuer Abschnitt mit eigenem Wortbudget und legt einmal nach, wo ein Abschnitt unter 85 Prozent bleibt. Ein einzelner Aufruf um 1.500 Woerter liefert verlaesslich 400.',
+  })
+}
+
+/* ───────────────────── Agent 3 · Veredeln (Stay the course) ───────────────────── */
+
+/**
+ * Stay the course.
+ *
+ * Der Langform-Writer schreibt neu. Dieser hier schreibt nicht neu — er nimmt
+ * den Text, der schon da ist, und macht ihn besser, ohne ihn zu ersetzen.
+ *
+ * Der Unterschied steckt nicht im Prompt, sondern im Mass: Die Passagen kommen
+ * aus dem Original, und jede bekommt als Budget ihre eigene Laenge. Wo der
+ * Langform-Writer eine Zielgroesse erfuellt, erfuellt dieser hier eine Vorlage.
+ *
+ * Gedacht fuer Transkripte, Diktate und eigene Entwuerfe: Die Botschaft steht
+ * bereits, aber sie steht in „aehm", in halben Saetzen und in Stilkapriolen.
+ */
+export async function seedVeredelnAgent() {
+  return publishAgent({
+    key: 'stay-the-course',
+    title: 'Veredeln',
+    description:
+      'Nimmt einen bestehenden Text und macht ihn besser, statt einen neuen zu schreiben. Räumt Füllwörter und Stilkapriolen weg, behält jede Botschaft, ergänzt wo eine Lücke klafft und hebt an, wo es sich lohnt. Für Transkripte, Diktate und eigene Entwürfe.',
+    knowledge: ['voice.markus', 'verbote', 'slop', 'beispiele.markus', 'kanal'],
+    scopes: ['agents:run'],
+    default_model_role: 'copy',
+    input_schema: {
+      type: 'object',
+      required: ['inhalte'],
+      properties: {
+        inhalte: { type: 'string', description: 'Der bestehende Text. Er ist die Vorlage, nicht das Rohmaterial.' },
+        titel: { type: 'string' },
+        untertitel: { type: 'string' },
+        audience: { type: 'string' },
+        tonalitaet: { type: 'string' },
+        ueberzeugungsziel: { type: 'string' },
+        ansprache: { type: 'string', enum: ['du', 'ihr', 'sie'] },
+        strenge: {
+          type: 'string', enum: ['sanft', 'normal'],
+          description: 'sanft = fast nur aufräumen. normal = aufräumen und dort anheben, wo es sich lohnt.',
+        },
+      },
+    },
+    output_schema: {
+      type: 'object',
+      properties: {
+        varianten: { type: 'array', items: { type: 'object' } },
+        pruefung: { type: 'object' },
+      },
+    },
+    steps: [
+      { key: 'aufnahme', kind: 'intake', title: 'Eingaben ordnen' },
+      { key: 'kontext', kind: 'kontext', title: 'Wissen laden' },
+      { key: 'passagen', kind: 'zerlegen', title: 'Original in Passagen schneiden' },
+      {
+        key: 'durchgang', kind: 'sektionen', title: 'Passage für Passage',
+        sections: 'passagen', minRatio: 0, temperature: 0.5, maxTokens: 2000,
+        system: `Du schreibst fuer Eilers+Friends.
+
+{{wissen_kurz}}
+
+DU SCHREIBST NICHT NEU. Der Text ist da. Er hat eine Reihenfolge, eine Haltung
+und Botschaften, die jemand so und nicht anders sagen wollte. Deine Arbeit ist,
+das freizulegen — nicht, es zu ersetzen.
+
+Was rausfliegt, ohne dass Du fragst: "aehm", "oehm", "also", "im Prinzip",
+"sozusagen", "quasi", angefangene und wieder verlassene Saetze, dreimal dasselbe
+in drei Anlaeufen, Stilkapriolen, die niemandem dienen.
+
+Was bleibt, auch wenn Du es anders gesagt haettest: jede Botschaft, jede Zahl,
+jeder Eigenname, jedes Beispiel, die Reihenfolge der Gedanken, die Haltung.
+
+Dann gehst Du die Passage mit fuenf Fragen durch. Jede Frage darf zu einer
+Aenderung fuehren, keine muss es:
+
+1. Gibt es hier eine Bedeutung, die wir erwaehnen wollen — und die im Original
+   nur angedeutet ist? Dann sag sie.
+2. Versteht der Leser, was wir sagen wollen? Der Massstab ist nicht der
+   Fachmann, sondern ein kluger Mensch, der von unserem Gebiet nichts weiss.
+   Wo er raten muesste, schreibst Du den Satz einfacher.
+3. Traegt das etwas bei? Ein Satz, der nichts hinzufuegt, wird gestrichen — auch
+   wenn er schoen ist.
+4. Ist das spannend genug? Wo es flach liegt, hilft fast immer eine Konkretion:
+   eine Zahl, eine Szene, ein Name. Aber nur aus dem Original.
+5. Waere hier ein rhetorisches Mittel richtig? Ein Dreischritt, ein
+   Parallelismus, ein kurzer Satz nach drei langen. Sparsam. Ein Text, in dem
+   jeder Absatz eine Figur traegt, klingt wie eine Rede und liest sich wie Arbeit.
+
+NICHTS DAZUERFINDEN. Keine Zahl, kein Zitat, keine Studie, kein Beispiel, das
+nicht in der Passage oder im Gesamtmaterial steht. Wenn Frage 1 oder 4 nach
+etwas verlangt, das nicht da ist, laesst Du es und vermerkst es.
+
+Die Laenge orientiert sich am Original. Etwas kuerzer ist gut — Fuellwoerter
+fallen weg. Deutlich laenger ist verdaechtig: dann hast Du geschrieben statt
+veredelt.
+
+Ueberschriften, die in der Passage stehen, bleiben stehen, wie sie sind.`,
+        user: `Die Passage im Original:
+{{abschnitt.quelle}}
+
+Ihre Laenge: {{abschnitt.budget}} Woerter. Bleib in der Naehe.
+
+Strenge: {{aufnahme.strenge}}
+Ansprache: {{aufnahme.ansprache}}
+Tonalitaet: {{aufnahme.tonalitaet}}
+Ueberzeugungsziel: {{aufnahme.ueberzeugungsziel}}
+
+So endete die vorige Passage in Deiner Fassung:
+{{vorher.schluss}}
+
+Klangmassstab:
+{{auswahl.beispiele}}
+
+{{ausbauen.auftrag}}`,
+        schema: {
+          type: 'object', required: ['text'],
+          properties: {
+            text: { type: 'string' },
+            gestrichen: { type: 'array', items: { type: 'string' }, description: 'Was wegfiel und warum' },
+            luecken: {
+              type: 'array', items: { type: 'string' },
+              description: 'Wo eine Zahl, ein Name oder ein Beleg fehlt, den nur ein Mensch liefern kann',
+            },
+          },
+        },
+      },
+      { key: 'pruefung', kind: 'lint', title: 'Prüfung', source: 'durchgang' },
+      {
+        key: 'bild', kind: 'modell', title: 'Bilder und Verständlichkeit',
+        temperature: 0.2, maxTokens: 2500,
+        system: `Du pruefst nicht die Sprache — das hat der Linter getan. Du pruefst, ob der
+Text etwas sagt, und ob ein Vergleich haelt.
+
+Nimm jeden Vergleich einzeln und rechne ihn zu Ende. Ein Bild, das kippt, kostet
+mehr als es bringt: Wer einmal stolpert, liest den naechsten Absatz misstrauisch.
+
+Je Bild drei Fragen: Stimmt es, wenn man es zu Ende denkt? Sagen wir das
+ueberhaupt, oder ist es nur schoen? Geht es einfacher?
+
+Dann die Verstaendlichkeit. Massstab ist ein kluger Mensch ohne unser Fachwissen.
+Wo er raten muesste, ist der Satz zu schreiben, nicht der Leser zu dumm.
+
+Und der Schluss gesondert: steht dort etwas Konkretes, oder eine Frage, die
+niemand beantwortet?
+
+Du aenderst nichts. Befunde mit Fundstelle und Vorschlag. Eine leere Liste ist
+ein erlaubtes Ergebnis.`,
+        user: `Der Text:
+{{durchgang.varianten.0.text}}
+
+Das Original, gegen das geprueft wird:
+{{aufnahme.inhalte}}`,
+        schema: {
+          type: 'object', required: ['befunde'],
+          properties: {
+            befunde: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['art', 'stelle', 'warum', 'vorschlag'],
+                properties: {
+                  art: { type: 'string', enum: ['bild kippt', 'sagt nichts', 'zu verschachtelt', 'schluss'] },
+                  stelle: { type: 'string' }, warum: { type: 'string' }, vorschlag: { type: 'string' },
+                },
+              },
+            },
+            treue: {
+              type: 'string',
+              description: 'Steht noch jede Botschaft des Originals im Text? Wenn nein: welche fehlt.',
+            },
+          },
+        },
+      },
+      {
+        key: 'revision', kind: 'revision', title: 'Revision', temperature: 0.3, maxTokens: 6000,
+        source: 'durchgang', reports: 'pruefung',
+        system: `Du behebst ausschliesslich die genannten Befunde. Nichts anderes.
+
+Dies ist ein veredelter Text, kein neu geschriebener. Wer beim Beheben umbaut,
+macht die Arbeit zunichte: Die Botschaften des Originals muessen alle noch
+dastehen, in derselben Reihenfolge.`,
+        user: `Der Text:
+{{variante.text}}
+
+Die Befunde des Linters:
+{{befunde.liste}}
+
+Was die Bild-Pruefung gefunden hat:
+{{bild.befunde}}
+
+Treue zum Original laut Pruefung:
+{{bild.treue}}`,
+        schema: {
+          type: 'object', required: ['text'],
+          properties: { text: { type: 'string' }, geaendert: { type: 'array', items: { type: 'string' } } },
+        },
+      },
+      { key: 'nachpruefung', kind: 'lint', title: 'Nachprüfung', source: 'revision' },
+      { key: 'ergebnis', kind: 'sammeln', title: 'Zusammenstellen' },
+    ],
   })
 }

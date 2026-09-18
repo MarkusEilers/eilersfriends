@@ -152,6 +152,7 @@ export type StepKind =
   | 'auswahl'     // aus dem Katalog waehlen: Beispiele und eine Vorlage
   | 'lint'        // Code: deterministische Pruefung
   | 'revision'    // Modell, nur Befunde beheben
+  | 'zerlegen'    // Code: Originaltext in Passagen schneiden (Stay the course)
   | 'sammeln'     // Code: Ergebnis zusammenstellen
 
 export interface StepDef {
@@ -172,6 +173,8 @@ export interface StepDef {
   queries?: string[]
   /** Fuer 'sektionen': woher die Gliederung kommt und wie eng das Budget gilt */
   sections?: string
+  /** Schritt, dessen `ueberschriften` die Arbeitstitel der Gliederung ersetzen. */
+  headings?: string
   minRatio?: number
   /** Fuer 'auswahl': welche Arten zur Wahl stehen und wie viele je Art */
   pick?: Array<{ kind: string; anzahl: number; als: string }>

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { listAgents } from '@/lib/agents/run'
-import { seedWriterKnowledge, seedWriterAgent, seedHandoffKnowledge, seedLongformAgent } from '@/lib/agents/seed'
+import { seedWriterKnowledge, seedWriterAgent, seedHandoffKnowledge, seedLongformAgent, seedVeredelnAgent } from '@/lib/agents/seed'
 import { ensureAgentSchema } from '@/lib/agents/schema'
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
@@ -55,5 +55,6 @@ export async function POST(req: Request) {
   else await seedHandoffKnowledge()
   const writer = await seedWriterAgent()
   const longform = await seedLongformAgent()
-  return NextResponse.json({ ok: true, agents: { writer, longform } })
+  const veredeln = await seedVeredelnAgent()
+  return NextResponse.json({ ok: true, agents: { writer, longform, veredeln } })
 }
