@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { listAgents } from '@/lib/agents/run'
-import { seedWriterKnowledge, seedWriterAgent } from '@/lib/agents/seed'
+import { seedWriterKnowledge, seedWriterAgent, seedHandoffKnowledge, seedLongformAgent } from '@/lib/agents/seed'
 import { ensureAgentSchema } from '@/lib/agents/schema'
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
@@ -34,9 +34,14 @@ export async function GET() {
 }
 
 /** Startbestueckung — idempotent, legt je Aufruf eine neue Agenten-Fassung an. */
-export async function POST() {
+export async function POST(req: Request) {
   if (!(await guard())) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-  await seedWriterKnowledge()
-  const agent = await seedWriterAgent()
-  return NextResponse.json({ ok: true, agent })
+  const { was } = (await req.json().catch(() => ({}))) ?? {}
+  // Die Pakete aus dem Handoff sind die genauere Quelle — sie ersetzen die
+  // Startbestueckung unter denselben Schluesseln.
+  if (was === 'basis') await seedWriterKnowledge()
+  else await seedHandoffKnowledge()
+  const writer = await seedWriterAgent()
+  const longform = await seedLongformAgent()
+  return NextResponse.json({ ok: true, agents: { writer, longform } })
 }

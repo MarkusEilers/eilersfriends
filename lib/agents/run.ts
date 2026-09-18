@@ -246,6 +246,7 @@ async function runStep(step: StepDef, ctx: Ctx): Promise<StepOut> {
     case 'recherche': return recherche(step, ctx)
     case 'modell': return callModel(step, ctx)
     case 'faecher': return fanout(step, ctx)
+    case 'sektionen': return sections(step, ctx)
     case 'lint': return linter(step, ctx)
     case 'revision': return revision(step, ctx)
     case 'sammeln': return collect(ctx)
@@ -413,6 +414,96 @@ async function fanout(step: StepDef, ctx: Ctx): Promise<StepOut> {
     model: runs[0]?.model,
     tokensIn: runs.reduce((s, r) => s + r.tokensIn, 0),
     tokensOut: runs.reduce((s, r) => s + r.tokensOut, 0),
+  }
+}
+
+/**
+ * Abschnitt fuer Abschnitt schreiben.
+ *
+ * Das ist die Antwort auf den haeufigsten Fehler bei langen Texten: Man bittet
+ * um 1.500 Woerter und bekommt 400. Kein Hinweis im Prompt aendert das
+ * zuverlaessig — ein Modell schreibt bis zum gefuehlten Ende des Gedankens, und
+ * das liegt fast immer frueher als das Budget.
+ *
+ * Also wird nicht einmal um 1.500 Woerter gebeten, sondern achtmal um 190. Jeder
+ * Abschnitt kennt sein Budget, den vorigen Schluss fuer den Uebergang und seinen
+ * eigenen Auftrag. Wer trotzdem zu kurz bleibt, wird einmal zum Ausbauen
+ * zurueckgeschickt — mit der Auflage, zu vertiefen und nicht zu wiederholen.
+ */
+async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
+  const from = step.sections ?? 'struktur'
+  const plan = (ctx.results[from] as {
+    abschnitte?: Array<{ name: string; woerter: number; beats?: string[]; beleg?: string; stufe?: string }>
+    titel_vorschlag?: string
+  }) ?? {}
+  const parts = plan.abschnitte ?? []
+  if (!parts.length) throw new Error(`Keine Gliederung in "${from}"`)
+
+  const minRatio = step.minRatio ?? 0.85
+  const out: Array<{ name: string; text: string; woerter: number; budget: number; nachgelegt: boolean }> = []
+  let tin = 0, tout = 0, model: string | undefined
+  let tail = ''
+
+  for (const s of parts) {
+    const budget = Math.max(60, Number(s.woerter) || 200)
+    const write = async (extra: Record<string, unknown>) => {
+      const res = await ask(step, ctx, {
+        abschnitt: { ...s, budget },
+        vorher: { schluss: tail.slice(-400) },
+        ...extra,
+      })
+      tin += res.tokensIn; tout += res.tokensOut; model = res.model
+      return String((res.value as { text?: string }).text ?? '')
+    }
+
+    let text = await write({})
+    let words = text.trim().split(/\s+/).filter(Boolean).length
+    let nachgelegt = false
+
+    if (words < budget * minRatio) {
+      // Einmal nachlegen. Nicht zweimal — wer beim zweiten Versuch immer noch zu
+      // kurz bleibt, hat zum Thema nicht mehr zu sagen, und dann ist Dehnen
+      // schlimmer als Kuerze.
+      const fehlend = budget - words
+      const laenger = await write({
+        ausbauen: {
+          bisher: text,
+          fehlend,
+          auftrag:
+            `Dieser Abschnitt hat ${words} von ${budget} Woertern. Bau ihn auf ${budget} aus. ` +
+            'Nimm eine konkrete Szene dazu, rechne einen Gedanken durch, oder nimm den Einwand ' +
+            'vorweg, den ein skeptischer Leser hier haette. Wiederhole nichts, was schon dasteht.',
+        },
+      })
+      const lw = laenger.trim().split(/\s+/).filter(Boolean).length
+      if (lw > words) { text = laenger; words = lw; nachgelegt = true }
+    }
+
+    tail = text
+    out.push({ name: s.name, text, woerter: words, budget, nachgelegt })
+  }
+
+  const full = out.map((s) => s.text.trim()).join('\n\n')
+  const total = full.trim().split(/\s+/).filter(Boolean).length
+  const soll = parts.reduce((a, s) => a + (Number(s.woerter) || 0), 0)
+
+  await db.execute(sql`
+    INSERT INTO agent_artifacts (run_id, step_key, kind, label, payload)
+    VALUES (${ctx.runId}, ${step.key}, 'abschnitte', ${`${total} von ${soll} Woertern`},
+            ${JSON.stringify(out)}::jsonb)`)
+
+  return {
+    value: {
+      varianten: [{
+        ansatz: 'Langform',
+        titel: plan.titel_vorschlag ?? '',
+        text: full,
+        abschnitte: out,
+        worin_anders: `${total} Wörter über ${out.length} Abschnitte, Ziel ${soll}.`,
+      }],
+      woerter: total, soll, nachgelegt: out.filter((s) => s.nachgelegt).length,
+    },
+    model, tokensIn: tin, tokensOut: tout,
   }
 }
 

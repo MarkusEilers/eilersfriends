@@ -257,3 +257,275 @@ Die Befunde:
     notes: 'v3 — Nachprüfung hinter der Revision: der Bericht am Ende beurteilt, was dasteht, nicht den Entwurf davor. v2 — der Fächer steht jetzt vor dem Skelett: jede Fassung baut ihren eigenen Aufbau. In v1 teilten sich alle drei ein Skelett und fingen deshalb mit demselben Satz an.',
   })
 }
+
+/* ─────────────────────────── Wissen aus dem Handoff ─────────────────────────── */
+
+/**
+ * Die Pakete aus dem Celero-Handoff.
+ *
+ * Das Dokument ist die genauere Quelle als alles, was wir vorher hatten: zwoelf
+ * Muster statt neun, die Verbotsliste mit „aber" an erster Stelle, und der
+ * Struktur-Slop, den keine Wortliste faengt. Es ersetzt die Startbestueckung
+ * unter denselben Schluesseln.
+ */
+export async function seedHandoffKnowledge() {
+  await upsertPack({
+    key: 'voice.markus', kind: 'voice', name: 'Voice-Charta · 12 Patterns',
+    description:
+      'Mindestens fünf Patterns sind aktiv, mindestens drei Mini-Sätze. Bei Konflikt zwischen einer allgemeinen Schreibregel und diesem Profil gewinnt dieses Profil.',
+    replace: true,
+    items: [
+      { title: 'Die Regel, die zuerst gilt', weight: 100, body:
+        'Curiosity statt Verdikt. Eine Beobachtung teilen, keine Wahrheit verkünden. Der Anker eines Absatzes ist eine Frage, nicht ein Merksatz.\n\nSo klingt ein Anker: „Kommt wirklich etwas heraus, wenn Du einen erfahrenen Sales Coach vier Wochen mit AI spielen lässt?" · „Spürt ihr da einen Impuls in Euch?" · „Was wünschen sich Strategen zum Jahresende?"\n\nSo klingt er nicht: „Ein Plan ist erst ein Plan, wenn draußen jemand Ja gesagt hat." · „Zuteilung ist keine Zusage." Jeder Satz, der wie ein Poster an der Wand funktioniert, ist hier falsch.\n\nMerksätze behaupten. Fragen laden ein. Der Leser soll denken, nicht nicken.' },
+      { title: 'Die zwölf Patterns', weight: 95, body:
+        '1 Curiosity statt Verdikt — Beobachtung, kein Urteil.\n2 Selbst rein, nicht über — eigene Unsicherheit als Eintritt.\n3 Wit über die Branche — Pointe zielt aufs System oder auf sich selbst, nie auf den Leser.\n4 Spüren, nicht überzeugen — eine Stelle anbieten, an der der Leser sich erkennt.\n5 Szene als Geschenk — konkrete Szene erzählen, nicht als Beweis.\n6 Future als Einladung — was-wäre-wenn, nie was-wenn-nicht.\n7 Warmes CTA — die Frage, die man beim Espresso stellen würde.\n8 Pseudo-Drama-Hook — selbstironisch übertrieben, höchstens einmal.\n9 Frage-Antwort-Selbstdialog — Frage stellen, kurz selbst beantworten.\n10 Mantra-Refrain — ein Kernsatz kehrt wieder.\n11 Mini-Satz-Rhythmus — mindestens drei Sätze mit ein bis vier Wörtern, sie tragen die Pointen.\n12 Coaching-Du — Du für Handlung, Wir für Diagnose.' },
+      { title: 'Klang', weight: 90, body:
+        'Dicht: Jeder Satz verdient seine Miete. Adverbien sind verdächtig, Adjektive zahlen Miete, drei Adjektive in Reihe sind verboten. Lange Sätze atmen, kurze schlagen.\n\nEmpathie heißt: den Schmerz präziser benennen, als der Leser es selbst könnte. Nicht „ich weiß, wie sich das anfühlt", nicht „Du musst endlich".\n\nKonkret: Zahlen, Namen, Szenen. Kein Framework-Vokabular im Text — ICP, Awareness-Stage, Pain-Point-Matrix bleiben intern.\n\nRisiko: Mindestens eine Stelle, der nicht jeder zustimmen würde. Ein universell unterschreibbarer Text ist Generik.' },
+      { title: 'Woran man diese Stimme erkennt', weight: 88, body:
+        'Er nimmt den Einwand vorweg, oft im ersten Satz, oft als Zitat des Skeptikers. „Noch ein Webcast?" steht da, bevor es jemand denken kann.\n\nBilder statt Begriffe. Der Stürmer mit dem Handbuch. Die Elfmeter. Der äußere Rand der Organisation. Er erklärt nicht „Last Mile", er zeigt sie.\n\nSelbstironie ohne Anbiederung — über die eigene Zunft, nie über den Leser.\n\nKein Vertriebsvokabular. Wenn ein Produkt vorkommt, heißt es beim Namen: Dynamics, SharePoint, Azure.\n\nAufzählungen kommen als Fließtext, nicht als Bulletpoints. Ausdrücklich gewünscht.' },
+      { title: 'Selbstprüfung vor Auslieferung', weight: 85, body:
+        'Steht mindestens eine konkrete Beobachtung, Zahl, Szene im Text? Gibt es einen Satz, den man ohne Verlust streichen könnte — dann streichen. Beschreibt der Text den Schmerz präzise, ohne vorzuschreiben? Steht irgendwo etwas, dem nicht jeder zustimmen würde? Schärft der Witz die Idee, oder zieht er ab? Kein Wort aus der Verbotsliste? Höchstens ein Ausrufezeichen pro 500 Wörter, keine drei Adjektive in Reihe? Klingt es nach Markus — oder nach irgendeinem Sales-Coach? Würde man den Text jemandem schicken, den man respektiert, ohne sich zu entschuldigen? Sind mindestens fünf der zwölf Patterns aktiv, mindestens drei Mini-Sätze? Ist jeder Claim belegt oder als offene Frage markiert?' },
+    ],
+  })
+
+  await upsertPack({
+    key: 'verbote', kind: 'verbote', name: 'Harte Verbote',
+    description: 'Der Linter prüft, was sich prüfen lässt. Der Rest steht hier, weil es trotzdem gilt.',
+    replace: true,
+    items: [
+      { title: '„aber" als Konjunktion', weight: 100, body:
+        '„aber" hebelt den eigenen Satz aus. Ersatz: ein Punkt, oder eine neue Beobachtung.' },
+      ...['Mehrwert', 'ganzheitlich', 'auf Augenhöhe', 'Mindset', 'game-changer', 'Bausteine', 'DNA',
+          'auf Steroide', 'letztendlich', 'optimieren', 'seamless', 'next level', 'Hot take',
+          'Spoiler', 'Plot twist', 'echt', 'Seat', 'Cohort']
+        .map((w) => ({ key: 'wort', body: w, tags: ['wort'], weight: 60 })),
+      { title: 'Floskeln', weight: 90, body:
+        '„mal ganz ehrlich" · „Du kennst das…" · „Stimmst du zu?" · Drohformeln jeder Art. Dazu „nachhaltig" außerhalb des Klimakontexts und „tragen/trägt" ohne Bild.' },
+      { title: 'Zeichensetzung', weight: 80, body:
+        'Maximal ein Ausrufezeichen pro 500 Wörter. Kein ALLCAPS zur Betonung.' },
+      { title: 'Anti-Patterns', weight: 85, body:
+        'Drohrhetorik („wer wartet, holt nicht auf"), Hype („explosive Ergebnisse"), Plakat-Headlines in Versalien, Gotcha-Schlüsse, die den Leser in die schlechte Gruppe sortieren, Comment-Bait, Virtue-Signalling ohne Beleg.' },
+    ],
+  })
+
+  await upsertPack({
+    key: 'slop', kind: 'methode', name: 'Struktur-Slop — acht Muster',
+    description:
+      'Test für alle acht: Satz streichen. Verschwindet eine Information, die der Leser braucht? Nein → es war Slop.',
+    replace: true,
+    items: [
+      { weight: 95, body:
+        '1 Fake-Contradiction — „nicht X, sondern Y", wo niemand X behauptet hat.\n2 Abwesenheit als Nutzen — „Es gab keinen QR-Code und keine App".\n3 Leerer Modifikator — „drei Antworten, die halten".\n4 Aphorismus als Absatz-Schluss — klingt nach Pointe, ist Buchstabensalat.\n5 Sichtbares Gerüst — „Was auf den nächsten Seiten steht", „Drei Dinge, in dieser Reihenfolge".\n6 Meta über das Dokument — „Gib es gern weiter", „Hier ist das Wichtigste in Kürze".\n7 Unbelegte Branchenbehauptung über die Arbeit des Lesers.\n8 Neutralitäts-Signalling — „wir sind herstellerneutral".' },
+    ],
+  })
+
+  await upsertPack({
+    key: 'beispiele.markus', kind: 'beispiele', name: 'Klangmaßstab',
+    description: 'Von ihm geschrieben und freigegeben. Satzbau, Rhythmus und Haltung übernehmen — die Inhalte nicht.',
+    replace: true,
+    items: [
+      { title: 'Aus der Einladung zum Juli-Webcast', isGold: true, weight: 95, body:
+        '„Noch ein Webcast?" „Während der WM?" „Wird sicher wieder so eine Demo …"\n\nDas macht ja nur Sinn, wenn es mbuf Mitglieder gibt, die sich von Ihrem Microsoft Technologie-Investment noch mehr Wirkung erhoffen und dafür auch während der WM bezahlen.' },
+      { title: 'Aus dem Abstract zum Juli-Webcast', isGold: true, weight: 95, body:
+        'Und genau dort endet die digitale Versorgung häufig bei einem PDF und einem Chat-Kanal. Wir schicken dem Stürmer sprichwörtlich das „Handbuch Elfmeter" und vertrauen darauf, dass es funktioniert. In der Praxis braucht der Mitarbeiter etwas anderes.' },
+      { title: 'Aus dem Abstract zum September-Webcast', isGold: true, weight: 95, body:
+        'Black-Friday-Umbauten, Wartungswellen, Rollouts: Was im November draußen passiert — im Handel, in der Produktion, im Service —, entscheidet sich in den nächsten Wochen an Deiner Plantafel. Und die ist ein super Werkzeug — mit zwei Schwächen: Sie redet in eine Richtung. Und sie ist zu lange optimistisch. Sie zeigt Plan A als wahr, bis die Realität längst abgebogen ist.' },
+    ],
+  })
+}
+
+/* ─────────────────────────── Agent 2 · Langform ─────────────────────────── */
+
+const LANG_BASE = `Du schreibst fuer Eilers+Friends.
+
+{{wissen}}
+
+Drei Dinge, die ueber allem stehen:
+
+SUBSTANZ WOERTLICH, FORMULIERUNG FREI. Zahlen, Beispiele, Eigennamen und Verfahren bleiben exakt wie im Material. Die Saetze werden neu gebaut. Nichts dazuerfinden — keine Zahl, keine Studie, kein Zitat, kein Beispiel. Fehlt etwas, wird es als offene Frage benannt.
+
+DU FRAGST NICHT ZURUECK. Fehlt eine Angabe, triffst Du eine Annahme und legst sie offen.
+
+DIE LAENGE IST VERBINDLICH. Sie ist keine Obergrenze, sondern ein Auftrag. Laenge entsteht durch Vertiefung: mehr Szene, mehr Konkretion, mehr Gegenrechnung. Nie durch Wiederholung desselben Gedankens.`
+
+export async function seedLongformAgent() {
+  return publishAgent({
+    key: 'longform-writer',
+    title: 'Langform-Writer',
+    description:
+      'Für Nachbereitungen, Reports und Magazintexte ab 800 Wörtern. Baut Überzeugungsziele und Gliederung mit Wortbudget, schreibt dann Abschnitt für Abschnitt und legt nach, wo ein Abschnitt zu kurz bleibt.',
+    knowledge: ['voice.markus', 'verbote', 'slop', 'methode.belief', 'beispiele.markus', 'kanal'],
+    scopes: ['agents:run'],
+    default_model_role: 'copy',
+    input_schema: {
+      type: 'object',
+      required: ['inhalte'],
+      properties: {
+        audience: { type: 'string' },
+        context_md: { type: 'string', description: 'Der Handoff: Auftrag, Zahlen mit Herkunft, Reaktionen, Quellmaterial' },
+        inhalte: { type: 'string', description: 'Das Ausgangsmaterial, aus dem der Text entsteht' },
+        tonalitaet: { type: 'string' },
+        ueberzeugungsziel: { type: 'string' },
+        textart: { type: 'string', enum: ['report', 'blog', 'nachbereitung', 'whitepaper'] },
+        laenge: {
+          type: 'object',
+          properties: { wert: { type: 'number' }, einheit: { type: 'string', enum: ['woerter', 'seiten'] } },
+        },
+        ansprache: { type: 'string', enum: ['du', 'ihr', 'sie'] },
+        recherche: { type: 'boolean' },
+      },
+    },
+    output_schema: {
+      type: 'object',
+      properties: {
+        varianten: { type: 'array', items: { type: 'object' } },
+        annahmen: { type: 'array', items: { type: 'string' } },
+        pruefung: { type: 'object' },
+      },
+    },
+    steps: [
+      { key: 'aufnahme', kind: 'intake', title: 'Eingaben ordnen' },
+      { key: 'kontext', kind: 'kontext', title: 'Wissen laden' },
+      { key: 'recherche', kind: 'recherche', title: 'Nachsehen', onlyIf: 'recherche', optional: true },
+      {
+        key: 'kette', kind: 'modell', title: 'Überzeugungsziele', temperature: 0.4, maxTokens: 2500,
+        system: `${LANG_BASE}
+
+Du baust die Ueberzeugungsziele. Noch keinen Text, noch keine Gliederung.
+
+Drei bis fuenf Ziele in aufbauender Reihenfolge. Je Ziel: Was denkt der Leser heute? Was danach? Welcher Beleg aus dem Material traegt den Sprung? Welcher Widerstand kommt, und was entkraeftet ihn?
+
+Nenne am Ende die Luecken: Was wird behauptet, ohne belegt zu sein, und was fragt ein skeptischer Leser, worauf das Material keine Antwort hat?`,
+        user: `Zielgruppe: {{aufnahme.audience}}
+Auftrag: {{aufnahme.ueberzeugungsziel}}
+
+Handoff und Regeln:
+{{material}}
+
+Material:
+{{aufnahme.inhalte}}
+
+Recherche:
+{{recherche.material}}`,
+        schema: {
+          type: 'object', required: ['ziele'],
+          properties: {
+            kernaussage: { type: 'string', description: 'Der ganze Text in einem Satz' },
+            ziele: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['heute', 'danach', 'beleg'],
+                properties: {
+                  heute: { type: 'string' }, danach: { type: 'string' },
+                  beleg: { type: 'string' }, widerstand: { type: 'string' }, entkraeftung: { type: 'string' },
+                },
+              },
+            },
+            luecken: { type: 'array', items: { type: 'string' } },
+          },
+        },
+      },
+      {
+        key: 'struktur', kind: 'modell', title: 'Gliederung mit Budget', temperature: 0.4, maxTokens: 3000,
+        system: `${LANG_BASE}
+
+Du baust die Gliederung. Noch keinen Fliesstext.
+
+Je Abschnitt: Ueberschrift, welches Ueberzeugungsziel er traegt, welcher Beleg aus dem Material ihn stuetzt, die Beats, und ein Wortbudget. Die Summe der Budgets ergibt exakt die Zielgroesse.
+
+Je Abschnitt gehoert ein Hook — eine Frage oder eine Szene, keine Absichtserklaerung — und ein surprising insight. Ein Abschnitt ohne surprising insight wird gestrichen.
+
+Rechne mit sechs bis zehn Abschnitten. Ein Abschnitt unter 120 Woertern traegt keinen eigenen Gedanken, einer ueber 260 zerfaellt.
+
+Nenne zwei Stellen, an denen Du von der Reihenfolge des Materials abweichst, und warum.`,
+        user: `Zielgroesse: {{aufnahme.ziel_woerter}} Woerter — verbindlich, die Summe der Budgets muss sie ergeben.
+Textart: {{aufnahme.textart}}
+
+Die Ueberzeugungsziele:
+{{kette.ziele}}
+
+Kernaussage: {{kette.kernaussage}}
+
+Material:
+{{aufnahme.inhalte}}`,
+        schema: {
+          type: 'object', required: ['abschnitte'],
+          properties: {
+            titel_vorschlag: { type: 'string' },
+            abweichungen: { type: 'array', items: { type: 'string' } },
+            abschnitte: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['name', 'woerter', 'beats'],
+                properties: {
+                  name: { type: 'string' }, ziel: { type: 'string' },
+                  hook: { type: 'string' }, insight: { type: 'string' },
+                  beats: { type: 'array', items: { type: 'string' } },
+                  beleg: { type: 'string' }, woerter: { type: 'number' },
+                },
+              },
+            },
+          },
+        },
+      },
+      {
+        key: 'text', kind: 'sektionen', title: 'Abschnitt für Abschnitt',
+        sections: 'struktur', minRatio: 0.85, temperature: 0.7, maxTokens: 2000,
+        system: `${LANG_BASE}
+
+Du schreibst genau einen Abschnitt. Nicht den ganzen Text.
+
+Dein Budget steht unten und ist verbindlich. Ein Abschnitt, der zu kurz geraet, wird zurueckgeschickt — und dann musst Du ihn ausbauen, statt ihn einmal richtig zu schreiben.
+
+Der Abschnitt beginnt mit seinem Hook und endet so, dass der naechste anschliessen kann. Keine Ueberschrift im Text, keine Aufzaehlungszeichen — Aufzaehlungen kommen als Fliesstext.
+
+Wenn unter "ausbauen" etwas steht, ist Deine vorige Fassung zu kurz gewesen. Dann schreibst Du den Abschnitt neu und tiefer, nicht laenger geredet.`,
+        user: `Abschnitt: {{abschnitt.name}}
+Budget: {{abschnitt.budget}} Woerter
+Hook: {{abschnitt.hook}}
+Surprising insight: {{abschnitt.insight}}
+Beats: {{abschnitt.beats}}
+Beleg aus dem Material: {{abschnitt.beleg}}
+
+So endete der vorige Abschnitt:
+{{vorher.schluss}}
+
+Ansprache: {{aufnahme.ansprache}}
+Tonalitaet: {{aufnahme.tonalitaet}}
+
+Material, aus dem alles stammen muss:
+{{aufnahme.inhalte}}
+
+{{ausbauen.auftrag}}
+{{ausbauen.bisher}}`,
+        schema: {
+          type: 'object', required: ['text'],
+          properties: { text: { type: 'string' }, patterns: { type: 'array', items: { type: 'string' } } },
+        },
+      },
+      { key: 'pruefung', kind: 'lint', title: 'Prüfung', source: 'text' },
+      {
+        key: 'revision', kind: 'revision', title: 'Revision', temperature: 0.4, maxTokens: 6000,
+        source: 'text', reports: 'pruefung',
+        system: `${LANG_BASE}
+
+Du behebst ausschliesslich die genannten Befunde. Nichts anderes.
+
+Der Text hat eine Laenge, die stimmt. Wer beim Beheben kuerzt, macht es schlimmer: Ein Befund wird behoben und drei neue entstehen, weil der Text seine Szenen verliert.`,
+        user: `Der Text:
+{{variante.text}}
+
+Die Befunde:
+{{befunde.liste}}`,
+        schema: {
+          type: 'object', required: ['text'],
+          properties: { text: { type: 'string' }, geaendert: { type: 'array', items: { type: 'string' } } },
+        },
+      },
+      { key: 'nachpruefung', kind: 'lint', title: 'Nachprüfung', source: 'revision' },
+      { key: 'ergebnis', kind: 'sammeln', title: 'Zusammenstellen' },
+    ],
+    notes:
+      'v1 — schreibt Abschnitt fuer Abschnitt mit eigenem Wortbudget und legt einmal nach, wo ein Abschnitt unter 85 Prozent bleibt. Ein einzelner Aufruf um 1.500 Woerter liefert verlaesslich 400.',
+  })
+}

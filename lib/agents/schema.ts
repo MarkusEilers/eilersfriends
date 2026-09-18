@@ -148,6 +148,7 @@ export type StepKind =
   | 'recherche'   // Websuche, Fundstellen als Artefakt
   | 'modell'      // ein Modellaufruf mit Schema
   | 'faecher'     // derselbe Modellaufruf mehrfach, mit Variation
+  | 'sektionen'   // Abschnitt fuer Abschnitt, jeder mit eigenem Wortbudget
   | 'lint'        // Code: deterministische Pruefung
   | 'revision'    // Modell, nur Befunde beheben
   | 'sammeln'     // Code: Ergebnis zusammenstellen
@@ -168,6 +169,9 @@ export interface StepDef {
   variants?: string[]
   /** Fuer 'recherche' */
   queries?: string[]
+  /** Fuer 'sektionen': woher die Gliederung kommt und wie eng das Budget gilt */
+  sections?: string
+  minRatio?: number
   /**
    * Woher die Fassungen kommen, die dieser Schritt prueft oder ueberarbeitet.
    * Ohne Angabe: die Entwuerfe. Damit laesst sich dieselbe Schrittart zweimal in
