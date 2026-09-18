@@ -62,7 +62,27 @@ const KANAL_GRENZEN: Record<string, {
   reel: { woerter: [60, 180] },
 }
 
-const PERSONIFIED = /\b(die|der|das)\s+(Zahl|Zahlen|Markt|Märkte|Daten|Studie|Technologie|KI|Software)\s+(sagt|sagen|fordert|fordern|spricht|sprechen|verlangt|will|weiß|meint)\b/gi
+const PERSONIFIED = /\b(die|der|das)?\s*(Zahl|Zahlen|Markt|Märkte|Daten|Studie|Technologie|KI|Software|Plan|Pläne|Planung|Prozess|Prozesse|System|Systeme|Lücke)\s+(sagt|sagen|fordert|fordern|spricht|sprechen|redet|reden|antwortet|antworten|verlangt|will|wollen|weiß|wissen|meint|meinen|schweigt|schweigen|zurückreden|zurückredet|zurückmeldet|zurückmelden|zurückspricht)\b/gi
+
+/**
+ * Eigenlob.
+ *
+ * Unsere eigenen Sachen — das Rechenblatt, das Werkzeug, das Material — duerfen
+ * vorkommen. Sie duerfen nur nicht gelobt werden, bevor der Leser weiss, worum
+ * es ueberhaupt geht. Wer im ersten Drittel erklaert, wie praktisch sein Tool
+ * ist, hat den Kontext uebersprungen und verkauft in ein Vakuum.
+ */
+const EIGENES = /\b(Rechenblatt|Rechenhilfe|Werkzeug|Tool|Template|Vorlage|Checkliste|Playbook|unser(e|es)? (Material|Modell|Verfahren|Ansatz))\b/gi
+const LOB = /\b(einfach|schnell|praktisch|klar|sofort|kein(e)? [A-Za-zä-ü]+monster|in fünf Minuten|auf einen Blick|ohne Aufwand|gibt dir|macht sichtbar|reicht (schon|aus))\b/i
+
+/**
+ * Sichtbares Geruest.
+ *
+ * Eine Vorlage, die im fertigen Text noch als Vorlage zu erkennen ist. Das
+ * klassische Beispiel ist die Warum-jetzt-warum-du-Eroeffnung, die im Profil
+ * als Bauanleitung steht und im Text als Aufzaehlung landet.
+ */
+const GERUEST = /(warum (genau )?jetzt\?[^?]{0,120}warum (du|sie|ihr)\?)|(\bwarum dieses thema\?)|(drei (dinge|punkte), in dieser reihenfolge)|(danach hast du:)/gi
 const HONESTY = /\b(ganz ehrlich|klartext|ohne bullshit|die ehrliche (rechnung|bandbreite)|ich sag'?s wie es ist|mal ehrlich)\b/gi
 const HYPE = /\b(game.?changer|revolutionär|bahnbrechend|explosive? (ergebnisse|wachstum)|auf steroiden|absolut einzigartig)\b/gi
 const EMPTY = /\b(der (kunde|mensch) im mittelpunkt|innovation und qualität|gemeinsam in die zukunft|ganzheitliche lösung)\b/gi
@@ -260,6 +280,129 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
         }
       }
     }
+  }
+
+  /**
+   * Die Ueberschriften als eigener Text.
+   *
+   * Sie werden oefter gelesen als der Rest. Zwei Fehler sind so haeufig, dass
+   * sie sich zaehlen lassen: die Frage, die sich niemand stellt, und die
+   * Ueberschrift ueber unsere Veranstaltung statt ueber seine Sache.
+   */
+  {
+    const heads = text.split('\n').filter((l) => /^#{2,3}\s+/.test(l)).map((l) => l.replace(/^#+\s*/, '').trim())
+    const fragen = heads.filter((h) => h.endsWith('?'))
+    if (heads.length >= 4 && fragen.length > 2) {
+      push({
+        rule: 'zu viele Fragen als Überschrift', severity: 'warnung',
+        quote: fragen.slice(0, 3).join(' · '),
+        hint: `${fragen.length} von ${heads.length} Zwischenüberschriften sind Fragen. Höchstens zwei.`,
+      })
+    }
+    const META = /\b(was bleibt|zum schluss|fazit|zusammenfassung|das wichtigste in kürze|nach dem (webcast|termin|vortrag|call)|worum es (hier )?geht)\b/i
+    for (const h of heads) {
+      if (META.test(h)) {
+        push({
+          rule: 'Meta-Überschrift', severity: 'fehler', quote: h,
+          hint: 'Die Überschrift handelt von unserem Dokument, nicht von seiner Sache. '
+            + 'Das fragt sich in Wahrheit niemand.',
+        })
+      }
+      // Etwas Anfassbares: Zahl, Eigenname, Rolle, Ort, Uhrzeit.
+      const konkret = /\d|\b(Monteur|Techniker|Vorstand|Team|Filiale|Standort|Schicht|Uhr|Montag|Regal|Halle|Baustelle|Prozent|Euro)/i
+      if (h.length > 18 && !konkret.test(h) && !META.test(h)) {
+        push({
+          rule: 'Überschrift ohne Konkretes', severity: 'warnung', quote: h,
+          hint: 'Keine Zahl, kein Ort, keine Rolle, kein Ding. Eine Überschrift aus lauter Abstrakta bleibt nicht hängen.',
+        })
+      }
+    }
+  }
+
+  scan(GERUEST, 'sichtbares Gerüst', 'fehler',
+    'Die Vorlage schaut durch. Der Leser soll den Inhalt sehen, nicht die Bauanleitung.')
+
+  /**
+   * Die Frage als Standard-Einstieg.
+   *
+   * Eine rhetorische Frage zieht — zwei hintereinander ermueden, und neun von
+   * elf sind ein Tic. Sie ersetzen dann die Arbeit, die ein konkreter Einstieg
+   * macht: jemanden zeigen, irgendwo, zu einer Zeit.
+   */
+  {
+    const absaetze = text.split(/\n{2,}/)
+      .map((p) => p.trim())
+      .filter((p) => p && !p.startsWith('#') && !p.startsWith('*') && p.split(/\s+/).length > 12)
+    const ersterSatz = (p: string) => p.split(/(?<=[.!?])\s/)[0] ?? p
+    const fragt = absaetze.map((p) => ersterSatz(p).trimEnd().endsWith('?'))
+    const anzahl = fragt.filter(Boolean).length
+
+    if (absaetze.length >= 4 && anzahl / absaetze.length > 0.34) {
+      push({
+        rule: 'Frage als Standard-Einstieg', severity: 'fehler',
+        quote: `${anzahl} von ${absaetze.length} Absätzen beginnen mit einer Frage`,
+        hint: 'Die rhetorische Frage ist zur Masche geworden. Sie ersetzt keinen Einstieg — '
+          + 'ein Mensch, ein Ort, ein Zeitpunkt ziehen stärker. Höchstens jeder dritte Absatz.',
+      })
+    }
+    for (let i = 1; i < fragt.length; i++) {
+      if (fragt[i] && fragt[i - 1]) {
+        push({
+          rule: 'zwei Fragen hintereinander', severity: 'warnung',
+          quote: ersterSatz(absaetze[i]).slice(0, 90),
+          hint: 'Der vorige Absatz begann auch mit einer Frage.',
+        })
+        break
+      }
+    }
+
+    /**
+     * Der Kontext zuerst.
+     *
+     * Der erste Absatz muss verankern: wer, wo, wann, worum. Eine Frage ueber
+     * eine Abstraktion ist kein Einstieg — sie setzt voraus, was sie erst
+     * herstellen muesste. "Welcher Plan? Wo draussen?" ist die Reaktion, die
+     * diese Regel verhindern soll.
+     */
+    const kopf = absaetze[0] ?? ''
+    if (kopf) {
+      if (ersterSatz(kopf).trimEnd().endsWith('?')) {
+        push({
+          rule: 'Text beginnt mit einer Frage', severity: 'fehler',
+          quote: ersterSatz(kopf).slice(0, 110),
+          hint: 'Der erste Satz stellt eine Frage über etwas, das der Leser noch nicht kennt. '
+            + 'Erst die Szene, dann die Frage.',
+        })
+      }
+      // Anker: Eigenname, Datum, Zahl mit Einheit, Ort, Zeitangabe.
+      const anker = [
+        /\b(19|20)\d{2}\b/, /\b\d+\s?(Prozent|%|Euro|€|Standorte?|Menschen|Minuten|Stunden|Tage|Wochen|Monate)/i,
+        /\b(im|am|seit|letzte[nsr]?|vergangene[nsr]?)\s+(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Quartal|Jahr|Webcast|Termin)/i,
+        /\b[A-ZÄÖÜ][a-zä-ü]+\s[A-ZÄÖÜ][a-zä-ü]+\b/,
+      ]
+      if (!anker.some((re) => re.test(kopf))) {
+        push({
+          rule: 'kein Kontext im Einstieg', severity: 'fehler',
+          quote: kopf.slice(0, 120),
+          hint: 'Im ersten Absatz steht kein Mensch, kein Ort, kein Datum, keine Zahl mit Einheit. '
+            + 'Der Leser weiß nicht, wovon die Rede ist.',
+        })
+      }
+    }
+
+    /** Eigenlob vor dem Kontext — nur im ersten Drittel geprueft. */
+    const drittel = Math.ceil(absaetze.length / 3)
+    absaetze.slice(0, Math.max(1, drittel)).forEach((p) => {
+      const e = new RegExp(EIGENES.source, 'i').exec(p)
+      if (e && LOB.test(p)) {
+        push({
+          rule: 'Eigenlob vor dem Kontext', severity: 'fehler',
+          quote: p.slice(Math.max(0, e.index - 30), e.index + 90).trim(),
+          hint: `„${e[0]}" wird gelobt, bevor der Leser das Problem kennt. Erst die Lage, dann das Mittel — `
+            + 'und auch dann beschreiben, was es tut, statt wie gut es ist.',
+        })
+      }
+    })
   }
 
   const bangs = (text.match(/!/g) ?? []).length

@@ -717,6 +717,18 @@ Die Probe: Lies nur die Folge hintereinander. Ist das eine Geschichte oder ein I
 
 Was eine Zwischenueberschrift nicht ist: ein Etikett fuer den Inhalt darunter. "Ursache 2: Wissen und Koennen" sagt, was kommt. "Er steht also jetzt morgens um vier da" laesst weiterlesen. Der Doppelpunkt ist fast immer das Zeichen, dass ein Etikett daraus geworden ist. Nummerierte Ueberschriften sind immer ein Etikett.
 
+EINE UEBERSCHRIFT ALS FRAGE MUSS EINE FRAGE SEIN, DIE DER LESER WIRKLICH HAT.
+
+"Was bleibt, wenn der Webcast vorbei ist" fragt sich niemand. Es ist unsere Frage ueber unser Dokument, nicht seine Frage ueber sein Problem. Die Probe: Wuerde ein Mensch aus der Zielgruppe diesen Satz googeln, oder einem Kollegen in der Kaffeekueche stellen? Wenn nein, ist es keine Frage, sondern ein Etikett mit Fragezeichen.
+
+Hoechstens zwei der Ueberschriften duerfen Fragen sein. Der Rest sind Aussagen, Szenen oder Beobachtungen.
+
+KEINE META-UEBERSCHRIFTEN. Ueber das Dokument selbst, ueber den Webcast, ueber das Format — "Was bleibt nach dem Termin", "Zum Schluss", "Fazit", "Das Wichtigste in Kuerze". Der Leser interessiert sich fuer seine Sache, nicht fuer unsere Veranstaltung.
+
+KEINE PERSONIFIZIERTEN ABSTRAKTA. "Wenn Plaene nicht zurueckreden" — Plaene reden nicht, weder hin noch zurueck. Ein Bild, das bei zwei Sekunden Nachdenken kippt, kostet mehr als es bringt.
+
+JEDE UEBERSCHRIFT TRAEGT ETWAS KONKRETES aus dem Material: eine Zahl, einen Ort, eine Rolle, eine Uhrzeit, ein Ding. "Der blinde Fleck bei Investitionen" ist Luft. "Ein Prozent fuer achtzig Prozent der Belegschaft" ist eine Ueberschrift.
+
 Starke Ueberschriften sind erwuenscht. Sie muessen nur stimmen: Was drueber steht, muss drunter auch passieren.
 
 Du lieferst genau so viele Zwischenueberschriften, wie es Abschnitte gibt, in derselben Reihenfolge. Der erste Abschnitt bekommt auch eine — sie wird im Text nicht gesetzt, aber sie gehoert in die Folge, damit der Bogen stimmt.
@@ -765,6 +777,24 @@ SUBSTANZ WOERTLICH, FORMULIERUNG FREI. Zahlen, Beispiele, Eigennamen und Verfahr
 
 Du schreibst genau einen Abschnitt. Nicht den ganzen Text.
 
+KONKRET VOR ABSTRAKT — die wichtigste Regel hier.
+
+Der Abschnitt beginnt mit etwas, das man sehen kann: ein Mensch, ein Ort, eine Uhrzeit, eine Zahl mit Einheit, ein Satz, den jemand gesagt hat. Erst wenn der Leser weiss, wovon die Rede ist, darf der Gedanke abstrakt werden.
+
+Die Probe: Kann ein Fremder nach dem ersten Satz sagen, WER etwas tut und WO? Wenn nicht, ist der Satz noch nicht geschrieben. "Was passiert, wenn der Plan fertig ist und draussen niemand zurueckmeldet?" besteht die Probe nicht — welcher Plan, wo draussen? "Am Montag um sechs stehen vierzig Monteure an vierzig Standorten und lesen dieselbe PDF" besteht sie.
+
+DIE RHETORISCHE FRAGE IST KEIN EINSTIEG.
+
+Sie ist eine Wuerze, kein Grundnahrungsmittel. Hoechstens jeder dritte Abschnitt darf mit einer Frage beginnen, und nie zwei hintereinander. Eine Frage ueber etwas, das der Leser noch nicht kennt, ist keine Neugier, sondern eine Zumutung.
+
+Wenn Dir nur eine Frage einfaellt, fehlt Dir die Szene. Dann such sie im Material.
+
+KEIN EIGENLOB, SOLANGE DER KONTEXT NICHT STEHT.
+
+Unsere eigenen Sachen — das Rechenblatt, das Werkzeug, das Material, das Verfahren — duerfen vorkommen. Sie duerfen nicht gelobt werden, bevor der Leser das Problem kennt. Kein "einfach", kein "in fuenf Minuten", kein "kein Tabellenmonster". Beschreibe, was es tut. Wie gut es ist, entscheidet der Leser.
+
+DIE VORLAGE BLEIBT UNSICHTBAR. Wenn im Stimmprofil "Warum jetzt? Warum Du? Warum dieses Thema?" als Aufbau steht, ist das eine Bauanleitung fuer Dich — keine Aufzaehlung fuer den Text. Wer die Anleitung abschreibt, liefert das Geruest statt des Hauses.
+
 Dein Budget steht unten und ist verbindlich. Ein Abschnitt, der zu kurz geraet, wird zurueckgeschickt — und dann musst Du ihn ausbauen, statt ihn einmal richtig zu schreiben.
 
 Der Abschnitt beginnt mit seinem Hook und endet so, dass der naechste anschliessen kann. Keine Ueberschrift im Text, keine Aufzaehlungszeichen — Aufzaehlungen kommen als Fliesstext.
@@ -773,18 +803,20 @@ Wenn unter "ausbauen" etwas steht, ist Deine vorige Fassung zu kurz gewesen. Dan
         user: `Abschnitt: {{abschnitt.name}}
 Budget: {{abschnitt.budget}} Woerter
 
-DAS ZIEL DIESES ABSCHNITTS — schreib hierauf, nicht auf den Arbeitstitel.
-Was der Leser danach denken soll, in seinen Worten: {{abschnitt.paraphrase}}
+WOMIT DU ANFAENGST — die Szene, nicht der Gedanke:
+Hook: {{abschnitt.hook}}
+Surprising insight: {{abschnitt.insight}}
+Beleg aus dem Material, der hier sichtbar werden muss: {{abschnitt.beleg}}
+
+WAS AM ENDE HAENGENBLEIBEN SOLL — das ist die Probe hinterher, nicht der erste
+Satz. Schreib nicht diesen Satz hin; schreib den Abschnitt so, dass der Leser
+ihn von selbst denkt: {{abschnitt.paraphrase}}
 Was der Abschnitt ihm antun soll: {{abschnitt.wirkung}}
 Woran die Pruefung gezweifelt hat: {{abschnitt.befund}}
 
-Message-Lock des ganzen Textes — unveraendert und in voller Kraft, wenn dieser
-Abschnitt ihn traegt: {{kette.message_lock}}
-
-Hook: {{abschnitt.hook}}
-Surprising insight: {{abschnitt.insight}}
+Message-Lock des ganzen Textes. Er gehoert EINMAL in den Text, an der Stelle,
+wo er am staerksten sitzt — nicht in jeden Abschnitt: {{kette.message_lock}}
 Beats: {{abschnitt.beats}}
-Beleg aus dem Material: {{abschnitt.beleg}}
 
 So endete der vorige Abschnitt:
 {{vorher.schluss}}
