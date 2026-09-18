@@ -549,7 +549,13 @@ function linter(step: StepDef, ctx: Ctx): StepOut {
   const drafts = (ctx.results[from] as { varianten?: Array<Record<string, unknown>> })?.varianten ?? []
   const reports = drafts.map((d) => {
     const text = String(d.text ?? d.inhalt ?? '')
-    const r = lint({ text, banned: ctx.banned, address: a?.ansprache ?? null, targetWords: a?.ziel_woerter ?? null })
+    const r = lint({
+      text, banned: ctx.banned,
+      address: a?.ansprache ?? null,
+      targetWords: a?.ziel_woerter ?? null,
+      // Das Material ist die Wahrheit. Was hier nicht steht, darf dort nicht stehen.
+      material: `${String(ctx.input.inhalte ?? '')}\n${String(ctx.input.context_md ?? ctx.input.kontext ?? '')}`,
+    })
     return { ansatz: d.ansatz, ...r }
   })
   return {

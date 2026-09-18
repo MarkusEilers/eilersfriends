@@ -26,6 +26,11 @@ export interface LintInput {
   /** 'du' | 'ihr' | 'sie' — erzwingt Durchgaengigkeit */
   address?: string | null
   targetWords?: number | null
+  /**
+   * Das Ausgangsmaterial. Ist es da, wird geprueft, ob Zitate und Zahlen darin
+   * vorkommen — die einzige Pruefung, die Erfindung ueberhaupt fassen kann.
+   */
+  material?: string | null
 }
 
 const PERSONIFIED = /\b(die|der|das)\s+(Zahl|Zahlen|Markt|Märkte|Daten|Studie|Technologie|KI|Software)\s+(sagt|sagen|fordert|fordern|spricht|sprechen|verlangt|will|weiß|meint)\b/gi
@@ -121,6 +126,64 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
         quote: `erst nach ${Math.round((first / text.length) * 100)} % des Textes`,
         hint: 'Bis dahin redet der Text über sich. Den Leser früher adressieren.',
       })
+    }
+  }
+
+  /**
+   * „aber" als Konjunktion.
+   *
+   * Steht in der Verbotsliste an erster Stelle, weil es den eigenen Satz
+   * aushebelt. Am Satzanfang oder nach einem Komma ist es die Konjunktion; in
+   * „aber auch" oder als Adverb mitten im Satz kann es stehen bleiben.
+   */
+  {
+    const re = /(^|[.!?]\s+|,\s*)(aber)\b/gim
+    let m: RegExpExecArray | null
+    while ((m = re.exec(text))) {
+      push({
+        rule: '„aber" als Konjunktion', severity: 'fehler',
+        quote: around(text, m.index), position: m.index,
+        hint: 'Hebelt den eigenen Satz aus. Ersatz: ein Punkt, oder eine neue Beobachtung.',
+      })
+    }
+  }
+
+  /**
+   * Erfindung.
+   *
+   * Der einzige Fehler, den ein Modell ueber den eigenen Text nie findet — es
+   * hat den Satz ja gerade geschrieben und haelt ihn fuer richtig. Ein Zitat,
+   * das im Material nicht steht, ist erfunden. Eine Zahl, die dort nicht steht,
+   * auch. Beides faellt keiner Stilregel auf und traegt am weitesten.
+   */
+  if (input.material) {
+    const hay = input.material.toLowerCase().replace(/\s+/g, ' ')
+
+    const quotes = text.match(/[„“"”»]([^„“"”»]{12,220})[„“"”«]/g) ?? []
+    for (const raw of quotes) {
+      const inner = raw.replace(/^[„“"”»]|[„“"”«]$/g, '').trim()
+      const probe = inner.slice(0, 40).toLowerCase().replace(/\s+/g, ' ')
+      if (!hay.includes(probe)) {
+        push({
+          rule: 'Zitat nicht im Material', severity: 'fehler',
+          quote: inner.slice(0, 90),
+          hint: 'So steht es nirgends. Entweder belegen oder als eigene Formulierung ohne Anführung schreiben.',
+        })
+      }
+    }
+
+    const nums = new Set((text.match(/\b\d{1,3}(?:[.\s]\d{3})*(?:,\d+)?\b/g) ?? []))
+    const bare = hay.replace(/[.\s]/g, '')
+    for (const n of nums) {
+      const clean = n.replace(/[.\s]/g, '')
+      if (clean.length < 2) continue
+      if (['2024', '2025', '2026', '2027'].includes(clean)) continue
+      if (!bare.includes(clean)) {
+        push({
+          rule: 'Zahl nicht im Material', severity: 'fehler', quote: n,
+          hint: 'Diese Zahl steht nicht im Ausgangsmaterial. Streichen oder als Rechenbeispiel kenntlich machen.',
+        })
+      }
     }
   }
 
