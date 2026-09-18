@@ -389,6 +389,41 @@ function render(tpl: string, ctx: Ctx, extra?: Record<string, unknown>): string 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 /**
+ * Die Minutenbremse.
+ *
+ * Das Konto darf 30.000 Token je Minute. Ein Abschnittsaufruf bringt es mit
+ * Material, Farbe und Klangmassstab auf ueber 17.000 — zwei davon kurz
+ * hintereinander, und die Minute ist voll.
+ *
+ * Bisher liefen wir in das Limit hinein und warteten danach, was die Anbieter
+ * uns sagte. Das funktioniert, solange es einmal passiert; bei acht Abschnitten
+ * hintereinander verbraucht es die Wiederholungen und der Lauf stirbt an einer
+ * Eigenschaft des Tarifs.
+ *
+ * Also wird vorher gewartet. Wir fuehren ein Fenster ueber die letzte Minute
+ * und halten den naechsten Aufruf an, bis er hineinpasst. Das macht lange Laeufe
+ * langsam und zuverlaessig — in dieser Reihenfolge.
+ */
+const TPM = Number(process.env.OPENAI_TPM ?? 27_000)
+const fenster: Array<{ t: number; n: number }> = []
+
+function verbraucht(): number {
+  const jetzt = Date.now()
+  while (fenster.length && jetzt - fenster[0].t > 60_000) fenster.shift()
+  return fenster.reduce((a, x) => a + x.n, 0)
+}
+
+async function bremse(geschaetzt: number): Promise<void> {
+  for (let i = 0; i < 12; i++) {
+    const frei = TPM - verbraucht()
+    if (geschaetzt <= frei || !fenster.length) return
+    // So lange warten, bis der aelteste Eintrag aus dem Fenster faellt.
+    const wartet = Math.min(62_000 - (Date.now() - fenster[0].t) + 500, 20_000)
+    await sleep(Math.max(1_000, wartet))
+  }
+}
+
+/**
  * Ein Modellaufruf, mit Geduld.
  *
  * Die Organisation hat ein Minutenlimit. Ein langer Text besteht aus acht bis
@@ -414,6 +449,10 @@ async function ask(step: StepDef, ctx: Ctx, extra?: Record<string, unknown>) {
       : { type: 'json_object' },
   })
 
+  // Grob geschaetzt: gut drei Zeichen je Token, plus was die Antwort kosten darf.
+  const geschaetzt = Math.ceil(body.length / 3.2) + (step.maxTokens ?? 4000)
+  await bremse(geschaetzt)
+
   let res: Response | null = null
   let lastText = ''
   for (let versuch = 0; versuch < 4; versuch++) {
@@ -432,6 +471,10 @@ async function ask(step: StepDef, ctx: Ctx, extra?: Record<string, unknown>) {
   }
   if (!res || !res.ok) throw new Error(`Modell ${res?.status ?? 0}: ${lastText.slice(0, 200)}`)
   const data = await res.json()
+  fenster.push({
+    t: Date.now(),
+    n: (data.usage?.prompt_tokens ?? 0) + (data.usage?.completion_tokens ?? 0),
+  })
   return {
     value: JSON.parse(data.choices?.[0]?.message?.content ?? '{}'),
     model,
@@ -760,15 +803,15 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
       const res = await ask(step, ctx, {
         abschnitt: { ...s, budget },
         vorher: { schluss: tail.slice(-400) },
+        // Die CTA-Muster braucht nur der letzte Abschnitt. In den anderen sind
+        // sie teurer Ballast — und eine Einladung, zu frueh zu schliessen.
+        letzter: out.length === parts.length - 1,
         ...extra,
       })
       tin += res.tokensIn; tout += res.tokensOut; model = res.model
       return String((res.value as { text?: string }).text ?? '')
     }
 
-    // Etwas Luft zwischen den Aufrufen: das Minutenlimit der Organisation ist
-    // knapper als die Geduld des Lesers.
-    if (out.length) await sleep(1200)
     let text = await write({})
     let words = text.trim().split(/\s+/).filter(Boolean).length
     let nachgelegt = false

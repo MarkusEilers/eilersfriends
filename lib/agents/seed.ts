@@ -798,12 +798,8 @@ Material, aus dem alles stammen muss:
 Klangmassstab:
 {{auswahl.beispiele}}
 
-Zweite Stimme fuer die Struktur dieses Abschnitts (Klang bleibt Markus):
-{{auswahl.stimme}}
-
-Wenn dies der letzte Abschnitt ist — Muster fuer den Schluss. Keine Frage, die
-niemand beantwortet, keine Einladungsformel:
-{{auswahl.schluss}}
+Letzter Abschnitt: {{letzter}} — wenn ja, endet hier der Text. Keine Frage, die
+niemand beantwortet, keine Einladungsformel. Etwas Konkretes, oder aufhoeren.
 
 Recherchierte Farbe — Zahlen, Zitate, Worte der Zielgruppe. Nur nutzen, wenn es
 zu diesem Abschnitt gehoert, und nur woertlich mit der Fundstelle, die dabeisteht:
