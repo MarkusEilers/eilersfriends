@@ -10,10 +10,14 @@ import { db } from '@/lib/db'
 export const runtime = 'nodejs'
 export const maxDuration = 300
 
-async function guard() {
+async function guard(req?: Request) {
   const s = await auth()
   const r = s?.user?.role
-  return r === 'admin' || r === 'coach'
+  if (r === 'admin' || r === 'coach') return true
+  // Das Bestuecken ist idempotent und liest nur Dateien aus dem Repo. Damit es
+  // nach einem Deploy automatisch laufen kann, zaehlt auch das Cron-Geheimnis.
+  const secret = process.env.CRON_SECRET
+  return Boolean(secret && req?.headers.get('authorization') === `Bearer ${secret}`)
 }
 
 export async function GET(req: Request) {
@@ -48,7 +52,7 @@ export async function GET(req: Request) {
 
 /** Startbestueckung — idempotent, legt je Aufruf eine neue Agenten-Fassung an. */
 export async function POST(req: Request) {
-  if (!(await guard())) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  if (!(await guard(req))) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   const { was } = (await req.json().catch(() => ({}))) ?? {}
   // Die Pakete aus dem Handoff sind die genauere Quelle — sie ersetzen die
   // Startbestueckung unter denselben Schluesseln.
