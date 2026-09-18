@@ -90,8 +90,30 @@ export interface SaveInput {
   userId?: string | null
 }
 
+/**
+ * Die Ernte laeuft beim Uebergang nach 'published' — genau einmal, und nur beim
+ * Uebergang. Wer sie an jeden Speichervorgang haengt, fuellt den Katalog mit
+ * derselben Zeile in fuenf Fassungen.
+ */
+async function harvestIfPublished(before: string | null, after: AdminPost) {
+  if (after.status !== 'published' || before === 'published') return
+  try {
+    const { harvestPost } = await import('@/lib/content/harvest')
+    const rows = (await db.execute(sql`SELECT id FROM companies ORDER BY created_at LIMIT 1`)) as unknown as { id: string }[]
+    const companyId = rows[0]?.id
+    if (!companyId) return
+    await harvestPost({
+      companyId, post: after, channel: 'blog',
+      url: `https://www.eilersfriends.com/de/blog/${after.slug}`,
+    })
+  } catch { /* der Katalog darf das Veroeffentlichen nie aufhalten */ }
+}
+
 export async function savePost(input: SaveInput): Promise<AdminPost> {
   await ensureAdminColumns()
+  const before = input.id
+    ? ((await db.execute(sql`SELECT status FROM blog_posts WHERE id = ${input.id}`)) as unknown as { status: string }[])[0]?.status ?? null
+    : null
   const minutes = readingMinutes(input.content ?? '')
   const status = input.status ?? 'draft'
 
@@ -124,7 +146,9 @@ export async function savePost(input: SaveInput): Promise<AdminPost> {
         updated_at = now()
       WHERE id = ${input.id}
       RETURNING *, COALESCE(tags,'[]'::jsonb) AS tags`)
-    return (rows as unknown as AdminPost[])[0]
+    const saved = (rows as unknown as AdminPost[])[0]
+    await harvestIfPublished(before, saved)
+    return saved
   }
 
   const rows = await db.execute(sql`
@@ -139,7 +163,9 @@ export async function savePost(input: SaveInput): Promise<AdminPost> {
             ${input.commentsOpen ?? true}, ${input.locale ?? 'de'}, ${input.translationOf ?? null},
             ${input.userId ?? null})
     RETURNING *, COALESCE(tags,'[]'::jsonb) AS tags`)
-  return (rows as unknown as AdminPost[])[0]
+  const saved = (rows as unknown as AdminPost[])[0]
+  await harvestIfPublished(null, saved)
+  return saved
 }
 
 export async function deletePost(id: string) {
@@ -153,8 +179,10 @@ export async function publishDue(): Promise<string[]> {
   const rows = await db.execute(sql`
     UPDATE blog_posts SET status = 'published', updated_at = now()
     WHERE status = 'scheduled' AND published_at IS NOT NULL AND published_at <= now()
-    RETURNING slug`)
-  return (rows as unknown as { slug: string }[]).map((r) => r.slug)
+    RETURNING *, COALESCE(tags,'[]'::jsonb) AS tags`)
+  const posts = rows as unknown as AdminPost[]
+  for (const p of posts) await harvestIfPublished('scheduled', p)
+  return posts.map((p) => p.slug)
 }
 
 /** Vorschlaege fuer Schlagworte: erst die des Autors, dann alle uebrigen. */

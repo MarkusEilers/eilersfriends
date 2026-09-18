@@ -232,9 +232,10 @@ Zielgroesse: {{aufnahme.ziel_woerter}} Woerter`,
           },
         },
       },
-      { key: 'pruefung', kind: 'lint', title: 'Prüfung' },
+      { key: 'pruefung', kind: 'lint', title: 'Prüfung', source: 'entwuerfe' },
       {
         key: 'revision', kind: 'revision', title: 'Revision', temperature: 0.4, maxTokens: 4000,
+        source: 'entwuerfe', reports: 'pruefung',
         system: `${SYSTEM_BASE}
 
 Du behebst ausschließlich die genannten Befunde. Nichts anderes.
@@ -250,8 +251,9 @@ Die Befunde:
           properties: { text: { type: 'string' }, geaendert: { type: 'array', items: { type: 'string' } } },
         },
       },
+      { key: 'nachpruefung', kind: 'lint', title: 'Nachprüfung', source: 'revision' },
       { key: 'ergebnis', kind: 'sammeln', title: 'Zusammenstellen' },
     ],
-    notes: 'v2 — der Fächer steht jetzt vor dem Skelett: jede Fassung baut ihren eigenen Aufbau. In v1 teilten sich alle drei ein Skelett und fingen deshalb mit demselben Satz an.',
+    notes: 'v3 — Nachprüfung hinter der Revision: der Bericht am Ende beurteilt, was dasteht, nicht den Entwurf davor. v2 — der Fächer steht jetzt vor dem Skelett: jede Fassung baut ihren eigenen Aufbau. In v1 teilten sich alle drei ein Skelett und fingen deshalb mit demselben Satz an.',
   })
 }

@@ -168,6 +168,14 @@ export interface StepDef {
   variants?: string[]
   /** Fuer 'recherche' */
   queries?: string[]
+  /**
+   * Woher die Fassungen kommen, die dieser Schritt prueft oder ueberarbeitet.
+   * Ohne Angabe: die Entwuerfe. Damit laesst sich dieselbe Schrittart zweimal in
+   * die Kette haengen — einmal vor und einmal nach der Revision.
+   */
+  source?: string
+  /** Welcher Pruefbericht zugrunde liegt (fuer 'revision') */
+  reports?: string
   /** Schritt ueberspringen, wenn diese Eingabe fehlt oder falsch ist */
   onlyIf?: string
   optional?: boolean

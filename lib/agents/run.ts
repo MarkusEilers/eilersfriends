@@ -246,7 +246,7 @@ async function runStep(step: StepDef, ctx: Ctx): Promise<StepOut> {
     case 'recherche': return recherche(step, ctx)
     case 'modell': return callModel(step, ctx)
     case 'faecher': return fanout(step, ctx)
-    case 'lint': return linter(ctx)
+    case 'lint': return linter(step, ctx)
     case 'revision': return revision(step, ctx)
     case 'sammeln': return collect(ctx)
     default: throw new Error(`Unbekannte Schrittart: ${step.kind}`)
@@ -416,20 +416,29 @@ async function fanout(step: StepDef, ctx: Ctx): Promise<StepOut> {
   }
 }
 
-function linter(ctx: Ctx): StepOut {
+function linter(step: StepDef, ctx: Ctx): StepOut {
   const a = ctx.results.aufnahme as { ansprache?: string; ziel_woerter?: number } | undefined
-  const drafts = (ctx.results.entwuerfe as { varianten?: Array<Record<string, unknown>> })?.varianten ?? []
+  const from = step.source ?? 'entwuerfe'
+  const drafts = (ctx.results[from] as { varianten?: Array<Record<string, unknown>> })?.varianten ?? []
   const reports = drafts.map((d) => {
     const text = String(d.text ?? d.inhalt ?? '')
     const r = lint({ text, banned: ctx.banned, address: a?.ansprache ?? null, targetWords: a?.ziel_woerter ?? null })
     return { ansatz: d.ansatz, ...r }
   })
-  return { value: { berichte: reports, sauber: reports.every((r) => r.stats.fehler === 0) } }
+  return {
+    value: {
+      quelle: from, berichte: reports,
+      sauber: reports.every((r) => r.stats.fehler === 0),
+      offen: reports.reduce((s, r) => s + r.findings.length, 0),
+    },
+  }
 }
 
 async function revision(step: StepDef, ctx: Ctx): Promise<StepOut> {
-  const drafts = (ctx.results.entwuerfe as { varianten?: Array<Record<string, unknown>> })?.varianten ?? []
-  const reports = (ctx.results.pruefung as { berichte?: Array<{ findings: unknown[]; ansatz?: string }> })?.berichte ?? []
+  const from = step.source ?? 'entwuerfe'
+  const drafts = (ctx.results[from] as { varianten?: Array<Record<string, unknown>> })?.varianten ?? []
+  const reports = (ctx.results[step.reports ?? 'pruefung'] as
+    { berichte?: Array<{ findings: unknown[]; ansatz?: string }> })?.berichte ?? []
   const out: Array<Record<string, unknown>> = []
   let tin = 0, tout = 0, model: string | undefined
 
@@ -451,7 +460,9 @@ function collect(ctx: Ctx): StepOut {
     ?? (ctx.results.entwuerfe as { varianten?: unknown[] })?.varianten
     ?? []
   const quellen = (ctx.results.recherche as { quellen?: unknown[] })?.quellen ?? []
-  const lintOut = ctx.results.pruefung ?? null
+  // Der spaetere Bericht zaehlt: er beurteilt, was am Ende dasteht, nicht den
+  // Entwurf davor.
+  const lintOut = ctx.results.nachpruefung ?? ctx.results.pruefung ?? null
   return {
     value: {
       varianten: final,
