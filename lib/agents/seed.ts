@@ -250,10 +250,20 @@ Kein Umschreiben, kein Verbessern, kein Glätten. Wer bei der Revision den ganze
 Die Befunde des Linters:
 {{befunde.liste}}
 
-Was die Bild-Pruefung gefunden hat — Vergleiche, die kippen, Saetze, die ein
-Laie nicht versteht, und der Schluss. Uebernimm die Vorschlaege, wo sie besser
-sind, und schreib besser, wo sie es nicht sind:
-{{bild.befunde}}`,
+Was die Prosa-Pruefung gefunden hat. ROT muss behoben werden, GELB entscheidest
+Du. Uebernimm die Vorschlaege, wo sie besser sind, und schreib besser, wo sie es
+nicht sind:
+{{bild.befunde}}
+
+Welcher Mensch sich laut Pruefung aus dem Text herausliest:
+{{bild.charakter}}
+
+Die Stelle, der nicht jeder zustimmt. Steht hier nichts, fehlt sie — und dann
+gehoert eine hinein, gedeckt durch das Material:
+{{bild.risiko_stelle}}
+
+Der Message-Lock, der unveraendert dastehen muss:
+{{kette.message_lock}}`,
         schema: {
           type: 'object', required: ['text'],
           properties: { text: { type: 'string' }, geaendert: { type: 'array', items: { type: 'string' } } },
@@ -380,6 +390,11 @@ export async function seedLongformAgent() {
       properties: {
         audience: { type: 'string' },
         titel: { type: 'string', description: 'Wenn gesetzt, steht dieser Titel wörtlich über dem Text. Kein Vorschlag.' },
+        message_lock: {
+          type: 'string',
+          description: 'Der eine Satz, der unverändert und in voller Kraft im Text stehen muss. '
+            + 'Der Ton darf sich ändern, die Botschaft nie. Bleibt er leer, destilliert ihn der erste Schritt aus dem Auftrag.',
+        },
         untertitel: { type: 'string', description: 'Zeile unter dem Titel, z.B. „Webcast-Zusammenfassung"' },
         context_md: { type: 'string', description: 'Der Handoff: Auftrag, Zahlen mit Herkunft, Reaktionen, Quellmaterial' },
         inhalte: { type: 'string', description: 'Das Ausgangsmaterial, aus dem der Text entsteht' },
@@ -392,6 +407,12 @@ export async function seedLongformAgent() {
         },
         ansprache: { type: 'string', enum: ['du', 'ihr', 'sie'] },
         recherche: { type: 'boolean' },
+        stimme: {
+          type: 'string',
+          enum: ['kennedy', 'welsh', 'graziosi', 'vosler', 'kern', 'braun'],
+          description: 'Zweite Stimme für die Struktur. Markus gilt immer und steht nicht zur Wahl. '
+            + 'Bleibt das Feld leer, wählt der Agent selbst.',
+        },
       },
     },
     output_schema: {
@@ -399,6 +420,7 @@ export async function seedLongformAgent() {
       properties: {
         varianten: { type: 'array', items: { type: 'object' } },
         annahmen: { type: 'array', items: { type: 'string' } },
+        offen: { type: 'array', items: { type: 'object' } },
         pruefung: { type: 'object' },
       },
     },
@@ -423,11 +445,18 @@ export async function seedLongformAgent() {
 
 Du baust die Ueberzeugungsziele. Noch keinen Text, noch keine Gliederung.
 
-Drei bis fuenf Ziele in aufbauender Reihenfolge. Je Ziel: Was denkt der Leser heute? Was danach? Welcher Beleg aus dem Material traegt den Sprung? Welcher Widerstand kommt, und was entkraeftet ihn?
+Drei bis fuenf Ziele in aufbauender Reihenfolge, durchnummeriert als B1, B2, B3 … Je Ziel: Was denkt der Leser heute? Was danach? Welcher Beleg aus dem Material traegt den Sprung? Welcher Widerstand kommt, und was entkraeftet ihn? Und wie schwer ist der Sprung — leicht, mittel oder schwer?
+
+Die Schwere ist keine Hoeflichkeit. Der schwerste Sprung gehoert nach vorn, nicht ans Ende: Wer bis dahin nicht ueberzeugt ist, liest nicht mehr.
+
+DER MESSAGE-LOCK. Am Ende steht ein Satz, der im fertigen Text unveraendert und in voller Kraft vorkommen muss. Nicht die Zusammenfassung, nicht die Ueberschrift — die eine Behauptung, um derentwillen der Text geschrieben wird. Ist in der Eingabe schon einer gesetzt, uebernimmst Du ihn wortwoertlich.
+
+Ein guter Lock ist angreifbar. Wenn ihm niemand widersprechen koennte, ist er keine Botschaft, sondern eine Beobachtung.
 
 Nenne am Ende die Luecken: Was wird behauptet, ohne belegt zu sein, und was fragt ein skeptischer Leser, worauf das Material keine Antwort hat?`,
         user: `Zielgruppe: {{aufnahme.audience}}
 Auftrag: {{aufnahme.ueberzeugungsziel}}
+Vorgegebener Message-Lock (wenn leer, schreibst Du ihn): {{eingabe.message_lock}}
 
 Handoff und Regeln:
 {{material}}
@@ -441,15 +470,22 @@ Recherche:
 Zwei Beispieltexte als Klangmassstab — Haltung und Satzbau uebernehmen, nicht den Inhalt:
 {{auswahl.beispiele}}`,
         schema: {
-          type: 'object', required: ['ziele'],
+          type: 'object', required: ['ziele', 'message_lock'],
           properties: {
             kernaussage: { type: 'string', description: 'Der ganze Text in einem Satz' },
+            message_lock: {
+              type: 'string',
+              description: 'Der Satz, der unverändert im Text stehen muss. Angreifbar, nicht gefällig.',
+            },
             ziele: {
               type: 'array',
               items: {
-                type: 'object', required: ['heute', 'danach', 'beleg'],
+                type: 'object', required: ['id', 'heute', 'danach', 'beleg', 'schwere'],
                 properties: {
+                  id: { type: 'string', description: 'B1, B2, B3 …' },
+                  satz: { type: 'string', description: 'Der Glaubenssatz in einer Zeile' },
                   heute: { type: 'string' }, danach: { type: 'string' },
+                  schwere: { type: 'string', enum: ['leicht', 'mittel', 'schwer'] },
                   beleg: { type: 'string' }, widerstand: { type: 'string' }, entkraeftung: { type: 'string' },
                 },
               },
@@ -459,12 +495,88 @@ Zwei Beispieltexte als Klangmassstab — Haltung und Satzbau uebernehmen, nicht 
         },
       },
       {
+        key: 'evidenz', kind: 'modell', title: 'Womit wir das beweisen',
+        temperature: 0.2, maxTokens: 3000,
+        system: `${LANG_BASE}
+
+Du baust den Beweisplan. Keinen Text, keine Gliederung.
+
+Jeder Ueberzeugungsschritt braucht etwas, das ihn traegt. Du gehst das Material durch und legst die Beweismittel an: E1, E2, E3 … Je Beweismittel steht da, was es ist (eine Zahl, eine Szene, ein Zitat, ein Verfahren, ein Vergleich), woher es kommt, und welchen Schritt es traegt.
+
+SHOW OR TELL — die Entscheidung, die den Unterschied macht.
+
+ZEIGEN heisst: Der Leser sieht es passieren und zieht den Schluss selbst. Eine Szene, ein Ablauf, eine Zahl im Zusammenhang. Kostet Platz, wirkt.
+SAGEN heisst: Wir behaupten es und gehen weiter. Kostet eine Zeile, wirkt nur, wenn niemand widerspricht.
+
+Die Regel: Was der Leser bezweifeln wuerde, wird gezeigt. Was er ohnehin glaubt, wird gesagt. Wer alles zeigt, schreibt ein Buch; wer alles sagt, schreibt eine Broschuere.
+
+Bei jedem Beweismittel entscheidest Du und begruendest in einem Satz.
+
+DIE OFFEN-LISTE ist der wichtigste Teil.
+
+Wo ein Schritt kein Beweismittel hat, wird nichts erfunden — der Schritt kommt auf die OFFEN-Liste, mit der genauen Frage, die ein Mensch beantworten muss. „Wir braeuchten hier die Zahl, wie viele der zwoelf Teilnehmer aus dem Mittelstand kamen" ist brauchbar. „Mehr Belege waeren gut" ist es nicht.
+
+Ein Text mit drei ehrlichen Luecken ist besser als einer mit drei erfundenen Zahlen.`,
+        user: `Die Ueberzeugungsschritte:
+{{kette.ziele}}
+
+Message-Lock: {{kette.message_lock}}
+
+Material — nur hieraus, nichts dazu:
+{{aufnahme.inhalte}}
+
+Was die Recherche gebracht hat:
+{{recherche.material}}`,
+        schema: {
+          type: 'object', required: ['belege', 'offen'],
+          properties: {
+            belege: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['id', 'art', 'inhalt', 'traegt', 'modus', 'warum'],
+                properties: {
+                  id: { type: 'string', description: 'E1, E2, E3 …' },
+                  art: { type: 'string', enum: ['zahl', 'szene', 'zitat', 'verfahren', 'vergleich'] },
+                  inhalt: { type: 'string', description: 'Wörtlich aus dem Material' },
+                  herkunft: { type: 'string' },
+                  traegt: { type: 'string', description: 'Welche B-ID' },
+                  modus: { type: 'string', enum: ['zeigen', 'sagen'] },
+                  warum: { type: 'string', description: 'Warum zeigen bzw. warum sagen reicht' },
+                },
+              },
+            },
+            offen: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['frage', 'fuer'],
+                properties: {
+                  frage: { type: 'string', description: 'Die Frage, die ein Mensch beantworten muss — genau' },
+                  fuer: { type: 'string', description: 'Welche B-ID bliebe sonst unbelegt' },
+                },
+              },
+            },
+            beweislast: {
+              type: 'string',
+              description: 'Der Schritt, der am dünnsten belegt ist. Ehrlich, in einem Satz.',
+            },
+          },
+        },
+      },
+      {
         key: 'struktur', kind: 'modell', title: 'Gliederung mit Budget', temperature: 0.4, maxTokens: 3000,
         system: `${LANG_BASE}
 
 Du baust die Gliederung. Noch keinen Fliesstext.
 
-Je Abschnitt: Ueberschrift, welches Ueberzeugungsziel er traegt, welcher Beleg aus dem Material ihn stuetzt, die Beats, und ein Wortbudget. Die Summe der Budgets ergibt exakt die Zielgroesse.
+Je Abschnitt: Arbeitstitel, welchen Ueberzeugungsschritt er traegt (die B-ID), welche Beweismittel ihn stuetzen (die E-IDs), die Beats, und ein Wortbudget. Die Summe der Budgets ergibt exakt die Zielgroesse.
+
+Die IDs sind keine Buchhaltung. Ein Abschnitt, der auf keine B-ID zeigt, hat keinen Auftrag; einer, der auf keine E-ID zeigt, steht auf nichts. Beides wird nach Dir maschinell gegengerechnet, und tote Verweise fallen auf.
+
+WAS GEZEIGT WIRD, BRAUCHT PLATZ. Ein Beweismittel, das im Plan auf „zeigen" steht, kostet eine Szene — rechne es ins Budget ein. Eines auf „sagen" kostet eine Zeile. Wer ein Zeigen-Beweismittel in zwanzig Woertern abhandelt, hat es in ein Sagen verwandelt.
+
+Der schwerste Ueberzeugungsschritt gehoert nach vorn. Wer bis zur Mitte nicht ueberzeugt ist, liest das Ende nicht.
+
+Je Abschnitt schreibst Du ausserdem auf, was der Leser danach denken soll — in SEINEN Worten, nicht in unseren. Dieser Satz wird spaeter wichtiger als der Arbeitstitel.
 
 Je Abschnitt gehoert ein Hook — eine Frage oder eine Szene, keine Absichtserklaerung — und ein surprising insight. Ein Abschnitt ohne surprising insight wird gestrichen.
 
@@ -486,9 +598,16 @@ Gewaehlte Methode:
 Hook-Muster, aus denen Du schoepfen kannst:
 {{auswahl.hooks}}
 
-Die Ueberzeugungsziele:
+Die Ueberzeugungsschritte:
 {{kette.ziele}}
 
+Die Beweismittel mit Show-or-Tell:
+{{evidenz.belege}}
+
+Was noch offen ist — hier wird nichts erfunden, sondern ausgelassen:
+{{evidenz.offen}}
+
+Message-Lock, der im Text unveraendert vorkommen muss: {{kette.message_lock}}
 Kernaussage: {{kette.kernaussage}}
 
 Material:
@@ -503,13 +622,72 @@ Material:
               items: {
                 type: 'object', required: ['name', 'woerter', 'beats'],
                 properties: {
-                  name: { type: 'string' }, ziel: { type: 'string' },
+                  name: { type: 'string', description: 'Arbeitstitel — die echte Überschrift kommt später' },
+                  ziel: { type: 'string', description: 'Die B-ID, die dieser Abschnitt trägt' },
+                  beleg: { type: 'string', description: 'Die E-IDs, auf die er sich stützt' },
+                  paraphrase: { type: 'string', description: 'Was der Leser danach denkt, in seinen Worten' },
                   hook: { type: 'string' }, insight: { type: 'string' },
                   beats: { type: 'array', items: { type: 'string' } },
-                  beleg: { type: 'string' }, woerter: { type: 'number' },
+                  woerter: { type: 'number' },
                 },
               },
             },
+          },
+        },
+      },
+      { key: 'skelettpruefung', kind: 'skelett', title: 'Gliederung gegenrechnen', source: 'struktur' },
+      {
+        key: 'beats', kind: 'modell', title: 'Was der Leser danach denkt',
+        temperature: 0.2, maxTokens: 3000,
+        system: `Du bist der Pruefer. Du schreibst nichts und formulierst nichts schoener.
+
+Du bekommst bewusst KEINE Klangregeln, KEINE Beispieltexte und KEINE Stimmprofile. Du sollst nicht beurteilen, wie es klingt — sondern was es tut. Wer beides gleichzeitig prueft, prueft am Ende nur den Ton.
+
+Zu jedem Abschnitt fuenf Fragen:
+
+1. WIRKUNG. Was TUT dieser Abschnitt dem Leser an? „Informiert" ist eine rote Flagge — Information allein bewegt niemanden. Aergert er ihn? Erleichtert er ihn? Nimmt er ihm eine Ausrede?
+
+2. PARAPHRASE. Was denkt der Leser danach, in SEINEN Worten? Schreib den Satz auf, so wie er ihn denken wuerde — nicht so, wie wir ihn gern haetten. Weicht Deine Paraphrase vom zugewiesenen Ueberzeugungsschritt ab, ist das ein Befund, kein Zufall.
+
+3. ABSICHT. Deckt sich das mit der B-ID, die dem Abschnitt zugewiesen ist? Wenn der Abschnitt B2 tragen soll und Deine Paraphrase nach B1 klingt, steht er am falschen Platz.
+
+4. WEITERLESEN. Warum liest er den naechsten Abschnitt? Wenn die Antwort „weil er hoeflich ist" lautet, fehlt der Zug.
+
+5. STREICHPROBE. Was ginge verloren, wenn dieser Abschnitt fehlt? Wenn nichts: streichen.
+
+Deine Paraphrasen wandern in die Gliederung. Der Schreiber schreibt spaeter nicht auf den Abschnittstitel, sondern auf Deine Paraphrase. Formuliere sie entsprechend genau.`,
+        user: `Die Ueberzeugungsschritte:
+{{kette.ziele}}
+
+Message-Lock: {{kette.message_lock}}
+
+Zielgruppe: {{aufnahme.audience}}
+
+Die Gliederung:
+{{struktur.abschnitte}}
+
+Was der Validator gefunden hat:
+{{skelettpruefung.liste}}`,
+        schema: {
+          type: 'object', required: ['abschnitte'],
+          properties: {
+            abschnitte: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['name', 'wirkung', 'paraphrase', 'weiterlesen'],
+                properties: {
+                  name: { type: 'string' },
+                  wirkung: { type: 'string' },
+                  paraphrase: { type: 'string', description: 'Der Satz in den Worten des Lesers' },
+                  deckt_sich: { type: 'boolean' },
+                  weiterlesen: { type: 'string' },
+                  streichprobe: { type: 'string' },
+                  befund: { type: 'string', description: 'Nur wenn etwas nicht stimmt' },
+                },
+              },
+            },
+            streichen: { type: 'array', items: { type: 'string' }, description: 'Abschnitte, die nichts tragen' },
+            urteil: { type: 'string', description: 'Trägt die Folge den Message-Lock? In einem Satz, ehrlich.' },
           },
         },
       },
@@ -594,6 +772,15 @@ Der Abschnitt beginnt mit seinem Hook und endet so, dass der naechste anschliess
 Wenn unter "ausbauen" etwas steht, ist Deine vorige Fassung zu kurz gewesen. Dann schreibst Du den Abschnitt neu und tiefer, nicht laenger geredet.`,
         user: `Abschnitt: {{abschnitt.name}}
 Budget: {{abschnitt.budget}} Woerter
+
+DAS ZIEL DIESES ABSCHNITTS — schreib hierauf, nicht auf den Arbeitstitel.
+Was der Leser danach denken soll, in seinen Worten: {{abschnitt.paraphrase}}
+Was der Abschnitt ihm antun soll: {{abschnitt.wirkung}}
+Woran die Pruefung gezweifelt hat: {{abschnitt.befund}}
+
+Message-Lock des ganzen Textes — unveraendert und in voller Kraft, wenn dieser
+Abschnitt ihn traegt: {{kette.message_lock}}
+
 Hook: {{abschnitt.hook}}
 Surprising insight: {{abschnitt.insight}}
 Beats: {{abschnitt.beats}}
@@ -631,39 +818,59 @@ zu diesem Abschnitt gehoert, und nur woertlich mit der Fundstelle, die dabeisteh
       },
       { key: 'pruefung', kind: 'lint', title: 'Prüfung', source: 'text' },
       {
-        key: 'bild', kind: 'modell', title: 'Bilder und Verständlichkeit',
-        temperature: 0.2, maxTokens: 2500,
-        system: `${LANG_BASE}
+        key: 'bild', kind: 'modell', title: 'Prosa-Prüfung', temperature: 0.2, maxTokens: 4000,
+        system: `Du bist der Pruefer. Du aenderst nichts. Du lieferst Befunde mit Fundstelle.
 
-Du pruefst nicht die Sprache — das hat der Linter getan. Du pruefst, ob der Text
-etwas sagt, und ob ein Vergleich haelt.
+Du siehst nicht, wie der Text entstanden ist, und keine Begruendung des Schreibers. Das ist Absicht: Wer schreibt und prueft in einem Durchgang, verteidigt seinen eigenen Text.
 
-VERGLEICHE UND BILDER. Nimm jeden Vergleich einzeln und rechne ihn zu Ende.
+Jeder Befund bekommt eine Flagge. ROT heisst: muss geaendert werden. GELB heisst: der Mensch entscheidet.
 
-Das echte Beispiel, an dem Du Dich orientierst: "Planung laeuft oft in eine
-Richtung, wie ein Paket im Tracking. Wir schicken es raus. Ob es ankommt, sagt
-uns keiner." Das Bild kippt: Tracking ist genau das Verfahren, das einem sagt,
-wo das Paket ist. Der Vergleich behauptet das Gegenteil von dem, wofuer das Wort
-steht. Ein Leser, der einmal stolpert, liest den naechsten Absatz misstrauisch.
+NEUN FRAGEN.
 
-Also je Bild drei Fragen: Stimmt es, wenn man es zu Ende denkt? Sagen wir das
-ueberhaupt, oder ist es nur schoen? Geht es einfacher?
+1 · MESSAGE-LOCK. Steht die Kernbotschaft unveraendert und in voller Kraft im Text? Abgeschwaecht ist so schlimm wie weggelassen — „koennte man mal pruefen" ist nicht „ist eine Absicht". ROT bei jeder Abschwaechung.
 
-VERSTAENDLICHKEIT. Der Massstab ist nicht der Fachmann. Der Massstab ist ein
-kluger Mensch, der von unserem Gebiet nichts weiss — ein Vorstand aus einer
-anderen Branche, ein Kind, das gut zuhoert. Wo er raten muesste, ist der Satz zu
-schreiben, nicht der Leser zu dumm.
+2 · BEATS. Ist jeder geplante Abschnitt besetzt, und ist keiner dazugekommen, der nicht geplant war?
 
-Markiere jede Stelle, an der er raten muesste, und schreib den Satz einfacher
-hin. Keine Bedeutung wegnehmen — nur die Umwege.
+3 · BANANE-TEST. Traegt jede Pointe, jeder Kontrast und jede Zahl ein Beweismittel aus dem Plan? Eine Pointe, die keinen Fakt traegt, fliegt ersatzlos raus. „Nicht Obst, sondern Banane" ist Form ohne Inhalt: ein erfundener Gegensatz, den niemand behauptet hat. ROT.
 
-DER SCHLUSS. Der letzte Absatz zieht Klischees an wie kein anderer. Pruefe ihn
-gesondert: Steht dort etwas Konkretes, oder eine Frage, die niemand beantwortet?
+4 · HAUPTSACHE. Ist die Hauptsache die Hauptsache? Oder hat sich eine Nebensaechlichkeit nach vorn geschoben, weil sie sich besser schreiben liess?
 
-Du aenderst nichts. Du lieferst Befunde mit Fundstelle und einem Vorschlag.
-Findest Du nichts, ist die Liste leer — das ist ein erlaubtes Ergebnis.`,
+5 · CHARAKTER. Welcher Mensch liest sich aus diesem Text heraus? Wenn die ehrliche Antwort „irgendein Sales-Coach" lautet, ist der Text regelkonform und trotzdem wertlos. Nenn den Satz, an dem Du es festmachst.
+
+6 · UEBERGRIFFE. Befehle, Diagnosen aus der Ferne, Drohungen, unbelegte Tugend, Unterstellungen darueber, was der Leser weiss oder fuehlt. ROT.
+
+7 · RISIKO. Steht mindestens eine Stelle im Text, die nicht jeder unterschreiben wuerde — gedeckt durch das Material? Ein Text, dem alle zustimmen, hat nichts gesagt. Fehlt sie: ROT.
+
+8 · PARAPHRASEN. Loest jeder Abschnitt den Satz ein, den der Leser danach denken sollte? Du bekommst die Paraphrasen unten. Weicht die Wirkung ab, ist das ein Befund.
+
+9 · UEBERGAENGE. Tragen die Uebergaenge zwischen den Abschnitten, oder sind es Floskeln? Bleibt die Dramaturgie ueber den ganzen Text kohaerent?
+
+DAZU ZWEI, DIE NICHT AUS DEM KATALOG KOMMEN, SONDERN AUS DER PRAXIS.
+
+BILDER. Nimm jeden Vergleich einzeln und rechne ihn zu Ende. Das Lehrbeispiel: „Planung laeuft in eine Richtung, wie ein Paket im Tracking. Ob es ankommt, sagt uns keiner." Das Bild kippt — Tracking ist genau das Verfahren, das einem sagt, wo das Paket ist. Der Vergleich behauptet das Gegenteil dessen, wofuer das Wort steht. Wer einmal stolpert, liest den naechsten Absatz misstrauisch.
+
+VERSTAENDLICHKEIT. Massstab ist nicht der Fachmann, sondern ein kluger Mensch, der von unserem Gebiet nichts weiss — ein Vorstand aus einer anderen Branche, ein Kind, das gut zuhoert. Wo er raten muesste, ist der Satz zu schreiben, nicht der Leser zu dumm. Schreib den Satz einfacher hin, ohne ihm Bedeutung zu nehmen.
+
+Und der letzte Absatz gesondert: etwas Konkretes, oder eine Frage, die niemand beantwortet?
+
+Eine leere Befundliste ist ein erlaubtes Ergebnis. Erfundene Befunde sind es nicht.`,
         user: `Der Text:
 {{text.varianten.0.text}}
+
+Der Message-Lock, der unveraendert dastehen muss:
+{{kette.message_lock}}
+
+Die Ueberzeugungsschritte:
+{{kette.ziele}}
+
+Die Beweismittel — nur diese duerfen Pointen und Zahlen tragen:
+{{evidenz.belege}}
+
+Was bewusst offen blieb (fehlt es im Text, ist das richtig, nicht falsch):
+{{evidenz.offen}}
+
+Die Paraphrasen je Abschnitt:
+{{beats.abschnitte}}
 
 Material, gegen das geprueft wird:
 {{aufnahme.inhalte}}`,
@@ -673,19 +880,27 @@ Material, gegen das geprueft wird:
             befunde: {
               type: 'array',
               items: {
-                type: 'object', required: ['art', 'stelle', 'warum', 'vorschlag'],
+                type: 'object', required: ['frage', 'flagge', 'stelle', 'warum', 'vorschlag'],
                 properties: {
-                  art: { type: 'string', enum: ['bild kippt', 'sagt nichts', 'zu verschachtelt', 'schluss'] },
+                  frage: {
+                    type: 'string',
+                    enum: ['message-lock', 'beats', 'banane', 'hauptsache', 'charakter',
+                           'uebergriff', 'risiko', 'paraphrase', 'uebergang',
+                           'bild kippt', 'zu verschachtelt', 'schluss'],
+                  },
+                  flagge: { type: 'string', enum: ['rot', 'gelb'] },
                   stelle: { type: 'string', description: 'Der Satz, wörtlich' },
                   warum: { type: 'string' },
-                  vorschlag: { type: 'string', description: 'Der Satz, einfacher — nicht ärmer' },
+                  vorschlag: { type: 'string', description: 'Der Satz besser — nicht ärmer' },
                 },
               },
             },
-            laien_probe: {
+            charakter: {
               type: 'string',
-              description: 'Was ein Laie nach dem Lesen sagen würde, in einem Satz. Ehrlich.',
+              description: 'Welcher Mensch liest sich heraus? Ein Satz, ehrlich. „Irgendein Sales-Coach" ist eine zulässige Antwort.',
             },
+            risiko_stelle: { type: 'string', description: 'Die Stelle, der nicht jeder zustimmt. Leer heißt: es gibt keine.' },
+            laien_probe: { type: 'string', description: 'Was ein Laie nach dem Lesen sagen würde.' },
           },
         },
       },

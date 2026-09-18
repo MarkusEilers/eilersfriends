@@ -33,6 +33,33 @@ export interface LintInput {
    * vorkommen — die einzige Pruefung, die Erfindung ueberhaupt fassen kann.
    */
   material?: string | null
+  /**
+   * Der Message-Lock: der eine Satz, der unveraendert und in voller Kraft im
+   * Text stehen muss. Er ist der einzige Faenger gegen die Fehlerklasse, die
+   * sonst niemand sieht — die Botschaft wird abgeschwaecht oder gedreht, und
+   * der Text bleibt dabei tadellos.
+   */
+  lock?: string | null
+  /** linkedin | newsletter | cold-email | thread | carousel | short | reel */
+  kanal?: string | null
+}
+
+/**
+ * Kanal-Grenzen aus der Entscheidungsmatrix.
+ *
+ * Zaehlbar, also Code. Ein Modell, das man bittet, unter neunzig Woertern zu
+ * bleiben, bleibt manchmal darunter; eine Funktion, die zaehlt, immer.
+ */
+const KANAL_GRENZEN: Record<string, {
+  woerter?: [number, number]; einheiten?: [number, number]; einheit?: string; hinweis?: string
+}> = {
+  'cold-email': { woerter: [40, 90], hinweis: 'Cold-Mail über 90 Wörter wird nicht gelesen. Betreff unter 6 Wörtern.' },
+  linkedin: { woerter: [80, 300], hinweis: 'Die ersten drei Zeilen entscheiden. Links gehören in den ersten Kommentar.' },
+  newsletter: { woerter: [400, 1200], hinweis: 'Drei Akte, 25/50/25 mit zehn Prozent Spiel.' },
+  thread: { einheiten: [8, 12], einheit: 'Tweets', hinweis: 'Der erste Tweet trägt achtzig Prozent.' },
+  carousel: { einheiten: [7, 12], einheit: 'Slides', hinweis: 'Eine Idee pro Slide.' },
+  short: { woerter: [60, 180], hinweis: 'Unter einer Minute gesprochen.' },
+  reel: { woerter: [60, 180] },
 }
 
 const PERSONIFIED = /\b(die|der|das)\s+(Zahl|Zahlen|Markt|Märkte|Daten|Studie|Technologie|KI|Software)\s+(sagt|sagen|fordert|fordern|spricht|sprechen|verlangt|will|weiß|meint)\b/gi
@@ -173,6 +200,64 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
           hint: 'Eine Frage, die niemand beantwortet, ist kein Schluss. Etwas Konkretes anbieten oder aufhören.',
         })
         break
+      }
+    }
+  }
+
+  /**
+   * Der Message-Lock.
+   *
+   * Nicht auf Zeichengleichheit geprueft — ein Text, der den Satz wortwoertlich
+   * einbaut, klingt oft nach Einbau. Geprueft wird, ob die tragenden Woerter
+   * des Locks beieinander im Text vorkommen: verschwindet die Haelfte, ist die
+   * Botschaft verschwunden, egal wie schoen der Rest ist.
+   */
+  if (input.lock && input.lock.trim().length > 12) {
+    const STOPP = new Set(['und', 'oder', 'der', 'die', 'das', 'ein', 'eine', 'einen', 'dem', 'den',
+      'ist', 'sind', 'war', 'wird', 'werden', 'hat', 'haben', 'nicht', 'mit', 'von', 'für', 'auf',
+      'als', 'wie', 'dass', 'sich', 'auch', 'nur', 'man', 'sie', 'wir', 'ihr', 'was', 'wer'])
+    const kern = input.lock.toLowerCase().split(/[^a-zà-ÿ0-9]+/)
+      .filter((w) => w.length > 3 && !STOPP.has(w))
+    const hay = text.toLowerCase()
+    const drin = kern.filter((w) => hay.includes(w.slice(0, Math.max(4, w.length - 2))))
+    const quote = kern.length ? drin.length / kern.length : 1
+    if (quote < 0.6) {
+      push({
+        rule: 'Message-Lock fehlt', severity: 'fehler',
+        quote: input.lock.slice(0, 120),
+        hint: `Nur ${Math.round(quote * 100)} Prozent der tragenden Wörter der Kernbotschaft stehen im Text. `
+          + `Fehlt: ${kern.filter((w) => !drin.includes(w)).slice(0, 6).join(', ')}. `
+          + 'Die Botschaft ist unantastbar — der Ton darf sich ändern, sie nie.',
+      })
+    } else if (quote < 0.8) {
+      push({
+        rule: 'Message-Lock abgeschwächt', severity: 'warnung',
+        quote: input.lock.slice(0, 120),
+        hint: `${Math.round(quote * 100)} Prozent der Kernbotschaft sind da. Steht sie in voller Kraft oder nur angedeutet?`,
+      })
+    }
+  }
+
+  /** Kanal-Grenzen — zaehlbar, also gezaehlt. */
+  if (input.kanal) {
+    const g = KANAL_GRENZEN[input.kanal]
+    if (g) {
+      const w = text.trim().split(/\s+/).filter(Boolean).length
+      if (g.woerter && (w < g.woerter[0] || w > g.woerter[1])) {
+        push({
+          rule: 'Kanal-Grenze', severity: w > g.woerter[1] ? 'fehler' : 'warnung',
+          quote: `${w} Wörter`,
+          hint: `${input.kanal} liegt bei ${g.woerter[0]}–${g.woerter[1]} Wörtern.${g.hinweis ? ' ' + g.hinweis : ''}`,
+        })
+      }
+      if (g.einheiten) {
+        const n = text.split(/\n{2,}/).filter((p) => p.trim().length > 15).length
+        if (n < g.einheiten[0] || n > g.einheiten[1]) {
+          push({
+            rule: 'Kanal-Grenze', severity: 'warnung', quote: `${n} ${g.einheit ?? 'Teile'}`,
+            hint: `${input.kanal}: ${g.einheiten[0]}–${g.einheiten[1]} ${g.einheit ?? 'Teile'}.${g.hinweis ? ' ' + g.hinweis : ''}`,
+          })
+        }
       }
     }
   }

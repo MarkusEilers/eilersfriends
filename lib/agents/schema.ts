@@ -153,6 +153,7 @@ export type StepKind =
   | 'lint'        // Code: deterministische Pruefung
   | 'revision'    // Modell, nur Befunde beheben
   | 'zerlegen'    // Code: Originaltext in Passagen schneiden (Stay the course)
+  | 'skelett'     // Code: Gliederung gegen Belief- und Evidenz-Plan pruefen
   | 'sammeln'     // Code: Ergebnis zusammenstellen
 
 export interface StepDef {

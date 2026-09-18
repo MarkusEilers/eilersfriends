@@ -254,6 +254,7 @@ async function runStep(step: StepDef, ctx: Ctx): Promise<StepOut> {
     case 'lint': return linter(step, ctx)
     case 'revision': return revision(step, ctx)
     case 'zerlegen': return zerlegen(step, ctx)
+    case 'skelett': return skelett(step, ctx)
     case 'sammeln': return collect(ctx)
     default: throw new Error(`Unbekannte Schrittart: ${step.kind}`)
   }
@@ -521,7 +522,26 @@ ${renderIndex(rows)}`,
     temperature: 0.3, maxTokens: 900,
   }, ctx)
 
-  const picked = ((res.value as { gewaehlt?: Array<{ pack: string; key: string; als: string; warum: string }> }).gewaehlt ?? [])
+  let picked = ((res.value as { gewaehlt?: Array<{ pack: string; key: string; als: string; warum: string }> }).gewaehlt ?? [])
+
+  // Eine vorgegebene Stimme ist keine Anregung. Was der Auftraggeber gewaehlt
+  // hat, ersetzt die Wahl des Modells — und zwar das ganze Profil, nicht nur
+  // ein Stueck daraus.
+  const gewuenscht = String((ctx.input as Record<string, unknown>).stimme ?? '').trim().toLowerCase()
+  if (gewuenscht) {
+    const pack = `voice.${gewuenscht}`
+    const alle = await catalogIndex({ kinds: ['voice'], orgId: ctx.orgId, limit: 200 })
+    const eigen = alle.filter((r) => r.pack === pack)
+    if (eigen.length) {
+      picked = [
+        ...picked.filter((p) => p.als !== 'stimme'),
+        ...eigen.slice(0, 6).map((r) => ({
+          pack, key: String(r.key ?? ''), als: 'stimme',
+          warum: 'Vom Auftraggeber gesetzt.',
+        })),
+      ]
+    }
+  }
   const bodies = await loadItems(picked.map((p) => ({ pack: p.pack, key: p.key })), ctx.orgId)
 
   const gruppen: Record<string, string[]> = {}
@@ -554,6 +574,99 @@ ${renderIndex(rows)}`,
  * eigenen Auftrag. Wer trotzdem zu kurz bleibt, wird einmal zum Ausbauen
  * zurueckgeschickt — mit der Auflage, zu vertiefen und nicht zu wiederholen.
  */
+/**
+ * Der Skelett-Validator.
+ *
+ * Kein Modellaufruf. Er prueft nur, was sich zaehlen laesst — und genau das ist
+ * der Punkt: Ein Modell, das man fragt, ob seine Gliederung vollstaendig ist,
+ * antwortet zuverlaessig mit ja.
+ *
+ * Vier Fragen: Traegt jeder Ueberzeugungsschritt mindestens einen Abschnitt?
+ * Zeigt jeder Abschnitt auf einen Beleg, den es gibt? Steht der schwerste
+ * Schritt an einer starken Stelle? Und stimmen die Budgets in der Summe?
+ */
+async function skelett(step: StepDef, ctx: Ctx): Promise<StepOut> {
+  interface Abschnitt {
+    name?: string; ziel?: string; beleg?: string; woerter?: number
+    paraphrase?: string; beats?: string[]
+  }
+  const plan = (ctx.results[step.source ?? 'struktur'] as { abschnitte?: Abschnitt[] }) ?? {}
+  const parts = plan.abschnitte ?? []
+  const kette = (ctx.results.kette as { ziele?: Array<{ id?: string; satz?: string; schwere?: string }> }) ?? {}
+  const ziele = kette.ziele ?? []
+  const ev = (ctx.results.evidenz as { belege?: Array<{ id?: string }> }) ?? {}
+  const belegIds = new Set((ev.belege ?? []).map((b) => String(b.id ?? '').toUpperCase()).filter(Boolean))
+
+  const befunde: Array<{ art: string; schwere: 'fehler' | 'warnung'; text: string }> = []
+  const ids = (s: string) => [...String(s).toUpperCase().matchAll(/\b([BE]\d+)\b/g)].map((m) => m[1])
+
+  // 1 · Jeder Ueberzeugungsschritt braucht einen Abschnitt, der ihn traegt.
+  const belegt = new Set(parts.flatMap((p) => ids(`${p.ziel ?? ''} ${p.beleg ?? ''}`)))
+  for (const z of ziele) {
+    const id = String(z.id ?? '').toUpperCase()
+    if (id && !belegt.has(id)) {
+      befunde.push({ art: 'Überzeugungsschritt ohne Abschnitt', schwere: 'fehler',
+        text: `${id}: „${z.satz ?? ''}" trägt kein Abschnitt. Entweder rein damit oder streichen.` })
+    }
+  }
+
+  // 2 · Keine toten Verweise.
+  if (belegIds.size) {
+    for (const p of parts) {
+      for (const id of ids(p.beleg ?? '')) {
+        if (id.startsWith('E') && !belegIds.has(id)) {
+          befunde.push({ art: 'toter Verweis', schwere: 'fehler',
+            text: `„${p.name ?? ''}" beruft sich auf ${id} — den Beleg gibt es nicht.` })
+        }
+      }
+    }
+  }
+
+  // 3 · Abschnitte ohne jeden Beleg.
+  for (const p of parts) {
+    if (!String(p.beleg ?? '').trim()) {
+      befunde.push({ art: 'Abschnitt ohne Beleg', schwere: 'warnung',
+        text: `„${p.name ?? ''}" stützt sich auf nichts aus dem Material.` })
+    }
+    if (!String(p.paraphrase ?? '').trim()) {
+      befunde.push({ art: 'keine Leser-Paraphrase', schwere: 'warnung',
+        text: `„${p.name ?? ''}" sagt nicht, was der Leser danach denken soll.` })
+    }
+  }
+
+  // 4 · Der schwerste Schritt gehoert nicht ans Ende.
+  const schwer = ziele.find((z) => /schwer|hoch/i.test(String(z.schwere ?? '')))
+  if (schwer?.id) {
+    const pos = parts.findIndex((p) => ids(`${p.ziel ?? ''}`).includes(String(schwer.id).toUpperCase()))
+    if (pos >= 0 && pos > parts.length * 0.7) {
+      befunde.push({ art: 'schwerer Schritt zu spät', schwere: 'warnung',
+        text: `Der schwierigste Überzeugungsschritt (${schwer.id}) steht an Stelle ${pos + 1} von ${parts.length}. `
+          + 'Wer bis dahin nicht überzeugt ist, liest nicht mehr.' })
+    }
+  }
+
+  // 5 · Budgets.
+  const soll = Number((ctx.results.aufnahme as { ziel_woerter?: number } | undefined)?.ziel_woerter ?? 0)
+  const summe = parts.reduce((a, p) => a + (Number(p.woerter) || 0), 0)
+  if (soll && Math.abs(summe - soll) > soll * 0.1) {
+    befunde.push({ art: 'Budget stimmt nicht', schwere: 'warnung',
+      text: `Die Abschnitte summieren sich auf ${summe} Wörter, das Ziel sind ${soll}.` })
+  }
+
+  await db.execute(sql`
+    INSERT INTO agent_artifacts (run_id, step_key, kind, label, payload)
+    VALUES (${ctx.runId}, ${step.key}, 'skelett', ${`${befunde.length} Befunde`},
+            ${JSON.stringify(befunde)}::jsonb)`)
+
+  return {
+    value: {
+      befunde,
+      sauber: befunde.every((b) => b.schwere !== 'fehler'),
+      liste: befunde.map((b) => `- [${b.schwere}] ${b.art}: ${b.text}`).join('\n') || '(keine)',
+    },
+  }
+}
+
 /**
  * Zerlegen — der Einstieg fuer "Stay the course".
  *
@@ -599,6 +712,7 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
     abschnitte?: Array<{
       name: string; woerter: number; beats?: string[]
       beleg?: string; stufe?: string; quelle?: string
+      paraphrase?: string; wirkung?: string; befund?: string
     }>
     titel_vorschlag?: string
   }) ?? {}
@@ -608,6 +722,22 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
   // Die Zwischenueberschriften koennen aus einem eigenen Schritt kommen, der
   // nach der Farb-Recherche laeuft. Dann gewinnen sie gegen die Arbeitstitel
   // aus der Gliederung — Position fuer Position.
+  // Die Paraphrasen der Beat-Pruefung schlagen die Arbeitstitel: Der Schreiber
+  // schreibt auf den Satz, den der Leser danach denken soll, nicht auf die
+  // Ueberschrift. Das ist der wirksamste einzelne Hebel im ganzen Lauf.
+  {
+    const q = (ctx.results.beats as {
+      abschnitte?: Array<{ name?: string; paraphrase?: string; wirkung?: string; befund?: string }>
+    }) ?? {}
+    const liste = q.abschnitte ?? []
+    parts.forEach((s, i) => {
+      const t = liste[i]
+      if (t?.paraphrase) (s as { paraphrase?: string }).paraphrase = t.paraphrase
+      if (t?.wirkung) (s as { wirkung?: string }).wirkung = t.wirkung
+      if (t?.befund) (s as { befund?: string }).befund = t.befund
+    })
+  }
+
   if (step.headings) {
     const h = (ctx.results[step.headings] as { ueberschriften?: string[] }) ?? {}
     const list = h.ueberschriften ?? []
@@ -699,7 +829,12 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
 }
 
 function linter(step: StepDef, ctx: Ctx): StepOut {
-  const a = ctx.results.aufnahme as { ansprache?: string; ziel_woerter?: number } | undefined
+  const a = ctx.results.aufnahme as
+    { ansprache?: string; ziel_woerter?: number; textart?: string } | undefined
+  // Der Lock steht in der Eingabe oder wird beim Aufnehmen aus dem Auftrag
+  // destilliert — beides gilt, die Eingabe gewinnt.
+  const lock = String((ctx.input as Record<string, unknown>).message_lock
+    ?? (ctx.results.aufnahme as { message_lock?: string } | undefined)?.message_lock ?? '').trim()
   const from = step.source ?? 'entwuerfe'
   const drafts = (ctx.results[from] as { varianten?: Array<Record<string, unknown>> })?.varianten ?? []
   const reports = drafts.map((d) => {
@@ -710,6 +845,8 @@ function linter(step: StepDef, ctx: Ctx): StepOut {
       targetWords: a?.ziel_woerter ?? null,
       // Das Material ist die Wahrheit. Was hier nicht steht, darf dort nicht stehen.
       material: `${String(ctx.input.inhalte ?? '')}\n${String(ctx.input.context_md ?? ctx.input.kontext ?? '')}`,
+      lock: lock || null,
+      kanal: a?.textart ?? null,
     })
     return { ansatz: d.ansatz, ...r }
   })
@@ -755,6 +892,13 @@ function collect(ctx: Ctx): StepOut {
     value: {
       varianten: final,
       annahmen: ctx.assumptions,
+      // Was bewusst offen blieb, gehoert ins Ergebnis. Eine Luecke, die niemand
+      // sieht, wird beim naechsten Mal von jemandem erfunden.
+      offen: (ctx.results.evidenz as { offen?: unknown[] })?.offen ?? [],
+      beweislast: (ctx.results.evidenz as { beweislast?: string })?.beweislast ?? null,
+      skelett: ctx.results.skelettpruefung ?? null,
+      beats: ctx.results.beats ?? null,
+      prosapruefung: ctx.results.bild ?? null,
       quellen,
       pruefung: lintOut,
       wissen: (ctx.results.kontext as { pack_keys?: string[] })?.pack_keys ?? [],
