@@ -22,6 +22,17 @@ import { catalogFor, renderCatalog } from '@/lib/content/catalog'
 
 const BUDGET_MS = 230_000
 
+/**
+ * Kein Fehler, sondern eine Vertagung.
+ *
+ * Ein Schritt, der laenger braucht, als eine Lambda-Laufzeit hergibt, wirft
+ * das hier. Der Cursor bleibt stehen, der Schritt geht auf offen zurueck, und
+ * der naechste Anlauf macht dort weiter, wo dieser aufgehoert hat.
+ */
+class Vertagt extends Error {
+  constructor(public readonly stand: string) { super(stand) }
+}
+
 export interface RunHandle { id: string; status: string; cursor: number; output?: unknown }
 
 /* ─────────────────────────── Registry ─────────────────────────── */
@@ -171,6 +182,15 @@ export async function advance(runId: string): Promise<RunHandle> {
         await bill(runId, run.org_id, run.product_id, def.key, step.key, out.model, out.tokensIn ?? 0, out.tokensOut ?? 0)
       }
     } catch (e) {
+      if (e instanceof Vertagt) {
+        await db.execute(sql`
+          UPDATE agent_run_steps SET status = 'offen', error = ${e.stand}, started_at = NULL
+          WHERE run_id = ${runId} AND seq = ${cursor}`)
+        await db.execute(sql`
+          UPDATE agent_runs SET status = 'offen', cursor = ${cursor}, updated_at = now()
+          WHERE id = ${runId}`)
+        return { id: runId, status: 'offen', cursor }
+      }
       const msg = e instanceof Error ? e.message : String(e)
       await finishStep(runId, cursor, 'fehler', null, { error: msg, duration: Date.now() - started })
       if (!step.optional) {
@@ -793,11 +813,47 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
   const fixUnter = String((ctx.input as Record<string, unknown>).untertitel ?? '').trim()
 
   const minRatio = step.minRatio ?? 0.85
-  const out: Array<{ name: string; text: string; woerter: number; budget: number; nachgelegt: boolean }> = []
+  type Fertig = { name: string; text: string; woerter: number; budget: number; nachgelegt: boolean }
+  let out: Fertig[] = []
   let tin = 0, tout = 0, model: string | undefined
   let tail = ''
 
-  for (const s of parts) {
+  /**
+   * Schon geschriebene Abschnitte wiederfinden.
+   *
+   * Mit der Minutenbremse dauert ein Abschnitt bis zu einer halben Minute
+   * Wartezeit. Acht davon passen nicht in eine Lambda-Laufzeit. Also wird nach
+   * jedem Abschnitt abgelegt, was fertig ist, und beim naechsten Anlauf dort
+   * weitergemacht — derselbe Gedanke wie beim Lauf selbst, eine Ebene tiefer.
+   */
+  const merken = async () => {
+    await db.execute(sql`
+      INSERT INTO agent_artifacts (run_id, step_key, kind, label, payload)
+      VALUES (${ctx.runId}, ${step.key}, 'abschnitte-teil', ${`${out.length}/${parts.length}`},
+              ${JSON.stringify(out)}::jsonb)`)
+  }
+  {
+    const rows = (await db.execute(sql`
+      SELECT payload FROM agent_artifacts
+      WHERE run_id = ${ctx.runId} AND step_key = ${step.key} AND kind = 'abschnitte-teil'
+      ORDER BY created_at DESC LIMIT 1`)) as unknown as Array<{ payload: Fertig[] }>
+    const bisher = rows[0]?.payload
+    if (Array.isArray(bisher) && bisher.length && bisher.length < parts.length) {
+      out = bisher
+      tail = bisher[bisher.length - 1]?.text ?? ''
+    }
+  }
+
+  const offen = parts.slice(out.length)
+  // Wieviel Zeit bleibt in diesem Anlauf? Lieber sauber aufhoeren und im
+  // naechsten weitermachen, als mitten im Abschnitt abgeschnitten werden.
+  const start = Date.now()
+
+  for (const s of offen) {
+    if (out.length > (parts.length - offen.length) && Date.now() - start > 170_000) {
+      await merken()
+      throw new Vertagt(`${out.length} von ${parts.length} Abschnitten stehen — weiter beim nächsten Anlauf.`)
+    }
     const budget = Math.max(60, Number(s.woerter) || 200)
     const write = async (extra: Record<string, unknown>) => {
       const res = await ask(step, ctx, {
@@ -837,6 +893,7 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
 
     tail = text
     out.push({ name: s.name, text, woerter: words, budget, nachgelegt })
+    if (out.length < parts.length) await merken()
   }
 
   // Ueberschriften setzt nur, wer welche geschrieben hat. Beim Veredeln eines
