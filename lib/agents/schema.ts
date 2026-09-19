@@ -170,6 +170,7 @@ export type StepKind =
   | 'revision'    // Modell, nur Befunde beheben
   | 'zerlegen'    // Code: Originaltext in Passagen schneiden (Stay the course)
   | 'skelett'     // Code: Gliederung gegen Belief- und Evidenz-Plan pruefen
+  | 'flicken'     // Befunde als Austauschliste abarbeiten, statt neu zu schreiben
   | 'sammeln'     // Code: Ergebnis zusammenstellen
 
 export interface StepDef {

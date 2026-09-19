@@ -237,39 +237,42 @@ Zielgroesse: {{aufnahme.ziel_woerter}} Woerter`,
       },
       { key: 'pruefung', kind: 'lint', title: 'Prüfung', source: 'entwuerfe' },
       {
-        key: 'revision', kind: 'revision', title: 'Revision', temperature: 0.4, maxTokens: 4000,
-        source: 'entwuerfe', reports: 'pruefung',
-        system: `${SYSTEM_BASE}
+        key: 'flicken', kind: 'flicken', title: 'Befunde abarbeiten',
+        source: 'entwuerfe', reports: 'pruefung', temperature: 0.3, maxTokens: 4000,
+        system: `Du bekommst eine Liste von Saetzen, die nicht stehenbleiben duerfen, und lieferst zu jedem den Ersatz. Mehr nicht.
 
-Du behebst ausschließlich die genannten Befunde. Nichts anderes.
+DU SIEHST DEN TEXT NICHT. Das ist Absicht. Wer den ganzen Text vor sich hat, schreibt ihn um — und genau das ist hier verboten. Jeder Ersatz wird woertlich an die Stelle des alten Satzes gesetzt, sonst nichts.
 
-Kein Umschreiben, kein Verbessern, kein Glätten. Wer bei der Revision den ganzen Text anfasst, macht aus drei Varianten drei gleiche.`,
-        user: `Der Text:
-{{variante.text}}
+Ungefaehr gleich lang. Ein Satz von zwanzig Woertern wird nicht zu fuenf und nicht zu sechzig; der Text drumherum rechnet mit dieser Laenge.
 
-Die Befunde des Linters:
-{{befunde.liste}}
+Dieselbe Aussage, wo sie stimmt. Du behebst den genannten Mangel, Du widersprichst nicht dem Inhalt. Zahlen bleiben, Namen bleiben, Beispiele bleiben.
 
-Was die Prosa-Pruefung gefunden hat. ROT muss behoben werden, GELB entscheidest
-Du. Uebernimm die Vorschlaege, wo sie besser sind, und schreib besser, wo sie es
-nicht sind:
-{{bild.befunde}}
+Kein neues Bild. Wenn der Mangel "Bildmischung" oder "Abwesenheit mit Koerper" heisst, ist die Loesung fast nie ein besseres Bild, sondern gar keins: schlicht sagen, was passiert. "Die Luecke sitzt nicht im Nebel" wird nicht zu "Die Luecke liegt im Scheinwerferlicht", sondern zu "Die Luecke laesst sich beziffern."
 
-Welcher Mensch sich laut Pruefung aus dem Text herausliest:
-{{bild.charakter}}
+Kein Anschluss nach vorn oder hinten. Du kennst die Nachbarsaetze nicht. Schreib einen Satz, der fuer sich steht.
 
-Die Stelle, der nicht jeder zustimmt. Steht hier nichts, fehlt sie — und dann
-gehoert eine hinein, gedeckt durch das Material:
-{{bild.risiko_stelle}}
+Faellt Dir nichts ein, das besser ist als das Original, lass das Feld leer. Ein unveraenderter Satz mit einem bekannten Mangel ist besser als ein verschlimmbesserter.`,
+        user: `{{anzahl}} Auftraege. Zu jedem: die Nummer, der Satz, was daran nicht stimmt.
 
-Der Message-Lock, der unveraendert dastehen muss:
-{{kette.message_lock}}`,
+{{auftraege}}`,
         schema: {
-          type: 'object', required: ['text'],
-          properties: { text: { type: 'string' }, geaendert: { type: 'array', items: { type: 'string' } } },
+          type: 'object', required: ['austausch'],
+          properties: {
+            austausch: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['nr', 'neu'],
+                properties: {
+                  nr: { type: 'number' },
+                  neu: { type: 'string', description: 'Der Ersatzsatz. Leer lassen, wenn nichts besser wäre.' },
+                  warum: { type: 'string' },
+                },
+              },
+            },
+          },
         },
       },
-      { key: 'nachpruefung', kind: 'lint', title: 'Nachprüfung', source: 'revision' },
+      { key: 'nachpruefung', kind: 'lint', title: 'Nachprüfung', source: 'flicken' },
       { key: 'ergebnis', kind: 'sammeln', title: 'Zusammenstellen' },
     ],
     notes: 'v3 — Nachprüfung hinter der Revision: der Bericht am Ende beurteilt, was dasteht, nicht den Entwurf davor. v2 — der Fächer steht jetzt vor dem Skelett: jede Fassung baut ihren eigenen Aufbau. In v1 teilten sich alle drei ein Skelett und fingen deshalb mit demselben Satz an.',
@@ -701,6 +704,44 @@ Was der Validator gefunden hat:
         ],
       },
       {
+        key: 'aussagen', kind: 'modell', title: 'Was jede Überschrift sagen muss',
+        temperature: 0.2, maxTokens: 1500,
+        system: `${LANG_BASE}
+
+Du formulierst noch nichts. Du legst fest, WAS gesagt werden muss.
+
+Je Abschnitt ein schmuckloser Satz: die eine Sache, die ueber diesem Abschnitt stehen muesste, wenn Sprache keine Rolle spielte. Kein Bild, kein Rhythmus, keine Frage, kein Gedankenstrich. Ein Buchhalter-Satz.
+
+Warum getrennt: Wer gleichzeitig ueberlegt, was gesagt werden soll, und wie es klingt, entscheidet am Ende nach dem Klang. Dann steht eine schoene Zeile ueber einem Abschnitt, der etwas anderes tut.
+
+Die Probe: Stimmt der Satz mit dem ueberein, was der Leser nach dem Abschnitt denken soll? Die Paraphrasen stehen unten.
+
+Dazu je Abschnitt: das konkreteste Ding, das darin vorkommt — eine Zahl, ein Ort, eine Rolle, eine Uhrzeit, ein Gegenstand. Der naechste Schritt braucht es, damit die Ueberschrift etwas zum Anfassen hat.`,
+        user: `Die Abschnitte mit Beats und Belegen:
+{{struktur.abschnitte}}
+
+Was der Leser nach jedem Abschnitt denken soll:
+{{beats.abschnitte}}
+
+Message-Lock: {{kette.message_lock}}`,
+        schema: {
+          type: 'object', required: ['aussagen'],
+          properties: {
+            aussagen: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['nr', 'aussage', 'konkretes'],
+                properties: {
+                  nr: { type: 'number' },
+                  aussage: { type: 'string', description: 'Schmucklos. Was hier steht, nicht wie es klingt.' },
+                  konkretes: { type: 'string', description: 'Zahl, Ort, Rolle, Uhrzeit oder Ding aus diesem Abschnitt' },
+                },
+              },
+            },
+          },
+        },
+      },
+      {
         key: 'ueberschriften', kind: 'modell', title: 'Der zweite Text im Text',
         temperature: 0.7, maxTokens: 2000,
         system: `${LANG_BASE}
@@ -723,6 +764,12 @@ EINE UEBERSCHRIFT ALS FRAGE MUSS EINE FRAGE SEIN, DIE DER LESER WIRKLICH HAT.
 
 Hoechstens zwei der Ueberschriften duerfen Fragen sein. Der Rest sind Aussagen, Szenen oder Beobachtungen.
 
+KEINE ZUSTANDSBESCHREIBUNG. "Der Hebel liegt da" beschreibt, dass etwas irgendwo liegt. Das ist keine Ueberschrift, sondern ein Zustand — und ein Hebel, der daliegt, wird gerade nicht benutzt; das Bild sagt das Gegenteil des Gemeinten. Ueberschriften zeigen, dass etwas passiert oder jemand etwas tut.
+
+DU BENUTZT DIE VORLAGEN, DIE UNTEN STEHEN. Sie sind keine Anregung, sondern das Handwerkszeug: Jede ist eine Form mit Platzhaltern, die Du mit unserem Stoff fuellst. Nimm mindestens drei verschiedene Formen aus der Bank. Schreib zu jeder Ueberschrift dazu, welche Form Du benutzt hast — "frei" darf die Ausnahme sein, nicht die Regel.
+
+KEIN DURCHGEHENDES SATZMUSTER. Wenn sechs von acht Ueberschriften dieselbe Bauform haben, etwa "X — Y" mit Gedankenstrich, ist das eine Masche. Hoechstens zwei teilen sich eine Bauform.
+
 KEINE META-UEBERSCHRIFTEN. Ueber das Dokument selbst, ueber den Webcast, ueber das Format — "Was bleibt nach dem Termin", "Zum Schluss", "Fazit", "Das Wichtigste in Kuerze". Der Leser interessiert sich fuer seine Sache, nicht fuer unsere Veranstaltung.
 
 KEINE PERSONIFIZIERTEN ABSTRAKTA. "Wenn Plaene nicht zurueckreden" — Plaene reden nicht, weder hin noch zurueck. Ein Bild, das bei zwei Sekunden Nachdenken kippt, kostet mehr als es bringt.
@@ -736,6 +783,11 @@ Du lieferst genau so viele Zwischenueberschriften, wie es Abschnitte gibt, in de
 Wenn ein Titel vorgegeben ist, ist er gesetzt. Du schreibst dann keinen eigenen und baust die Folge unter ihn.`,
         user: `Vorgegebener Titel (wenn leer, schlaegst Du einen vor): {{eingabe.titel}}
 Untertitel: {{eingabe.untertitel}}
+
+WAS JEDE UEBERSCHRIFT SAGEN MUSS — das ist entschieden. Deine Arbeit ist die
+Form, nicht der Inhalt. Weicht Deine Ueberschrift von der Aussage ab, ist sie
+falsch, egal wie gut sie klingt. Das Konkrete daneben gehoert hinein:
+{{aussagen.aussagen}}
 
 Die Abschnitte in ihrer Reihenfolge, mit Arbeitstitel, Hook und Insight:
 {{struktur.abschnitte}}
@@ -757,6 +809,11 @@ Ansprache: {{aufnahme.ansprache}}`,
             ueberschriften: {
               type: 'array', items: { type: 'string' },
               description: 'Genau eine je Abschnitt, in derselben Reihenfolge',
+            },
+            formen: {
+              type: 'array', items: { type: 'string' },
+              description: 'Je Überschrift die benutzte Vorlage aus der Hook-Bank, oder „frei". '
+                + 'Mindestens drei verschiedene, höchstens zwei Mal dieselbe Bauform.',
             },
             skim_probe: {
               type: 'string',
@@ -788,6 +845,17 @@ DIE RHETORISCHE FRAGE IST KEIN EINSTIEG.
 Sie ist eine Wuerze, kein Grundnahrungsmittel. Hoechstens jeder dritte Abschnitt darf mit einer Frage beginnen, und nie zwei hintereinander. Eine Frage ueber etwas, das der Leser noch nicht kennt, ist keine Neugier, sondern eine Zumutung.
 
 Wenn Dir nur eine Frage einfaellt, fehlt Dir die Szene. Dann such sie im Material.
+
+KEINE ANONYMEN BEHAUPTUNGEN.
+
+"Die meisten denken X" — wer sind die meisten? "Viele unterschaetzen Y" — viele wer? Eine Behauptung ueber eine ungenannte Menge ist nicht falsch, sie ist ueberpruefungsfrei. Genau deshalb glaubt sie niemand.
+
+Drei Wege, und nur diese drei:
+- Die Gruppe benennen und belegen: "Die zwoelf Teilnehmer im Webcast tippten im Mittel auf 54 Prozent."
+- Zurueckhaltender formulieren, wenn es nur eine Beobachtung ist: "Viele Unternehmen berichten, dass…"
+- Weglassen.
+
+Und der Superlativ ist selten noetig. "Die meisten" ist eine staerkere Behauptung als "viele" und fast nie belegt. Nimm die schwaechere, wenn sie stimmt: Sie haelt.
 
 KEIN EIGENLOB, SOLANGE DER KONTEXT NICHT STEHT.
 
@@ -939,28 +1007,42 @@ Material, gegen das geprueft wird:
         },
       },
       {
-        key: 'revision', kind: 'revision', title: 'Revision', temperature: 0.4, maxTokens: 6000,
-        source: 'text', reports: 'pruefung',
-        system: `${LANG_BASE}
+        key: 'flicken', kind: 'flicken', title: 'Befunde abarbeiten',
+        source: 'text', reports: 'pruefung', temperature: 0.3, maxTokens: 4000,
+        system: `Du bekommst eine Liste von Saetzen, die nicht stehenbleiben duerfen, und lieferst zu jedem den Ersatz. Mehr nicht.
 
-Du behebst ausschliesslich die genannten Befunde. Nichts anderes.
+DU SIEHST DEN TEXT NICHT. Das ist Absicht. Wer den ganzen Text vor sich hat, schreibt ihn um — und genau das ist hier verboten. Jeder Ersatz wird woertlich an die Stelle des alten Satzes gesetzt, sonst nichts.
 
-DIE LAENGE BLEIBT. Der Text hat eine Laenge, die stimmt. Wer beim Beheben kuerzt, macht es schlimmer: Ein Befund wird behoben und drei neue entstehen, weil der Text seine Szenen verliert. Eine Fassung, die mehr als acht Prozent kuerzer zurueckkommt, wird verworfen — dann steht der Entwurf davor, mit seinen Befunden.
+Ungefaehr gleich lang. Ein Satz von zwanzig Woertern wird nicht zu fuenf und nicht zu sechzig; der Text drumherum rechnet mit dieser Laenge.
 
-KEINE UEBERSCHRIFT WIRD GESTRICHEN, keine zwei Abschnitte werden zusammengelegt. Die Gliederung ist an anderer Stelle entschieden worden.
+Dieselbe Aussage, wo sie stimmt. Du behebst den genannten Mangel, Du widersprichst nicht dem Inhalt. Zahlen bleiben, Namen bleiben, Beispiele bleiben.
 
-DU BEKOMMST DEN TEXT OHNE TITEL. Schreib auch keinen: Der Titel steht fest und wird nach Dir wieder davorgesetzt.`,
-        user: `Der Text:
-{{variante.text}}
+Kein neues Bild. Wenn der Mangel "Bildmischung" oder "Abwesenheit mit Koerper" heisst, ist die Loesung fast nie ein besseres Bild, sondern gar keins: schlicht sagen, was passiert. "Die Luecke sitzt nicht im Nebel" wird nicht zu "Die Luecke liegt im Scheinwerferlicht", sondern zu "Die Luecke laesst sich beziffern."
 
-Die Befunde:
-{{befunde.liste}}`,
+Kein Anschluss nach vorn oder hinten. Du kennst die Nachbarsaetze nicht. Schreib einen Satz, der fuer sich steht.
+
+Faellt Dir nichts ein, das besser ist als das Original, lass das Feld leer. Ein unveraenderter Satz mit einem bekannten Mangel ist besser als ein verschlimmbesserter.`,
+        user: `{{anzahl}} Auftraege. Zu jedem: die Nummer, der Satz, was daran nicht stimmt.
+
+{{auftraege}}`,
         schema: {
-          type: 'object', required: ['text'],
-          properties: { text: { type: 'string' }, geaendert: { type: 'array', items: { type: 'string' } } },
+          type: 'object', required: ['austausch'],
+          properties: {
+            austausch: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['nr', 'neu'],
+                properties: {
+                  nr: { type: 'number' },
+                  neu: { type: 'string', description: 'Der Ersatzsatz. Leer lassen, wenn nichts besser wäre.' },
+                  warum: { type: 'string' },
+                },
+              },
+            },
+          },
         },
       },
-      { key: 'nachpruefung', kind: 'lint', title: 'Nachprüfung', source: 'revision' },
+      { key: 'nachpruefung', kind: 'lint', title: 'Nachprüfung', source: 'flicken' },
       { key: 'ergebnis', kind: 'sammeln', title: 'Zusammenstellen' },
     ],
     notes:
@@ -1140,30 +1222,42 @@ Das Original, gegen das geprueft wird:
         },
       },
       {
-        key: 'revision', kind: 'revision', title: 'Revision', temperature: 0.3, maxTokens: 6000,
-        source: 'durchgang', reports: 'pruefung',
-        system: `Du behebst ausschliesslich die genannten Befunde. Nichts anderes.
+        key: 'flicken', kind: 'flicken', title: 'Befunde abarbeiten',
+        source: 'durchgang', reports: 'pruefung', temperature: 0.3, maxTokens: 4000,
+        system: `Du bekommst eine Liste von Saetzen, die nicht stehenbleiben duerfen, und lieferst zu jedem den Ersatz. Mehr nicht.
 
-Dies ist ein veredelter Text, kein neu geschriebener. Wer beim Beheben umbaut,
-macht die Arbeit zunichte: Die Botschaften des Originals muessen alle noch
-dastehen, in derselben Reihenfolge.`,
-        user: `Der Text:
-{{variante.text}}
+DU SIEHST DEN TEXT NICHT. Das ist Absicht. Wer den ganzen Text vor sich hat, schreibt ihn um — und genau das ist hier verboten. Jeder Ersatz wird woertlich an die Stelle des alten Satzes gesetzt, sonst nichts.
 
-Die Befunde des Linters:
-{{befunde.liste}}
+Ungefaehr gleich lang. Ein Satz von zwanzig Woertern wird nicht zu fuenf und nicht zu sechzig; der Text drumherum rechnet mit dieser Laenge.
 
-Was die Bild-Pruefung gefunden hat:
-{{bild.befunde}}
+Dieselbe Aussage, wo sie stimmt. Du behebst den genannten Mangel, Du widersprichst nicht dem Inhalt. Zahlen bleiben, Namen bleiben, Beispiele bleiben.
 
-Treue zum Original laut Pruefung:
-{{bild.treue}}`,
+Kein neues Bild. Wenn der Mangel "Bildmischung" oder "Abwesenheit mit Koerper" heisst, ist die Loesung fast nie ein besseres Bild, sondern gar keins: schlicht sagen, was passiert. "Die Luecke sitzt nicht im Nebel" wird nicht zu "Die Luecke liegt im Scheinwerferlicht", sondern zu "Die Luecke laesst sich beziffern."
+
+Kein Anschluss nach vorn oder hinten. Du kennst die Nachbarsaetze nicht. Schreib einen Satz, der fuer sich steht.
+
+Faellt Dir nichts ein, das besser ist als das Original, lass das Feld leer. Ein unveraenderter Satz mit einem bekannten Mangel ist besser als ein verschlimmbesserter.`,
+        user: `{{anzahl}} Auftraege. Zu jedem: die Nummer, der Satz, was daran nicht stimmt.
+
+{{auftraege}}`,
         schema: {
-          type: 'object', required: ['text'],
-          properties: { text: { type: 'string' }, geaendert: { type: 'array', items: { type: 'string' } } },
+          type: 'object', required: ['austausch'],
+          properties: {
+            austausch: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['nr', 'neu'],
+                properties: {
+                  nr: { type: 'number' },
+                  neu: { type: 'string', description: 'Der Ersatzsatz. Leer lassen, wenn nichts besser wäre.' },
+                  warum: { type: 'string' },
+                },
+              },
+            },
+          },
         },
       },
-      { key: 'nachpruefung', kind: 'lint', title: 'Nachprüfung', source: 'revision' },
+      { key: 'nachpruefung', kind: 'lint', title: 'Nachprüfung', source: 'flicken' },
       { key: 'ergebnis', kind: 'sammeln', title: 'Zusammenstellen' },
     ],
   })

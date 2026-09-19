@@ -20,6 +20,16 @@ export interface Finding {
   quote: string
   hint: string
   position?: number
+  /**
+   * Der konkrete Austausch: `alt` steht woertlich im Text und wird durch `neu`
+   * ersetzt. Wo der Linter das selbst weiss, steht es hier — und dann braucht
+   * es kein Modell mehr, sondern eine Zeichenkettenersetzung.
+   *
+   * Wo nur ein Mensch oder ein Modell urteilen kann, bleibt `neu` leer. Dann
+   * ist es ein Auftrag: "ersetze genau DAS", nicht "schreib den Text neu".
+   */
+  alt?: string
+  neu?: string
 }
 
 export interface LintInput {
@@ -62,7 +72,7 @@ const KANAL_GRENZEN: Record<string, {
   reel: { woerter: [60, 180] },
 }
 
-const PERSONIFIED = /\b(die|der|das)?\s*(Zahl|Zahlen|Markt|Märkte|Daten|Studie|Technologie|KI|Software|Plan|Pläne|Planung|Prozess|Prozesse|System|Systeme|Lücke)\s+(sagt|sagen|fordert|fordern|spricht|sprechen|redet|reden|antwortet|antworten|verlangt|will|wollen|weiß|wissen|meint|meinen|schweigt|schweigen|zurückreden|zurückredet|zurückmeldet|zurückmelden|zurückspricht)\b/gi
+const PERSONIFIED = /\b(die|der|das)?\s*(Zahl|Zahlen|Markt|Märkte|Daten|Studie|Technologie|KI|Software|Plan|Pläne|Planung|Prozess|Prozesse|System|Systeme|Lücke)\s+(sagt|sagen|fordert|fordern|spricht|sprechen|redet|reden|antwortet|antworten|verlangt|will|wollen|weiß|wissen|meint|meinen|schweigt|schweigen|zurückreden|zurückredet|zurückmeldet|zurückmelden|zurückspricht)(?![a-zà-ÿ])/gi
 
 /**
  * Eigenlob.
@@ -72,8 +82,8 @@ const PERSONIFIED = /\b(die|der|das)?\s*(Zahl|Zahlen|Markt|Märkte|Daten|Studie|
  * es ueberhaupt geht. Wer im ersten Drittel erklaert, wie praktisch sein Tool
  * ist, hat den Kontext uebersprungen und verkauft in ein Vakuum.
  */
-const EIGENES = /\b(Rechenblatt|Rechenhilfe|Werkzeug|Tool|Template|Vorlage|Checkliste|Playbook|unser(e|es)? (Material|Modell|Verfahren|Ansatz))\b/gi
-const LOB = /\b(einfach|schnell|praktisch|klar|sofort|kein(e)? [A-Za-zä-ü]+monster|in fünf Minuten|auf einen Blick|ohne Aufwand|gibt dir|macht sichtbar|reicht (schon|aus))\b/i
+const EIGENES = /\b(Rechenblatt|Rechenhilfe|Werkzeug|Tool|Template|Vorlage|Checkliste|Playbook|unser(e|es)? (Material|Modell|Verfahren|Ansatz))(?![a-zà-ÿ])/gi
+const LOB = /\b(einfach|schnell|praktisch|klar|sofort|kein(e)? [A-Za-zä-ü]+monster|in fünf Minuten|auf einen Blick|ohne Aufwand|gibt dir|macht sichtbar|reicht (schon|aus))(?![a-zà-ÿ])/i
 
 /**
  * Sichtbares Geruest.
@@ -83,9 +93,114 @@ const LOB = /\b(einfach|schnell|praktisch|klar|sofort|kein(e)? [A-Za-zä-ü]+mon
  * als Bauanleitung steht und im Text als Aufzaehlung landet.
  */
 const GERUEST = /(warum (genau )?jetzt\?[^?]{0,120}warum (du|sie|ihr)\?)|(\bwarum dieses thema\?)|(drei (dinge|punkte), in dieser reihenfolge)|(danach hast du:)/gi
-const HONESTY = /\b(ganz ehrlich|klartext|ohne bullshit|die ehrliche (rechnung|bandbreite)|ich sag'?s wie es ist|mal ehrlich)\b/gi
-const HYPE = /\b(game.?changer|revolutionär|bahnbrechend|explosive? (ergebnisse|wachstum)|auf steroiden|absolut einzigartig)\b/gi
-const EMPTY = /\b(der (kunde|mensch) im mittelpunkt|innovation und qualität|gemeinsam in die zukunft|ganzheitliche lösung)\b/gi
+const HONESTY = /\b(ganz ehrlich|klartext|ohne bullshit|die ehrliche (rechnung|bandbreite)|ich sag'?s wie es ist|mal ehrlich)(?![a-zà-ÿ])/gi
+const HYPE = /\b(game.?changer|revolutionär|bahnbrechend|explosive? (ergebnisse|wachstum)|auf steroiden|absolut einzigartig)(?![a-zà-ÿ])/gi
+/**
+ * Was an die Stelle tritt.
+ *
+ * Nur dort gefuellt, wo der Austausch eindeutig ist. Ein Linter, der raet,
+ * richtet mehr Schaden an als einer, der schweigt — steht hier nichts, bleibt
+ * der Befund ein Auftrag an den naechsten Durchgang.
+ */
+/**
+ * Eine Warnung zu \b in diesen Mustern.
+ *
+ * JavaScript kennt in \w und \b nur ASCII. Nach "weiß", "hält" oder "größer"
+ * steht deshalb keine Wortgrenze — ein Muster, das dort auf \b endet, trifft
+ * nie, und zwar lautlos. Deshalb enden die Muster hier auf (?![a-zà-ÿ]) statt
+ * auf \b. Am Anfang ist \b unproblematisch, solange dort ein ASCII-Buchstabe
+ * steht; ein Lookbehind waere sauberer, bricht aber das ES2017-Ziel.
+ */
+
+const ERSATZ: Record<string, string> = {
+  'leute': 'Menschen', 'mehrwert': 'Nutzen', 'nahtlos': 'ohne Bruch',
+  'letztendlich': '', 'im grunde': '', 'eigentlich': '', 'quasi': '', 'irgendwie': '',
+  'tendenziell': '', 'in gewisser weise': '', 'gefühlt': '',
+  'optimieren': 'verbessern', 'skalieren': 'ausweiten', 'next level': '',
+  'game-changer': '', 'auf augenhöhe': '', 'stellschrauben': 'Punkte',
+  'mindset': 'Haltung', 'bausteine': 'Teile', 'ganzheitlich': '',
+}
+
+/**
+ * Bildmischung.
+ *
+ * Die haeufigste Art, wie ein Satz seine Bedeutung verliert: Zwei Bilder aus
+ * verschiedenen Welten stehen nebeneinander und heben sich gegenseitig auf.
+ *
+ * Die beobachteten Faelle: "Die Luecke sitzt nicht im Nebel" — eine Abwesenheit
+ * bekommt eine Koerperhaltung und dazu ein Sichtverhaeltnis. "Aus der Blackbox
+ * wird Klarheit" — ein Behaelter verwandelt sich in eine Eigenschaft. "Zahlen
+ * werden zum Roentgenbild". "Rueckenwind statt Blackbox".
+ *
+ * Die Pruefung zaehlt nicht Woerter, sondern WELTEN. Zwei Bildwelten in einem
+ * Satz sind fast immer eine zu viel.
+ */
+const BILDWELTEN: Record<string, RegExp> = {
+  Sicht: /\b(Nebel|neblig|Blindflug|Schleier|Dunkel|Zwielicht|Tunnelblick|Scheinwerfer|Röntgenbild|durchleuchte[nt])(?![a-zà-ÿ])/i,
+  Behälter: /\b(Blackbox|Black Box|Schublade|Kiste|Silo|Topf|Fass|Schleuse|Trichter)(?![a-zà-ÿ])/i,
+  Wetter: /\b(Rückenwind|Gegenwind|Sturm|Flaute|Gewitter|Nebelwand|Eiszeit|Tauwetter)(?![a-zà-ÿ])/i,
+  Mechanik: /\b(Hebel|Stellschraube|Getriebe|Zahnrad|Motor|Bremse|Schmiermittel|Räderwerk)(?![a-zà-ÿ])/i,
+  Weg: /\b(Stolperstein|Sackgasse|Abzweig|Umweg|Leitplanke|Spur|Kurve|Meilenstein)(?![a-zà-ÿ])/i,
+  Körper: /\b(Herzstück|Rückgrat|Nervensystem|Puls|Achillesferse|Bauchgefühl|Muskeln)(?![a-zà-ÿ])/i,
+  Krieg: /\b(Schlacht|Frontlinie|Feuerprobe|Schützengraben|Waffe|Brückenkopf)(?![a-zà-ÿ])/i,
+  Bau: /\b(Fundament|Baustelle|Gerüst|Mauer|Brücke|Dach|Bausteine)(?![a-zà-ÿ])/i,
+}
+
+/**
+ * Abwesenheiten mit Koerper.
+ *
+ * "Die Luecke sitzt", "die Ausfuehrung steht", "die Klarheit wandert" — ein
+ * Begriff, der eine Abwesenheit oder eine Eigenschaft bezeichnet, bekommt eine
+ * Haltung. Beim ersten Lesen klingt es lebendig, beim zweiten kippt es.
+ */
+const ABSTRAKT = /\b(Lücke|Differenz|Abweichung|Klarheit|Qualität|Transparenz|Ausführung|Planung|Umsetzung|Verantwortung|Vertrauen|Sicherheit)\s+(sitzt|sitzen|steht auf|hockt|wandert|läuft weg|schläft|wacht|atmet|greift zu|packt an|schaut)(?![a-zà-ÿ])/gi
+
+/**
+ * Verwandlung zwischen Kategorien.
+ *
+ * "Aus der Blackbox wird Klarheit", "Zahlen werden zum Roentgenbild". Ein Ding
+ * verwandelt sich in eine Eigenschaft oder in ein Bild aus einer anderen Welt.
+ * Das ist kein Vergleich mehr, sondern ein Kategorienfehler.
+ */
+const VERWANDLUNG = /(aus (der|dem|den|einer|einem)\s+[^.,;!?]{2,45}?\s+wird(?![a-zà-ÿ])|werden zu[rm]?\s+[a-zà-ÿ]*bild|verwandelt sich in|macht aus \w+ (ein|eine|einen)\b)/gi
+
+/**
+ * Absolutaussagen.
+ *
+ * "Niemand weiss, ob die Info angekommen ist" — bei einer E-Mail weiss man das
+ * durchaus. Ein absoluter Satz ist entweder belegt oder angreifbar, und ein
+ * Leser, der EINEN solchen Satz widerlegt, misstraut dem ganzen Text.
+ */
+const ABSOLUT = /\b(niemand (weiß|merkt|sieht|erfährt|kann)|keiner (weiß|merkt|sieht)|es gibt keine (Möglichkeit|Chance|Rückmeldung)|nie(mals)? (erfährt|erfahren|sichtbar)|immer|jedes Mal|ausnahmslos)(?![a-zà-ÿ])/gi
+
+/**
+ * Behauptungen ueber den Kopf des Lesers.
+ *
+ * "Viele gehen davon aus, dass die Luecke diffus bleibt" — woher wissen wir,
+ * wovon viele ausgehen? Wenn es nicht im Material steht, ist es geraten, und
+ * geraten ist in einem Text mit Zahlen die schwaechste Stelle.
+ */
+const ANNAHME_UEBER_LESER = /\b((viele|die meisten|kaum jemand|niemand|alle|jeder)\s+(gehen|geht|glauben|glaubt|denken|denkt|nehmen an|nimmt an|vermuten|vermutet|halten|hält|unterschätzen|unterschätzt|überschätzen|überschätzt|ahnen|ahnt|wissen|weiß)(?![a-zà-ÿ]))/gi
+
+/**
+ * Die anonyme Menge.
+ *
+ * "Die meisten schaetzen zu hoch", "viele unterschaetzen das", "kaum jemand
+ * rechnet nach". Wer ist das? Eine Behauptung ueber eine ungenannte Gruppe ist
+ * nicht falsch — sie ist ueberpruefungsfrei, und genau deshalb glaubt sie
+ * niemand.
+ *
+ * Drei Auswege: die Gruppe benennen und belegen ("die zwoelf Teilnehmer
+ * tippten auf 54 Prozent"), zurueckhaltender formulieren ("viele Unternehmen
+ * berichten"), oder weglassen.
+ *
+ * Der Superlativ ist dabei der schlimmere Fall: "die meisten" behauptet mehr
+ * als die Haelfte und ist fast nie belegt, waehrend "viele" dasselbe Bild
+ * erzeugt und haelt.
+ */
+const ANONYME_MENGE = /(die meisten|fast alle|so gut wie jeder|kaum jemand|die wenigsten|jeder zweite|so gut wie niemand)(?![a-zà-ÿ])/gi
+
+const EMPTY = /\b(der (kunde|mensch) im mittelpunkt|innovation und qualität|gemeinsam in die zukunft|ganzheitliche lösung)(?![a-zà-ÿ])/gi
 
 /**
  * Virtue-Signalling.
@@ -95,7 +210,7 @@ const EMPTY = /\b(der (kunde|mensch) im mittelpunkt|innovation und qualität|gem
  * ein Pitch moeglich waere. Die Absicht zeigt sich im Verhalten, nicht in der
  * Ankuendigung.
  */
-const VIRTUE = /\b(ohne (versteckten |verdeckten )?(pitch|hintergedanken|agenda)|wir (wollen|haben) (auch )?nicht vor,? (Dich|Sie|euch)|nicht überzeugen|kein verkaufsgespräch|kostet (logischerweise |natürlich )?nichts|wir sind (herstellerneutral|unabhängig)|ganz ohne verpflichtung|unverbindlich und kostenlos)\b/gi
+const VIRTUE = /\b(ohne (versteckten |verdeckten )?(pitch|hintergedanken|agenda)|wir (wollen|haben) (auch )?nicht vor,? (Dich|Sie|euch)|nicht überzeugen|kein verkaufsgespräch|kostet (logischerweise |natürlich )?nichts|wir sind (herstellerneutral|unabhängig)|ganz ohne verpflichtung|unverbindlich und kostenlos)(?![a-zà-ÿ])/gi
 
 /**
  * Unterstellungen.
@@ -113,7 +228,7 @@ const PRESUME = /(wer [^.!?]{5,70}[,:]? wei(ß|ss)t?[ ,]|jede(r|n)?,? der [^.!?]
  * „nicht X, sondern Y", wo niemand X behauptet hat. Klingt nach Haltung und ist
  * ein Strohmann.
  */
-const FAKE_CONTRA = /\b(nicht\s+\w+(?:en|n)?,\s*sondern\s+\w+)/gi
+const FAKE_CONTRA = /((nicht|kein|keine|keinen)\s+[^.,;!?]{1,40}[,–—-]?\s*sondern\s+[a-zà-ÿ]+)/gi
 
 const around = (text: string, i: number, len = 70) =>
   text.slice(Math.max(0, i - 25), Math.min(text.length, i + len)).replace(/\s+/g, ' ').trim()
@@ -158,9 +273,12 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
         rule: v.kontext ? 'Wort nur in einer Lesart erlaubt' : 'verbotenes Wort',
         severity: v.kontext ? 'warnung' : 'fehler',
         quote: around(text, m.index), position: m.index,
+        alt: m[2],
+        neu: ERSATZ[v.wort.toLowerCase()],
         hint: v.kontext
           ? `„${v.wort}“ ist bildlos gesperrt (${v.gruppe}). Wenn es hier woertlich gemeint ist, bleibt es.`
-          : `„${v.wort}“ ist gesperrt (${v.gruppe}).`,
+          : `„${v.wort}“ ist gesperrt (${v.gruppe}).`
+            + (ERSATZ[v.wort.toLowerCase()] ? ` Ersatz: „${ERSATZ[v.wort.toLowerCase()]}".` : ''),
       })
       if (findings.length > 80) break
     }
@@ -299,7 +417,7 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
         hint: `${fragen.length} von ${heads.length} Zwischenüberschriften sind Fragen. Höchstens zwei.`,
       })
     }
-    const META = /\b(was bleibt|zum schluss|fazit|zusammenfassung|das wichtigste in kürze|nach dem (webcast|termin|vortrag|call)|worum es (hier )?geht)\b/i
+    const META = /\b(was bleibt|zum schluss|fazit|zusammenfassung|das wichtigste in kürze|nach dem (webcast|termin|vortrag|call)|worum es (hier )?geht)(?![a-zà-ÿ])/i
     for (const h of heads) {
       if (META.test(h)) {
         push({
@@ -314,6 +432,51 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
         push({
           rule: 'Überschrift ohne Konkretes', severity: 'warnung', quote: h,
           hint: 'Keine Zahl, kein Ort, keine Rolle, kein Ding. Eine Überschrift aus lauter Abstrakta bleibt nicht hängen.',
+        })
+      }
+    }
+  }
+
+  scan(ABSTRAKT, 'Abwesenheit mit Körper', 'fehler',
+    'Eine Lücke sitzt nicht, eine Klarheit wandert nicht. Der Begriff bezeichnet eine Abwesenheit '
+    + 'oder eine Eigenschaft — gib ihm keine Haltung. Sag lieber, wer was tut.')
+  scan(VERWANDLUNG, 'Kategorienwechsel', 'fehler',
+    'Ein Behälter wird keine Eigenschaft, Zahlen werden kein Bild. Das ist kein Vergleich, '
+    + 'sondern ein Kategorienfehler — beim zweiten Lesen kippt er.')
+  scan(ABSOLUT, 'Absolutaussage', 'warnung',
+    'Ein absoluter Satz muss stimmen. „Niemand weiß, ob die Info angekommen ist" ist bei einer '
+    + 'E-Mail falsch — und ein Leser, der einen Satz widerlegt, misstraut dem ganzen Text. '
+    + 'Einschränken oder belegen.')
+  scan(ANONYME_MENGE, 'anonyme Menge', 'warnung',
+    'Wer genau? Eine Behauptung über eine ungenannte Gruppe ist überprüfungsfrei. '
+    + 'Gruppe benennen und belegen, zurückhaltender formulieren („viele Unternehmen berichten"), '
+    + 'oder weglassen. Der Superlativ ist selten nötig und fast nie belegt.')
+
+  scan(ANNAHME_UEBER_LESER, 'geratene Annahme über den Leser', 'warnung',
+    'Woher wissen wir, wovon die meisten ausgehen? Steht es im Material, mit Beleg. Steht es nicht '
+    + 'drin, ist es geraten — und dann lieber sagen, was tatsächlich der Fall ist.')
+
+  /**
+   * Zwei Bildwelten in einem Satz.
+   *
+   * Einzeln ist jedes Bild in Ordnung. Nebeneinander heben sie sich auf: Der
+   * Leser baut die erste Vorstellung auf und muss sie mitten im Satz wieder
+   * abreissen.
+   */
+  {
+    const saetze = text.split(/(?<=[.!?])\s+/)
+    for (const satz of saetze) {
+      const welten = Object.entries(BILDWELTEN)
+        .filter(([, re]) => new RegExp(re.source, 'i').test(satz))
+        .map(([name]) => name)
+      if (welten.length >= 2) {
+        push({
+          rule: 'Bildmischung', severity: 'fehler',
+          quote: satz.trim().slice(0, 130),
+          alt: satz.trim(),
+          hint: `Zwei Bildwelten in einem Satz (${welten.join(' + ')}). Der Leser baut die erste `
+            + 'Vorstellung auf und muss sie mitten im Satz wieder abreißen. Ein Bild pro Gedanke — '
+            + 'und wenn keins trägt, lieber schlicht sagen, was passiert.',
         })
       }
     }
@@ -416,8 +579,8 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
   }
 
   // Ansprache: ein Wechsel mitten im Text ist kein Stil, sondern Unaufmerksamkeit.
-  const du = (text.match(/\b(du|dich|dir|dein[eranms]*)\b/gi) ?? []).length
-  const ihr = (text.match(/\b(ihr|euch|eure[rnms]*|euer)\b/gi) ?? []).length
+  const du = (text.match(/\b(du|dich|dir|dein[eranms]*)(?![a-zà-ÿ])/gi) ?? []).length
+  const ihr = (text.match(/\b(ihr|euch|eure[rnms]*|euer)(?![a-zà-ÿ])/gi) ?? []).length
   const sie = (text.match(/\bSie\b/g) ?? []).length
   const forms: Array<[string, number]> = [['du', du], ['ihr', ihr], ['sie', sie]]
   const used = forms.filter(([, n]) => n > 2)
@@ -455,7 +618,7 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
    * „aber auch" oder als Adverb mitten im Satz kann es stehen bleiben.
    */
   {
-    const re = /(^|[.!?]\s+|,\s*)(aber)\b/gim
+    const re = /(^|[.!?]\s+|,\s*)(aber)(?![a-zà-ÿ])/gim
     let m: RegExpExecArray | null
     while ((m = re.exec(text))) {
       push({

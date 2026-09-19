@@ -2,8 +2,8 @@ import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { ensureAgentSchema, type AgentDef, type StepDef } from './schema'
 import { PFLICHT_PACKS } from './material'
-import { loadPacks, renderPacks, bannedWords, catalogIndex, loadItems, renderIndex } from './knowledge'
-import { lint, lintReport } from './lint'
+import { loadPacks, renderPacks, bannedWords, catalogIndex, loadItems, renderIndex, type IndexRow } from './knowledge'
+import { lint, lintReport, type Finding } from './lint'
 import { resolveModel } from '@/lib/strategy/models'
 import { recordUsage } from '@/lib/strategy/usage'
 import { runSearch, COLLECT_INSTRUCTION } from '@/lib/strategy/research/web'
@@ -275,6 +275,7 @@ async function runStep(step: StepDef, ctx: Ctx): Promise<StepOut> {
     case 'revision': return revision(step, ctx)
     case 'zerlegen': return zerlegen(step, ctx)
     case 'skelett': return skelett(step, ctx)
+    case 'flicken': return flicken(step, ctx)
     case 'sammeln': return collect(ctx)
     default: throw new Error(`Unbekannte Schrittart: ${step.kind}`)
   }
@@ -550,14 +551,31 @@ async function fanout(step: StepDef, ctx: Ctx): Promise<StepOut> {
  */
 async function choose(step: StepDef, ctx: Ctx): Promise<StepOut> {
   const a = ctx.results.aufnahme as { textart?: string; audience?: string; ueberzeugungsziel?: string } | undefined
-  const kinds = (step.pick ?? []).map((p) => p.kind)
-  const index = await catalogIndex({
-    kinds, orgId: ctx.orgId,
-    tags: a?.textart ? [String(a.textart)] : undefined,
-    limit: 400,
-  })
-  // Ohne Treffer auf die Textart: noch einmal ohne Schlagwort-Filter.
-  const rows = index.length > 8 ? index : await catalogIndex({ kinds, orgId: ctx.orgId, limit: 400 })
+  const picks = step.pick ?? []
+
+  /**
+   * Je Art ein eigenes Verzeichnis, mit eigener Obergrenze.
+   *
+   * Vorher lief eine Abfrage ueber alle Arten mit einer gemeinsamen Grenze.
+   * Die Vorlagen stellen allein 707 der 785 Bausteine — sie haben die Liste
+   * gefuellt, und die 123 Hooks und 151 CTAs standen zwar drin, gingen aber in
+   * der Masse unter. Das Modell waehlte eine Vorlage und sonst nichts.
+   *
+   * Getrennte Abfragen halten die Liste kurz und jede Art sichtbar.
+   */
+  const proArt = 45
+  const rows: IndexRow[] = []
+  for (const p of picks) {
+    const mitTag = await catalogIndex({
+      kinds: [p.kind], orgId: ctx.orgId,
+      tags: a?.textart ? [String(a.textart)] : undefined,
+      limit: proArt,
+    })
+    // Zu wenige Treffer auf die Textart: dieselbe Art ohne Schlagwort-Filter.
+    const liste = mitTag.length >= 6 ? mitTag
+      : await catalogIndex({ kinds: [p.kind], orgId: ctx.orgId, limit: proArt })
+    rows.push(...liste)
+  }
   if (!rows.length) return { value: { gewaehlt: [], begruendung: 'Der Katalog ist leer.' } }
 
   const res = await ask({
@@ -584,17 +602,19 @@ ${renderIndex(rows)}`,
       properties: {
         gewaehlt: {
           type: 'array',
+          minItems: picks.reduce((n, p) => n + p.anzahl, 0),
           items: {
             type: 'object', required: ['pack', 'key', 'als', 'warum'],
             properties: {
               pack: { type: 'string' }, key: { type: 'string' },
-              als: { type: 'string' }, warum: { type: 'string' },
+              als: { type: 'string', enum: picks.map((p) => p.als) },
+              warum: { type: 'string' },
             },
           },
         },
       },
     },
-    temperature: 0.3, maxTokens: 900,
+    temperature: 0.3, maxTokens: 2000,
   }, ctx)
 
   let picked = ((res.value as { gewaehlt?: Array<{ pack: string; key: string; als: string; warum: string }> }).gewaehlt ?? [])
@@ -617,6 +637,23 @@ ${renderIndex(rows)}`,
       ]
     }
   }
+  /**
+   * Was das Modell vergessen hat, holen wir selbst.
+   *
+   * Eine leere Gruppe ist kein Urteil ("hier passte nichts"), sondern fast
+   * immer Bequemlichkeit. Beobachtet: von sechs Gruppen kam eine zurueck, und
+   * die Hooks blieben ungenutzt, obwohl 123 im Regal standen.
+   */
+  for (const p of picks) {
+    if (picked.some((g) => g.als === p.als)) continue
+    const frei = rows.filter((r2) => r2.kind === p.kind && r2.key)
+    if (!frei.length) continue
+    picked.push(...frei.slice(0, p.anzahl).map((r2) => ({
+      pack: r2.pack, key: String(r2.key), als: p.als,
+      warum: 'Nachgezogen — das Modell hatte diese Gruppe übergangen.',
+    })))
+  }
+
   const bodies = await loadItems(picked.map((p) => ({ pack: p.pack, key: p.key })), ctx.orgId)
 
   const gruppen: Record<string, string[]> = {}
@@ -1027,8 +1064,128 @@ async function revision(step: StepDef, ctx: Ctx): Promise<StepOut> {
   return { value: { varianten: out }, model, tokensIn: tin, tokensOut: tout }
 }
 
+/**
+ * Flicken statt neu schreiben.
+ *
+ * Die Revision hatte einen Konstruktionsfehler: Sie bekam den ganzen Text und
+ * eine Liste von Befunden und sollte "beheben". Ein Modell, das einen ganzen
+ * Text vor sich hat, schreibt ihn. Das Ergebnis war zweimal dasselbe — Befunde
+ * behoben, dafuer ein Viertel gekuerzt, ein Abschnitt verschwunden, der Titel
+ * ersetzt.
+ *
+ * Hier geht es umgekehrt. Jeder Befund wird zu einem Austausch: DIESER Satz
+ * wird durch JENEN ersetzt. Wo der Linter den Ersatz kennt (ein verbotenes
+ * Wort, ein Fuellwort), passiert das ohne Modell. Wo geurteilt werden muss,
+ * sieht das Modell nur die betroffenen Saetze — nicht den Text.
+ *
+ * Danach wird zeichenweise ersetzt. Alles ausserhalb der getauschten Stellen
+ * ist unveraendert, nachweislich: Wir zaehlen, wieviel stehen geblieben ist.
+ */
+async function flicken(step: StepDef, ctx: Ctx): Promise<StepOut> {
+  const from = step.source ?? 'text'
+  const drafts = (ctx.results[from] as { varianten?: Array<Record<string, unknown>> })?.varianten ?? []
+  const reports = (ctx.results[step.reports ?? 'pruefung'] as
+    { berichte?: Array<{ findings: Finding[] }> })?.berichte ?? []
+  // Die Prosa-Pruefung liefert Befunde in eigener Form; sie reihen sich ein.
+  const prosa = (ctx.results.bild as {
+    befunde?: Array<{ frage?: string; flagge?: string; stelle?: string; warum?: string; vorschlag?: string }>
+  })?.befunde ?? []
+
+  const out: Array<Record<string, unknown>> = []
+  let tin = 0, tout = 0, model: string | undefined
+  const protokoll: Array<{ regel: string; alt: string; neu: string; quelle: string }> = []
+
+  /** Den Satz finden, in dem eine Fundstelle liegt. Ein halber Satz laesst sich nicht tauschen. */
+  const satzUm = (text: string, pos: number): string => {
+    const start = Math.max(
+      text.lastIndexOf('. ', pos), text.lastIndexOf('\n', pos),
+      text.lastIndexOf('! ', pos), text.lastIndexOf('? ', pos))
+    const rest = text.slice(pos)
+    const m = /[.!?](\s|$)/.exec(rest)
+    const ende = pos + (m ? m.index + 1 : rest.length)
+    return text.slice(start < 0 ? 0 : start + 1, ende).trim()
+  }
+
+  for (let i = 0; i < drafts.length; i++) {
+    let text = String(drafts[i].text ?? '')
+    const findings = reports[i]?.findings ?? []
+    if (!findings.length && !prosa.length) { out.push(drafts[i]); continue }
+
+    /* ── 1 · Was der Linter selbst weiss: ohne Modell ─────────────────── */
+    let mechanisch = 0
+    for (const f of findings) {
+      if (f.alt === undefined || f.neu === undefined) continue
+      if (!text.includes(f.alt)) continue
+      const ersetzt = f.neu
+        ? text.replace(f.alt, f.neu)
+        // Leerer Ersatz heisst streichen — mitsamt dem Leerzeichen davor.
+        : text.replace(new RegExp(`\\s?${f.alt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`), '')
+      if (ersetzt !== text) {
+        protokoll.push({ regel: f.rule, alt: f.alt, neu: f.neu, quelle: 'Linter' })
+        text = ersetzt
+        mechanisch++
+      }
+    }
+
+    /* ── 2 · Was ein Urteil braucht: nur die Saetze, nicht der Text ───── */
+    const offen: Array<{ nr: number; satz: string; regel: string; hinweis: string; vorschlag?: string }> = []
+    const gesehen = new Set<string>()
+
+    for (const f of findings) {
+      if (f.neu !== undefined) continue
+      const satz = f.alt ?? (f.position !== undefined ? satzUm(text, f.position) : '')
+      if (!satz || satz.length < 12 || gesehen.has(satz) || !text.includes(satz)) continue
+      gesehen.add(satz)
+      offen.push({ nr: offen.length + 1, satz, regel: f.rule, hinweis: f.hint })
+    }
+    for (const b of prosa) {
+      const satz = String(b.stelle ?? '').trim()
+      if (!satz || gesehen.has(satz) || !text.includes(satz)) continue
+      gesehen.add(satz)
+      offen.push({
+        nr: offen.length + 1, satz,
+        regel: `${b.frage ?? 'Prosa'} (${b.flagge ?? 'gelb'})`,
+        hinweis: String(b.warum ?? ''), vorschlag: String(b.vorschlag ?? ''),
+      })
+    }
+
+    if (offen.length) {
+      const res = await ask(step, ctx, { auftraege: offen, anzahl: offen.length })
+      tin += res.tokensIn; tout += res.tokensOut; model = res.model
+      const liste = ((res.value as { austausch?: Array<{ nr?: number; neu?: string }> }).austausch ?? [])
+      for (const a of liste) {
+        const auftrag = offen.find((o) => o.nr === Number(a.nr))
+        const ersatz = String(a.neu ?? '').trim()
+        if (!auftrag || !ersatz || !text.includes(auftrag.satz)) continue
+        // Eine Ersetzung, die dreimal so lang ist, ist keine Ersetzung mehr.
+        if (ersatz.length > auftrag.satz.length * 3 + 60) continue
+        text = text.replace(auftrag.satz, ersatz)
+        protokoll.push({ regel: auftrag.regel, alt: auftrag.satz, neu: ersatz, quelle: 'Urteil' })
+      }
+    }
+
+    const vorher = String(drafts[i].text ?? '')
+    const zaehl = (t: string) => t.trim().split(/\s+/).filter(Boolean).length
+    out.push({
+      ...drafts[i], text,
+      geflickt: protokoll.length,
+      mechanisch,
+      woerter_vorher: zaehl(vorher),
+      woerter_nachher: zaehl(text),
+    })
+  }
+
+  await db.execute(sql`
+    INSERT INTO agent_artifacts (run_id, step_key, kind, label, payload)
+    VALUES (${ctx.runId}, ${step.key}, 'flicken', ${`${protokoll.length} Stellen getauscht`},
+            ${JSON.stringify(protokoll)}::jsonb)`)
+
+  return { value: { varianten: out, protokoll }, model, tokensIn: tin, tokensOut: tout }
+}
+
 function collect(ctx: Ctx): StepOut {
-  const final = (ctx.results.revision as { varianten?: unknown[] })?.varianten
+  const final = (ctx.results.flicken as { varianten?: unknown[] })?.varianten
+    ?? (ctx.results.revision as { varianten?: unknown[] })?.varianten
     ?? (ctx.results.entwuerfe as { varianten?: unknown[] })?.varianten
     ?? []
   const quellen = (ctx.results.recherche as { quellen?: unknown[] })?.quellen ?? []
