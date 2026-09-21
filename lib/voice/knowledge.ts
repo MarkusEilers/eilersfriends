@@ -27,7 +27,10 @@ KONTAKT
 E-Mail team@eilersfriends.com. Bei Preis-/Vertragsdetails niemals raten — anbieten, an das Team zu verbinden oder einen Termin einzurichten.`
 
 function ownerName(slug: string): string {
-  return ({ markus: 'Markus', aljona: 'Aljona', cosima: 'Cosima', daniel: 'Daniel', team: 'Team (Markus & Aljona)' } as Record<string, string>)[slug] || slug
+  return ({
+    markus: 'Markus', aljona: 'Aljona', cosima: 'Cosima', daniel: 'Daniel',
+    team: 'Aljona & Markus', 'daniel-markus': 'Daniel & Markus',
+  } as Record<string, string>)[slug] || slug
 }
 
 let _cache: { text: string; at: number } | null = null

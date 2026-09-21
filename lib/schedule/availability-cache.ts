@@ -1,3 +1,4 @@
+import { TEAMS } from './config'
 import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { freeSlots } from './graph'
@@ -80,9 +81,17 @@ export async function refreshAllCaches(): Promise<{ refreshed: number; skipped: 
   return { refreshed, skipped }
 }
 
+/**
+ * Aendert eine Person ihre Zeiten, ist auch jedes Team veraltet, in dem sie
+ * steckt. Vorher stand hier ein festes 'team' — mit dem zweiten Team haette
+ * dessen Cache nie erfahren, dass sich etwas geaendert hat.
+ */
 export async function invalidatePerson(slug: string) {
   await ensureCacheTable()
-  await db.execute(sql`DELETE FROM schedule_availability_cache WHERE owner_slug = ${slug} OR owner_slug = 'team'`).catch(() => {})
+  const betroffen = [slug, ...TEAMS.filter(t => t.members.includes(slug)).map(t => t.slug)]
+  await db.execute(sql`
+    DELETE FROM schedule_availability_cache
+    WHERE owner_slug IN (SELECT jsonb_array_elements_text(${JSON.stringify(betroffen)}::jsonb))`).catch(() => {})
 }
 export async function clearAllCache() {
   await ensureCacheTable()

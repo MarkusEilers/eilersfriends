@@ -1,4 +1,4 @@
-import { PERSONS, TEAM, WORK, entityFor } from '@/lib/schedule/config'
+import { PERSONS, TEAMS, WORK, entityFor } from '@/lib/schedule/config'
 import { getConnectionStatus, listExtraCalendars } from '@/lib/schedule/store'
 import { graphConfigured } from '@/lib/schedule/graph'
 import { listEventTypes, listHostProfiles } from '@/lib/schedule/types-store'
@@ -18,7 +18,10 @@ export default async function AdminSchedulePage({ searchParams }: { searchParams
   const [types, hostProfiles] = await Promise.all([listEventTypes().catch(() => []), listHostProfiles().catch(() => [])])
   const weeks = Object.fromEntries(await Promise.all(PERSONS.map(async p => [p.slug, await getWeek(p.slug).catch(() => undefined)])))
 
-  const owners = [...PERSONS.map(p => ({ slug: p.slug, name: p.name })), { slug: TEAM.slug, name: entityFor(TEAM.slug)?.name || TEAM.name }]
+  const owners = [
+    ...PERSONS.map(p => ({ slug: p.slug, name: p.name })),
+    ...TEAMS.map(t => ({ slug: t.slug, name: entityFor(t.slug)?.name || t.name })),
+  ]
   const hosts = PERSONS.map(p => {
     const hp = hostProfiles.find(h => h.personSlug === p.slug)
     return { personSlug: p.slug, avatarUrl: hp?.avatarUrl || '', intro: hp?.intro || '' }

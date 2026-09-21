@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
-import { PERSONS, TEAM } from '@/lib/schedule/config'
+import { PERSONS, TEAMS } from '@/lib/schedule/config'
 import { listHostProfiles, listEventTypes } from '@/lib/schedule/types-store'
 import { Users, ArrowRight } from 'lucide-react'
 
@@ -18,7 +18,7 @@ export default async function ScheduleIndex() {
   const avatarOf = (slug: string) => profiles.find(p => p.personSlug === slug)?.avatarUrl || ''
   const cards = [
     ...PERSONS.map(p => ({ slug: p.slug, name: p.name, sub: p.role || '', team: false, avatar: avatarOf(p.slug) })),
-    { slug: TEAM.slug, name: TEAM.name, sub: t('teamSub'), team: true, avatar: '' },
+    ...TEAMS.map(tm => ({ slug: tm.slug, name: tm.name, sub: t('teamSub'), team: true, avatar: '' })),
   ].filter(c => liveOwners.has(c.slug))
   return (
     <div style={{ backgroundColor: '#FAFAF8' }}>
