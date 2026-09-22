@@ -15,7 +15,7 @@
 import { factMap, putFacts } from '../facts'
 import { runAgent, type RunResult } from '../run'
 import { recordUsage } from '../usage'
-import { runSearch, renderFindings, type SearchFinding } from './web'
+import { runSearch, renderFindings, type SearchFinding, sucheAnbieter } from './web'
 
 const SELF_INSTRUCTION = `Du sammelst, wie sich ein Unternehmen selbst darstellt.
 
@@ -41,7 +41,7 @@ export async function researchCompany(input: {
   await recordUsage({
     companyId: input.companyId, productId: null,
     action: 'recherche · unternehmen sammeln', agentKey: 'research-company-collect',
-    model: process.env.STRATEGY_SEARCH_MODEL ?? 'gpt-4.1',
+    model: sucheAnbieter().modell,
     tokensIn: findings.reduce((s, f) => s + f.tokensIn, 0),
     tokensOut: findings.reduce((s, f) => s + f.tokensOut, 0),
     aiRunId: null,

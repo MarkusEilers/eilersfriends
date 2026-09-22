@@ -17,7 +17,7 @@ import { db } from '@/lib/db'
 import { factMap, putFacts } from '../facts'
 import { runAgent, type RunResult } from '../run'
 import { recordUsage } from '../usage'
-import { collectVoc, renderFindings, type SearchFinding, type VocContext } from './web'
+import { collectVoc, renderFindings, type SearchFinding, type VocContext, sucheAnbieter } from './web'
 
 /** Was die Anfragen brauchen: Branche, Segmente, Produktbegriffe, Wettbewerber. */
 async function buildContext(companyId: string, productId?: string | null): Promise<VocContext> {
@@ -65,7 +65,7 @@ export async function researchVoc(input: {
   await recordUsage({
     companyId: input.companyId, productId: input.productId ?? null,
     action: 'recherche · stimmen sammeln', agentKey: 'research-voc-collect',
-    model: process.env.STRATEGY_SEARCH_MODEL ?? 'gpt-4.1',
+    model: sucheAnbieter().modell,
     tokensIn, tokensOut, aiRunId: null,
   }).catch(() => {})
 

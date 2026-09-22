@@ -17,7 +17,7 @@ import { db } from '@/lib/db'
 import { factMap, putFacts } from '../facts'
 import { runAgent, type RunResult } from '../run'
 import { recordUsage } from '../usage'
-import { runSearch, renderFindings, type SearchFinding } from './web'
+import { runSearch, renderFindings, type SearchFinding, sucheAnbieter } from './web'
 
 const COMPETE_INSTRUCTION = `Du sammelst Originalmaterial ueber Anbieter. Du bewertest nicht.
 
@@ -141,7 +141,7 @@ export async function researchCompete(input: {
   await recordUsage({
     companyId: input.companyId, productId: input.productId ?? null,
     action: 'recherche · wettbewerb sammeln', agentKey: 'research-compete-collect',
-    model: process.env.STRATEGY_SEARCH_MODEL ?? 'gpt-4.1',
+    model: sucheAnbieter().modell,
     tokensIn, tokensOut, aiRunId: null,
   }).catch(() => {})
 

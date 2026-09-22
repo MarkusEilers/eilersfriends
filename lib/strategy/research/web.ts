@@ -25,10 +25,112 @@ export interface SearchFinding {
   error?: string
 }
 
-const SEARCH_MODEL = process.env.STRATEGY_SEARCH_MODEL ?? 'gpt-4.1'
+/**
+ * Wer sucht.
+ *
+ * Beide Anbieter koennen Websuche serverseitig, beide liefern Belegstellen mit
+ * URL zurueck. Die Wahl haengt an zwei Dingen: Claude hat im Konto deutlich
+ * mehr Luft je Minute — das OpenAI-Konto liegt bei 30.000 Token und hat uns
+ * mehrfach mitten im Lauf gestoppt —, und die Recherche ist der Teil, der die
+ * meisten Aufrufe braucht.
+ *
+ * Umschaltbar bleibt es trotzdem: STRATEGY_SEARCH_PROVIDER=openai holt den
+ * alten Weg zurueck, ohne dass jemand Code anfasst.
+ */
+type Anbieter = 'claude' | 'openai'
+
+const PROVIDER: Anbieter =
+  (process.env.STRATEGY_SEARCH_PROVIDER as Anbieter | undefined)
+  ?? (process.env.ANTHROPIC_API_KEY ? 'claude' : 'openai')
+
+const CLAUDE_MODEL = process.env.STRATEGY_SEARCH_MODEL_CLAUDE ?? 'claude-sonnet-5'
+const OPENAI_MODEL = process.env.STRATEGY_SEARCH_MODEL ?? 'gpt-4.1'
+
+/** Wie viele Suchen ein einzelner Auftrag ausloesen darf. */
+const MAX_SUCHEN = Number(process.env.STRATEGY_SEARCH_MAX ?? 5)
 
 /** Ein Suchlauf mit Websuche. Gibt Text plus die tatsaechlich benutzten Quellen zurueck. */
 export async function runSearch(source: string, query: string, instruction: string): Promise<SearchFinding> {
+  return PROVIDER === 'claude'
+    ? sucheClaude(source, query, instruction)
+    : sucheOpenAI(source, query, instruction)
+}
+
+/**
+ * Claude mit serverseitiger Websuche.
+ *
+ * Die Belegstellen kommen an zwei Stellen zurueck: als `citations` an den
+ * Textbloecken — das sind die tatsaechlich benutzten — und als Ergebnisliste
+ * des Suchwerkzeugs. Wir nehmen zuerst die benutzten; nur wenn das Modell
+ * keine markiert hat, fallen wir auf die Trefferliste zurueck. Sonst stuenden
+ * im Bericht Quellen, die niemand gelesen hat.
+ */
+async function sucheClaude(source: string, query: string, instruction: string): Promise<SearchFinding> {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  const empty: SearchFinding = { source, query, text: '', citations: [], tokensIn: 0, tokensOut: 0 }
+  if (!apiKey) return { ...empty, error: 'ANTHROPIC_API_KEY nicht gesetzt' }
+
+  let res: Response
+  try {
+    res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: CLAUDE_MODEL,
+        max_tokens: 4000,
+        tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: MAX_SUCHEN }],
+        messages: [{ role: 'user', content: `${instruction}
+
+Suchauftrag: ${query}` }],
+      }),
+    })
+  } catch (e) {
+    return { ...empty, error: e instanceof Error ? e.message : 'network' }
+  }
+  if (!res.ok) return { ...empty, error: `${res.status}: ${(await res.text()).slice(0, 200)}` }
+
+  const data = await res.json() as {
+    content?: Array<{
+      type?: string
+      text?: string
+      citations?: Array<{ type?: string; url?: string; title?: string }>
+      content?: Array<{ type?: string; url?: string; title?: string }>
+    }>
+    usage?: { input_tokens?: number; output_tokens?: number }
+  }
+
+  let text = ''
+  const benutzt: Array<{ title: string; url: string }> = []
+  const gefunden: Array<{ title: string; url: string }> = []
+  const merke = (liste: Array<{ title: string; url: string }>, url?: string, title?: string) => {
+    if (!url) return
+    if (!liste.some((c) => c.url === url)) liste.push({ title: title ?? '', url })
+  }
+
+  for (const block of data.content ?? []) {
+    if (block.type === 'text' && block.text) {
+      text += block.text
+      for (const z of block.citations ?? []) merke(benutzt, z.url, z.title)
+    }
+    if (block.type === 'web_search_tool_result') {
+      for (const t of block.content ?? []) merke(gefunden, t.url, t.title)
+    }
+  }
+
+  return {
+    source, query, text,
+    citations: benutzt.length ? benutzt : gefunden,
+    tokensIn: data.usage?.input_tokens ?? 0,
+    tokensOut: data.usage?.output_tokens ?? 0,
+  }
+}
+
+/** Der bisherige Weg ueber die Responses-API. Bleibt als Rueckfallebene. */
+async function sucheOpenAI(source: string, query: string, instruction: string): Promise<SearchFinding> {
   const apiKey = process.env.OPENAI_API_KEY
   const empty: SearchFinding = { source, query, text: '', citations: [], tokensIn: 0, tokensOut: 0 }
   if (!apiKey) return { ...empty, error: 'OPENAI_API_KEY nicht gesetzt' }
@@ -39,10 +141,12 @@ export async function runSearch(source: string, query: string, instruction: stri
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: SEARCH_MODEL,
+        model: OPENAI_MODEL,
         tools: [{ type: 'web_search' }],
         tool_choice: 'required',
-        input: `${instruction}\n\nSuchauftrag: ${query}`,
+        input: `${instruction}
+
+Suchauftrag: ${query}`,
       }),
     })
   } catch (e) {
@@ -70,6 +174,11 @@ export async function runSearch(source: string, query: string, instruction: stri
     tokensIn: data.usage?.input_tokens ?? 0,
     tokensOut: data.usage?.output_tokens ?? 0,
   }
+}
+
+/** Welcher Anbieter gerade sucht — fuer Berichte und Fehlersuche. */
+export function sucheAnbieter(): { anbieter: Anbieter; modell: string } {
+  return { anbieter: PROVIDER, modell: PROVIDER === 'claude' ? CLAUDE_MODEL : OPENAI_MODEL }
 }
 
 /**

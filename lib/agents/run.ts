@@ -6,7 +6,7 @@ import { loadPacks, renderPacks, bannedWords, catalogIndex, loadItems, renderInd
 import { lint, lintReport, type Finding } from './lint'
 import { resolveModel } from '@/lib/strategy/models'
 import { recordUsage } from '@/lib/strategy/usage'
-import { runSearch, COLLECT_INSTRUCTION } from '@/lib/strategy/research/web'
+import { runSearch, COLLECT_INSTRUCTION, sucheAnbieter } from '@/lib/strategy/research/web'
 import { factMap } from '@/lib/strategy/facts'
 import { catalogFor, renderCatalog } from '@/lib/content/catalog'
 
@@ -388,7 +388,7 @@ async function recherche(step: StepDef, ctx: Ctx): Promise<StepOut> {
       material: findings.map((f) => `#### ${f.query}\n${f.text}\n${(f.citations ?? []).map((c) => `- ${c.url}`).join('\n')}`).join('\n\n'),
       quellen: findings.flatMap((f) => f.citations ?? []),
     },
-    model: process.env.STRATEGY_SEARCH_MODEL ?? 'gpt-4.1', tokensIn: tin, tokensOut: tout,
+    model: sucheAnbieter().modell, tokensIn: tin, tokensOut: tout,
   }
 }
 
