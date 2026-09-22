@@ -14,6 +14,10 @@ interface WebhookRow {
 }
 interface ApiKeyRow {
   id: string; name: string; prefix: string; scopes: unknown; active: boolean
+  /** Unser eigener Schlüssel: sieht alles, bestellt für jede Firma. */
+  intern?: boolean
+  org_id?: string | null
+  firma?: string | null
   last_used_at: string | null; created_at: string; expires_at: string | null
 }
 interface EventRow {
