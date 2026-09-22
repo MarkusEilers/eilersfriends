@@ -30,6 +30,12 @@ export interface Finding {
    */
   alt?: string
   neu?: string
+  /**
+   * Was fuer eine Stelle das ist. Eine Ueberschrift wird anders geflickt als
+   * ein Satz: Sie muss kurz bleiben, traegt kein Satzzeichen am Ende und darf
+   * ihre Markdown-Ebene nicht verlieren.
+   */
+  ist?: 'satz' | 'ueberschrift'
 }
 
 export interface LintInput {
@@ -458,16 +464,24 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
     for (const h of heads) {
       if (META.test(h)) {
         push({
-          rule: 'Meta-Überschrift', severity: 'fehler', quote: h,
+          rule: 'Meta-Überschrift', severity: 'fehler', quote: h, alt: h, ist: 'ueberschrift',
           hint: 'Die Überschrift handelt von unserem Dokument, nicht von seiner Sache. '
             + 'Das fragt sich in Wahrheit niemand.',
+        })
+      }
+      if (ZUSTAND.test(h)) {
+        push({
+          rule: 'Überschrift beschreibt einen Zustand', severity: 'warnung', quote: h, alt: h,
+          ist: 'ueberschrift',
+          hint: 'Da liegt oder steht etwas — das ist kein Vorgang. Zeig, dass etwas passiert '
+            + 'oder jemand etwas tut.',
         })
       }
       // Etwas Anfassbares: Zahl, Eigenname, Rolle, Ort, Uhrzeit.
       const konkret = /\d|\b(Monteur|Techniker|Vorstand|Team|Filiale|Standort|Schicht|Uhr|Montag|Regal|Halle|Baustelle|Prozent|Euro)/i
       if (h.length > 18 && !konkret.test(h) && !META.test(h)) {
         push({
-          rule: 'Überschrift ohne Konkretes', severity: 'warnung', quote: h,
+          rule: 'Überschrift ohne Konkretes', severity: 'warnung', quote: h, alt: h, ist: 'ueberschrift',
           hint: 'Keine Zahl, kein Ort, keine Rolle, kein Ding. Eine Überschrift aus lauter Abstrakta bleibt nicht hängen.',
         })
       }

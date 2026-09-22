@@ -757,8 +757,26 @@ async function skelett(step: StepDef, ctx: Ctx): Promise<StepOut> {
     }
   }
 
+  /**
+   * 5a · Passt die Menge der Botschaften zur Laenge?
+   *
+   * Beobachtet: elf vorgegebene Botschaften auf 1.300 Woerter. Die Kette darf
+   * keine weglassen, die Gliederung macht daraus zwoelf Abschnitte, und der
+   * Text wird ein Drittel zu lang — oder jede Botschaft bekommt hundert
+   * Woerter und keine wird belegt. Beides faellt erst am Ende auf.
+   */
+  const zielW = Number((ctx.results.aufnahme as { ziel_woerter?: number } | undefined)?.ziel_woerter ?? 0)
+  if (zielW && ziele.length) {
+    const jeSchritt = Math.round(zielW / ziele.length)
+    if (jeSchritt < 120) {
+      befunde.push({ art: 'zu viele Botschaften für die Länge', schwere: 'warnung',
+        text: `${ziele.length} Überzeugungsschritte auf ${zielW} Wörter sind ${jeSchritt} Wörter je Schritt. `
+          + 'Unter 120 trägt keiner einen eigenen Gedanken — Schritte zusammenlegen oder die Länge erhöhen.' })
+    }
+  }
+
   // 5 · Budgets.
-  const soll = Number((ctx.results.aufnahme as { ziel_woerter?: number } | undefined)?.ziel_woerter ?? 0)
+  const soll = zielW
   const summe = parts.reduce((a, p) => a + (Number(p.woerter) || 0), 0)
   if (soll && Math.abs(summe - soll) > soll * 0.1) {
     befunde.push({ art: 'Budget stimmt nicht', schwere: 'warnung',
@@ -820,7 +838,10 @@ async function zerlegen(step: StepDef, ctx: Ctx): Promise<StepOut> {
 
 async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
   const from = step.sections ?? 'struktur'
-  const plan = (ctx.results[from] as {
+  // Faellt die Nachbesserung aus — sie ist optional —, gilt die urspruengliche
+  // Gliederung. Ein fehlender Reparaturschritt darf keinen Lauf kosten.
+  const roh = ctx.results[from] ?? (from === 'nachbessern' ? ctx.results.struktur : undefined)
+  const plan = (roh as {
     abschnitte?: Array<{
       name: string; woerter: number; beats?: string[]
       beleg?: string; stufe?: string; quelle?: string
@@ -1133,7 +1154,10 @@ async function flicken(step: StepDef, ctx: Ctx): Promise<StepOut> {
     }
 
     /* ── 2 · Was ein Urteil braucht: nur die Saetze, nicht der Text ───── */
-    const offen: Array<{ nr: number; satz: string; regel: string; hinweis: string; vorschlag?: string }> = []
+    const offen: Array<{
+      nr: number; satz: string; regel: string; hinweis: string
+      vorschlag?: string; ist?: string
+    }> = []
     const gesehen = new Set<string>()
 
     for (const f of findings) {
@@ -1141,7 +1165,7 @@ async function flicken(step: StepDef, ctx: Ctx): Promise<StepOut> {
       const satz = f.alt ?? (f.position !== undefined ? satzUm(text, f.position) : '')
       if (!satz || satz.length < 12 || gesehen.has(satz) || !text.includes(satz)) continue
       gesehen.add(satz)
-      offen.push({ nr: offen.length + 1, satz, regel: f.rule, hinweis: f.hint })
+      offen.push({ nr: offen.length + 1, satz, regel: f.rule, hinweis: f.hint, ist: f.ist ?? 'satz' })
     }
     for (const b of prosa) {
       const satz = String(b.stelle ?? '').trim()
@@ -1160,10 +1184,19 @@ async function flicken(step: StepDef, ctx: Ctx): Promise<StepOut> {
       const liste = ((res.value as { austausch?: Array<{ nr?: number; neu?: string }> }).austausch ?? [])
       for (const a of liste) {
         const auftrag = offen.find((o) => o.nr === Number(a.nr))
-        const ersatz = String(a.neu ?? '').trim()
+        let ersatz = String(a.neu ?? '').trim()
         if (!auftrag || !ersatz || !text.includes(auftrag.satz)) continue
-        // Eine Ersetzung, die dreimal so lang ist, ist keine Ersetzung mehr.
-        if (ersatz.length > auftrag.satz.length * 3 + 60) continue
+
+        if (auftrag.ist === 'ueberschrift') {
+          // Eine Ueberschrift traegt kein Satzzeichen am Ende und bleibt kurz;
+          // ihre Markdown-Ebene steht davor und wird nicht mitgetauscht.
+          ersatz = ersatz.replace(/^#+\s*/, '').replace(/[.:;]+$/, '').trim()
+          if (!ersatz || ersatz.length > 80) continue
+        } else if (ersatz.length > auftrag.satz.length * 3 + 60) {
+          // Eine Ersetzung, die dreimal so lang ist, ist keine Ersetzung mehr.
+          continue
+        }
+
         text = text.replace(auftrag.satz, ersatz)
         protokoll.push({ regel: auftrag.regel, alt: auftrag.satz, neu: ersatz, quelle: 'Urteil' })
       }

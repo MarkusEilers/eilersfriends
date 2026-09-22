@@ -251,6 +251,8 @@ Kein neues Bild. Wenn der Mangel "Bildmischung" oder "Abwesenheit mit Koerper" h
 
 Kein Anschluss nach vorn oder hinten. Du kennst die Nachbarsaetze nicht. Schreib einen Satz, der fuer sich steht.
 
+UEBERSCHRIFTEN SIND ANDERS. Steht bei einem Auftrag "ist: ueberschrift", lieferst Du eine Ueberschrift, keinen Satz: hoechstens acht Woerter, kein Punkt am Ende, keine Rautezeichen — die setzt das Dokument selbst. Sie muss etwas Anfassbares tragen: eine Zahl, einen Ort, eine Rolle, eine Uhrzeit, ein Ding. Und sie beschreibt einen Vorgang, keinen Zustand: "Der Hebel liegt da" ist kein Vorgang, "Ab zwanzig Knoten fangen die Dateien an zu antworten" schon.
+
 Faellt Dir nichts ein, das besser ist als das Original, lass das Feld leer. Ein unveraenderter Satz mit einem bekannten Mangel ist besser als ein verschlimmbesserter.`,
         user: `{{anzahl}} Auftraege. Zu jedem: die Nummer, der Satz, was daran nicht stimmt.
 
@@ -663,6 +665,53 @@ Material:
       },
       { key: 'skelettpruefung', kind: 'skelett', title: 'Gliederung gegenrechnen', source: 'struktur' },
       {
+        key: 'nachbessern', kind: 'modell', title: 'Löcher in der Gliederung stopfen',
+        optional: true, temperature: 0.3, maxTokens: 3000,
+        system: `${LANG_BASE}
+
+Die Gliederung ist gegengerechnet worden. Du behebst die Befunde — sonst nichts.
+
+Der haeufigste und schlimmste Befund: Ein Ueberzeugungsschritt traegt keinen Abschnitt. Dann steht die Botschaft nirgends, und der Text sieht trotzdem fertig aus. Genau deshalb wird maschinell nachgezaehlt.
+
+Zwei Wege, und Du entscheidest je Befund:
+- Der Schritt bekommt einen eigenen Abschnitt. Dann gehoert sein Budget aus den Nachbarn abgezwackt, nicht oben draufgeschlagen.
+- Ein bestehender Abschnitt uebernimmt ihn mit. Dann sagst Du, welcher, und ergaenzt seine Beats.
+
+Du lieferst die VOLLSTAENDIGE Gliederung zurueck, in derselben Form wie sie hereinkam — mit denselben Abschnitten, wo nichts zu aendern war. Kein Umbau, keine neuen Ueberschriften, keine andere Reihenfolge. Was der Validator nicht bemaengelt hat, bleibt Wort fuer Wort stehen.
+
+Stimmen die Budgets in der Summe nicht, ziehst Du sie gerade — das Ziel steht unten.
+
+Gab es nur Warnungen und keinen Fehler, gibst Du die Gliederung unveraendert zurueck und schreibst das in "geaendert".`,
+        user: `Was der Validator gefunden hat:
+{{skelettpruefung.liste}}
+
+Zielgroesse: {{aufnahme.ziel_woerter}} Woerter
+
+Die Ueberzeugungsschritte — jeder muss von mindestens einem Abschnitt getragen werden:
+{{kette.ziele}}
+
+Die Gliederung:
+{{struktur.abschnitte}}`,
+        schema: {
+          type: 'object', required: ['abschnitte'],
+          properties: {
+            abschnitte: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['name', 'woerter', 'beats'],
+                properties: {
+                  name: { type: 'string' }, ziel: { type: 'string' }, beleg: { type: 'string' },
+                  paraphrase: { type: 'string' }, hook: { type: 'string' }, insight: { type: 'string' },
+                  beats: { type: 'array', items: { type: 'string' } },
+                  woerter: { type: 'number' },
+                },
+              },
+            },
+            geaendert: { type: 'array', items: { type: 'string' }, description: 'Was Du getan hast, je Befund eine Zeile' },
+          },
+        },
+      },
+      {
         key: 'beats', kind: 'modell', title: 'Was der Leser danach denkt',
         temperature: 0.2, maxTokens: 3000,
         system: `Du bist der Pruefer. Du schreibst nichts und formulierst nichts schoener.
@@ -690,7 +739,7 @@ Message-Lock: {{kette.message_lock}}
 Zielgruppe: {{aufnahme.audience}}
 
 Die Gliederung:
-{{struktur.abschnitte}}
+{{nachbessern.abschnitte}}
 
 Was der Validator gefunden hat:
 {{skelettpruefung.liste}}`,
@@ -741,7 +790,7 @@ Die Probe: Stimmt der Satz mit dem ueberein, was der Leser nach dem Abschnitt de
 
 Dazu je Abschnitt: das konkreteste Ding, das darin vorkommt — eine Zahl, ein Ort, eine Rolle, eine Uhrzeit, ein Gegenstand. Der naechste Schritt braucht es, damit die Ueberschrift etwas zum Anfassen hat.`,
         user: `Die Abschnitte mit Beats und Belegen:
-{{struktur.abschnitte}}
+{{nachbessern.abschnitte}}
 
 Was der Leser nach jedem Abschnitt denken soll:
 {{beats.abschnitte}}
@@ -813,7 +862,7 @@ falsch, egal wie gut sie klingt. Das Konkrete daneben gehoert hinein:
 {{aussagen.aussagen}}
 
 Die Abschnitte in ihrer Reihenfolge, mit Arbeitstitel, Hook und Insight:
-{{struktur.abschnitte}}
+{{nachbessern.abschnitte}}
 
 Kernaussage: {{kette.kernaussage}}
 
@@ -847,7 +896,7 @@ Ansprache: {{aufnahme.ansprache}}`,
       },
       {
         key: 'text', kind: 'sektionen', title: 'Abschnitt für Abschnitt',
-        sections: 'struktur', headings: 'ueberschriften',
+        sections: 'nachbessern', headings: 'ueberschriften',
         minRatio: 0.85, temperature: 0.7, maxTokens: 2000,
         system: `Du schreibst fuer Eilers+Friends.
 
@@ -1043,6 +1092,8 @@ Dieselbe Aussage, wo sie stimmt. Du behebst den genannten Mangel, Du widersprich
 Kein neues Bild. Wenn der Mangel "Bildmischung" oder "Abwesenheit mit Koerper" heisst, ist die Loesung fast nie ein besseres Bild, sondern gar keins: schlicht sagen, was passiert. "Die Luecke sitzt nicht im Nebel" wird nicht zu "Die Luecke liegt im Scheinwerferlicht", sondern zu "Die Luecke laesst sich beziffern."
 
 Kein Anschluss nach vorn oder hinten. Du kennst die Nachbarsaetze nicht. Schreib einen Satz, der fuer sich steht.
+
+UEBERSCHRIFTEN SIND ANDERS. Steht bei einem Auftrag "ist: ueberschrift", lieferst Du eine Ueberschrift, keinen Satz: hoechstens acht Woerter, kein Punkt am Ende, keine Rautezeichen — die setzt das Dokument selbst. Sie muss etwas Anfassbares tragen: eine Zahl, einen Ort, eine Rolle, eine Uhrzeit, ein Ding. Und sie beschreibt einen Vorgang, keinen Zustand: "Der Hebel liegt da" ist kein Vorgang, "Ab zwanzig Knoten fangen die Dateien an zu antworten" schon.
 
 Faellt Dir nichts ein, das besser ist als das Original, lass das Feld leer. Ein unveraenderter Satz mit einem bekannten Mangel ist besser als ein verschlimmbesserter.`,
         user: `{{anzahl}} Auftraege. Zu jedem: die Nummer, der Satz, was daran nicht stimmt.
@@ -1258,6 +1309,8 @@ Dieselbe Aussage, wo sie stimmt. Du behebst den genannten Mangel, Du widersprich
 Kein neues Bild. Wenn der Mangel "Bildmischung" oder "Abwesenheit mit Koerper" heisst, ist die Loesung fast nie ein besseres Bild, sondern gar keins: schlicht sagen, was passiert. "Die Luecke sitzt nicht im Nebel" wird nicht zu "Die Luecke liegt im Scheinwerferlicht", sondern zu "Die Luecke laesst sich beziffern."
 
 Kein Anschluss nach vorn oder hinten. Du kennst die Nachbarsaetze nicht. Schreib einen Satz, der fuer sich steht.
+
+UEBERSCHRIFTEN SIND ANDERS. Steht bei einem Auftrag "ist: ueberschrift", lieferst Du eine Ueberschrift, keinen Satz: hoechstens acht Woerter, kein Punkt am Ende, keine Rautezeichen — die setzt das Dokument selbst. Sie muss etwas Anfassbares tragen: eine Zahl, einen Ort, eine Rolle, eine Uhrzeit, ein Ding. Und sie beschreibt einen Vorgang, keinen Zustand: "Der Hebel liegt da" ist kein Vorgang, "Ab zwanzig Knoten fangen die Dateien an zu antworten" schon.
 
 Faellt Dir nichts ein, das besser ist als das Original, lass das Feld leer. Ein unveraenderter Satz mit einem bekannten Mangel ist besser als ein verschlimmbesserter.`,
         user: `{{anzahl}} Auftraege. Zu jedem: die Nummer, der Satz, was daran nicht stimmt.
