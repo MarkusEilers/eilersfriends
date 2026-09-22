@@ -461,6 +461,14 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
       })
     }
     const META = /\b(was bleibt|zum schluss|fazit|zusammenfassung|das wichtigste in kürze|nach dem (webcast|termin|vortrag|call)|worum es (hier )?geht)(?![a-zà-ÿ])/i
+    /**
+     * Die Zustandsbeschreibung.
+     *
+     * "Der Hebel liegt da" sagt, dass etwas irgendwo liegt. Das ist kein
+     * Vorgang, sondern ein Zustand — und im Bild sogar das Gegenteil des
+     * Gemeinten: Ein Hebel, der daliegt, wird gerade nicht benutzt.
+     */
+    const ZUSTAND = /^(der|die|das|ein|eine)\s+\w+\s+(liegt|steht|ist|bleibt|gibt es|wartet|existiert)(\s|$)/i
     for (const h of heads) {
       if (META.test(h)) {
         push({
