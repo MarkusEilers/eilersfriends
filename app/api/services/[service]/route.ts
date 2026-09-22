@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server'
+import { after } from 'next/server'
 import { auth } from '@/lib/auth'
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { verifyApiKey, hasScope } from '@/lib/events/auth'
 import { createOrder, listOrders, settingsFor, updateOrder } from '@/lib/services/schema'
 import { AUDIT_DEFAULTS, type AuditSettings } from '@/lib/services/messaging-audit'
-import { activeAgent, startRun, advance } from '@/lib/agents/run'
+import { activeAgent, startRun } from '@/lib/agents/run'
+import { stosseAn } from '@/lib/services/antrieb'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -99,20 +101,26 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
   })
   await updateOrder(order.id, { status: 'laeuft', runId: run.id })
 
-  // So weit laufen, wie das Zeitbudget reicht — den Rest holt der Antrieb.
-  const state = await advance(run.id).catch(() => null)
-  if (state?.status === 'fertig') {
-    await updateOrder(order.id, { status: 'fertig', ergebnis: state.output })
-  } else if (state?.status === 'fehler') {
-    await updateOrder(order.id, { status: 'fehler', fehler: 'Lauf abgebrochen — siehe Lauf-Protokoll.' })
-  }
+  /**
+   * Ab hier ist es unsere Sache.
+   *
+   * Der Besteller hat einmal bestellt — er soll nicht nachfassen muessen,
+   * damit etwas passiert. Der Antrieb schiebt den Auftrag von selbst weiter,
+   * Durchgang fuer Durchgang, bis er fertig ist.
+   *
+   * Deshalb antworten wir sofort und stossen erst danach an: Wer auf das
+   * Ergebnis wartet, wartet Minuten bis Stunden und verliert unterwegs die
+   * Verbindung.
+   */
+  after(() => stosseAn())
 
   return NextResponse.json({
     ok: true,
     auftragId: order.id,
     laufId: run.id,
-    status: state?.status ?? 'laeuft',
+    status: 'laeuft',
     abfragen: `/api/services/${service}/${order.id}`,
+    hinweis: 'Der Auftrag läuft von selbst weiter. Abfragen ist möglich, aber nicht nötig.',
   }, { status: 202 })
 }
 

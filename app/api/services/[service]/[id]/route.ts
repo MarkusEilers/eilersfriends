@@ -3,18 +3,21 @@ import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
 import { verifyApiKey, hasScope } from '@/lib/events/auth'
-import { ensureServiceSchema, updateOrder, type ServiceOrder } from '@/lib/services/schema'
-import { driveRun } from '@/lib/agents/drive'
+import { ensureServiceSchema, type ServiceOrder } from '@/lib/services/schema'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
 
 /**
- * Nachfragen — und dabei weitertreiben.
+ * Nachfragen — und sonst nichts.
  *
- * Wer nach dem Stand fragt, will meistens, dass es vorangeht. Also schiebt
- * jede Abfrage den Lauf ein Stueck weiter, statt nur zu berichten. Das spart
- * dem CRM eine zweite Schleife und uns eine Warteschlange.
+ * Fruehere Fassung hat hier den Lauf mitgeschoben. Das war bequem und falsch:
+ * Ein Auftrag, der nur vorankommt, wenn jemand nachfragt, laedt den
+ * Besteller ein, im Sekundentakt zu fragen — und bleibt stehen, wenn er es
+ * nicht tut.
+ *
+ * Der Antrieb liegt jetzt bei uns (lib/services/antrieb.ts). Diese Stelle
+ * liest nur.
  */
 export async function GET(req: Request, { params }: { params: Promise<{ service: string; id: string }> }) {
   const { service, id } = await params
@@ -32,19 +35,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ service:
   ) as unknown as ServiceOrder[]
   const order = rows[0]
   if (!order) return NextResponse.json({ error: 'nicht gefunden' }, { status: 404 })
-
-  if (order.status === 'laeuft' && order.run_ids.length) {
-    const lauf = order.run_ids[order.run_ids.length - 1]
-    const state = await driveRun(lauf, 4).catch(() => null)
-    if (state?.status === 'fertig') {
-      await updateOrder(order.id, { status: 'fertig', ergebnis: state.output })
-      order.status = 'fertig'
-      order.ergebnis = (state.output ?? null) as Record<string, unknown> | null
-    } else if (state?.status === 'fehler') {
-      await updateOrder(order.id, { status: 'fehler', fehler: 'Lauf abgebrochen — siehe Lauf-Protokoll.' })
-      order.status = 'fehler'
-    }
-  }
 
   return NextResponse.json({
     ok: true,

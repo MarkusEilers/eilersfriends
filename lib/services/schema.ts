@@ -55,7 +55,18 @@ export async function ensureServiceSchema() {
       finished_at  TIMESTAMPTZ
     )`)
   await db.execute(sql`ALTER TABLE service_orders ADD COLUMN IF NOT EXISTS run_ids JSONB NOT NULL DEFAULT '[]'::jsonb`)
+  /**
+   * Wie oft sich ein Auftrag selbst weitergeschoben hat.
+   *
+   * Der Antrieb ruft sich selbst wieder auf, solange etwas offen ist. Ohne
+   * Zaehler waere das eine Schleife, die niemand bemerkt, bis die Rechnung
+   * kommt — mit Zaehler ist es eine Kette mit Ende.
+   */
+  await db.execute(sql`ALTER TABLE service_orders ADD COLUMN IF NOT EXISTS schuebe INT NOT NULL DEFAULT 0`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS service_orders_idx ON service_orders (service_key, created_at DESC)`)
+  await db.execute(sql`
+    CREATE INDEX IF NOT EXISTS service_orders_offen ON service_orders (status, updated_at)
+    WHERE status IN ('offen','laeuft')`)
   // Ein CRM, das einen Auftrag zweimal schickt, soll ihn nicht zweimal bezahlen.
   await db.execute(sql`
     CREATE UNIQUE INDEX IF NOT EXISTS service_orders_extern
@@ -140,6 +151,30 @@ export async function createOrder(input: {
     DO UPDATE SET updated_at = now()
     RETURNING *`)) as unknown as ServiceOrder[]
   return rows[0]
+}
+
+/**
+ * Auftraege, die noch etwas vorhaben.
+ *
+ * Wer sie antreibt, ist eine andere Frage — hier steht nur, welche es sind.
+ * Der Filter auf `updated_at` verhindert, dass zwei Antriebe denselben Auftrag
+ * gleichzeitig schieben: Was sich gerade bewegt hat, wird in Ruhe gelassen.
+ */
+export async function offeneAuftraege(limit = 5, ruheSekunden = 20): Promise<ServiceOrder[]> {
+  await ensureServiceSchema()
+  const rows = await db.execute(sql`
+    SELECT * FROM service_orders
+    WHERE status IN ('offen','laeuft')
+      AND schuebe < 60
+      AND updated_at < now() - (${ruheSekunden} * interval '1 second')
+    ORDER BY updated_at ASC LIMIT ${limit}`)
+  return rows as unknown as ServiceOrder[]
+}
+
+export async function zaehleSchub(id: string) {
+  await ensureServiceSchema()
+  await db.execute(sql`
+    UPDATE service_orders SET schuebe = schuebe + 1, updated_at = now() WHERE id = ${id}`)
 }
 
 export async function updateOrder(id: string, patch: {
