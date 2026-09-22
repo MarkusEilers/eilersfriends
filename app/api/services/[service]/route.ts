@@ -21,7 +21,7 @@ export const maxDuration = 300
  */
 
 const DIENSTE: Record<string, { agent: string; defaults: Record<string, unknown> }> = {
-  'messaging-audit': { agent: 'messaging-audit', defaults: AUDIT_DEFAULTS as unknown as Record<string, unknown> },
+  'messaging-audit': { agent: 'messaging-audit', defaults: AUDIT_DEFAULTS },
 }
 
 async function wer(req: Request) {

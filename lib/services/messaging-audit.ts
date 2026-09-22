@@ -12,7 +12,7 @@
  */
 
 /** Was sich je Kunde einstellen laesst. */
-export interface AuditSettings {
+export interface AuditSettings extends Record<string, unknown> {
   /** Wie tief die Recherche geht. Mehr Quellen heisst mehr Zeit und mehr Kosten. */
   tiefe: 'knapp' | 'normal' | 'gruendlich'
   /** Welche Quellenklassen geprueft werden. Eine leere Klasse ist selbst ein Befund. */
