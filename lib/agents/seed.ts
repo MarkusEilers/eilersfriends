@@ -1467,7 +1467,17 @@ ERST EVIDENZ, DANN URTEIL. Jede Bewertung steht auf einem woertlichen Zitat mit 
 
 LUECKEN SIND BEFUNDE. Eine Quelle, die nichts hergibt, wird benannt, nicht uebergangen. "Keine Anzeigen geschaltet" sagt etwas ueber die Nachfragestrategie. "Keine Preise auf der Website" sagt etwas ueber den Verkaufsprozess.
 
-DER KUNDE IST NICHT DUMM. Wir bewerten Texte, nicht Menschen. Jeder Befund beschreibt, was dasteht und was es beim Leser bewirkt — nie, was die Firma haette wissen muessen.`
+DER KUNDE IST NICHT DUMM. Wir bewerten Texte, nicht Menschen. Jeder Befund beschreibt, was dasteht und was es beim Leser bewirkt — nie, was die Firma haette wissen muessen.
+
+WAS WIR SCHON WISSEN, KOMMT AUS DEM CRM — UND BLEIBT DORT.
+
+Zum Auftrag koennen Vorkenntnisse gehoeren: Branche, Groesse, Ansprechpartner, Stand des Gespraechs, Notizen aus frueheren Kontakten. Sie helfen beim Einordnen und ersparen Recherche.
+
+Zwei Regeln dazu, und die zweite ist die wichtigere:
+
+Erstens: Was im CRM steht, ist nicht belegt. Es ist Kontext, kein Zitat. Eine Bewertung stuetzt sich auf Quellen, nicht auf unsere Notizen.
+
+Zweitens: Nichts davon erscheint in der Kundenfassung. Kein Satz, keine Zahl, keine Anspielung. Ein Kunde, der in seinem Audit einen Satz aus unserem CRM wiedererkennt, ist kein Kunde mehr — und zwar zu Recht.`
 
 export async function seedAuditAgent() {
   return publishAgent({
@@ -1529,6 +1539,9 @@ Halbe Punkte sind erlaubt. Eine Dimension ohne Beleg bekommt keine Zahl, sondern
         user: `Firma: {{aufnahme.firma}} · {{aufnahme.url}}
 Anlass: {{aufnahme.hinweis}}
 
+Was wir vorher schon wussten (Kontext, kein Beleg — und nichts davon geht in die Kundenfassung):
+{{eingabe.crm}}
+
 Was die Quellen hergegeben haben:
 {{sammeln.material}}
 
@@ -1571,7 +1584,10 @@ Du stellst nebeneinander, was die Firma bewirbt, und was der Markt tatsaechlich 
 Drei Spalten je Zeile: der beworbene Schmerz, der echte Schmerz in den Worten des Marktes, und was die Luecke dazwischen kostet.
 
 Wo die Firma trifft, sagst Du das auch. Ein Audit, das nur Luecken findet, ist unglaubwuerdig.`,
-        user: `Was die Firma sagt:
+        user: `Was wir vorher schon wussten (Kontext, kein Beleg):
+{{eingabe.crm}}
+
+Was die Firma sagt:
 {{sammeln.material}}
 
 Was der Markt sagt:
@@ -1644,6 +1660,9 @@ Dazu gehoert, was in der Kundenfassung nichts verloren hat: der Beef-Hebel (wo w
 Klartext, keine Ruecksicht. Die Ruecksicht kommt im naechsten Schritt.`,
         user: `Firma: {{aufnahme.firma}} · {{aufnahme.url}}
 Anlass: {{aufnahme.hinweis}}
+
+Was wir vorher wussten — hier darf es vorkommen, das ist die interne Fassung:
+{{eingabe.crm}}
 
 Bewertung: {{werte.dimensionen}}
 Gesamtbild: {{werte.gesamt}}

@@ -63,6 +63,31 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
     firma?: string; url?: string; orgId?: string
     externId?: string; hinweis?: string
     einstellungen?: Partial<AuditSettings>
+    /**
+     * Was das CRM schon weiss.
+     *
+     * Ein Audit, das die Branche erst recherchiert, obwohl sie im Lead-Satz
+     * steht, verbrennt Suchanfragen fuer eine Antwort, die schon vorlag. Alles
+     * hier ist freiwillig — was fehlt, wird recherchiert.
+     *
+     * Wichtig und im Agenten hart hinterlegt: Diese Angaben stuetzen das
+     * Urteil, erscheinen aber nie in der Kundenfassung. Ein Kunde, der in
+     * seinem Audit einen Satz aus unserem CRM wiederfindet, ist kein Kunde
+     * mehr.
+     */
+    crm?: {
+      branche?: string
+      groesse?: string
+      umsatz?: string
+      ansprechpartner?: string
+      rolle?: string
+      deal_stand?: string
+      lead_quelle?: string
+      notizen?: string
+      gespraeche?: string[]
+      wettbewerber?: string[]
+      [k: string]: unknown
+    }
   }
   if (!body.firma && !body.url) {
     return NextResponse.json({ error: 'firma oder url ist Pflicht' }, { status: 400 })
@@ -75,11 +100,23 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
   const gespeichert = await settingsFor(service, orgId, dienst.defaults)
   const einstellungen = { ...gespeichert, ...(body.einstellungen ?? {}) }
 
+  const crm = body.crm ?? null
   const order = await createOrder({
     serviceKey: service, orgId, firma, url: body.url ?? null,
-    auftrag: { hinweis: body.hinweis ?? null, einstellungen },
+    auftrag: { hinweis: body.hinweis ?? null, einstellungen, crm },
     quelle: ctx.kind, externId: body.externId ?? null,
   })
+
+  // Was das CRM mitbringt, gehoert auch an die Firma — dann steht es beim
+  // naechsten Auftrag schon da, ohne dass jemand es nochmal schickt.
+  if (orgId && crm && (crm.branche || crm.groesse)) {
+    await db.execute(sql`
+      UPDATE companies SET
+        industry = COALESCE(NULLIF(${crm.branche ?? null}::text, ''), industry),
+        size = COALESCE(NULLIF(${crm.groesse ?? null}::text, ''), size),
+        updated_at = now()
+      WHERE id = ${orgId}::uuid`).catch(() => {})
+  }
 
   const agent = await activeAgent(dienst.agent)
   if (!agent) {
@@ -96,7 +133,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
 
   const run = await startRun({
     agentKey: dienst.agent,
-    input: { firma, url: body.url ?? null, hinweis: body.hinweis ?? null, einstellungen },
+    input: { firma, url: body.url ?? null, hinweis: body.hinweis ?? null, einstellungen, crm },
     orgId, productId: null, userId: ctx.userId, via: ctx.kind,
   })
   await updateOrder(order.id, { status: 'laeuft', runId: run.id })
