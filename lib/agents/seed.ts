@@ -393,6 +393,12 @@ export async function seedLongformAgent() {
       properties: {
         audience: { type: 'string' },
         titel: { type: 'string', description: 'Wenn gesetzt, steht dieser Titel wörtlich über dem Text. Kein Vorschlag.' },
+        botschaften: {
+          type: 'string',
+          description: 'Was gesagt werden soll — eine Botschaft je Zeile. Wenn das Briefing das '
+            + 'vorgibt, wird es nicht neu erfunden: Die Kette übernimmt sie wörtlich als Schritte, '
+            + 'der Beweisplan sucht für jede einen Beleg, und am Ende wird geprüft, ob jede im Text steht.',
+        },
         message_lock: {
           type: 'string',
           description: 'Der eine Satz, der unverändert und in voller Kraft im Text stehen muss. '
@@ -448,6 +454,12 @@ export async function seedLongformAgent() {
 
 Du baust die Ueberzeugungsziele. Noch keinen Text, noch keine Gliederung.
 
+WENN DAS BRIEFING SCHON SAGT, WAS GESAGT WERDEN SOLL, IST DAS ENTSCHIEDEN.
+
+Unten koennen vorgegebene Botschaften stehen. Die erfindest Du nicht neu und formulierst sie nicht schoener — jede wird ein eigener Schritt, mit ihrer Aussage im Feld "satz", moeglichst nah am Wortlaut. Deine Arbeit ist dann die Reihenfolge (was muss der Leser zuerst glauben, damit das Naechste ankommt), der Widerstand je Schritt und der Beleg.
+
+Ergaenzen darfst Du: Wenn zwischen zwei vorgegebenen Botschaften ein Sprung fehlt, den der Leser nicht mitmacht, baust Du einen Schritt dazwischen und markierst ihn als ergaenzt. Weglassen darfst Du keine. Steht unten nichts, arbeitest Du frei.
+
 Drei bis fuenf Ziele in aufbauender Reihenfolge, durchnummeriert als B1, B2, B3 … Je Ziel: Was denkt der Leser heute? Was danach? Welcher Beleg aus dem Material traegt den Sprung? Welcher Widerstand kommt, und was entkraeftet ihn? Und wie schwer ist der Sprung — leicht, mittel oder schwer?
 
 Die Schwere ist keine Hoeflichkeit. Der schwerste Sprung gehoert nach vorn, nicht ans Ende: Wer bis dahin nicht ueberzeugt ist, liest nicht mehr.
@@ -459,6 +471,9 @@ Ein guter Lock ist angreifbar. Wenn ihm niemand widersprechen koennte, ist er ke
 Nenne am Ende die Luecken: Was wird behauptet, ohne belegt zu sein, und was fragt ein skeptischer Leser, worauf das Material keine Antwort hat?`,
         user: `Zielgruppe: {{aufnahme.audience}}
 Auftrag: {{aufnahme.ueberzeugungsziel}}
+VORGEGEBENE BOTSCHAFTEN (leer = Du arbeitest frei):
+{{eingabe.botschaften}}
+
 Vorgegebener Message-Lock (wenn leer, schreibst Du ihn): {{eingabe.message_lock}}
 
 Handoff und Regeln:
@@ -489,6 +504,10 @@ Zwei Beispieltexte als Klangmassstab — Haltung und Satzbau uebernehmen, nicht 
                   satz: { type: 'string', description: 'Der Glaubenssatz in einer Zeile' },
                   heute: { type: 'string' }, danach: { type: 'string' },
                   schwere: { type: 'string', enum: ['leicht', 'mittel', 'schwer'] },
+                  herkunft: {
+                    type: 'string', enum: ['vorgegeben', 'ergaenzt'],
+                    description: 'Stand die Botschaft im Briefing, oder hast Du sie dazugebaut?',
+                  },
                   beleg: { type: 'string' }, widerstand: { type: 'string' }, entkraeftung: { type: 'string' },
                 },
               },
@@ -522,6 +541,10 @@ Wo ein Schritt kein Beweismittel hat, wird nichts erfunden — der Schritt kommt
 Ein Text mit drei ehrlichen Luecken ist besser als einer mit drei erfundenen Zahlen.`,
         user: `Die Ueberzeugungsschritte:
 {{kette.ziele}}
+
+Was das Briefing vorgegeben hat — fuer jede dieser Botschaften braucht es einen
+Beleg oder einen Eintrag auf der OFFEN-Liste:
+{{eingabe.botschaften}}
 
 Message-Lock: {{kette.message_lock}}
 

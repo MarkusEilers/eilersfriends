@@ -984,6 +984,10 @@ function linter(step: StepDef, ctx: Ctx): StepOut {
   // destilliert — beides gilt, die Eingabe gewinnt.
   const lock = String((ctx.input as Record<string, unknown>).message_lock
     ?? (ctx.results.aufnahme as { message_lock?: string } | undefined)?.message_lock ?? '').trim()
+  // Eine Botschaft je Zeile; Aufzaehlungszeichen und Nummern fliegen raus.
+  const botschaften = String((ctx.input as Record<string, unknown>).botschaften ?? '')
+    .split('\n').map((z) => z.replace(/^\s*([-*+•]|\d+[.)])\s*/, '').trim())
+    .filter((z) => z.length > 11)
   const from = step.source ?? 'entwuerfe'
   const drafts = (ctx.results[from] as { varianten?: Array<Record<string, unknown>> })?.varianten ?? []
   const reports = drafts.map((d) => {
@@ -995,6 +999,7 @@ function linter(step: StepDef, ctx: Ctx): StepOut {
       // Das Material ist die Wahrheit. Was hier nicht steht, darf dort nicht stehen.
       material: `${String(ctx.input.inhalte ?? '')}\n${String(ctx.input.context_md ?? ctx.input.kontext ?? '')}`,
       lock: lock || null,
+      botschaften: botschaften.length ? botschaften : null,
       kanal: a?.textart ?? null,
     })
     return { ansatz: d.ansatz, ...r }

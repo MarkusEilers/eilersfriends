@@ -50,6 +50,12 @@ export interface LintInput {
    * der Text bleibt dabei tadellos.
    */
   lock?: string | null
+  /**
+   * Was das Briefing vorgegeben hat. Jede Botschaft wird einzeln gesucht —
+   * eine vergessene Botschaft ist der Fehler, den niemand bemerkt, weil der
+   * Text ohne sie vollstaendig aussieht.
+   */
+  botschaften?: string[] | null
   /** linkedin | newsletter | cold-email | thread | carousel | short | reel */
   kanal?: string | null
 }
@@ -373,6 +379,37 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
         quote: input.lock.slice(0, 120),
         hint: `${Math.round(quote * 100)} Prozent der Kernbotschaft sind da. Steht sie in voller Kraft oder nur angedeutet?`,
       })
+    }
+  }
+
+  /**
+   * Die vorgegebenen Botschaften.
+   *
+   * Derselbe Test wie beim Message-Lock, nur fuer jede einzeln: Stehen die
+   * tragenden Woerter im Text? Was das Briefing verlangt hat und nicht
+   * dasteht, faellt sonst niemandem auf — der Text sieht ohne die fehlende
+   * Botschaft genauso fertig aus.
+   */
+  if (input.botschaften?.length) {
+    const STOPP2 = new Set(['und', 'oder', 'der', 'die', 'das', 'ein', 'eine', 'einen', 'dem', 'den',
+      'ist', 'sind', 'war', 'wird', 'werden', 'hat', 'haben', 'nicht', 'mit', 'von', 'für', 'auf',
+      'als', 'wie', 'dass', 'sich', 'auch', 'nur', 'man', 'sie', 'wir', 'ihr', 'was', 'wer', 'sein'])
+    const hay2 = text.toLowerCase()
+    for (const b of input.botschaften) {
+      const satz = String(b ?? '').trim()
+      if (satz.length < 12) continue
+      const kern = satz.toLowerCase().split(/[^a-zà-ÿ0-9]+/).filter((w) => w.length > 3 && !STOPP2.has(w))
+      if (!kern.length) continue
+      const drin = kern.filter((w) => hay2.includes(w.slice(0, Math.max(4, w.length - 2))))
+      const quote = drin.length / kern.length
+      if (quote < 0.5) {
+        push({
+          rule: 'Botschaft aus dem Briefing fehlt', severity: 'fehler',
+          quote: satz.slice(0, 120),
+          hint: `Nur ${Math.round(quote * 100)} Prozent der tragenden Wörter stehen im Text. `
+            + 'Das Briefing hat diese Botschaft verlangt — sie ist nicht verhandelbar.',
+        })
+      }
     }
   }
 
