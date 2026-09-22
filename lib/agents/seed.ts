@@ -451,16 +451,104 @@ export async function seedLongformAgent() {
         ],
       },
       {
+        key: 'auftrag', kind: 'modell', title: 'Wozu dieser Text',
+        temperature: 0.3, maxTokens: 2500,
+        system: `${LANG_BASE}
+
+Du entscheidest, WOZU dieser Text geschrieben wird. Noch keine Botschaften, keine Gliederung, kein Satz.
+
+Das ist der Schritt, der am haeufigsten uebersprungen wird — und dann entsteht ein Text, der alles Richtige sagt und nichts bewirkt.
+
+SECHS FRAGEN, IN DIESER REIHENFOLGE:
+
+1 · WAS SOLL NACH DEM LESEN ANDERS SEIN? Nicht "der Leser versteht X" — verstehen ist kein Ergebnis. Was tut er, entscheidet er, laesst er? Ein Text ohne diese Antwort ist eine Broschuere.
+
+2 · WER IST DAS, UND WAS IST GERADE SEINE LAGE? Nicht die Zielgruppe im Allgemeinen. Dieser eine Mensch, an diesem Punkt.
+
+3 · DIE ESSENZ IN EINEM SATZ. Worum geht es wirklich — aus SEINER Sicht, nicht aus unserer.
+
+Die haeufigste Falle, und Du faellst hier fast sicher hinein, wenn Du nicht aufpasst: Das VERFAHREN mit der SACHE zu verwechseln. "Es benutzt Textdateien" ist Verfahren. "Vorbereitung faengt nicht mehr bei null an" ist die Sache. Niemand wacht morgens auf und will Textdateien. Die Probe: Wuerde der Leser diesen Satz jemandem am Telefon erzaehlen? Wenn nicht, ist es Verfahren.
+
+4 · WAS STEHT AUF DEM SPIEL, wenn er nichts tut? Konkret und aus dem Material. Kein "er verpasst Chancen".
+
+5 · WORAN WUERDE ER SCHEITERN ODER ABWINKEN? Der ehrliche Widerstand — nicht der bequeme. Bei jemandem mit wenig Zeit ist es selten Unglaube, meistens Aufwand.
+
+6 · WAS IST ES NICHT? Ein Satz, der abgrenzt. Wer das nicht sagt, schreibt am Ende ueber alles.
+
+WENN DAS BRIEFING BOTSCHAFTEN VORGIBT, SORTIERST DU SIE.
+
+Vorgegebene Botschaften sind selten alle gleichrangig. Die meisten Briefings mischen drei Sorten, und wer sie gleich behandelt, bekommt ein Inhaltsverzeichnis statt eines Textes:
+
+- KERN — traegt das Ergebnis aus Frage 1. Davon gibt es zwei bis vier, mehr nicht. Nur diese werden spaeter eigene Ueberzeugungsschritte.
+- BELEG — stuetzt einen Kern, ist aber selbst kein Grund. Alles Verfahrenshafte gehoert fast immer hierhin. Es kommt im Text vor, aber im Dienst eines Kerns, nicht als eigenes Kapitel.
+- NEBENSCHAUPLATZ — richtig, aber fuer dieses Ergebnis unwichtig. Es darf in einem Nebensatz vorkommen oder ganz fehlen.
+
+Jede Zuordnung begruendest Du in einem Halbsatz. Weggelassen wird nichts — sortiert schon.`,
+        user: `Auftrag: {{eingabe.ueberzeugungsziel}}
+Zielgruppe: {{eingabe.audience}}
+Textart: {{aufnahme.textart}}, Laenge: {{aufnahme.ziel_woerter}} Woerter
+
+Vorgegebene Botschaften (leer = keine):
+{{eingabe.botschaften}}
+
+Vorgegebener Message-Lock: {{eingabe.message_lock}}
+
+Handoff und Auftragskontext:
+{{eingabe.context_md}}
+
+Material:
+{{aufnahme.inhalte}}`,
+        schema: {
+          type: 'object',
+          required: ['ergebnis', 'essenz', 'widerstand'],
+          properties: {
+            ergebnis: {
+              type: 'string',
+              description: 'Was der Leser danach TUT, entscheidet oder lässt. Nicht „versteht".',
+            },
+            leser: { type: 'string', description: 'Dieser eine Mensch, an diesem Punkt' },
+            essenz: {
+              type: 'string',
+              description: 'Worum es aus SEINER Sicht wirklich geht — die Sache, nicht das Verfahren',
+            },
+            verfahren_statt_sache: {
+              type: 'string',
+              description: 'Die naheliegende Verwechslung, die Du vermieden hast. Ein Satz.',
+            },
+            einsatz: { type: 'string', description: 'Was auf dem Spiel steht, konkret aus dem Material' },
+            widerstand: { type: 'string', description: 'Woran er abwinkt — der ehrliche Grund' },
+            abgrenzung: { type: 'string', description: 'Was dieser Text NICHT ist' },
+            botschaften: {
+              type: 'array',
+              description: 'Nur wenn welche vorgegeben waren — jede einsortiert, keine weggelassen',
+              items: {
+                type: 'object', required: ['satz', 'rang', 'warum'],
+                properties: {
+                  satz: { type: 'string' },
+                  rang: { type: 'string', enum: ['kern', 'beleg', 'nebenschauplatz'] },
+                  stuetzt: { type: 'string', description: 'Bei „beleg": welchen Kern' },
+                  warum: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+      {
         key: 'kette', kind: 'modell', title: 'Überzeugungsziele', temperature: 0.4, maxTokens: 2500,
         system: `${LANG_BASE}
 
 Du baust die Ueberzeugungsziele. Noch keinen Text, noch keine Gliederung.
 
-WENN DAS BRIEFING SCHON SAGT, WAS GESAGT WERDEN SOLL, IST DAS ENTSCHIEDEN.
+DU ARBEITEST AUF DEM ERGEBNIS UND DER ESSENZ AUS DER TEXTSTRATEGIE. Beides steht unten. Ein Ueberzeugungsschritt, der nicht auf das Ergebnis einzahlt, gehoert nicht in die Kette, auch wenn er wahr ist.
 
-Unten koennen vorgegebene Botschaften stehen. Die erfindest Du nicht neu und formulierst sie nicht schoener — jede wird ein eigener Schritt, mit ihrer Aussage im Feld "satz", moeglichst nah am Wortlaut. Deine Arbeit ist dann die Reihenfolge (was muss der Leser zuerst glauben, damit das Naechste ankommt), der Widerstand je Schritt und der Beleg.
+WENN DAS BRIEFING BOTSCHAFTEN VORGAB, SIND SIE BEREITS SORTIERT.
 
-Ergaenzen darfst Du: Wenn zwischen zwei vorgegebenen Botschaften ein Sprung fehlt, den der Leser nicht mitmacht, baust Du einen Schritt dazwischen und markierst ihn als ergaenzt. Weglassen darfst Du keine. Steht unten nichts, arbeitest Du frei.
+Nur was dort als KERN steht, wird ein eigener Ueberzeugungsschritt — woertlich, nicht schoener formuliert. Was als BELEG einsortiert wurde, wird KEIN Schritt: Es stuetzt einen, und der Beweisplan holt es im naechsten Schritt ab. Ein Nebenschauplatz wird gar nichts.
+
+Das ist der Unterschied zwischen einem Text und einem Inhaltsverzeichnis. Wer aus jeder vorgegebenen Botschaft ein Kapitel macht, hat die Gliederung des Ausgangsmaterials abgeschrieben und nichts entschieden.
+
+Ergaenzen darfst Du: Wenn zwischen zwei Kernen ein Sprung fehlt, den der Leser nicht mitmacht, baust Du einen Schritt dazwischen und markierst ihn als ergaenzt.
 
 Drei bis fuenf Ziele in aufbauender Reihenfolge, durchnummeriert als B1, B2, B3 … Je Ziel: Was denkt der Leser heute? Was danach? Welcher Beleg aus dem Material traegt den Sprung? Welcher Widerstand kommt, und was entkraeftet ihn? Und wie schwer ist der Sprung — leicht, mittel oder schwer?
 
@@ -473,8 +561,16 @@ Ein guter Lock ist angreifbar. Wenn ihm niemand widersprechen koennte, ist er ke
 Nenne am Ende die Luecken: Was wird behauptet, ohne belegt zu sein, und was fragt ein skeptischer Leser, worauf das Material keine Antwort hat?`,
         user: `Zielgruppe: {{aufnahme.audience}}
 Auftrag: {{aufnahme.ueberzeugungsziel}}
-VORGEGEBENE BOTSCHAFTEN (leer = Du arbeitest frei):
-{{eingabe.botschaften}}
+
+DIE TEXTSTRATEGIE — hieran misst sich jeder Schritt:
+Was der Leser danach TUT: {{auftrag.ergebnis}}
+Die Essenz aus seiner Sicht: {{auftrag.essenz}}
+Was auf dem Spiel steht: {{auftrag.einsatz}}
+Woran er abwinkt: {{auftrag.widerstand}}
+Was dieser Text NICHT ist: {{auftrag.abgrenzung}}
+
+Die sortierten Botschaften — nur KERN wird ein Schritt:
+{{auftrag.botschaften}}
 
 Vorgegebener Message-Lock (wenn leer, schreibst Du ihn): {{eingabe.message_lock}}
 
@@ -544,9 +640,11 @@ Ein Text mit drei ehrlichen Luecken ist besser als einer mit drei erfundenen Zah
         user: `Die Ueberzeugungsschritte:
 {{kette.ziele}}
 
-Was das Briefing vorgegeben hat — fuer jede dieser Botschaften braucht es einen
-Beleg oder einen Eintrag auf der OFFEN-Liste:
-{{eingabe.botschaften}}
+Die sortierten Botschaften. Was dort als BELEG steht, ist Dein Material —
+es gehoert in den Beweisplan, nicht in ein eigenes Kapitel:
+{{auftrag.botschaften}}
+
+Die Essenz, an der sich jeder Beleg messen muss: {{auftrag.essenz}}
 
 Message-Lock: {{kette.message_lock}}
 
@@ -910,7 +1008,21 @@ KONKRET VOR ABSTRAKT — die wichtigste Regel hier.
 
 Der Abschnitt beginnt mit etwas, das man sehen kann: ein Mensch, ein Ort, eine Uhrzeit, eine Zahl mit Einheit, ein Satz, den jemand gesagt hat. Erst wenn der Leser weiss, wovon die Rede ist, darf der Gedanke abstrakt werden.
 
-Die Probe: Kann ein Fremder nach dem ersten Satz sagen, WER etwas tut und WO? Wenn nicht, ist der Satz noch nicht geschrieben. "Was passiert, wenn der Plan fertig ist und draussen niemand zurueckmeldet?" besteht die Probe nicht — welcher Plan, wo draussen? "Am Montag um sechs stehen vierzig Monteure an vierzig Standorten und lesen dieselbe PDF" besteht sie.
+Die Probe: Kann ein Fremder nach dem ersten Satz sagen, WOVON die Rede ist? Wenn nicht, ist der Satz noch nicht geschrieben. "Was passiert, wenn der Plan fertig ist und draussen niemand zurueckmeldet?" besteht die Probe nicht — welcher Plan, wo draussen?
+
+DIE SZENE IST EINE EROEFFNUNG VON MEHREREN, NICHT DIE BAUFORM FUER ALLE.
+
+Wenn jeder Abschnitt mit "Am Dienstag, 8:45 Uhr" anfaengt, ist aus der Regel eine Masche geworden — und die faellt staerker auf als das Problem, das sie loesen sollte. Der Leser merkt das Muster vor dem Inhalt.
+
+Andere Eroeffnungen, die genauso konkret sind:
+- eine Zahl mit ihrer Herkunft ("Von zwoelf Teilnehmern tippten elf zu hoch")
+- ein Satz, den jemand gesagt hat
+- eine Behauptung, die angreifbar ist
+- der Einwand, den der Leser gerade denkt, vorweggenommen
+- ein Vorgang, Schritt fuer Schritt ("Die Aufgabe geht raus. Dann passiert nichts.")
+- ein Gegenstand oder Ort ohne Uhrzeit
+
+Sieh nach, wie der vorige Abschnitt begonnen hat — unten steht sein Schluss. Faengt Deiner genauso an, nimm eine andere Form.
 
 DIE RHETORISCHE FRAGE IST KEIN EINSTIEG.
 

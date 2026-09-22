@@ -212,6 +212,25 @@ const ANNAHME_UEBER_LESER = /\b((viele|die meisten|kaum jemand|niemand|alle|jede
  */
 const ANONYME_MENGE = /(die meisten|fast alle|so gut wie jeder|kaum jemand|die wenigsten|jeder zweite|so gut wie niemand)(?![a-zà-ÿ])/gi
 
+/**
+ * Der Vergleich ohne zweiten Teil.
+ *
+ * "Der Unterschied liegt nicht darin, dass alles sortiert ist" — Unterschied
+ * zwischen WAS und was? Ein Komparativ braucht einen Bezugspunkt, sonst
+ * behauptet er eine Ueberlegenheit, die der Leser nicht nachrechnen kann.
+ */
+const VERGLEICH_OHNE_BEZUG = /\b(der Unterschied (liegt|ist)|anders als (sonst|ueblich|üblich|gewohnt)|besser|schneller|einfacher|guenstiger|günstiger|mehr wert)(?![a-zà-ÿ])(?![^.!?]{0,60}\b(als|gegenueber|gegenüber|verglichen mit|im Vergleich zu)\b)/gi
+
+/**
+ * Gleichfoermige Absatzanfaenge.
+ *
+ * Eine Regel, die "fang konkret an" sagt, wird vom Modell als "fang mit einer
+ * Uhrzeit an" gelesen — und dann beginnt jeder Abschnitt mit "Am Dienstag,
+ * 8:45 Uhr". Aus der Vorschrift wird eine Masche, und die faellt staerker auf
+ * als das Problem, das sie loesen sollte.
+ */
+const ZEIT_EINSTIEG = /^(am |an einem )?(montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag|morgens|abends|nachts|mittags)\b|^\w+,?\s*\d{1,2}[:.]\d{2}\s*(uhr)?\b/i
+
 const EMPTY = /\b(der (kunde|mensch) im mittelpunkt|innovation und qualität|gemeinsam in die zukunft|ganzheitliche lösung)(?![a-zà-ÿ])/gi
 
 /**
@@ -506,6 +525,10 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
     'Ein absoluter Satz muss stimmen. „Niemand weiß, ob die Info angekommen ist" ist bei einer '
     + 'E-Mail falsch — und ein Leser, der einen Satz widerlegt, misstraut dem ganzen Text. '
     + 'Einschränken oder belegen.')
+  scan(VERGLEICH_OHNE_BEZUG, 'Vergleich ohne zweiten Teil', 'warnung',
+    'Unterschied zwischen was? Besser als was? Ein Komparativ ohne Bezugspunkt behauptet '
+    + 'eine Überlegenheit, die niemand nachrechnen kann. Bezug nennen oder streichen.')
+
   scan(ANONYME_MENGE, 'anonyme Menge', 'warnung',
     'Wer genau? Eine Behauptung über eine ungenannte Gruppe ist überprüfungsfrei. '
     + 'Gruppe benennen und belegen, zurückhaltender formulieren („viele Unternehmen berichten"), '
@@ -580,6 +603,39 @@ export function lint(input: LintInput): { findings: Finding[]; stats: Record<str
           hint: 'Der vorige Absatz begann auch mit einer Frage.',
         })
         break
+      }
+    }
+
+    /**
+     * Dieselbe Masche in jedem Absatz.
+     *
+     * Nicht nur Uhrzeiten: Wenn mehr als ein Drittel der Absaetze mit
+     * derselben Bauform beginnt, ist aus einer Regel ein Tic geworden.
+     */
+    {
+      const zeit = absaetze.filter((p) => ZEIT_EINSTIEG.test(ersterSatz(p).trim()))
+      if (absaetze.length >= 4 && zeit.length > Math.max(1, absaetze.length * 0.3)) {
+        push({
+          rule: 'jeder Absatz beginnt mit einer Tageszeit', severity: 'fehler',
+          quote: zeit.slice(0, 3).map((p) => ersterSatz(p).slice(0, 44)).join(' · '),
+          hint: `${zeit.length} von ${absaetze.length} Absätzen beginnen mit einem Wochentag oder einer Uhrzeit. `
+            + 'Eine Szene ist EINE Eröffnung von mehreren — nicht die Bauform für alle. '
+            + 'Auch möglich: eine Zahl, ein Satz von jemandem, eine Behauptung, ein Einwand, ein Vorgang.',
+        })
+      }
+      // Gleiche ersten zwei Woerter in mehreren Absaetzen.
+      const paare = new Map<string, number>()
+      for (const p of absaetze) {
+        const k = ersterSatz(p).toLowerCase().split(/\s+/).slice(0, 2).join(' ')
+        if (k.length > 4) paare.set(k, (paare.get(k) ?? 0) + 1)
+      }
+      for (const [k, n] of paare) {
+        if (n >= 3) {
+          push({
+            rule: 'gleicher Absatzanfang', severity: 'warnung', quote: k,
+            hint: `${n} Absätze beginnen mit „${k}…". Der Leser merkt das Muster vor dem Inhalt.`,
+          })
+        }
       }
     }
 
