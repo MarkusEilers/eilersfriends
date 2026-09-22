@@ -102,6 +102,50 @@ function wartezeit(versuch: number, res: Response | null, text: string): number 
 /* ─────────────────────────────── Aufruf ─────────────────────────────── */
 
 export async function callModel(c: ModelCall): Promise<ModelResult> {
+  const erste = await einAufruf(c)
+
+  /**
+   * Nachfordern, was fehlt.
+   *
+   * `required` im Schema ist eine Bitte, keine Garantie — beide Anbieter
+   * behandeln es als Hinweis. Beobachtet: ein Schritt mit neun Feldern, drei
+   * davon als Pflicht deklariert, lieferte sechs. Das Feld, das fehlte, war
+   * ausgerechnet eines der drei.
+   *
+   * Der Schaden entsteht nicht hier, sondern zwei Schritte spaeter: Ein
+   * spaeterer Prompt zieht das leere Feld, bekommt nichts, und der Lauf
+   * arbeitet ohne es weiter, als waere es nie verlangt worden.
+   *
+   * Also wird nachgefragt — einmal, gezielt, mit der bisherigen Antwort im
+   * Kontext. Nur fuer die fehlenden Felder, nicht fuer den ganzen Schritt.
+   */
+  const fehlend = fehlendePflicht(c.schema, erste.value)
+  if (!fehlend.length) return erste
+
+  const nach = await einAufruf({
+    ...c,
+    maxTokens: Math.min(c.maxTokens ?? 4000, 2000),
+    user: `${c.user}
+
+────────────────────────────────────────
+Du hast bereits geantwortet, aber ${fehlend.length === 1 ? 'ein Pflichtfeld fehlt' : `${fehlend.length} Pflichtfelder fehlen`}: ${fehlend.join(', ')}.
+
+Das hier hast Du schon geliefert — uebernimm es unveraendert und ergaenze nur das Fehlende:
+${JSON.stringify(erste.value, null, 2).slice(0, 6000)}`,
+  })
+
+  // Zusammenfuehren: Was schon dastand, gewinnt — der zweite Aufruf soll
+  // ergaenzen, nicht ueberschreiben.
+  const zusammen = { ...(nach.value as object), ...(erste.value as object) }
+  return {
+    value: zusammen,
+    model: erste.model,
+    tokensIn: erste.tokensIn + nach.tokensIn,
+    tokensOut: erste.tokensOut + nach.tokensOut,
+  }
+}
+
+async function einAufruf(c: ModelCall): Promise<ModelResult> {
   const anbieter = c.model.startsWith('claude') ? 'claude' : 'openai'
   const body = anbieter === 'claude' ? claudeBody(c) : openAIBody(c)
   // Grob geschaetzt: gut drei Zeichen je Token, plus was die Antwort kosten darf.
@@ -111,6 +155,28 @@ export async function callModel(c: ModelCall): Promise<ModelResult> {
   const r = anbieter === 'claude' ? await rufClaude(c, body) : await rufOpenAI(c, body)
   await merkeVerbrauch(c.model, r.tokensIn + r.tokensOut)
   return r
+}
+
+/**
+ * Welche Pflichtfelder in der Antwort fehlen.
+ *
+ * Leer zaehlt als fehlend: Ein Feld mit "" oder [] ist genauso wenig eine
+ * Antwort wie gar keines, und im Prompt danach sieht man den Unterschied nicht.
+ */
+function fehlendePflicht(schema: ModelCall['schema'], value: unknown): string[] {
+  if (!schema || typeof value !== 'object' || value === null) return []
+  const pflicht = (schema as { required?: unknown }).required
+  if (!Array.isArray(pflicht) || !pflicht.length) return []
+  const v = value as Record<string, unknown>
+  return pflicht
+    .map(String)
+    .filter((k) => {
+      const x = v[k]
+      if (x === undefined || x === null) return true
+      if (typeof x === 'string') return x.trim() === ''
+      if (Array.isArray(x)) return x.length === 0
+      return false
+    })
 }
 
 function openAIBody(c: ModelCall): string {

@@ -500,7 +500,10 @@ Material:
 {{aufnahme.inhalte}}`,
         schema: {
           type: 'object',
-          required: ['ergebnis', 'essenz', 'widerstand'],
+          // Die Sortierung steht hier mit drin: Sie war als Kür deklariert und
+          // wurde folgerichtig ausgelassen — mit elf unsortierten Botschaften
+          // und einem Text, der daraus elf Kapitel machte.
+          required: ['ergebnis', 'essenz', 'widerstand', 'einsatz', 'abgrenzung', 'botschaften'],
           properties: {
             ergebnis: {
               type: 'string',
@@ -520,7 +523,8 @@ Material:
             abgrenzung: { type: 'string', description: 'Was dieser Text NICHT ist' },
             botschaften: {
               type: 'array',
-              description: 'Nur wenn welche vorgegeben waren — jede einsortiert, keine weggelassen',
+              description: 'JEDE vorgegebene Botschaft, einsortiert — keine weggelassen, keine '
+                + 'zusammengefasst. Waren keine vorgegeben: leere Liste.',
               items: {
                 type: 'object', required: ['satz', 'rang', 'warum'],
                 properties: {
