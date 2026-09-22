@@ -286,6 +286,7 @@ async function runStep(step: StepDef, ctx: Ctx): Promise<StepOut> {
     case 'zerlegen': return zerlegen(step, ctx)
     case 'skelett': return skelett(step, ctx)
     case 'flicken': return flicken(step, ctx)
+    case 'quellen': return quellen(step, ctx)
     case 'sammeln': return collect(ctx)
     default: throw new Error(`Unbekannte Schrittart: ${step.kind}`)
   }
@@ -629,6 +630,117 @@ ${renderIndex(rows)}`,
  * eigenen Auftrag. Wer trotzdem zu kurz bleibt, wird einmal zum Ausbauen
  * zurueckgeschickt — mit der Auflage, zu vertiefen und nicht zu wiederholen.
  */
+/**
+ * Recherche je Quellenklasse.
+ *
+ * Der Unterschied zum allgemeinen Recherche-Schritt: Die Suchauftraege stehen
+ * nicht im Agenten, sondern entstehen aus den Einstellungen des Dienstes. Wer
+ * die Anzeigen-Klasse abschaltet, spart die Suchen; wer die Tiefe hochdreht,
+ * bekommt mehr davon. Sonst muesste fuer jede Kundenvariante ein eigener Agent
+ * gebaut werden.
+ *
+ * Eine Klasse, die nichts hergibt, wird vermerkt und nicht verschwiegen.
+ * "Keine Anzeigen geschaltet" ist ein Befund ueber die Nachfragestrategie,
+ * kein Loch im Bericht.
+ */
+async function quellen(step: StepDef, ctx: Ctx): Promise<StepOut> {
+  const e = (ctx.input.einstellungen ?? {}) as {
+    quellen?: string[]; suchen_je_quelle?: number; tiefe?: string
+  }
+  const firma = String(ctx.input.firma ?? '')
+  const url = String(ctx.input.url ?? '')
+  const domain = url.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]
+
+  const faktor = e.tiefe === 'knapp' ? 0.6 : e.tiefe === 'gruendlich' ? 1.8 : 1
+  const jeKlasse = Math.max(1, Math.round((e.suchen_je_quelle ?? 3) * faktor))
+
+  /**
+   * Was in welcher Klasse gefragt wird.
+   *
+   * Nah an der Anleitung des Skills formuliert — die Klassen sind dort mit
+   * einem Grund versehen, und der Grund steckt in der Frage.
+   */
+  const FRAGEN: Record<string, string[]> = {
+    website: [
+      `Headlines, Above-the-fold-Aussagen und CTAs auf ${domain || firma} — woertlich, mit Seite.`,
+      `Produkt- und Loesungsseiten von ${firma}: Welches Versprechen steht dort, in welchen Worten?`,
+      `Preise, Pakete und Garantien bei ${firma} — was steht da, was fehlt?`,
+    ],
+    linkedin: [
+      `LinkedIn-Firmenseite von ${firma}: Kopfzeile, Info-Text, letzte Beitraege — woertlich.`,
+      `Was schreiben Gruender oder Geschaeftsfuehrung von ${firma} oeffentlich auf LinkedIn?`,
+    ],
+    aussensicht: [
+      `Bewertungen zu ${firma} auf G2, Capterra, OMR — wie beschreiben Kunden den Nutzen in IHREN Worten?`,
+      `Kununu oder Glassdoor zu ${firma}: Was sagen Mitarbeitende ueber Produkt und Alltag?`,
+      `Presse und Fachartikel ueber ${firma} — wie wird die Firma von aussen beschrieben?`,
+    ],
+    ads: [
+      `Laufende Anzeigen von ${firma} in der Meta Ad Library, bei Google Ads Transparency oder LinkedIn.`,
+    ],
+    community: [
+      `Welche Fragen stellt der Markt von ${firma} oeffentlich — Reddit, Quora, Fachforen? Woertlich.`,
+      `Womit behelfen sich Kunden in diesem Feld heute, statt ${firma} zu benutzen?`,
+    ],
+    presse: [
+      `Pressemeldungen, Finanzierungsrunden und Interviews zu ${firma} aus den letzten zwei Jahren.`,
+    ],
+  }
+
+  const gewaehlt = (e.quellen ?? Object.keys(FRAGEN)).filter((k) => FRAGEN[k])
+  const alle: Array<{ klasse: string; query: string; text: string; citations: unknown[]; error?: string }> = []
+  let tin = 0, tout = 0, suchen = 0
+  const leer: string[] = []
+  const start = Date.now()
+
+  for (const klasse of gewaehlt) {
+    // Wie beim Schreiben: lieber sauber vertagen als mitten im Schritt
+    // abgeschnitten werden.
+    if (alle.length && Date.now() - start > 170_000) {
+      await db.execute(sql`
+        INSERT INTO agent_artifacts (run_id, step_key, kind, label, payload)
+        VALUES (${ctx.runId}, ${step.key}, 'quellen-teil',
+                ${`${alle.length} von ${gewaehlt.length} Klassen`}, ${JSON.stringify(alle)}::jsonb)`)
+      throw new Vertagt(`${alle.length} von ${gewaehlt.length} Quellenklassen geprüft.`)
+    }
+
+    const fragen = (FRAGEN[klasse] ?? []).slice(0, jeKlasse)
+    let ergiebig = false
+    for (const q of fragen) {
+      const f = await runSearch(klasse, q, COLLECT_INSTRUCTION)
+      tin += f.tokensIn; tout += f.tokensOut; suchen += f.searches ?? 0
+      alle.push({ klasse, query: q, text: f.text, citations: f.citations, error: f.error })
+      if ((f.citations?.length ?? 0) > 0) ergiebig = true
+    }
+    if (!ergiebig) leer.push(klasse)
+  }
+
+  await db.execute(sql`
+    INSERT INTO agent_artifacts (run_id, step_key, kind, label, payload)
+    VALUES (${ctx.runId}, ${step.key}, 'quellen',
+            ${`${gewaehlt.length} Klassen, ${suchen} Suchen`}, ${JSON.stringify(alle)}::jsonb)`)
+
+  const material = alle
+    .map((f) => `#### ${f.klasse} — ${f.query}\n${f.text}\n${
+      (f.citations as Array<{ url?: string }> ?? []).map((c) => `- ${c.url}`).join('\n')}`)
+    .join('\n\n')
+
+  return {
+    value: {
+      material,
+      klassen: gewaehlt,
+      leer,
+      leer_hinweis: leer.length
+        ? `Ohne Fund: ${leer.join(', ')}. Das gehört in den Bericht — eine leere Klasse ist ein Befund, kein Loch.`
+        : 'Jede geprüfte Klasse hat etwas hergegeben.',
+      quellen: alle.flatMap((f) => (f.citations as unknown[]) ?? []),
+      suchen,
+    },
+    model: sucheAnbieter().modell, tokensIn: tin, tokensOut: tout,
+    units: suchen ? { web_search: suchen } : {},
+  }
+}
+
 /**
  * Der Skelett-Validator.
  *
@@ -1190,6 +1302,16 @@ function collect(ctx: Ctx): StepOut {
       skelett: ctx.results.skelettpruefung ?? null,
       beats: ctx.results.beats ?? null,
       prosapruefung: ctx.results.bild ?? null,
+      // Der Audit legt seine Ergebnisse unter eigenen Schluesseln ab. Sie hier
+      // mitzunehmen kostet nichts und erspart dem CRM, den Lauf zu zerlegen.
+      scores: (ctx.results.werte as { dimensionen?: unknown })?.dimensionen ?? null,
+      gesamt: (ctx.results.werte as { gesamt?: string })?.gesamt ?? null,
+      gap: (ctx.results.gap as { zeilen?: unknown })?.zeilen ?? null,
+      blindspots: (ctx.results.blind as { flecken?: unknown })?.flecken ?? null,
+      grenzen: (ctx.results.blind as { grenzen?: unknown })?.grenzen ?? null,
+      bericht_intern: (ctx.results.intern as { text?: string })?.text ?? null,
+      bericht_kunde: (ctx.results.kunde as { text?: string })?.text ?? null,
+      fragen: (ctx.results.kunde as { fragen?: unknown })?.fragen ?? null,
       quellen,
       pruefung: lintOut,
       wissen: (ctx.results.kontext as { pack_keys?: string[] })?.pack_keys ?? [],

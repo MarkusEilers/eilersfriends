@@ -171,6 +171,7 @@ export type StepKind =
   | 'zerlegen'    // Code: Originaltext in Passagen schneiden (Stay the course)
   | 'skelett'     // Code: Gliederung gegen Belief- und Evidenz-Plan pruefen
   | 'flicken'     // Befunde als Austauschliste abarbeiten, statt neu zu schreiben
+  | 'quellen'     // Recherche je Quellenklasse, aus den Einstellungen aufgebaut
   | 'sammeln'     // Code: Ergebnis zusammenstellen
 
 export interface StepDef {

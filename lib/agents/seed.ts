@@ -1454,3 +1454,254 @@ Faellt Dir nichts ein, das besser ist als das Original, lass das Feld leer. Ein 
     ],
   })
 }
+
+/* ───────────────────── Agent 4 · Messaging-Audit ───────────────────── */
+
+const AUDIT_BASE = `Du arbeitest an einem Messaging-Audit fuer Eilers+Friends.
+
+{{wissen}}
+
+Drei Dinge, die ueber allem stehen:
+
+ERST EVIDENZ, DANN URTEIL. Jede Bewertung steht auf einem woertlichen Zitat mit Fundstelle. Was nicht belegt ist, wird nicht behauptet — auch nicht vorsichtig.
+
+LUECKEN SIND BEFUNDE. Eine Quelle, die nichts hergibt, wird benannt, nicht uebergangen. "Keine Anzeigen geschaltet" sagt etwas ueber die Nachfragestrategie. "Keine Preise auf der Website" sagt etwas ueber den Verkaufsprozess.
+
+DER KUNDE IST NICHT DUMM. Wir bewerten Texte, nicht Menschen. Jeder Befund beschreibt, was dasteht und was es beim Leser bewirkt — nie, was die Firma haette wissen muessen.`
+
+export async function seedAuditAgent() {
+  return publishAgent({
+    key: 'messaging-audit',
+    title: 'Messaging-Audit',
+    description:
+      'Recherchiert über die gewählten Quellenklassen, bewertet sieben Dimensionen gegen die Rubrik, '
+      + 'vergleicht den beworbenen mit dem echten ICP und liefert zwei Berichte — interne Fassung und Kundenfassung.',
+    knowledge: [
+      'audit.rubrik', 'audit.berichte', 'audit.benchmark', 'audit.anleitung',
+      'voice.markus', 'verbote', 'regelwerk',
+    ],
+    scopes: ['agents:run', 'services:run'],
+    default_model_role: 'strategie',
+    input_schema: {
+      type: 'object',
+      required: ['firma'],
+      properties: {
+        firma: { type: 'string' },
+        url: { type: 'string' },
+        hinweis: { type: 'string', description: 'Anlass, Fokus, Besonderheiten — was der Auftraggeber weiß' },
+        einstellungen: { type: 'object', description: 'Tiefe, Quellenklassen, Dimensionen, Ton' },
+      },
+    },
+    output_schema: {
+      type: 'object',
+      properties: {
+        scores: { type: 'object' },
+        bericht_intern: { type: 'string' },
+        bericht_kunde: { type: 'string' },
+        gap: { type: 'array', items: { type: 'object' } },
+        blindspots: { type: 'array', items: { type: 'string' } },
+        quellen: { type: 'array', items: { type: 'object' } },
+      },
+    },
+    steps: [
+      { key: 'aufnahme', kind: 'intake', title: 'Auftrag ordnen' },
+      { key: 'kontext', kind: 'kontext', title: 'Rubrik und Regeln laden' },
+      { key: 'sammeln', kind: 'quellen', title: 'Quellen durchgehen' },
+      {
+        key: 'icp', kind: 'recherche', title: 'Was der Markt wirklich will',
+        onlyIf: 'einstellungen', optional: true,
+        queries: [
+          'Womit sich die Zielgruppe von {{aufnahme.firma}} im Alltag wirklich herumschlaegt — Foren, Bewertungen, eigene Worte',
+          'Welche Fragen diese Zielgruppe oeffentlich stellt, und wie sie das Problem selbst benennt',
+          'Ein- und Zwei-Sterne-Bewertungen vergleichbarer Anbieter: Woran scheitert es dort?',
+        ],
+      },
+      {
+        key: 'werte', kind: 'modell', title: 'Sieben Dimensionen bewerten',
+        maxTokens: 6000,
+        system: `${AUDIT_BASE}
+
+Du bewertest die Dimensionen streng nach der Rubrik, die oben im Wissen steht. Lies sie. Bewerte nie aus dem Gedaechtnis — die Rubrik hat Ankerbeispiele bei zwei, drei und vier Punkten, und genau daran haengt, ob zwei Audits vergleichbar sind.
+
+Je Dimension: die Zahl, zwei bis vier woertliche Belege mit Fundstelle, und ein Satz, der sagt, was der Leser dieses Messagings mitnimmt.
+
+Halbe Punkte sind erlaubt. Eine Dimension ohne Beleg bekommt keine Zahl, sondern den Vermerk "nicht beurteilbar" und die Angabe, was dafuer fehlt. Eine geratene Drei ist schlimmer als eine ehrliche Luecke: Sie sieht aus wie ein Urteil.`,
+        user: `Firma: {{aufnahme.firma}} · {{aufnahme.url}}
+Anlass: {{aufnahme.hinweis}}
+
+Was die Quellen hergegeben haben:
+{{sammeln.material}}
+
+Klassen ohne Fund — gehoert in den Bericht:
+{{sammeln.leer_hinweis}}`,
+        schema: {
+          type: 'object', required: ['dimensionen', 'gesamt'],
+          properties: {
+            dimensionen: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['key', 'name', 'punkte', 'belege', 'wirkung'],
+                properties: {
+                  key: { type: 'string' },
+                  name: { type: 'string' },
+                  punkte: { type: 'number', description: 'Eins bis fünf, halbe erlaubt. Ohne Beleg: weglassen.' },
+                  nicht_beurteilbar: { type: 'string', description: 'Wenn keine Zahl möglich: was fehlt' },
+                  belege: {
+                    type: 'array',
+                    items: {
+                      type: 'object', required: ['zitat', 'quelle'],
+                      properties: { zitat: { type: 'string' }, quelle: { type: 'string' } },
+                    },
+                  },
+                  wirkung: { type: 'string', description: 'Was der Leser dieses Messagings mitnimmt' },
+                },
+              },
+            },
+            gesamt: { type: 'string', description: 'Das Bild in zwei Sätzen, ohne Urteil über Menschen' },
+          },
+        },
+      },
+      {
+        key: 'gap', kind: 'modell', title: 'Beworbener gegen echten Bedarf',
+        maxTokens: 4000,
+        system: `${AUDIT_BASE}
+
+Du stellst nebeneinander, was die Firma bewirbt, und was der Markt tatsaechlich sagt. Diese Tabelle ist oft der staerkste Teil des ganzen Audits — nicht weil sie schwer zu bauen waere, sondern weil sie niemand baut.
+
+Drei Spalten je Zeile: der beworbene Schmerz, der echte Schmerz in den Worten des Marktes, und was die Luecke dazwischen kostet.
+
+Wo die Firma trifft, sagst Du das auch. Ein Audit, das nur Luecken findet, ist unglaubwuerdig.`,
+        user: `Was die Firma sagt:
+{{sammeln.material}}
+
+Was der Markt sagt:
+{{icp.material}}
+
+Die Bewertung:
+{{werte.dimensionen}}`,
+        schema: {
+          type: 'object', required: ['zeilen', 'befund'],
+          properties: {
+            zeilen: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['beworben', 'echt', 'kosten'],
+                properties: {
+                  beworben: { type: 'string' },
+                  echt: { type: 'string', description: 'In den Worten des Marktes, möglichst wörtlich' },
+                  kosten: { type: 'string' },
+                  trifft: { type: 'boolean', description: 'Wahr, wenn die Firma hier richtig liegt' },
+                },
+              },
+            },
+            befund: { type: 'string', description: 'Der Satz, der die Tabelle zusammenfasst' },
+          },
+        },
+      },
+      {
+        key: 'blind', kind: 'modell', title: 'Blinde Flecken',
+        maxTokens: 3000,
+        system: `${AUDIT_BASE}
+
+Du benennst, was fehlt — und was wir selbst nicht sehen konnten.
+
+Zwei getrennte Listen, und die Trennung ist wichtig:
+
+BLINDE FLECKEN DER FIRMA. Was im Messaging nicht vorkommt, obwohl es vorkommen muesste. Je Eintrag: was fehlt, woran man es merkt, was es vermutlich kostet.
+
+GRENZEN DIESES AUDITS. Was wir nicht pruefen konnten, und warum. Eine gesperrte Seite, ein Portal ohne oeffentliche Daten, eine Quellenklasse ohne Fund. Wer das verschweigt, verkauft Vollstaendigkeit, die er nicht hat — und der erste Kunde, der es merkt, glaubt dem Rest auch nicht mehr.`,
+        user: `Die Bewertung:
+{{werte.dimensionen}}
+
+Die Luecke zum Markt:
+{{gap.zeilen}}
+
+Klassen ohne Fund:
+{{sammeln.leer_hinweis}}`,
+        schema: {
+          type: 'object', required: ['flecken', 'grenzen'],
+          properties: {
+            flecken: {
+              type: 'array',
+              items: {
+                type: 'object', required: ['was', 'woran', 'kosten'],
+                properties: { was: { type: 'string' }, woran: { type: 'string' }, kosten: { type: 'string' } },
+              },
+            },
+            grenzen: { type: 'array', items: { type: 'string' } },
+          },
+        },
+      },
+      {
+        key: 'intern', kind: 'modell', title: 'Interne Fassung',
+        modelRole: 'copy', maxTokens: 8000,
+        system: `${AUDIT_BASE}
+
+Du schreibst die interne Fassung nach der Vorlage im Wissen. Sie ist fuer uns, nicht fuer den Kunden — hier steht, was wir wirklich denken.
+
+Dazu gehoert, was in der Kundenfassung nichts verloren hat: der Beef-Hebel (wo wir im Gespraech ansetzen), die vermuteten Einwaende, die Minenfelder (was man beim ersten Termin besser nicht anspricht), und die ehrliche Einschaetzung, ob sich das lohnt.
+
+Klartext, keine Ruecksicht. Die Ruecksicht kommt im naechsten Schritt.`,
+        user: `Firma: {{aufnahme.firma}} · {{aufnahme.url}}
+Anlass: {{aufnahme.hinweis}}
+
+Bewertung: {{werte.dimensionen}}
+Gesamtbild: {{werte.gesamt}}
+Luecke zum Markt: {{gap.zeilen}}
+Befund: {{gap.befund}}
+Blinde Flecken: {{blind.flecken}}
+Grenzen: {{blind.grenzen}}`,
+        schema: {
+          type: 'object', required: ['text'],
+          properties: {
+            text: { type: 'string' },
+            beef_hebel: { type: 'string', description: 'Wo wir im Gespräch ansetzen' },
+            einwaende: { type: 'array', items: { type: 'string' } },
+            minenfelder: { type: 'array', items: { type: 'string' } },
+            lohnt_sich: { type: 'string', description: 'Ehrlich: passt die Firma zu uns?' },
+          },
+        },
+      },
+      {
+        key: 'kunde', kind: 'modell', title: 'Kundenfassung',
+        modelRole: 'copy', maxTokens: 8000,
+        system: `${AUDIT_BASE}
+
+Aus der internen Fassung destillierst Du die Kundenfassung. Destillieren heisst: kuerzen und umtonen, nicht neu erfinden. Jeder Befund und jedes Zitat bleibt.
+
+WAS NIEMALS HINUEBERGEHT: Beef-Hebel, vermutete Einwaende, Minenfelder, die Einschaetzung ob sich der Kunde lohnt, und jede Wertung ueber Menschen. Im Zweifel weglassen.
+
+DER TON steht in den Einstellungen. "Zurueckhaltend" heisst: Wir beschreiben, was dasteht und was es bewirkt, und ueberlassen den Schluss dem Leser. "Direkt" heisst: Wir sagen den Schluss auch — aber immer noch ueber Texte, nie ueber Personen.
+
+DIE POSITIVE SEITE KOMMT ZUERST und ist nicht geheuchelt. Was gut ist, wird benannt, weil der Rest sonst nicht ankommt.
+
+AM ENDE STEHEN FRAGEN, KEINE ANWEISUNGEN. "Fragen, die wir Euch stellen wuerden" traegt weiter als eine Empfehlungsliste — der Kunde weiss Dinge ueber sein Geschaeft, die in keiner Quelle stehen.`,
+        user: `Ton: {{aufnahme.einstellungen}}
+
+Die interne Fassung:
+{{intern.text}}
+
+Bewertung mit Belegen: {{werte.dimensionen}}
+Luecke zum Markt: {{gap.zeilen}}
+Blinde Flecken: {{blind.flecken}}
+Was wir nicht pruefen konnten: {{blind.grenzen}}`,
+        schema: {
+          type: 'object', required: ['text', 'fragen'],
+          properties: {
+            text: { type: 'string' },
+            fragen: {
+              type: 'array', items: { type: 'string' },
+              description: 'Fragen, die wir dem Kunden stellen würden — nicht Empfehlungen',
+            },
+            headlines: {
+              type: 'array', items: { type: 'string' },
+              description: 'Alternative Headlines, die aus den Befunden folgen',
+            },
+          },
+        },
+      },
+      { key: 'pruefung', kind: 'lint', title: 'Voice-Check der Kundenfassung', source: 'kunde' },
+      { key: 'ergebnis', kind: 'sammeln', title: 'Zusammenstellen' },
+    ],
+  })
+}

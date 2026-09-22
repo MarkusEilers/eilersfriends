@@ -157,6 +157,35 @@ export const MATERIAL: MaterialDef[] = [
   { file: 'repository-04-quotes-bio.md', pack: 'stoff.zitate', kind: 'material', name: 'Zitate und Biografisches', tags: T('stoff', 'zitat', 'bio', 'markus') },
   { file: 'repository-06-frameworks-programs.md', pack: 'stoff.frameworks', kind: 'material', name: 'Eigene Frameworks und Programme', tags: T('stoff', 'framework', 'programm', 'angebot') },
 
+  /* ── Messaging-Audit ───────────────────────────────────────────────────── */
+  {
+    file: 'audit-rubrik.md', pack: 'audit.rubrik', kind: 'methode', weight: 100, whole: true,
+    name: 'Scoring-Rubrik — 7 Dimensionen, je 1 bis 5',
+    description: 'Ankerbeispiele bei 2, 3 und 4 Punkten. Immer lesen, nie aus dem Gedächtnis bewerten.',
+    tags: T('audit', 'rubrik', 'scoring', 'pflicht'),
+  },
+  {
+    file: 'audit-berichte.md', pack: 'audit.berichte', kind: 'methode', whole: true,
+    name: 'Berichtsvorlagen — interne Fassung und Kundenfassung',
+    description: 'Erst die interne Version, daraus die Prospect-Version destillieren.',
+    tags: T('audit', 'bericht', 'vorlage'),
+  },
+  {
+    file: 'audit-benchmark.md', pack: 'audit.benchmark', kind: 'methode', whole: true,
+    name: 'Benchmark-Datenbank — Schema und Mechanik',
+    tags: T('audit', 'benchmark', 'vergleich'),
+  },
+  {
+    file: 'audit-anleitung.md', pack: 'audit.anleitung', kind: 'anleitung', whole: true,
+    name: 'Prospect-Audit — Arbeitsweise und Quellenklassen',
+    tags: T('audit', 'anleitung', 'quellen'),
+  },
+  {
+    file: 'audit-broschuere.md', pack: 'audit.broschuere', kind: 'anleitung', whole: true,
+    name: 'Messaging-Audit-Broschüre — Seitenplan der EFGMA-Serie',
+    tags: T('audit', 'anleitung', 'broschuere', 'layout'),
+  },
+
   /* ── Anleitungen: wie die Skills selbst arbeiten ───────────────────────── */
   { file: 'skill-v3.md', pack: 'anleitung.v3', kind: 'anleitung', whole: true, name: 'Writer v3 — Arbeitsweise', tags: T('anleitung', 'ablauf') },
   { file: 'skill-pro.md', pack: 'anleitung.pro', kind: 'anleitung', whole: true, name: 'Writer Pro — Arbeitsweise', tags: T('anleitung', 'ablauf') },
