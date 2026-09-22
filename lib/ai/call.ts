@@ -135,10 +135,19 @@ function claudeBody(c: ModelCall): string {
   const payload: Record<string, unknown> = {
     model: c.model,
     max_tokens: c.maxTokens ?? 4000,
-    temperature: c.temperature ?? 0.5,
     system: c.system,
     messages: [{ role: 'user', content: c.user }],
   }
+  /**
+   * Temperatur nur, wo sie noch erlaubt ist.
+   *
+   * Die neueren Claude-Modelle lehnen den Parameter ab („`temperature` is
+   * deprecated for this model") und antworten mit 400 — der Lauf stirbt dann
+   * am ersten Schritt. Die Steuerung, die wir wollten, steckt ohnehin
+   * zuverlaessiger im Prompt als in einer Zahl.
+   */
+  const ohneTemperatur = /^claude-(opus-5|sonnet-5|fable-5|haiku-5)/.test(c.model)
+  if (!ohneTemperatur && c.temperature !== undefined) payload.temperature = c.temperature
   if (c.schema && Object.keys(c.schema).length) {
     payload.tools = [{
       name: 'ergebnis',
