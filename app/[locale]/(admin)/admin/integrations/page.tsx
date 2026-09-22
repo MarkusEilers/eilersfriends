@@ -22,6 +22,9 @@ interface ApiKeyRow extends Record<string, unknown> {
   prefix: string
   scopes: unknown
   active: boolean
+  intern: boolean
+  org_id: string | null
+  firma: string | null
   last_used_at: string | null
   created_at: string
   expires_at: string | null
@@ -101,11 +104,17 @@ export default async function AdminIntegrationsPage() {
   `).catch(() => [] as unknown as WebhookRow[])
 
   const keysRes = await db.execute<ApiKeyRow>(sql`
-    SELECT id, name, prefix, scopes, active, last_used_at::text as last_used_at,
-           created_at::text as created_at, expires_at::text as expires_at
-    FROM api_keys
-    ORDER BY created_at DESC
+    SELECT k.id, k.name, k.prefix, k.scopes, k.active,
+           COALESCE(k.intern, false) AS intern, k.org_id, c.name AS firma,
+           k.last_used_at::text as last_used_at,
+           k.created_at::text as created_at, k.expires_at::text as expires_at
+    FROM api_keys k LEFT JOIN companies c ON c.id = k.org_id
+    ORDER BY k.active DESC, k.created_at DESC
   `).catch(() => [] as unknown as ApiKeyRow[])
+
+  const firmen = await db.execute<{ id: string; name: string }>(sql`
+    SELECT id, name FROM companies ORDER BY name LIMIT 200
+  `).catch(() => [] as unknown as { id: string; name: string }[])
 
   const eventsRes = await db.execute<EventRow>(sql`
     SELECT id, category, type, source, occurred_at::text as occurred_at
@@ -125,6 +134,7 @@ export default async function AdminIntegrationsPage() {
       <IntegrationsManager
         webhooks={subsRes as unknown as WebhookRow[]}
         apiKeys={keysRes as unknown as ApiKeyRow[]}
+        firmen={firmen as unknown as { id: string; name: string }[]}
         recentEvents={eventsRes as unknown as EventRow[]}
       />
     </div>

@@ -37,8 +37,9 @@ const COMMON_SCOPES = [
   { value: 'mcp:read', label: 'MCP (für AI-Tools)' },
 ]
 
-export function IntegrationsManager({ webhooks, apiKeys, recentEvents }: {
+export function IntegrationsManager({ webhooks, apiKeys, recentEvents, firmen = [] }: {
   webhooks: WebhookRow[]; apiKeys: ApiKeyRow[]; recentEvents: EventRow[]
+  firmen?: Array<{ id: string; name: string }>
 }) {
   const [tab, setTab] = useState<'webhooks' | 'keys' | 'events'>('webhooks')
   const [pending, startTransition] = useTransition()
@@ -53,6 +54,10 @@ export function IntegrationsManager({ webhooks, apiKeys, recentEvents }: {
   // API-Key form
   const [keyName, setKeyName] = useState('')
   const [keyScopes, setKeyScopes] = useState<string[]>(['mcp:read'])
+  // Entweder unserer, oder der eines Kunden. Nichts von beidem ist kein
+  // gueltiger Zustand — deshalb ist „intern" die Vorbelegung.
+  const [keyIntern, setKeyIntern] = useState(true)
+  const [keyOrg, setKeyOrg] = useState('')
   const [newToken, setNewToken] = useState<string | null>(null)
   const [showToken, setShowToken] = useState(false)
 
@@ -88,11 +93,14 @@ export function IntegrationsManager({ webhooks, apiKeys, recentEvents }: {
     if (!keyName.trim()) return
     startTransition(async () => {
       try {
-        const res = await createApiKey({ name: keyName, scopes: keyScopes })
+        const res = await createApiKey({
+          name: keyName, scopes: keyScopes,
+          intern: keyIntern, orgId: keyIntern ? null : keyOrg,
+        })
         setNewToken(res.token)
         setShowToken(true)
         setFlash({ type: 'ok', msg: 'Key erstellt. Token unten kopieren — wird nur einmal gezeigt.' })
-        setKeyName(''); setKeyScopes(['mcp:read'])
+        setKeyName(''); setKeyScopes(['mcp:read']); setKeyOrg('')
       } catch (e) {
         setFlash({ type: 'err', msg: e instanceof Error ? e.message : 'Fehler' })
       }
@@ -288,7 +296,32 @@ export function IntegrationsManager({ webhooks, apiKeys, recentEvents }: {
                 </div>
               </div>
             </div>
-            <button onClick={createKey} disabled={pending || !keyName.trim()}
+            <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Wem gehört er?</p>
+              <p className="mt-1 text-xs text-gray-600">
+                Der Scope sagt, <em>was</em> jemand darf. Das hier sagt, <em>woran</em>.
+                Ohne die zweite Frage liest ein Kundenschlüssel die Aufträge aller anderen.
+              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-4">
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="radio" checked={keyIntern} onChange={() => setKeyIntern(true)} />
+                  <span><span className="font-medium">Uns</span> — sieht alles, bestellt für jede Firma</span>
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="radio" checked={!keyIntern} onChange={() => setKeyIntern(false)} />
+                  <span><span className="font-medium">Einem Kunden</span> — sieht nur seine Aufträge</span>
+                </label>
+              </div>
+              {!keyIntern && (
+                <select value={keyOrg} onChange={(e) => setKeyOrg(e.target.value)}
+                  className="mt-3 w-full max-w-sm rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm">
+                  <option value="">— Firma wählen —</option>
+                  {firmen.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+                </select>
+              )}
+            </div>
+
+            <button onClick={createKey} disabled={pending || !keyName.trim() || (!keyIntern && !keyOrg)}
               className="mt-4 inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
               <Plus size={14} /> Key erzeugen
             </button>
@@ -333,6 +366,20 @@ export function IntegrationsManager({ webhooks, apiKeys, recentEvents }: {
                         <div className="flex items-center gap-2">
                           <strong className="text-sm">{k.name}</strong>
                           <code className="text-xs font-mono text-gray-400">{k.prefix}_•••</code>
+                          {k.intern ? (
+                            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-700">
+                              uns · sieht alles
+                            </span>
+                          ) : k.firma ? (
+                            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-600">
+                              {k.firma}
+                            </span>
+                          ) : (
+                            <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700"
+                              title="Weder intern noch gebunden — dieser Schlüssel wird von den Dienst-Endpunkten abgewiesen.">
+                              ohne Bindung
+                            </span>
+                          )}
                           <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
                             k.active ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
                           }`}>

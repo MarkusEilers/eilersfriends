@@ -62,19 +62,53 @@ export async function deleteWebhookSubscription(id: string): Promise<void> {
 
 // ─── API-Keys CRUD ─────────────────────────────────────────────────────────
 
+/**
+ * Einen Schluessel anlegen.
+ *
+ * Der Klartext existiert genau einmal: in dieser Antwort. Danach steht nur
+ * sein Hash in der Datenbank. Das ist keine Bequemlichkeitsfrage — ein
+ * Schluessel, den wir nachtraeglich anzeigen koennten, koennte auch jeder
+ * lesen, der an die Datenbank kommt.
+ *
+ * Neu und wichtig: Ein Schluessel sagt nicht mehr nur, WAS er darf (Scopes),
+ * sondern auch WORAN. Entweder gehoert er einer Firma und sieht nur deren
+ * Vorgaenge, oder er ist ausdruecklich unserer und sieht alles. Beides nicht
+ * zu setzen ist kein gueltiger Zustand: Ein Schluessel ohne Bindung, den
+ * jemand versehentlich an einen Kunden gibt, liest die Auftragsliste aller
+ * anderen.
+ */
 export async function createApiKey(input: {
   name: string
   scopes: string[]
   expiresInDays?: number
+  /** Unser eigener Schluessel: sieht alles, bestellt fuer jede Firma. */
+  intern?: boolean
+  /** Der Kunde, dem er gehoert. Schliesst `intern` aus. */
+  orgId?: string | null
 }): Promise<{ token: string; prefix: string }> {
   await requireAdmin()
+
+  const name = input.name.trim()
+  if (!name) throw new Error('Ein Schlüssel ohne Namen ist in drei Monaten ein Rätsel.')
+  if (!input.scopes.length) throw new Error('Ohne Scope darf der Schlüssel nichts.')
+
+  const orgId = input.orgId?.trim() || null
+  const intern = Boolean(input.intern)
+  if (intern && orgId) throw new Error('Entweder intern oder an eine Firma gebunden — nicht beides.')
+  if (!intern && !orgId) throw new Error('Wähle eine Firma, oder markiere den Schlüssel als intern.')
+
   const { token, prefix, hash } = generateApiKey()
   const expiresAt = input.expiresInDays
     ? new Date(Date.now() + input.expiresInDays * 86400_000).toISOString()
     : null
   await db.execute(sql`
-    INSERT INTO api_keys (name, prefix, token_hash, scopes, expires_at)
-    VALUES (${input.name}, ${prefix}, ${hash}, ${JSON.stringify(input.scopes)}::jsonb, ${expiresAt})
+    ALTER TABLE api_keys ADD COLUMN IF NOT EXISTS org_id UUID REFERENCES companies(id) ON DELETE CASCADE`)
+  await db.execute(sql`
+    ALTER TABLE api_keys ADD COLUMN IF NOT EXISTS intern BOOLEAN NOT NULL DEFAULT false`)
+  await db.execute(sql`
+    INSERT INTO api_keys (name, prefix, token_hash, scopes, expires_at, intern, org_id)
+    VALUES (${name}, ${prefix}, ${hash}, ${JSON.stringify(input.scopes)}::jsonb, ${expiresAt},
+            ${intern}, ${orgId}::uuid)
   `)
   revalidatePath('/admin/integrations')
   return { token, prefix }
