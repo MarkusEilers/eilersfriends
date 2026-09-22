@@ -28,6 +28,31 @@ export async function ensureUsageSchema() {
       note           TEXT,
       created_at     TIMESTAMPTZ DEFAULT now()
     )`)
+  /**
+   * Was nicht nach Tokens bezahlt wird.
+   *
+   * Ein Lauf verbraucht mehr als Text. Eine Websuche kostet je Anfrage, ein
+   * erzeugtes Bild je Stueck, eine PDF-Seite je Seite, eine Transkription je
+   * Minute. Wer nur Tokens zaehlt, uebersieht das — und weil wir mit Aufschlag
+   * weitergeben, uebersieht man es um den Faktor des Aufschlags.
+   *
+   * Deshalb eine eigene Tabelle statt einer Spalte: Ein Lauf kann mehrere
+   * Sorten gleichzeitig verbrauchen, und neue Sorten kommen dazu, ohne dass
+   * jemand ein Schema aendert.
+   */
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS ai_unit_prices (
+      id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      unit        TEXT NOT NULL,
+      price_eur   NUMERIC(10,5) NOT NULL,
+      label       TEXT NOT NULL DEFAULT '',
+      valid_from  DATE NOT NULL DEFAULT CURRENT_DATE,
+      note        TEXT,
+      created_at  TIMESTAMPTZ DEFAULT now()
+    )`)
+  await db.execute(sql`CREATE INDEX IF NOT EXISTS ai_unit_prices_lookup ON ai_unit_prices (unit, valid_from DESC)`)
+  await db.execute(sql`ALTER TABLE usage_ledger ADD COLUMN IF NOT EXISTS units JSONB NOT NULL DEFAULT '{}'::jsonb`)
+  await db.execute(sql`ALTER TABLE usage_ledger ADD COLUMN IF NOT EXISTS unit_cost_eur NUMERIC(12,6) NOT NULL DEFAULT 0`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS ai_model_prices_lookup ON ai_model_prices (model, valid_from DESC)`)
 
   // Abrechnungseinstellungen je Kunde
@@ -73,6 +98,37 @@ export async function ensureUsageSchema() {
 
 export interface Price { model: string; input_per_1m: number; output_per_1m: number }
 
+/**
+ * Die Sorten, die je Stueck bezahlt werden.
+ *
+ * Absichtlich offen: Die Liste hier ist das, was wir heute kennen, nicht das,
+ * was moeglich ist. Ein unbekannter Schluessel kostet null und faellt im Konto
+ * als Luecke auf — das ist besser, als einen Lauf daran scheitern zu lassen.
+ */
+export type Einheit =
+  | 'web_search'          // Suchanfrage (serverseitig, je Anfrage)
+  | 'web_fetch'           // abgerufene Seite
+  | 'bild'                // erzeugtes Bild
+  | 'pdf_seite'           // gerenderte Seite
+  | 'transkript_minute'   // transkribierte Minute
+  | 'sprache_minute'      // gesprochene Minute (Telefonie)
+  | 'sms'                 // verschickte Kurznachricht
+
+export interface UnitPrice { unit: string; price_eur: number; label: string }
+
+/** Alle heute gueltigen Stueckpreise, als Nachschlagewerk. */
+export async function unitPrices(at?: Date): Promise<Record<string, UnitPrice>> {
+  await ensureUsageSchema()
+  const res = await db.execute(sql`
+    SELECT DISTINCT ON (unit) unit, price_eur::float8 AS price_eur, label
+    FROM ai_unit_prices
+    WHERE valid_from <= ${(at ?? new Date()).toISOString().slice(0, 10)}::date
+    ORDER BY unit, valid_from DESC`)
+  const out: Record<string, UnitPrice> = {}
+  for (const r of res as unknown as UnitPrice[]) out[r.unit] = r
+  return out
+}
+
 /** Der zum Zeitpunkt gültige Preis. Ohne Eintrag: 0 — dann fällt es im Konto auf. */
 export async function priceFor(model: string, at?: Date): Promise<Price | null> {
   await ensureUsageSchema()
@@ -110,25 +166,45 @@ export async function recordUsage(input: {
   companyId: string; productId?: string | null
   action: string; agentKey?: string | null; model: string
   tokensIn: number; tokensOut: number
+  /**
+   * Was neben den Tokens verbraucht wurde, je Sorte: { web_search: 12, bild: 3 }.
+   * Steht eine Sorte nicht in der Preistabelle, kostet sie null — und faellt
+   * im Konto als Luecke auf, statt einen Lauf zu verhindern.
+   */
+  units?: Partial<Record<Einheit | string, number>>
   aiRunId?: string | null; occurredAt?: Date
-}): Promise<{ costEur: number; amountEur: number; balance: number }> {
+}): Promise<{ costEur: number; amountEur: number; balance: number; unitCostEur: number }> {
   await ensureUsageSchema()
   const at = input.occurredAt ?? new Date()
   const price = await priceFor(input.model, at)
-  const cost = price
+  const tokenKosten = price
     ? (input.tokensIn / 1_000_000) * price.input_per_1m + (input.tokensOut / 1_000_000) * price.output_per_1m
     : 0
+
+  const verbraucht: Record<string, number> = {}
+  for (const [k, v] of Object.entries(input.units ?? {})) {
+    const n = Math.max(0, Number(v) || 0)
+    if (n > 0) verbraucht[k] = n
+  }
+  let stueckKosten = 0
+  if (Object.keys(verbraucht).length) {
+    const preise = await unitPrices(at)
+    for (const [k, n] of Object.entries(verbraucht)) stueckKosten += n * (preise[k]?.price_eur ?? 0)
+  }
+  const cost = tokenKosten + stueckKosten
   const s = await settingsFor(input.companyId)
   const amount = -(cost * (s?.markup_factor ?? 10))
   const balance = (await balanceOf(input.companyId)) + amount
 
   await db.execute(sql`
     INSERT INTO usage_ledger (company_id, product_id, occurred_at, kind, action, agent_key, model,
-      tokens_in, tokens_out, cost_eur, amount_eur, markup_factor, balance_after, ai_run_id)
+      tokens_in, tokens_out, units, unit_cost_eur, cost_eur, amount_eur, markup_factor,
+      balance_after, ai_run_id)
     VALUES (${input.companyId}, ${input.productId ?? null}, ${at.toISOString()}, 'usage', ${input.action},
       ${input.agentKey ?? null}, ${input.model}, ${input.tokensIn}, ${input.tokensOut},
+      ${JSON.stringify(verbraucht)}::jsonb, ${stueckKosten},
       ${cost}, ${amount}, ${s?.markup_factor ?? 10}, ${balance}, ${input.aiRunId ?? null})`)
-  return { costEur: cost, amountEur: amount, balance }
+  return { costEur: cost, amountEur: amount, balance, unitCostEur: stueckKosten }
 }
 
 /** Guthaben aufladen. */

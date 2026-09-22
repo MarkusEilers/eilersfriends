@@ -138,11 +138,13 @@ export async function researchCompete(input: {
 
   const tokensIn = findings.reduce((s, f) => s + f.tokensIn, 0)
   const tokensOut = findings.reduce((s, f) => s + f.tokensOut, 0)
+  // Die Suche wird je Anfrage bezahlt, nicht nach Tokens.
+  const suchen = findings.reduce((s, f) => s + (f.searches ?? 0), 0)
   await recordUsage({
     companyId: input.companyId, productId: input.productId ?? null,
     action: 'recherche · wettbewerb sammeln', agentKey: 'research-compete-collect',
     model: sucheAnbieter().modell,
-    tokensIn, tokensOut, aiRunId: null,
+    tokensIn, tokensOut, units: { web_search: suchen }, aiRunId: null,
   }).catch(() => {})
 
   const evidence = `${findings.length} Anfragen, ${findings.reduce((s, f) => s + f.citations.length, 0)} belegte Quellen`

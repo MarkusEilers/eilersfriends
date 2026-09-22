@@ -62,11 +62,13 @@ export async function researchVoc(input: {
 
   const tokensIn = findings.reduce((s, f) => s + f.tokensIn, 0)
   const tokensOut = findings.reduce((s, f) => s + f.tokensOut, 0)
+  // Die Suche wird je Anfrage bezahlt, nicht nach Tokens.
+  const suchen = findings.reduce((s, f) => s + (f.searches ?? 0), 0)
   await recordUsage({
     companyId: input.companyId, productId: input.productId ?? null,
     action: 'recherche · stimmen sammeln', agentKey: 'research-voc-collect',
     model: sucheAnbieter().modell,
-    tokensIn, tokensOut, aiRunId: null,
+    tokensIn, tokensOut, units: { web_search: suchen }, aiRunId: null,
   }).catch(() => {})
 
   // Zweimal ablegen, mit Absicht:

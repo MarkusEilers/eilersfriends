@@ -44,6 +44,8 @@ export async function researchCompany(input: {
     model: sucheAnbieter().modell,
     tokensIn: findings.reduce((s, f) => s + f.tokensIn, 0),
     tokensOut: findings.reduce((s, f) => s + f.tokensOut, 0),
+    // Die Suche wird je Anfrage bezahlt, nicht nach Tokens.
+    units: { web_search: findings.reduce((s, f) => s + (f.searches ?? 0), 0) },
     aiRunId: null,
   }).catch(() => {})
 

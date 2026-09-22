@@ -22,6 +22,14 @@ export interface SearchFinding {
   citations: Array<{ title: string; url: string }>
   tokensIn: number
   tokensOut: number
+  /**
+   * Wie viele Suchanfragen dieser Lauf ausgeloest hat.
+   *
+   * Die Websuche wird je Anfrage bezahlt, nicht nach Tokens. Wer sie nicht
+   * mitzaehlt, bekommt eine Rechnung, in der ein Teil der Kosten fehlt — und
+   * weil wir mit Aufschlag weitergeben, fehlt er mehrfach.
+   */
+  searches: number
   error?: string
 }
 
@@ -67,7 +75,7 @@ export async function runSearch(source: string, query: string, instruction: stri
  */
 async function sucheClaude(source: string, query: string, instruction: string): Promise<SearchFinding> {
   const apiKey = process.env.ANTHROPIC_API_KEY
-  const empty: SearchFinding = { source, query, text: '', citations: [], tokensIn: 0, tokensOut: 0 }
+  const empty: SearchFinding = { source, query, text: '', citations: [], tokensIn: 0, tokensOut: 0, searches: 0 }
   if (!apiKey) return { ...empty, error: 'ANTHROPIC_API_KEY nicht gesetzt' }
 
   let res: Response
@@ -100,7 +108,10 @@ Suchauftrag: ${query}` }],
       citations?: Array<{ type?: string; url?: string; title?: string }>
       content?: Array<{ type?: string; url?: string; title?: string }>
     }>
-    usage?: { input_tokens?: number; output_tokens?: number }
+    usage?: {
+      input_tokens?: number; output_tokens?: number
+      server_tool_use?: { web_search_requests?: number }
+    }
   }
 
   let text = ''
@@ -126,13 +137,14 @@ Suchauftrag: ${query}` }],
     citations: benutzt.length ? benutzt : gefunden,
     tokensIn: data.usage?.input_tokens ?? 0,
     tokensOut: data.usage?.output_tokens ?? 0,
+    searches: data.usage?.server_tool_use?.web_search_requests ?? 0,
   }
 }
 
 /** Der bisherige Weg ueber die Responses-API. Bleibt als Rueckfallebene. */
 async function sucheOpenAI(source: string, query: string, instruction: string): Promise<SearchFinding> {
   const apiKey = process.env.OPENAI_API_KEY
-  const empty: SearchFinding = { source, query, text: '', citations: [], tokensIn: 0, tokensOut: 0 }
+  const empty: SearchFinding = { source, query, text: '', citations: [], tokensIn: 0, tokensOut: 0, searches: 0 }
   if (!apiKey) return { ...empty, error: 'OPENAI_API_KEY nicht gesetzt' }
 
   let res: Response
@@ -173,6 +185,8 @@ Suchauftrag: ${query}`,
     source, query, text, citations,
     tokensIn: data.usage?.input_tokens ?? 0,
     tokensOut: data.usage?.output_tokens ?? 0,
+    // Die Responses-API nennt die Zahl nicht. Ein Aufruf, mindestens eine Suche.
+    searches: 1,
   }
 }
 

@@ -179,7 +179,8 @@ export async function advance(runId: string): Promise<RunHandle> {
         duration: Date.now() - started,
       })
       if (out.tokensIn || out.tokensOut) {
-        await bill(runId, run.org_id, run.product_id, def.key, step.key, out.model, out.tokensIn ?? 0, out.tokensOut ?? 0)
+        await bill(runId, run.org_id, run.product_id, def.key, step.key, out.model,
+          out.tokensIn ?? 0, out.tokensOut ?? 0, out.units ?? {})
       }
     } catch (e) {
       if (e instanceof Vertagt) {
@@ -237,6 +238,7 @@ async function finishStep(
 async function bill(
   runId: string, orgId: string | null, productId: string | null,
   agentKey: string, stepKey: string, model: string | undefined, tin: number, tout: number,
+  units: Record<string, number> = {},
 ) {
   await db.execute(sql`
     UPDATE agent_runs SET tokens_in = tokens_in + ${tin}, tokens_out = tokens_out + ${tout}
@@ -245,7 +247,7 @@ async function bill(
   await recordUsage({
     companyId: orgId, productId,
     action: `${agentKey} · ${stepKey}`, agentKey, model: model ?? 'gpt-4.1',
-    tokensIn: tin, tokensOut: tout, aiRunId: null,
+    tokensIn: tin, tokensOut: tout, units, aiRunId: null,
   }).catch(() => {})
 }
 
@@ -260,7 +262,14 @@ interface Ctx {
   packs: string; packsKurz: string; banned: string[]; material: string
 }
 
-interface StepOut { value: unknown; model?: string; tokensIn?: number; tokensOut?: number }
+interface StepOut {
+  value: unknown
+  model?: string
+  tokensIn?: number
+  tokensOut?: number
+  /** Was neben den Tokens verbraucht wurde: { web_search: 12, bild: 2 } */
+  units?: Record<string, number>
+}
 
 async function runStep(step: StepDef, ctx: Ctx): Promise<StepOut> {
   switch (step.kind) {
@@ -373,11 +382,11 @@ async function recherche(step: StepDef, ctx: Ctx): Promise<StepOut> {
     `Belege, Zahlen und Studien zu: ${thema}`,
     `Was ${audience} dazu öffentlich schreibt — Foren, Bewertungen, Beiträge`,
   ]
-  let tin = 0, tout = 0
+  let tin = 0, tout = 0, suchen = 0
   const findings = []
   for (const q of queries.slice(0, 3)) {
     const f = await runSearch('recherche', q, COLLECT_INSTRUCTION)
-    tin += f.tokensIn; tout += f.tokensOut
+    tin += f.tokensIn; tout += f.tokensOut; suchen += f.searches ?? 0
     findings.push({ query: q, text: f.text, citations: f.citations, error: f.error })
   }
   await db.execute(sql`
@@ -389,6 +398,7 @@ async function recherche(step: StepDef, ctx: Ctx): Promise<StepOut> {
       quellen: findings.flatMap((f) => f.citations ?? []),
     },
     model: sucheAnbieter().modell, tokensIn: tin, tokensOut: tout,
+    units: suchen ? { web_search: suchen } : {},
   }
 }
 
