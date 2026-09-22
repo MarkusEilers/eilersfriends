@@ -14,15 +14,29 @@ export type ModelRole =
   | 'kritik'         // greift ein Ergebnis an — was hält nicht, wo steigt der Leser aus
   | 'voice_check'    // prüft Stimm-Konsistenz gegen Charta und Verbotsliste
 
+/**
+ * Welches Modell hinter welcher Rolle steht.
+ *
+ * Der Aufrufer erkennt den Anbieter am Namen: Was mit „claude" anfaengt, geht
+ * zu Anthropic, alles andere zu OpenAI. Ein Wechsel ist deshalb eine Zeile
+ * hier und keine Aenderung im Lauf.
+ *
+ * Warum jetzt Claude: Das OpenAI-Konto erlaubt 30.000 Token je Minute. Ein
+ * Langform-Lauf macht zwoelf bis achtzehn Aufrufe, einzelne davon
+ * siebzehntausend Token gross — drei Laeufe sind daran gestorben, bevor ein
+ * Text fertig war. Ueber die Umgebungsvariablen laesst sich jede Rolle
+ * einzeln zurueckdrehen, ohne Deploy.
+ */
 export const ROLE_MODEL: Record<ModelRole, string> = {
-  strategie: 'gpt-4.1',
-  copy: 'gpt-4.1',
+  strategie: process.env.MODEL_STRATEGIE ?? 'claude-sonnet-5',
+  copy: process.env.MODEL_COPY ?? 'claude-sonnet-5',
   // Recherche bekommt das Material vorbereitet übergeben — der Agent sammelt
   // und belegt, er sucht nicht selbst. Deshalb reicht dasselbe Modell.
-  recherche: 'gpt-4.1',
-  sounding_board: 'gpt-4.1',
-  kritik: 'gpt-4.1',
-  voice_check: 'gpt-4.1',
+  recherche: process.env.MODEL_RECHERCHE ?? 'claude-sonnet-5',
+  sounding_board: process.env.MODEL_SOUNDING ?? 'claude-sonnet-5',
+  // Prüfen ist Fleißarbeit gegen eine Liste, kein Urteil über Substanz.
+  kritik: process.env.MODEL_KRITIK ?? 'claude-sonnet-5',
+  voice_check: process.env.MODEL_VOICE ?? 'claude-haiku-4-5-20251001',
 }
 
 export const ROLE_LABEL: Record<ModelRole, string> = {

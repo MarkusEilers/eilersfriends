@@ -4,6 +4,7 @@ import { ensureAgentSchema, type AgentDef, type StepDef } from './schema'
 import { PFLICHT_PACKS } from './material'
 import { loadPacks, renderPacks, bannedWords, catalogIndex, loadItems, renderIndex, type IndexRow } from './knowledge'
 import { lint, lintReport, type Finding } from './lint'
+import { callModel as rufeModell } from '@/lib/ai/call'
 import { resolveModel } from '@/lib/strategy/models'
 import { recordUsage } from '@/lib/strategy/usage'
 import { runSearch, COLLECT_INSTRUCTION, sucheAnbieter } from '@/lib/strategy/research/web'
@@ -417,113 +418,25 @@ function render(tpl: string, ctx: Ctx, extra?: Record<string, unknown>): string 
   })
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
 
 /**
- * Die Minutenbremse.
+ * Ein Modellaufruf fuer einen Schritt.
  *
- * Das Konto darf 30.000 Token je Minute. Ein Abschnittsaufruf bringt es mit
- * Material, Farbe und Klangmassstab auf ueber 17.000 — zwei davon kurz
- * hintereinander, und die Minute ist voll.
- *
- * Bisher liefen wir in das Limit hinein und warteten danach, was die Anbieter
- * uns sagte. Das funktioniert, solange es einmal passiert; bei acht Abschnitten
- * hintereinander verbraucht es die Wiederholungen und der Lauf stirbt an einer
- * Eigenschaft des Tarifs.
- *
- * Also wird vorher gewartet. Wir fuehren ein Fenster ueber die letzte Minute
- * und halten den naechsten Aufruf an, bis er hineinpasst. Das macht lange Laeufe
- * langsam und zuverlaessig — in dieser Reihenfolge.
- */
-const TPM = Number(process.env.OPENAI_TPM ?? 26_000)
-
-/**
- * Was in der letzten Minute verbraucht wurde — und wann der aelteste Eintrag
- * aus dem Fenster faellt.
- *
- * Steht in der Datenbank, nicht im Speicher: Zwei Lambda-Instanzen, die sich
- * beide fuer allein halten, verbrauchen zusammen das Doppelte.
- */
-async function verbraucht(model: string): Promise<{ summe: number; freiIn: number }> {
-  const rows = (await db.execute(sql`
-    SELECT COALESCE(SUM(tokens), 0)::int AS summe,
-           COALESCE(EXTRACT(EPOCH FROM (MIN(at) + interval '61 seconds' - now())), 0)::float AS frei_in
-    FROM model_window WHERE model = ${model} AND at > now() - interval '60 seconds'`)) as unknown as
-    Array<{ summe: number; frei_in: number }>
-  return { summe: rows[0]?.summe ?? 0, freiIn: Math.max(0, rows[0]?.frei_in ?? 0) }
-}
-
-async function bremse(model: string, geschaetzt: number): Promise<void> {
-  for (let i = 0; i < 10; i++) {
-    const { summe, freiIn } = await verbraucht(model)
-    if (geschaetzt + summe <= TPM || summe === 0) return
-    await sleep(Math.min(Math.max(1_500, Math.ceil(freiIn * 1000) + 500), 20_000))
-  }
-}
-
-async function merkeVerbrauch(model: string, tokens: number) {
-  await db.execute(sql`INSERT INTO model_window (model, tokens) VALUES (${model}, ${tokens})`)
-  // Aufraeumen, damit die Tabelle nicht waechst.
-  if (Math.random() < 0.05) {
-    await db.execute(sql`DELETE FROM model_window WHERE at < now() - interval '10 minutes'`)
-  }
-}
-
-/**
- * Ein Modellaufruf, mit Geduld.
- *
- * Die Organisation hat ein Minutenlimit. Ein langer Text besteht aus acht bis
- * zehn Aufrufen kurz hintereinander und laeuft zuverlaessig hinein. Das ist kein
- * Fehler des Agenten, sondern eine Eigenschaft des Kontos — und weil sie sich
- * ankuendigt ("try again in 9s"), wird gewartet statt abgebrochen. Ein Lauf, der
- * an einem Minutenlimit stirbt, hat alles davor umsonst bezahlt.
+ * Welcher Anbieter laeuft, entscheidet lib/ai/call.ts am Modellnamen — hier
+ * geht es nur darum, die Platzhalter aufzuloesen und das Ergebnis
+ * einzusammeln.
  */
 async function ask(step: StepDef, ctx: Ctx, extra?: Record<string, unknown>) {
-  const apiKey = process.env.OPENAI_API_KEY
-  if (!apiKey) throw new Error('OPENAI_API_KEY fehlt')
   const model = resolveModel((step.modelRole ?? ctx.def.default_model_role) as never, null)
-  const body = JSON.stringify({
+  return rufeModell({
     model,
-    temperature: step.temperature ?? 0.5,
-    max_tokens: step.maxTokens ?? 4000,
-    messages: [
-      { role: 'system', content: render(step.system ?? '', ctx, extra) },
-      { role: 'user', content: render(step.user ?? '', ctx, extra) },
-    ],
-    response_format: step.schema
-      ? { type: 'json_schema', json_schema: { name: 'ergebnis', schema: step.schema, strict: false } }
-      : { type: 'json_object' },
+    system: render(step.system ?? '', ctx, extra),
+    user: render(step.user ?? '', ctx, extra),
+    schema: step.schema ?? null,
+    temperature: step.temperature,
+    maxTokens: step.maxTokens,
   })
-
-  // Grob geschaetzt: gut drei Zeichen je Token, plus was die Antwort kosten darf.
-  const geschaetzt = Math.ceil(body.length / 3.2) + (step.maxTokens ?? 4000)
-  await bremse(model, geschaetzt)
-
-  let res: Response | null = null
-  let lastText = ''
-  for (let versuch = 0; versuch < 4; versuch++) {
-    res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body,
-    })
-    if (res.ok) break
-    lastText = await res.text()
-    if (res.status !== 429 && res.status < 500) break
-    // Die Antwort nennt die Wartezeit selbst — wenn nicht, verdoppeln wir.
-    const hint = /try again in ([\d.]+)s/i.exec(lastText)
-    const waitMs = hint ? Math.ceil(Number(hint[1]) * 1000) + 800 : 2500 * (versuch + 1)
-    await sleep(Math.min(waitMs, 30_000))
-  }
-  if (!res || !res.ok) throw new Error(`Modell ${res?.status ?? 0}: ${lastText.slice(0, 200)}`)
-  const data = await res.json()
-  await merkeVerbrauch(model, (data.usage?.prompt_tokens ?? 0) + (data.usage?.completion_tokens ?? 0))
-  return {
-    value: JSON.parse(data.choices?.[0]?.message?.content ?? '{}'),
-    model,
-    tokensIn: data.usage?.prompt_tokens ?? 0,
-    tokensOut: data.usage?.completion_tokens ?? 0,
-  }
 }
 
 const callModel = (step: StepDef, ctx: Ctx) => ask(step, ctx)

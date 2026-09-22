@@ -1,6 +1,7 @@
 import { assemble } from './prompt'
 import { putFacts, type FactInput } from './facts'
 import { noteTemplateUse } from './templates'
+import { callModel } from '@/lib/ai/call'
 import { recordUsage } from './usage'
 import { logAiRun } from '@/lib/db/queries/strategy'
 import { sql } from 'drizzle-orm'
@@ -51,66 +52,50 @@ export async function runAgent(input: {
   stepId?: string | null; blockId?: string | null
   userId?: string | null; extraInstruction?: string | null
 }): Promise<RunResult> {
-  const apiKey = process.env.OPENAI_API_KEY
-  if (!apiKey) return { ok: false, error: 'OPENAI_API_KEY nicht gesetzt' }
-
+  // Welcher Schluessel gebraucht wird, haengt am Modell und entscheidet sich
+  // in lib/ai/call.ts — hier waere die Pruefung eine Annahme zu frueh.
   let asm
   try { asm = await assemble(input) } catch (e) { return { ok: false, error: e instanceof Error ? e.message : String(e) } }
 
   const started = Date.now()
-  const body: Record<string, unknown> = {
-    model: asm.model,
-    messages: [
-      { role: 'system', content: asm.system },
-      { role: 'user', content: asm.user },
-    ],
-    temperature: asm.temperature,
-    response_format: Object.keys(asm.outputSchema).length
-      ? { type: 'json_schema', json_schema: { name: 'ergebnis', schema: asm.outputSchema, strict: false } }
-      : { type: 'json_object' },
-  }
-  // Recherche laeuft nicht hier. Die Chat-Completions-Schnittstelle kennt keine
-  // Websuche — der Versuch, ihr trotzdem ein web_search-Werkzeug mitzugeben, ist
-  // stillschweigend wirkungslos geblieben. Gesucht wird in lib/strategy/research/web.ts,
+
+  // Der Aufruf selbst liegt in lib/ai/call.ts — dort steckt auch die
+  // Minutenbremse und das Wissen darueber, welcher Anbieter zu welchem
+  // Modellnamen gehoert. Hier bleibt, was diese Schicht ausmacht: Protokoll,
+  // Vorlagen-Zaehlung und Abrechnung.
+  //
+  // Recherche laeuft nicht hier. Gesucht wird in lib/strategy/research/web.ts,
   // in einem eigenen Schritt, dessen Ergebnis als Fakt gespeichert und diesem
   // Agenten als Material uebergeben wird. Sammeln und Urteilen bleiben getrennt.
-
-  let res: Response
+  let ergebnis: Awaited<ReturnType<typeof callModel>>
   try {
-    res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+    ergebnis = await callModel({
+      model: asm.model,
+      system: asm.system,
+      user: asm.user,
+      schema: Object.keys(asm.outputSchema).length ? asm.outputSchema : null,
+      temperature: asm.temperature,
     })
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : 'network' }
-  }
-
-  const duration = Date.now() - started
-  if (!res.ok) {
-    const detail = (await res.text()).slice(0, 400)
+    const detail = e instanceof Error ? e.message : 'network'
     await logAiRun({
       companyId: input.companyId, productId: input.productId ?? null, userId: input.userId ?? null,
       purpose: 'strategy-step', agentKey: input.agentKey, model: asm.model,
       input: { system: asm.system.slice(0, 2000), user: asm.user.slice(0, 4000) },
-      durationMs: duration, ok: false, error: `${res.status}: ${detail}`,
+      durationMs: Date.now() - started, ok: false, error: detail,
     }).catch(() => {})
-    return { ok: false, error: `Modell ${res.status}: ${detail}` }
+    return { ok: false, error: detail }
   }
 
-  const data = await res.json()
-  const content = data.choices?.[0]?.message?.content
-  let parsed: Record<string, unknown>
-  try { parsed = JSON.parse(content ?? '{}') } catch {
-    return { ok: false, error: 'Ausgabe war kein gültiges JSON' }
-  }
+  const duration = Date.now() - started
+  const parsed = (ergebnis.value ?? {}) as Record<string, unknown>
 
   const runId = await logAiRun({
     companyId: input.companyId, productId: input.productId ?? null, userId: input.userId ?? null,
     purpose: 'strategy-step', agentKey: input.agentKey, model: asm.model,
     input: { system: asm.system.slice(0, 2000), user: asm.user.slice(0, 4000), promptVersion: asm.promptVersion },
     output: parsed,
-    tokensIn: data.usage?.prompt_tokens, tokensOut: data.usage?.completion_tokens,
+    tokensIn: ergebnis.tokensIn, tokensOut: ergebnis.tokensOut,
     durationMs: duration, ok: true,
   }).catch(() => undefined)
 
@@ -120,7 +105,7 @@ export async function runAgent(input: {
   await recordUsage({
     companyId: input.companyId, productId: input.productId ?? null,
     action: `${input.stepKey} · ${input.agentKey}`, agentKey: input.agentKey, model: asm.model,
-    tokensIn: data.usage?.prompt_tokens ?? 0, tokensOut: data.usage?.completion_tokens ?? 0,
+    tokensIn: ergebnis.tokensIn, tokensOut: ergebnis.tokensOut,
     aiRunId: runId ?? null,
   }).catch(() => {})
 
