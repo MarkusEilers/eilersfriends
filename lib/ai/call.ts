@@ -119,6 +119,8 @@ export async function callModel(c: ModelCall): Promise<ModelResult> {
    * Also wird nachgefragt — einmal, gezielt, mit der bisherigen Antwort im
    * Kontext. Nur fuer die fehlenden Felder, nicht fuer den ganzen Schritt.
    */
+  erste.value = saeubern(erste.value)
+
   const fehlend = fehlendePflicht(c.schema, erste.value)
   if (!fehlend.length) return erste
 
@@ -136,7 +138,7 @@ ${JSON.stringify(erste.value, null, 2).slice(0, 6000)}`,
 
   // Zusammenfuehren: Was schon dastand, gewinnt — der zweite Aufruf soll
   // ergaenzen, nicht ueberschreiben.
-  const zusammen = { ...(nach.value as object), ...(erste.value as object) }
+  const zusammen = { ...(saeubern(nach.value) as object), ...(erste.value as object) }
   return {
     value: zusammen,
     model: erste.model,
@@ -155,6 +157,55 @@ async function einAufruf(c: ModelCall): Promise<ModelResult> {
   const r = anbieter === 'claude' ? await rufClaude(c, body) : await rufOpenAI(c, body)
   await merkeVerbrauch(c.model, r.tokensIn + r.tokensOut)
   return r
+}
+
+/**
+ * Leckgeschlagene Werkzeug-Syntax aufraeumen.
+ *
+ * Beobachtet: Ein Feld, das eine Liste von Fragen enthalten sollte, kam als
+ * Zeichenkette zurueck, und darin stand `<parameter name="fragen">["…` — das
+ * Modell hatte mitten in der Antwort angefangen, den Werkzeugaufruf als Text
+ * zu schreiben.
+ *
+ * Das faellt nicht auf, weil das Feld gefuellt ist. Es faellt erst auf, wenn
+ * jemand die Liste durchgeht und einzelne Zeichen bekommt.
+ *
+ * Also: Wo eine Zeichenkette nach eingebettetem JSON aussieht, holen wir das
+ * JSON heraus. Wo sie nach Werkzeug-Syntax aussieht, schneiden wir sie weg.
+ */
+function saeubern(x: unknown, tiefe = 0): unknown {
+  if (tiefe > 6) return x
+  if (Array.isArray(x)) return x.map((y) => saeubern(y, tiefe + 1))
+  if (x && typeof x === 'object') {
+    const out: Record<string, unknown> = {}
+    for (const [k, v] of Object.entries(x as Record<string, unknown>)) out[k] = saeubern(v, tiefe + 1)
+    return out
+  }
+  if (typeof x !== 'string') return x
+
+  let t = x
+  // Ein angefangener Werkzeugaufruf im Text: alles ab da ist Muell.
+  const leck = /<(?:\/)?(?:antml:)?(?:parameter|invoke|function_calls)\b/i.exec(t)
+  if (leck) {
+    const davor = t.slice(0, leck.index).trim()
+    // Was hinter dem Leck steht, ist oft der eigentliche Wert — meistens JSON.
+    const dahinter = t.slice(leck.index)
+    const arr = /\[[\s\S]*\]/.exec(dahinter)
+    const obj = /\{[\s\S]*\}/.exec(dahinter)
+    const roh = arr?.[0] ?? obj?.[0]
+    if (roh) {
+      try { return saeubern(JSON.parse(roh), tiefe + 1) } catch { /* dann eben nicht */ }
+    }
+    t = davor
+  }
+
+  // Eine Zeichenkette, die vollstaendig aus JSON besteht, ist keine.
+  const gestutzt = t.trim()
+  if ((gestutzt.startsWith('[') && gestutzt.endsWith(']'))
+    || (gestutzt.startsWith('{') && gestutzt.endsWith('}'))) {
+    try { return saeubern(JSON.parse(gestutzt), tiefe + 1) } catch { /* war doch Text */ }
+  }
+  return t
 }
 
 /**
