@@ -33,6 +33,25 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
+  /**
+   * Wessen Auftraege das sind.
+   *
+   * Der Scope sagt, was jemand darf. Er sagt nicht, woran. Ohne diese zweite
+   * Frage reicht ein Schluessel mit services:run, um die Auftragsliste aller
+   * Kunden zu lesen — mit ihren Firmennamen darin.
+   *
+   * Ein Schluessel ohne Firma ist unserer und sieht alles. Alles andere sieht
+   * nur sich selbst.
+   */
+  const siehtAlles = istTeam || key?.intern === true
+  const nurFirma = siehtAlles ? null : key?.orgId ?? null
+  if (!siehtAlles && !nurFirma) {
+    return NextResponse.json({
+      error: 'Dieser Schlüssel ist weder als intern markiert noch einer Firma zugeordnet. '
+        + 'Ohne eines von beiden würde er fremde Aufträge sehen.',
+    }, { status: 403 })
+  }
+
   const url = new URL(req.url)
   const seitRoh = url.searchParams.get('seit')
   const dienst = url.searchParams.get('dienst')
@@ -54,6 +73,7 @@ export async function GET(req: Request) {
     FROM service_orders o
     LEFT JOIN companies c ON c.id = o.org_id
     WHERE o.updated_at >= ${seit.toISOString()}::timestamptz
+      ${nurFirma ? sql`AND o.org_id = ${nurFirma}::uuid` : sql``}
       ${dienst ? sql`AND o.service_key = ${dienst}` : sql``}
       ${nurFertige ? sql`AND o.status IN ('fertig','fehler')` : sql``}
     ORDER BY o.updated_at ASC

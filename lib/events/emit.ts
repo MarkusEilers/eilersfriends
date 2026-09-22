@@ -103,6 +103,24 @@ async function ensureEventSchema() {
         expires_at TIMESTAMPTZ
       )
     `)
+    /**
+     * An welche Firma ein Schluessel gebunden ist.
+     *
+     * NULL bleibt unser eigener Schluessel — er sieht alles. Ein Schluessel
+     * mit Firma sieht und bestellt nur fuer sie.
+     */
+    await db.execute(sql`
+      ALTER TABLE api_keys ADD COLUMN IF NOT EXISTS org_id UUID REFERENCES companies(id) ON DELETE CASCADE`)
+    /**
+     * Ein interner Schluessel gehoert uns und sieht alles.
+     *
+     * Absichtlich ein eigenes Feld und nicht „org_id ist leer". Ein fehlender
+     * Wert kann Absicht sein oder Vergessen, und beim Vergessen waere die
+     * Folge, dass ein Kundenschluessel alle Auftraege liest. Wer alles sehen
+     * soll, muss es hier ausdruecklich sagen.
+     */
+    await db.execute(sql`
+      ALTER TABLE api_keys ADD COLUMN IF NOT EXISTS intern BOOLEAN NOT NULL DEFAULT false`)
     schemaEnsured = true
   } catch (err) {
     console.error('[events/emit] ensureEventSchema failed', err)

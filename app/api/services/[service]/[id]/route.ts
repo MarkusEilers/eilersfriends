@@ -34,7 +34,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ service:
     SELECT * FROM service_orders WHERE id = ${id}::uuid AND service_key = ${service} LIMIT 1`)
   ) as unknown as ServiceOrder[]
   const order = rows[0]
+  // „Nicht gefunden" statt „nicht erlaubt": Wer fremde Kennungen durchprobiert,
+  // soll nicht erfahren, welche davon existieren.
   if (!order) return NextResponse.json({ error: 'nicht gefunden' }, { status: 404 })
+  if (!istTeam && key?.intern !== true && order.org_id !== (key?.orgId ?? null)) {
+    return NextResponse.json({ error: 'nicht gefunden' }, { status: 404 })
+  }
 
   return NextResponse.json({
     ok: true,

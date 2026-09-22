@@ -29,10 +29,15 @@ const DIENSTE: Record<string, { agent: string; defaults: Record<string, unknown>
 async function wer(req: Request) {
   const s = await auth()
   if (s?.user?.role === 'admin' || s?.user?.role === 'coach') {
-    return { kind: 'ui' as const, userId: s.user.id ?? null }
+    return { kind: 'ui' as const, userId: s.user.id ?? null, orgId: null, frei: true }
   }
   const key = await verifyApiKey(req.headers.get('authorization'))
-  if (key && hasScope(key, 'services:run')) return { kind: 'crm' as const, userId: null }
+  if (key && hasScope(key, 'services:run')) {
+    // Ein interner Schluessel darf fuer jede Firma bestellen. Einer mit Firma
+    // bestellt nur fuer sie, egal was im Rumpf steht — sonst ginge die
+    // Rechnung an den Falschen.
+    return { kind: 'crm' as const, userId: null, orgId: key.orgId, frei: key.intern === true }
+  }
   return null
 }
 
@@ -93,7 +98,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
     return NextResponse.json({ error: 'firma oder url ist Pflicht' }, { status: 400 })
   }
   const firma = body.firma ?? String(body.url).replace(/^https?:\/\//, '').split('/')[0]
-  const orgId = body.orgId ?? await firmaFinden(firma, body.url ?? null)
+  // Ein gebundener Schluessel bestellt fuer seine Firma. Was im Rumpf steht,
+  // waere sonst eine Einladung, fuer jemand anderen zu bestellen — und die
+  // Rechnung ginge an den Falschen.
+  const orgId = ctx.frei
+    ? (body.orgId ?? await firmaFinden(firma, body.url ?? null))
+    : ctx.orgId
 
   // Geltende Einstellungen: Grundeinstellung, Kundeneinstellung, und was der
   // Aufrufer fuer diesen einen Auftrag mitschickt.
