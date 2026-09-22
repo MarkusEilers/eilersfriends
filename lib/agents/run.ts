@@ -403,6 +403,25 @@ async function recherche(step: StepDef, ctx: Ctx): Promise<StepOut> {
   }
 }
 
+/**
+ * Was ein Modell liefert, ist auch in der Form nicht garantiert.
+ *
+ * Ein Schema sagt „array", und zurueck kommt ein Objekt, ein String oder gar
+ * nichts. `?? []` faengt nur null und undefined — bei allem anderen scheitert
+ * das erste `.filter` mit einer Meldung, die nach einem Programmierfehler
+ * aussieht und keiner ist.
+ *
+ * Beobachtet im Auswahl-Schritt: „j.filter is not a function", und der Lauf
+ * stand. Deshalb geht hier jede Modellliste durch diesen Filter.
+ */
+function alsListe<T>(x: unknown): T[] {
+  if (Array.isArray(x)) return x as T[]
+  // Ein einzelnes Objekt statt einer Liste ist ein haeufiger Ausrutscher und
+  // meistens als ein Eintrag gemeint.
+  if (x && typeof x === 'object') return [x as T]
+  return []
+}
+
 /** Platzhalter der Form {{schritt.feld}} oder {{eingabe.feld}} aufloesen. */
 function render(tpl: string, ctx: Ctx, extra?: Record<string, unknown>): string {
   return tpl.replace(/\{\{([a-z0-9_.]+)\}\}/gi, (_m, path: string) => {
@@ -540,7 +559,8 @@ ${renderIndex(rows)}`,
     temperature: 0.3, maxTokens: 2000,
   }, ctx)
 
-  let picked = ((res.value as { gewaehlt?: Array<{ pack: string; key: string; als: string; warum: string }> }).gewaehlt ?? [])
+  let picked = alsListe<{ pack: string; key: string; als: string; warum: string }>(
+    (res.value as { gewaehlt?: unknown }).gewaehlt)
 
   // Eine vorgegebene Stimme ist keine Anregung. Was der Auftraggeber gewaehlt
   // hat, ersetzt die Wahl des Modells — und zwar das ganze Profil, nicht nur
@@ -626,11 +646,12 @@ async function skelett(step: StepDef, ctx: Ctx): Promise<StepOut> {
     paraphrase?: string; beats?: string[]
   }
   const plan = (ctx.results[step.source ?? 'struktur'] as { abschnitte?: Abschnitt[] }) ?? {}
-  const parts = plan.abschnitte ?? []
+  const parts = alsListe<Abschnitt>(plan.abschnitte)
   const kette = (ctx.results.kette as { ziele?: Array<{ id?: string; satz?: string; schwere?: string }> }) ?? {}
-  const ziele = kette.ziele ?? []
+  const ziele = alsListe<{ id?: string; satz?: string; schwere?: string }>(kette.ziele)
   const ev = (ctx.results.evidenz as { belege?: Array<{ id?: string }> }) ?? {}
-  const belegIds = new Set((ev.belege ?? []).map((b) => String(b.id ?? '').toUpperCase()).filter(Boolean))
+  const belegIds = new Set(
+    alsListe<{ id?: string }>(ev.belege).map((b) => String(b.id ?? '').toUpperCase()).filter(Boolean))
 
   const befunde: Array<{ art: string; schwere: 'fehler' | 'warnung'; text: string }> = []
   const ids = (s: string) => [...String(s).toUpperCase().matchAll(/\b([BE]\d+)\b/g)].map((m) => m[1])
@@ -772,7 +793,12 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
     }>
     titel_vorschlag?: string
   }) ?? {}
-  const parts = plan.abschnitte ?? []
+  type Teil = {
+    name: string; woerter: number; beats?: string[]
+    beleg?: string; stufe?: string; quelle?: string
+    paraphrase?: string; wirkung?: string; befund?: string
+  }
+  const parts = alsListe<Teil>(plan.abschnitte)
   if (!parts.length) throw new Error(`Keine Gliederung in "${from}"`)
 
   // Die Zwischenueberschriften koennen aus einem eigenen Schritt kommen, der
@@ -785,7 +811,7 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
     const q = (ctx.results.beats as {
       abschnitte?: Array<{ name?: string; paraphrase?: string; wirkung?: string; befund?: string }>
     }) ?? {}
-    const liste = q.abschnitte ?? []
+    const liste = alsListe<{ name?: string; paraphrase?: string; wirkung?: string; befund?: string }>(q.abschnitte)
     parts.forEach((s, i) => {
       const t = liste[i]
       if (t?.paraphrase) (s as { paraphrase?: string }).paraphrase = t.paraphrase
@@ -796,7 +822,7 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
 
   if (step.headings) {
     const h = (ctx.results[step.headings] as { ueberschriften?: string[] }) ?? {}
-    const list = h.ueberschriften ?? []
+    const list = alsListe<string>(h.ueberschriften)
     parts.forEach((s, i) => { if (list[i]) s.name = list[i] })
   }
 
@@ -1104,7 +1130,7 @@ async function flicken(step: StepDef, ctx: Ctx): Promise<StepOut> {
     if (offen.length) {
       const res = await ask(step, ctx, { auftraege: offen, anzahl: offen.length })
       tin += res.tokensIn; tout += res.tokensOut; model = res.model
-      const liste = ((res.value as { austausch?: Array<{ nr?: number; neu?: string }> }).austausch ?? [])
+      const liste = alsListe<{ nr?: number; neu?: string }>((res.value as { austausch?: unknown }).austausch)
       for (const a of liste) {
         const auftrag = offen.find((o) => o.nr === Number(a.nr))
         let ersatz = String(a.neu ?? '').trim()
