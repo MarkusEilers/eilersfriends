@@ -63,6 +63,20 @@ export async function ensureServiceSchema() {
    * kommt — mit Zaehler ist es eine Kette mit Ende.
    */
   await db.execute(sql`ALTER TABLE service_orders ADD COLUMN IF NOT EXISTS schuebe INT NOT NULL DEFAULT 0`)
+  /**
+   * Aufraeumen darf nicht vernichten.
+   *
+   * Am 23.09. habe ich beim Aufraeumen der Testauftraege eine echte Bestellung
+   * mitgeloescht — AIQBEE, sechs Minuten vorher hereingekommen, waehrend die
+   * Liste, die ich vor Augen hatte, schon veraltet war. Das CRM hielt die
+   * Kennung, die unser Server ausgegeben hatte, und fragte weiter nach; bei uns
+   * war die Zeile spurlos weg. Rekonstruieren liess sie sich nur ueber den
+   * Zeitstempel in der Firmentabelle.
+   *
+   * Ein DELETE gibt es hier deshalb nicht mehr. Wer aufraeumt, setzt ein Datum.
+   * Die Zeile verschwindet aus den Listen und bleibt in der Datenbank.
+   */
+  await db.execute(sql`ALTER TABLE service_orders ADD COLUMN IF NOT EXISTS geloescht_at TIMESTAMPTZ`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS service_orders_idx ON service_orders (service_key, created_at DESC)`)
   await db.execute(sql`
     CREATE INDEX IF NOT EXISTS service_orders_offen ON service_orders (status, updated_at)
@@ -166,7 +180,7 @@ export async function listOrders(serviceKey: string, limit = 50): Promise<Servic
   const rows = await db.execute(sql`
     SELECT o.*, c.name AS org_name FROM service_orders o
     LEFT JOIN companies c ON c.id = o.org_id
-    WHERE o.service_key = ${serviceKey}
+    WHERE o.service_key = ${serviceKey} AND o.geloescht_at IS NULL
     ORDER BY o.created_at DESC LIMIT ${limit}`)
   return rows as unknown as ServiceOrder[]
 }
@@ -198,6 +212,7 @@ export async function openOrders(limit = 5, ruheSekunden = 20): Promise<ServiceO
   const rows = await db.execute(sql`
     SELECT * FROM service_orders
     WHERE status IN ('offen','laeuft')
+      AND geloescht_at IS NULL
       AND schuebe < 60
       AND updated_at < now() - (${ruheSekunden} * interval '1 second')
     ORDER BY updated_at ASC LIMIT ${limit}`)
@@ -331,4 +346,27 @@ export async function listCalls(serviceKey: string | null, limit = 100): Promise
     WHERE (${serviceKey}::text IS NULL OR service_key = ${serviceKey})
     ORDER BY created_at DESC LIMIT ${limit}`)
   return rows as unknown as ServiceCall[]
+}
+
+
+/**
+ * Ausblenden statt loeschen.
+ *
+ * Der Unterschied ist nicht akademisch: Ein Auftrag, den jemand bestellt hat,
+ * existiert auch dann noch beim Besteller, wenn er bei uns aus der Liste
+ * verschwindet. Ihn wirklich zu entfernen heisst, dass dessen Nachfrage ins
+ * Leere laeuft und niemand mehr sagen kann, was er bestellt hatte.
+ */
+export async function hideOrder(id: string) {
+  await ensureServiceSchema()
+  await db.execute(sql`
+    UPDATE service_orders SET geloescht_at = now(), updated_at = now()
+    WHERE id = ${id}::uuid AND geloescht_at IS NULL`)
+}
+
+/** Zurueckholen, was versehentlich weggeraeumt wurde. */
+export async function restoreOrder(id: string) {
+  await ensureServiceSchema()
+  await db.execute(sql`
+    UPDATE service_orders SET geloescht_at = NULL, updated_at = now() WHERE id = ${id}::uuid`)
 }
