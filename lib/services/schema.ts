@@ -298,6 +298,7 @@ export async function logCall(c: CallLog): Promise<string | null> {
 /** Nachtragen, was erst am Ende feststeht. */
 export async function finishCall(id: string | null, patch: {
   status?: number; orderId?: string | null; fehler?: string | null; dauerMs?: number
+  keyId?: string | null; keyName?: string | null; orgId?: string | null
 }) {
   if (!id) return
   try {
@@ -306,7 +307,10 @@ export async function finishCall(id: string | null, patch: {
         status = COALESCE(${patch.status ?? null}, status),
         order_id = COALESCE(${patch.orderId ?? null}::uuid, order_id),
         fehler = COALESCE(${patch.fehler ?? null}, fehler),
-        dauer_ms = COALESCE(${patch.dauerMs ?? null}, dauer_ms)
+        dauer_ms = COALESCE(${patch.dauerMs ?? null}, dauer_ms),
+        key_id = COALESCE(${patch.keyId ?? null}::uuid, key_id),
+        key_name = COALESCE(${patch.keyName ?? null}, key_name),
+        org_id = COALESCE(${patch.orgId ?? null}::uuid, org_id)
       WHERE id = ${id}::uuid`)
   } catch (e) {
     console.error('[services] Eingangsprotokoll nachtragen fehlgeschlagen:', e)

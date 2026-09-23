@@ -31,14 +31,20 @@ const DIENSTE: Record<string, { agent: string; defaults: Record<string, unknown>
 async function wer(req: Request) {
   const s = await auth()
   if (s?.user?.role === 'admin' || s?.user?.role === 'coach') {
-    return { kind: 'ui' as const, userId: s.user.id ?? null, orgId: null, frei: true }
+    return {
+      kind: 'ui' as const, userId: s.user.id ?? null, orgId: null, frei: true,
+      keyId: null as string | null, keyName: null as string | null,
+    }
   }
   const key = await verifyApiKey(req.headers.get('authorization'))
   if (key && hasScope(key, 'services:run')) {
     // Ein interner Schluessel darf fuer jede Firma bestellen. Einer mit Firma
     // bestellt nur fuer sie, egal was im Rumpf steht — sonst ginge die
     // Rechnung an den Falschen.
-    return { kind: 'crm' as const, userId: null, orgId: key.orgId, frei: key.intern === true }
+    return {
+      kind: 'crm' as const, userId: null, orgId: key.orgId, frei: key.intern === true,
+      keyId: key.id as string | null, keyName: key.name as string | null,
+    }
   }
   return null
 }
@@ -79,8 +85,15 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
     externId: typeof roh.externId === 'string' ? roh.externId : null,
     rumpf: roh,
   })
+  /**
+   * Wer es war, steht erst nach der Auth fest — also wird es nachgetragen.
+   * Ohne Name im Protokoll ist bei drei Schluesseln nicht zu klaeren, welches
+   * System angeklopft hat.
+   */
+  let wesen: { keyId: string | null; keyName: string | null; orgId: string | null } =
+    { keyId: null, keyName: null, orgId: null }
   const abschluss = async (status: number, patch: { orderId?: string | null; fehler?: string | null } = {}) => {
-    await finishCall(callId, { status, dauerMs: Date.now() - begonnen, ...patch })
+    await finishCall(callId, { status, dauerMs: Date.now() - begonnen, ...wesen, ...patch })
   }
 
   if (!dienst) {
@@ -93,6 +106,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
     await abschluss(401, { fehler: 'unauthorized' })
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
+
+  wesen = { keyId: ctx.keyId, keyName: ctx.keyName, orgId: ctx.orgId }
 
   const body = roh as {
     firma?: string; url?: string; orgId?: string
