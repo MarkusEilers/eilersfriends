@@ -211,7 +211,22 @@ export async function createOrder(input: {
     VALUES (${input.serviceKey}, ${input.orgId}, ${input.firma}, ${input.url ?? null},
             ${JSON.stringify(input.auftrag)}::jsonb, ${input.quelle}, ${input.externId ?? null})
     ON CONFLICT (service_key, extern_id) WHERE extern_id IS NOT NULL
-    DO UPDATE SET updated_at = now()
+    DO UPDATE SET
+      updated_at = now(),
+      /*
+       * Eine Wiederbestellung faengt von vorne an.
+       *
+       * Die Dublettensperre soll verhindern, dass zweimal bezahlt wird — nicht,
+       * dass ein gescheiterter Auftrag fuer immer gescheitert bleibt. Ohne den
+       * Reset erbt der neue Anlauf Schubzaehler und Stillstandsmarke des alten
+       * und wird vom Waechter sofort wieder angehalten.
+       */
+      schuebe = 0,
+      progress = NULL,
+      progress_push = 0,
+      fehler = NULL,
+      finished_at = NULL,
+      deleted_at = NULL
     RETURNING *`)) as unknown as ServiceOrder[]
   return rows[0]
 }
