@@ -765,6 +765,29 @@ async function quellen(step: StepDef, ctx: Ctx): Promise<StepOut> {
     VALUES (${ctx.runId}, ${step.key}, 'quellen',
             ${`${gewaehlt.length} Klassen, ${suchen} Suchen`}, ${JSON.stringify(alle)}::jsonb)`)
 
+  /**
+   * Eine Recherche, in der jede einzelne Suche gescheitert ist, ist keine
+   * leere Recherche — sie ist ein Ausfall.
+   *
+   * Der Unterschied ist teuer: "Leer" heisst, es gibt nichts zu finden, und
+   * das ist ein Befund, der in den Bericht gehoert. "Ausgefallen" heisst, wir
+   * haben nicht nachgesehen. Beides sah hier gleich aus, und der Schritt ging
+   * mit 'fertig' und leerem Material weiter. Beim aiqbee-Lauf war das
+   * Anthropic-Guthaben aufgebraucht; sechs Klassen kamen mit demselben
+   * 400er zurueck, und der Agent haette daraus beinahe ein Audit gebaut.
+   *
+   * Erkannt wird das an der Kombination: kein einziger Fund, aber Fehler.
+   * Dann bricht der Schritt ab, statt ein Urteil auf Nichts zu stellen.
+   */
+  const fehlgeschlagen = alle.filter((f) => f.error).length
+  const mitFund = alle.filter((f) => (f.citations?.length ?? 0) > 0 || f.text?.trim()).length
+  if (alle.length && !mitFund && fehlgeschlagen) {
+    const ersterFehler = alle.find((f) => f.error)?.error ?? 'unbekannt'
+    throw new Error(
+      `Recherche ausgefallen: ${fehlgeschlagen} von ${alle.length} Suchen mit Fehler, kein einziger Fund. `
+      + `Erste Meldung: ${String(ersterFehler).slice(0, 300)}`)
+  }
+
   const gesucht = alle
     .map((f) => `#### ${f.klasse} — ${f.query}\n${f.text}\n${
       (f.citations as Array<{ url?: string }> ?? []).map((c) => `- ${c.url}`).join('\n')}`)
