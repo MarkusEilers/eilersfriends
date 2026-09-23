@@ -68,12 +68,36 @@ export async function einDurchgang(): Promise<{ bearbeitet: number; offenGeblieb
  * Aufruf scheitert, faengt ihn spaetestens der taegliche Cron auf.
  */
 export function stosseAn(): void {
-  const basis = process.env.NEXT_PUBLIC_SITE_URL
-    ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null)
   const secret = process.env.CRON_SECRET
-  if (!basis || !secret) return
+  if (!secret) {
+    // Ohne Geheimnis weist der Antrieb sich selbst ab. Das ist kein Detail,
+    // das man uebersehen darf — also steht es im Protokoll.
+    console.error('[antrieb] CRON_SECRET fehlt — die Kette kann sich nicht fortsetzen.')
+    return
+  }
+  const basis = basisUrl()
   fetch(`${basis}/api/services/antrieb`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${secret}` },
-  }).catch(() => {})
+  }).catch((e) => console.error('[antrieb] Anstoss fehlgeschlagen:', e))
+}
+
+/**
+ * Wo wir selbst erreichbar sind.
+ *
+ * Das hat den Motor schon einmal lautlos abgewuergt: Keine der erwarteten
+ * Variablen war gesetzt, `stosseAn` kehrte still zurueck, und die Auftraege
+ * standen — ohne Fehler, ohne Eintrag, ohne Hinweis. Vier Stueck, eine
+ * Viertelstunde lang.
+ *
+ * Deshalb jetzt vier Stufen und am Ende eine feste Adresse. Eine vergessene
+ * Umgebungsvariable darf eine Warnung wert sein, nicht den Stillstand.
+ */
+function basisUrl(): string {
+  const gesetzt = process.env.NEXT_PUBLIC_SITE_URL
+    || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '')
+    || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
+  if (gesetzt) return gesetzt.replace(/\/$/, '')
+  console.warn('[antrieb] Keine Basis-URL in der Umgebung — greife auf die feste Adresse zurueck.')
+  return 'https://www.eilersfriends.com'
 }

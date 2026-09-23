@@ -696,12 +696,13 @@ async function quellen(step: StepDef, ctx: Ctx): Promise<StepOut> {
   for (const klasse of gewaehlt) {
     // Wie beim Schreiben: lieber sauber vertagen als mitten im Schritt
     // abgeschnitten werden.
-    if (alle.length && Date.now() - start > 170_000) {
+    const fertigeKlassen = new Set(alle.map((a) => a.klasse)).size
+    if (fertigeKlassen && Date.now() - start > 170_000) {
       await db.execute(sql`
         INSERT INTO agent_artifacts (run_id, step_key, kind, label, payload)
         VALUES (${ctx.runId}, ${step.key}, 'quellen-teil',
-                ${`${alle.length} von ${gewaehlt.length} Klassen`}, ${JSON.stringify(alle)}::jsonb)`)
-      throw new Vertagt(`${alle.length} von ${gewaehlt.length} Quellenklassen geprüft.`)
+                ${`${fertigeKlassen} von ${gewaehlt.length} Klassen`}, ${JSON.stringify(alle)}::jsonb)`)
+      throw new Vertagt(`${fertigeKlassen} von ${gewaehlt.length} Quellenklassen geprüft.`)
     }
 
     const fragen = (FRAGEN[klasse] ?? []).slice(0, jeKlasse)
