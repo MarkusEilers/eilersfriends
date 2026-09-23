@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { after } from 'next/server'
-import { einDurchgang, stosseAn } from '@/lib/services/antrieb'
+import { runOnce, kick } from '@/lib/services/driver'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -31,9 +31,9 @@ async function lauf(req: Request) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
-  const r = await einDurchgang()
+  const r = await runOnce()
   // Nachlegen nur, wenn es sich lohnt. Der Cron kommt ohnehin gleich wieder.
-  if (r.offenGeblieben > 0) after(() => stosseAn())
+  if (r.offenGeblieben > 0) after(() => kick())
   return NextResponse.json({ ok: true, ...r })
 }
 

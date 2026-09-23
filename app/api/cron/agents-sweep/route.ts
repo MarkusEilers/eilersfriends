@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { sweep } from '@/lib/agents/drive'
-import { einDurchgang, stosseAn } from '@/lib/services/antrieb'
+import { runOnce, kick } from '@/lib/services/driver'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -14,7 +14,7 @@ export async function GET(req: Request) {
   // Erst die Laeufe, dann die Auftraege — ein Auftrag, dessen Kette gerissen
   // ist, findet hier wieder Anschluss.
   const aufgeraeumt = await sweep()
-  const auftraege = await einDurchgang().catch(() => ({ bearbeitet: 0, offenGeblieben: 0 }))
-  if (auftraege.offenGeblieben > 0) stosseAn()
+  const auftraege = await runOnce().catch(() => ({ bearbeitet: 0, offenGeblieben: 0 }))
+  if (auftraege.offenGeblieben > 0) kick()
   return NextResponse.json({ ok: true, aufgeraeumt, auftraege })
 }

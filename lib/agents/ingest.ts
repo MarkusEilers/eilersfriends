@@ -78,7 +78,7 @@ export function zerlege(text: string, def: MaterialDef): Stueck[] {
 }
 
 /** Der Vorspann einer Datei — alles vor der ersten Unterueberschrift. */
-function vorspann(text: string): string {
+function preamble(text: string): string {
   const i = text.search(/^#{2,4}\s+/m)
   return (i < 0 ? text : text.slice(0, i)).replace(/^#\s+.*$/m, '').trim()
 }
@@ -123,7 +123,7 @@ export async function ingestMaterial(): Promise<IngestReport> {
       // Der Vorspann traegt oft die Gebrauchsanweisung („Verwendung: jede
       // Formel ist template-faehig…"). Ohne ihn liest sich ein Baustein wie
       // ein Zitat ohne Quelle.
-      const kopf = vorspann(text)
+      const kopf = preamble(text)
       if (kopf.length > 80) {
         items.push({
           key: slug(`${def.file}-vorspann`, 'vorspann'),

@@ -23,7 +23,7 @@ export const dynamic = 'force-dynamic'
  * Luecke und nichts kommt doppelt.
  *
  * Hier wird nichts angetrieben. Die Auftraege bewegen sich von selbst
- * (lib/services/antrieb.ts); diese Stelle sieht nur nach.
+ * (lib/services/driver.ts); diese Stelle sieht nur nach.
  */
 export async function GET(req: Request) {
   const s = await auth()

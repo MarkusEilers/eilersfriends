@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/services/antrieb",
+      "path": "/api/services/driver",
       "schedule": "*/2 * * * *"
     },
     {

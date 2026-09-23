@@ -71,6 +71,39 @@ export async function ensureServiceSchema() {
   await db.execute(sql`
     CREATE UNIQUE INDEX IF NOT EXISTS service_orders_extern
       ON service_orders (service_key, extern_id) WHERE extern_id IS NOT NULL`)
+  /**
+   * Das Eingangsprotokoll.
+   *
+   * Warum eine eigene Tabelle, wo es doch Auftraege gibt: Ein Aufruf, der
+   * scheitert, bevor ein Auftrag existiert, hinterlaesst sonst nichts. Genau
+   * das ist am 23.09. passiert — eine Bestellung kam an, die Firma wurde
+   * angelegt, und danach war nichts mehr da. Wir haben es nur gemerkt, weil
+   * zufaellig ein Testlauf danebenstand.
+   *
+   * Hier steht jeder Aufruf, auch der abgewiesene und der abgestuerzte. Der
+   * Rumpf wird gekuerzt mitgeschrieben, weil die Frage hinterher fast immer
+   * lautet: Was genau hat das CRM eigentlich geschickt?
+   */
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS service_calls (
+      id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      service_key TEXT NOT NULL,
+      methode     TEXT NOT NULL DEFAULT 'POST',
+      status      INT,
+      key_id      UUID,
+      key_name    TEXT,
+      org_id      UUID,
+      firma       TEXT,
+      extern_id   TEXT,
+      order_id    UUID,
+      fehler      TEXT,
+      rumpf       JSONB,
+      dauer_ms    INT,
+      created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+    )`)
+  await db.execute(sql`
+    CREATE INDEX IF NOT EXISTS service_calls_idx ON service_calls (created_at DESC)`)
+
   bereit = true
 }
 
@@ -160,7 +193,7 @@ export async function createOrder(input: {
  * Der Filter auf `updated_at` verhindert, dass zwei Antriebe denselben Auftrag
  * gleichzeitig schieben: Was sich gerade bewegt hat, wird in Ruhe gelassen.
  */
-export async function offeneAuftraege(limit = 5, ruheSekunden = 20): Promise<ServiceOrder[]> {
+export async function openOrders(limit = 5, ruheSekunden = 20): Promise<ServiceOrder[]> {
   await ensureServiceSchema()
   const rows = await db.execute(sql`
     SELECT * FROM service_orders
@@ -171,7 +204,7 @@ export async function offeneAuftraege(limit = 5, ruheSekunden = 20): Promise<Ser
   return rows as unknown as ServiceOrder[]
 }
 
-export async function zaehleSchub(id: string) {
+export async function countPush(id: string) {
   await ensureServiceSchema()
   await db.execute(sql`
     UPDATE service_orders SET schuebe = schuebe + 1, updated_at = now() WHERE id = ${id}`)
@@ -179,8 +212,17 @@ export async function zaehleSchub(id: string) {
 
 export async function updateOrder(id: string, patch: {
   status?: OrderStatus; ergebnis?: unknown; fehler?: string | null; runId?: string
+  orgId?: string | null; auftrag?: Record<string, unknown>
 }) {
   await ensureServiceSchema()
+  if (patch.orgId !== undefined || patch.auftrag !== undefined) {
+    await db.execute(sql`
+      UPDATE service_orders SET
+        org_id = COALESCE(${patch.orgId ?? null}::uuid, org_id),
+        auftrag = COALESCE(${patch.auftrag === undefined ? null : JSON.stringify(patch.auftrag)}::jsonb, auftrag),
+        updated_at = now()
+      WHERE id = ${id}`)
+  }
   if (patch.runId) {
     await db.execute(sql`
       UPDATE service_orders SET run_ids = run_ids || ${JSON.stringify([patch.runId])}::jsonb,
@@ -197,4 +239,92 @@ export async function updateOrder(id: string, patch: {
         updated_at = now()
       WHERE id = ${id}`)
   }
+}
+
+
+/**
+ * Ein Aufruf, wie er hereinkam.
+ *
+ * Wird nie awaited an einer Stelle, an der ein Fehler den Aufruf umbringen
+ * koennte — ein kaputtes Protokoll darf keine Bestellung kosten.
+ */
+export interface CallLog {
+  serviceKey: string
+  methode?: string
+  status?: number | null
+  keyId?: string | null
+  keyName?: string | null
+  orgId?: string | null
+  firma?: string | null
+  externId?: string | null
+  orderId?: string | null
+  fehler?: string | null
+  rumpf?: unknown
+  dauerMs?: number | null
+}
+
+/** Der Rumpf, aber in einer Groesse, die man noch lesen kann. */
+function kuerzen(x: unknown, grenze = 4000): unknown {
+  try {
+    const s = JSON.stringify(x)
+    if (!s) return null
+    if (s.length <= grenze) return JSON.parse(s)
+    return { gekuerzt: true, laenge: s.length, anfang: s.slice(0, grenze) }
+  } catch {
+    return { gekuerzt: true, fehler: 'nicht serialisierbar' }
+  }
+}
+
+export async function logCall(c: CallLog): Promise<string | null> {
+  try {
+    await ensureServiceSchema()
+    const rows = (await db.execute(sql`
+      INSERT INTO service_calls
+        (service_key, methode, status, key_id, key_name, org_id, firma, extern_id,
+         order_id, fehler, rumpf, dauer_ms)
+      VALUES (${c.serviceKey}, ${c.methode ?? 'POST'}, ${c.status ?? null},
+              ${c.keyId ?? null}::uuid, ${c.keyName ?? null}, ${c.orgId ?? null}::uuid,
+              ${c.firma ?? null}, ${c.externId ?? null}, ${c.orderId ?? null}::uuid,
+              ${c.fehler ?? null}, ${JSON.stringify(kuerzen(c.rumpf) ?? null)}::jsonb,
+              ${c.dauerMs ?? null})
+      RETURNING id`)) as unknown as Array<{ id: string }>
+    return rows[0]?.id ?? null
+  } catch (e) {
+    console.error('[services] Eingangsprotokoll fehlgeschlagen:', e)
+    return null
+  }
+}
+
+/** Nachtragen, was erst am Ende feststeht. */
+export async function finishCall(id: string | null, patch: {
+  status?: number; orderId?: string | null; fehler?: string | null; dauerMs?: number
+}) {
+  if (!id) return
+  try {
+    await db.execute(sql`
+      UPDATE service_calls SET
+        status = COALESCE(${patch.status ?? null}, status),
+        order_id = COALESCE(${patch.orderId ?? null}::uuid, order_id),
+        fehler = COALESCE(${patch.fehler ?? null}, fehler),
+        dauer_ms = COALESCE(${patch.dauerMs ?? null}, dauer_ms)
+      WHERE id = ${id}::uuid`)
+  } catch (e) {
+    console.error('[services] Eingangsprotokoll nachtragen fehlgeschlagen:', e)
+  }
+}
+
+export interface ServiceCall {
+  id: string; service_key: string; methode: string; status: number | null
+  key_name: string | null; org_id: string | null; firma: string | null
+  extern_id: string | null; order_id: string | null; fehler: string | null
+  rumpf: unknown; dauer_ms: number | null; created_at: string
+}
+
+export async function listCalls(serviceKey: string | null, limit = 100): Promise<ServiceCall[]> {
+  await ensureServiceSchema()
+  const rows = await db.execute(sql`
+    SELECT * FROM service_calls
+    WHERE (${serviceKey}::text IS NULL OR service_key = ${serviceKey})
+    ORDER BY created_at DESC LIMIT ${limit}`)
+  return rows as unknown as ServiceCall[]
 }

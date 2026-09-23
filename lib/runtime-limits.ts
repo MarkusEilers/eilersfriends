@@ -11,7 +11,7 @@
  */
 
 /** Was der Tarif hergibt. Hobby und Pro: 300 mit Fluid. Pro maximal: 800. */
-export const FUNKTION_SEKUNDEN = Number(process.env.FUNCTION_MAX_SECONDS ?? 300)
+export const FUNCTION_SECONDS = Number(process.env.FUNCTION_MAX_SECONDS ?? 300)
 
 /**
  * Wieviel Zeit eine Arbeitsschleife sich nehmen darf.
@@ -20,13 +20,13 @@ export const FUNKTION_SEKUNDEN = Number(process.env.FUNCTION_MAX_SECONDS ?? 300)
  * und ein Modellaufruf, der mitten drin abgeschnitten wird, kostet Geld und
  * liefert nichts. Zwanzig Prozent Rand, mindestens acht Sekunden.
  */
-export function arbeitsBudgetMs(): number {
-  const ms = FUNKTION_SEKUNDEN * 1000
+export function workBudgetMs(): number {
+  const ms = FUNCTION_SECONDS * 1000
   return Math.max(5_000, ms - Math.max(8_000, ms * 0.2))
 }
 
 /** Dasselbe fuer Schleifen, die zwischendurch ablegen koennen — etwas mehr Rand. */
-export function schleifenBudgetMs(): number {
-  const ms = FUNKTION_SEKUNDEN * 1000
+export function loopBudgetMs(): number {
+  const ms = FUNCTION_SECONDS * 1000
   return Math.max(4_000, ms - Math.max(12_000, ms * 0.3))
 }

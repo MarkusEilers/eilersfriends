@@ -42,9 +42,9 @@ export interface ModelResult {
 const TPM = Number(process.env.MODEL_TPM ?? 26_000)
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
-let fensterBereit = false
-async function ensureFenster() {
-  if (fensterBereit) return
+let windowTableReady = false
+async function ensureWindowTable() {
+  if (windowTableReady) return
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS model_window (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -52,11 +52,11 @@ async function ensureFenster() {
       at TIMESTAMPTZ NOT NULL DEFAULT now()
     )`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS model_window_idx ON model_window (model, at DESC)`)
-  fensterBereit = true
+  windowTableReady = true
 }
 
-async function verbraucht(model: string): Promise<{ summe: number; freiIn: number }> {
-  await ensureFenster()
+async function spentInWindow(model: string): Promise<{ summe: number; freiIn: number }> {
+  await ensureWindowTable()
   const rows = (await db.execute(sql`
     SELECT COALESCE(SUM(tokens), 0)::int AS summe,
            COALESCE(EXTRACT(EPOCH FROM (MIN(at) + interval '61 seconds' - now())), 0)::float AS frei_in
@@ -65,16 +65,16 @@ async function verbraucht(model: string): Promise<{ summe: number; freiIn: numbe
   return { summe: rows[0]?.summe ?? 0, freiIn: Math.max(0, rows[0]?.frei_in ?? 0) }
 }
 
-async function bremse(model: string, geschaetzt: number): Promise<void> {
+async function throttle(model: string, geschaetzt: number): Promise<void> {
   for (let i = 0; i < 10; i++) {
-    const { summe, freiIn } = await verbraucht(model)
+    const { summe, freiIn } = await spentInWindow(model)
     if (geschaetzt + summe <= TPM || summe === 0) return
     await sleep(Math.min(Math.max(1_500, Math.ceil(freiIn * 1000) + 500), 20_000))
   }
 }
 
-async function merkeVerbrauch(model: string, tokens: number) {
-  await ensureFenster()
+async function recordSpend(model: string, tokens: number) {
+  await ensureWindowTable()
   await db.execute(sql`INSERT INTO model_window (model, tokens) VALUES (${model}, ${tokens})`)
   if (Math.random() < 0.05) {
     await db.execute(sql`DELETE FROM model_window WHERE at < now() - interval '10 minutes'`)
@@ -88,7 +88,7 @@ async function merkeVerbrauch(model: string, tokens: number) {
  * stur verdoppelt, wartet entweder zu kurz und verbrennt einen Versuch oder zu
  * lang und verliert die Laufzeit.
  */
-function wartezeit(versuch: number, res: Response | null, text: string): number {
+function backoffMs(versuch: number, res: Response | null, text: string): number {
   const header = res?.headers.get('retry-after')
   if (header) {
     const sek = Number(header)
@@ -102,7 +102,7 @@ function wartezeit(versuch: number, res: Response | null, text: string): number 
 /* ─────────────────────────────── Aufruf ─────────────────────────────── */
 
 export async function callModel(c: ModelCall): Promise<ModelResult> {
-  const erste = await einAufruf(c)
+  const erste = await callOnce(c)
 
   /**
    * Nachfordern, was fehlt.
@@ -119,12 +119,12 @@ export async function callModel(c: ModelCall): Promise<ModelResult> {
    * Also wird nachgefragt — einmal, gezielt, mit der bisherigen Antwort im
    * Kontext. Nur fuer die fehlenden Felder, nicht fuer den ganzen Schritt.
    */
-  erste.value = saeubern(erste.value)
+  erste.value = sanitize(erste.value)
 
-  const fehlend = fehlendePflicht(c.schema, erste.value)
+  const fehlend = missingRequired(c.schema, erste.value)
   if (!fehlend.length) return erste
 
-  const nach = await einAufruf({
+  const nach = await callOnce({
     ...c,
     maxTokens: Math.min(c.maxTokens ?? 4000, 2000),
     user: `${c.user}
@@ -138,7 +138,7 @@ ${JSON.stringify(erste.value, null, 2).slice(0, 6000)}`,
 
   // Zusammenfuehren: Was schon dastand, gewinnt — der zweite Aufruf soll
   // ergaenzen, nicht ueberschreiben.
-  const zusammen = { ...(saeubern(nach.value) as object), ...(erste.value as object) }
+  const zusammen = { ...(sanitize(nach.value) as object), ...(erste.value as object) }
   return {
     value: zusammen,
     model: erste.model,
@@ -147,15 +147,15 @@ ${JSON.stringify(erste.value, null, 2).slice(0, 6000)}`,
   }
 }
 
-async function einAufruf(c: ModelCall): Promise<ModelResult> {
+async function callOnce(c: ModelCall): Promise<ModelResult> {
   const anbieter = c.model.startsWith('claude') ? 'claude' : 'openai'
   const body = anbieter === 'claude' ? claudeBody(c) : openAIBody(c)
   // Grob geschaetzt: gut drei Zeichen je Token, plus was die Antwort kosten darf.
   const geschaetzt = Math.ceil(body.length / 3.2) + (c.maxTokens ?? 4000)
 
-  await bremse(c.model, geschaetzt)
-  const r = anbieter === 'claude' ? await rufClaude(c, body) : await rufOpenAI(c, body)
-  await merkeVerbrauch(c.model, r.tokensIn + r.tokensOut)
+  await throttle(c.model, geschaetzt)
+  const r = anbieter === 'claude' ? await postClaude(c, body) : await postOpenAI(c, body)
+  await recordSpend(c.model, r.tokensIn + r.tokensOut)
   return r
 }
 
@@ -173,12 +173,12 @@ async function einAufruf(c: ModelCall): Promise<ModelResult> {
  * Also: Wo eine Zeichenkette nach eingebettetem JSON aussieht, holen wir das
  * JSON heraus. Wo sie nach Werkzeug-Syntax aussieht, schneiden wir sie weg.
  */
-function saeubern(x: unknown, tiefe = 0): unknown {
+function sanitize(x: unknown, tiefe = 0): unknown {
   if (tiefe > 6) return x
-  if (Array.isArray(x)) return x.map((y) => saeubern(y, tiefe + 1))
+  if (Array.isArray(x)) return x.map((y) => sanitize(y, tiefe + 1))
   if (x && typeof x === 'object') {
     const out: Record<string, unknown> = {}
-    for (const [k, v] of Object.entries(x as Record<string, unknown>)) out[k] = saeubern(v, tiefe + 1)
+    for (const [k, v] of Object.entries(x as Record<string, unknown>)) out[k] = sanitize(v, tiefe + 1)
     return out
   }
   if (typeof x !== 'string') return x
@@ -194,7 +194,7 @@ function saeubern(x: unknown, tiefe = 0): unknown {
     const obj = /\{[\s\S]*\}/.exec(dahinter)
     const roh = arr?.[0] ?? obj?.[0]
     if (roh) {
-      try { return saeubern(JSON.parse(roh), tiefe + 1) } catch { /* dann eben nicht */ }
+      try { return sanitize(JSON.parse(roh), tiefe + 1) } catch { /* dann eben nicht */ }
     }
     t = davor
   }
@@ -203,7 +203,7 @@ function saeubern(x: unknown, tiefe = 0): unknown {
   const gestutzt = t.trim()
   if ((gestutzt.startsWith('[') && gestutzt.endsWith(']'))
     || (gestutzt.startsWith('{') && gestutzt.endsWith('}'))) {
-    try { return saeubern(JSON.parse(gestutzt), tiefe + 1) } catch { /* war doch Text */ }
+    try { return sanitize(JSON.parse(gestutzt), tiefe + 1) } catch { /* war doch Text */ }
   }
   return t
 }
@@ -214,7 +214,7 @@ function saeubern(x: unknown, tiefe = 0): unknown {
  * Leer zaehlt als fehlend: Ein Feld mit "" oder [] ist genauso wenig eine
  * Antwort wie gar keines, und im Prompt danach sieht man den Unterschied nicht.
  */
-function fehlendePflicht(schema: ModelCall['schema'], value: unknown): string[] {
+function missingRequired(schema: ModelCall['schema'], value: unknown): string[] {
   if (!schema || typeof value !== 'object' || value === null) return []
   const pflicht = (schema as { required?: unknown }).required
   if (!Array.isArray(pflicht) || !pflicht.length) return []
@@ -276,7 +276,7 @@ function claudeBody(c: ModelCall): string {
   return JSON.stringify(payload)
 }
 
-async function rufOpenAI(c: ModelCall, body: string): Promise<ModelResult> {
+async function postOpenAI(c: ModelCall, body: string): Promise<ModelResult> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) throw new Error('OPENAI_API_KEY fehlt')
   let res: Response | null = null
@@ -290,7 +290,7 @@ async function rufOpenAI(c: ModelCall, body: string): Promise<ModelResult> {
     if (res.ok) break
     lastText = await res.text()
     if (res.status !== 429 && res.status < 500) break
-    await sleep(Math.min(wartezeit(versuch, res, lastText), 30_000))
+    await sleep(Math.min(backoffMs(versuch, res, lastText), 30_000))
   }
   if (!res || !res.ok) throw new Error(`Modell ${res?.status ?? 0}: ${lastText.slice(0, 200)}`)
   const data = await res.json()
@@ -302,7 +302,7 @@ async function rufOpenAI(c: ModelCall, body: string): Promise<ModelResult> {
   }
 }
 
-async function rufClaude(c: ModelCall, body: string): Promise<ModelResult> {
+async function postClaude(c: ModelCall, body: string): Promise<ModelResult> {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY fehlt')
   let res: Response | null = null
@@ -321,7 +321,7 @@ async function rufClaude(c: ModelCall, body: string): Promise<ModelResult> {
     lastText = await res.text()
     // 529 heisst „ueberlastet" und ist ein Fall fuer Geduld, kein Fehler.
     if (res.status !== 429 && res.status !== 529 && res.status < 500) break
-    await sleep(Math.min(wartezeit(versuch, res, lastText), 30_000))
+    await sleep(Math.min(backoffMs(versuch, res, lastText), 30_000))
   }
   if (!res || !res.ok) throw new Error(`Modell ${res?.status ?? 0}: ${lastText.slice(0, 200)}`)
 

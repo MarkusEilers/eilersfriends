@@ -1,6 +1,6 @@
 import { driveRun } from '@/lib/agents/drive'
-import { offeneAuftraege, updateOrder, zaehleSchub, type ServiceOrder } from './schema'
-import { arbeitsBudgetMs } from '@/lib/laufzeit'
+import { openOrders, updateOrder, countPush, type ServiceOrder } from './schema'
+import { workBudgetMs } from '@/lib/runtime-limits'
 
 /**
  * Der Antrieb fuer Dienst-Auftraege.
@@ -18,11 +18,11 @@ import { arbeitsBudgetMs } from '@/lib/laufzeit'
  * Sicherheitsnetz taugt er, als Motor nicht.
  */
 
-const BUDGET_MS = arbeitsBudgetMs()
+const BUDGET_MS = workBudgetMs()
 
-export async function schiebeAuftrag(order: ServiceOrder): Promise<ServiceOrder['status']> {
+export async function advanceOrder(order: ServiceOrder): Promise<ServiceOrder['status']> {
   if (!order.run_ids.length) return order.status
-  await zaehleSchub(order.id)
+  await countPush(order.id)
 
   const lauf = order.run_ids[order.run_ids.length - 1]
   const state = await driveRun(lauf, 6).catch(() => null)
@@ -42,22 +42,22 @@ export async function schiebeAuftrag(order: ServiceOrder): Promise<ServiceOrder[
  * Einen Durchgang: nimm, was offen ist, schieb es, und sag, ob noch etwas
  * uebrig ist. Der Aufrufer entscheidet, ob er sich selbst nochmal anstoesst.
  */
-export async function einDurchgang(): Promise<{ bearbeitet: number; offenGeblieben: number }> {
+export async function runOnce(): Promise<{ bearbeitet: number; offenGeblieben: number }> {
   const start = Date.now()
   let bearbeitet = 0
   let offenGeblieben = 0
 
   while (Date.now() - start < BUDGET_MS) {
-    const offen = await offeneAuftraege(3)
+    const offen = await openOrders(3)
     if (!offen.length) break
     for (const o of offen) {
       if (Date.now() - start > BUDGET_MS) { offenGeblieben++; continue }
-      const status = await schiebeAuftrag(o)
+      const status = await advanceOrder(o)
       bearbeitet++
       if (status === 'laeuft') offenGeblieben++
     }
   }
-  const rest = await offeneAuftraege(1)
+  const rest = await openOrders(1)
   return { bearbeitet, offenGeblieben: offenGeblieben || rest.length }
 }
 
@@ -68,26 +68,26 @@ export async function einDurchgang(): Promise<{ bearbeitet: number; offenGeblieb
  * Instanz startet. Ob sie fertig wird, entscheidet sie selbst — und wenn der
  * Aufruf scheitert, faengt ihn spaetestens der taegliche Cron auf.
  */
-export function stosseAn(): void {
+export function kick(): void {
   const secret = process.env.CRON_SECRET
   if (!secret) {
     // Ohne Geheimnis weist der Antrieb sich selbst ab. Das ist kein Detail,
     // das man uebersehen darf — also steht es im Protokoll.
-    console.error('[antrieb] CRON_SECRET fehlt — die Kette kann sich nicht fortsetzen.')
+    console.error('[driver] CRON_SECRET fehlt — die Kette kann sich nicht fortsetzen.')
     return
   }
   const basis = basisUrl()
-  fetch(`${basis}/api/services/antrieb`, {
+  fetch(`${basis}/api/services/driver`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${secret}` },
-  }).catch((e) => console.error('[antrieb] Anstoss fehlgeschlagen:', e))
+  }).catch((e) => console.error('[driver] Anstoss fehlgeschlagen:', e))
 }
 
 /**
  * Wo wir selbst erreichbar sind.
  *
  * Das hat den Motor schon einmal lautlos abgewuergt: Keine der erwarteten
- * Variablen war gesetzt, `stosseAn` kehrte still zurueck, und die Auftraege
+ * Variablen war gesetzt, `kick` kehrte still zurueck, und die Auftraege
  * standen — ohne Fehler, ohne Eintrag, ohne Hinweis. Vier Stueck, eine
  * Viertelstunde lang.
  *
@@ -99,6 +99,6 @@ function basisUrl(): string {
     || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '')
     || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
   if (gesetzt) return gesetzt.replace(/\/$/, '')
-  console.warn('[antrieb] Keine Basis-URL in der Umgebung — greife auf die feste Adresse zurueck.')
+  console.warn('[driver] Keine Basis-URL in der Umgebung — greife auf die feste Adresse zurueck.')
   return 'https://www.eilersfriends.com'
 }

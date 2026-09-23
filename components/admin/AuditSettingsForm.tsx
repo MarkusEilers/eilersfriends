@@ -11,12 +11,12 @@ type Settings = {
   benachrichtigen: string[]
 }
 
-export function AuditSettingsForm({ settings, quellen, dimensionen, orgs, schaetzung }: {
+export function AuditSettingsForm({ settings, quellen, dimensionen, orgs, estimate }: {
   settings: Settings
   quellen: Array<{ key: string; name: string; was: string }>
   dimensionen: Array<{ key: string; name: string }>
   orgs: Array<{ id: string; name: string }>
-  schaetzung: { suchen: number; bilder: number; hinweis: string; kostenEur: number }
+  estimate: { suchen: number; bilder: number; hinweis: string; kostenEur: number }
 }) {
   const [gespeichert, setGespeichert] = useState(false)
 
@@ -167,9 +167,9 @@ export function AuditSettingsForm({ settings, quellen, dimensionen, orgs, schaet
 
           <div className="mt-5 rounded-xl bg-gray-50 p-4">
             <div className="text-xs font-bold uppercase tracking-widest text-gray-500">Was ein Lauf ungefähr kostet</div>
-            <div className="mt-1.5 text-sm text-gray-800">{schaetzung.hinweis}</div>
+            <div className="mt-1.5 text-sm text-gray-800">{estimate.hinweis}</div>
             <div className="mt-1 text-sm font-semibold text-gray-900">
-              {schaetzung.kostenEur.toFixed(2)}&nbsp;€ an Stückkosten
+              {estimate.kostenEur.toFixed(2)}&nbsp;€ an Stückkosten
             </div>
             <div className="mt-1 text-xs text-gray-500">
               Suchanfragen und Bilder. Die Tokens kommen dazu und hängen am Umfang der Quellen.

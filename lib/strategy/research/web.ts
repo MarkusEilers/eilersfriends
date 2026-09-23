@@ -60,8 +60,8 @@ const MAX_SUCHEN = Number(process.env.STRATEGY_SEARCH_MAX ?? 5)
 /** Ein Suchlauf mit Websuche. Gibt Text plus die tatsaechlich benutzten Quellen zurueck. */
 export async function runSearch(source: string, query: string, instruction: string): Promise<SearchFinding> {
   return PROVIDER === 'claude'
-    ? sucheClaude(source, query, instruction)
-    : sucheOpenAI(source, query, instruction)
+    ? searchClaude(source, query, instruction)
+    : searchOpenAI(source, query, instruction)
 }
 
 /**
@@ -73,7 +73,7 @@ export async function runSearch(source: string, query: string, instruction: stri
  * keine markiert hat, fallen wir auf die Trefferliste zurueck. Sonst stuenden
  * im Bericht Quellen, die niemand gelesen hat.
  */
-async function sucheClaude(source: string, query: string, instruction: string): Promise<SearchFinding> {
+async function searchClaude(source: string, query: string, instruction: string): Promise<SearchFinding> {
   const apiKey = process.env.ANTHROPIC_API_KEY
   const empty: SearchFinding = { source, query, text: '', citations: [], tokensIn: 0, tokensOut: 0, searches: 0 }
   if (!apiKey) return { ...empty, error: 'ANTHROPIC_API_KEY nicht gesetzt' }
@@ -142,7 +142,7 @@ Suchauftrag: ${query}` }],
 }
 
 /** Der bisherige Weg ueber die Responses-API. Bleibt als Rueckfallebene. */
-async function sucheOpenAI(source: string, query: string, instruction: string): Promise<SearchFinding> {
+async function searchOpenAI(source: string, query: string, instruction: string): Promise<SearchFinding> {
   const apiKey = process.env.OPENAI_API_KEY
   const empty: SearchFinding = { source, query, text: '', citations: [], tokensIn: 0, tokensOut: 0, searches: 0 }
   if (!apiKey) return { ...empty, error: 'OPENAI_API_KEY nicht gesetzt' }
@@ -191,7 +191,7 @@ Suchauftrag: ${query}`,
 }
 
 /** Welcher Anbieter gerade sucht — fuer Berichte und Fehlersuche. */
-export function sucheAnbieter(): { anbieter: Anbieter; modell: string } {
+export function searchProvider(): { anbieter: Anbieter; modell: string } {
   return { anbieter: PROVIDER, modell: PROVIDER === 'claude' ? CLAUDE_MODEL : OPENAI_MODEL }
 }
 

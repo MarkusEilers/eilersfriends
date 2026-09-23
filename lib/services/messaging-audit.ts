@@ -79,7 +79,7 @@ export const DIMENSIONEN: Array<{ key: string; name: string }> = [
  * Lauf feststeht, und sie ist der teuerste Posten. Der Rest ist Erfahrung aus
  * den bisherigen Laeufen.
  */
-export function schaetzung(s: AuditSettings): { suchen: number; bilder: number; hinweis: string } {
+export function estimate(s: AuditSettings): { suchen: number; bilder: number; hinweis: string } {
   const faktor = s.tiefe === 'knapp' ? 0.6 : s.tiefe === 'gruendlich' ? 1.8 : 1
   const suchen = Math.round(s.quellen.length * s.suchen_je_quelle * faktor)
     + (s.icp_soll ? Math.round(5 * faktor) : 0)

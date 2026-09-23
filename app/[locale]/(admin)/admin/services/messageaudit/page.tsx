@@ -2,12 +2,13 @@ import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
 import { Radar } from 'lucide-react'
-import { listOrders, settingsFor, ensureServiceSchema } from '@/lib/services/schema'
+import { listOrders, listCalls, settingsFor, ensureServiceSchema } from '@/lib/services/schema'
 import {
-  AUDIT_DEFAULTS, QUELLEN, DIMENSIONEN, schaetzung, type AuditSettings,
+  AUDIT_DEFAULTS, QUELLEN, DIMENSIONEN, estimate, type AuditSettings,
 } from '@/lib/services/messaging-audit'
 import { AuditSettingsForm } from '@/components/admin/AuditSettingsForm'
 import { AuditOrders } from '@/components/admin/AuditOrders'
+import { ServiceCalls } from '@/components/admin/ServiceCalls'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -17,8 +18,9 @@ export default async function MessageAuditPage() {
   const session = await auth()
   const istAdmin = session?.user?.role === 'admin'
 
-  const [orders, settings, orgs, preise] = await Promise.all([
+  const [orders, calls, settings, orgs, preise] = await Promise.all([
     listOrders('messaging-audit', 50),
+    listCalls('messaging-audit', 100),
     settingsFor<AuditSettings>('messaging-audit', null, AUDIT_DEFAULTS),
     istAdmin
       ? db.execute(sql`SELECT id, name FROM companies ORDER BY name LIMIT 200`)
@@ -29,7 +31,7 @@ export default async function MessageAuditPage() {
       ORDER BY unit, valid_from DESC`).catch(() => [] as never),
   ])
 
-  const s = schaetzung(settings)
+  const s = estimate(settings)
   const p = Object.fromEntries(
     (preise as unknown as Array<{ unit: string; price_eur: number }>).map((x) => [x.unit, x.price_eur]))
   const kosten = s.suchen * (p.web_search ?? 0) + s.bilder * (p.bild ?? 0)
@@ -50,6 +52,17 @@ export default async function MessageAuditPage() {
       <AuditOrders orders={orders as never} />
 
       <div className="mt-10">
+        <h2 className="text-lg font-bold text-gray-900">Eingang</h2>
+        <p className="mt-1 max-w-2xl text-sm text-gray-500">
+          Jeder Aufruf, der hier ankam — auch der abgewiesene und der abgestürzte.
+          Eine Zeile ohne Auftrag heißt: Es hat jemand bestellt und es ist nichts entstanden.
+        </p>
+        <div className="mt-4">
+          <ServiceCalls calls={calls as never} />
+        </div>
+      </div>
+
+      <div className="mt-10">
         <h2 className="text-lg font-bold text-gray-900">Einstellungen</h2>
         <p className="mt-1 text-sm text-gray-500">
           Gelten für alle Aufträge, solange kein Kunde eine eigene Fassung hat.
@@ -60,7 +73,7 @@ export default async function MessageAuditPage() {
           quellen={QUELLEN}
           dimensionen={DIMENSIONEN}
           orgs={(orgs as unknown as Array<{ id: string; name: string }>) ?? []}
-          schaetzung={{ ...s, kostenEur: kosten }}
+          estimate={{ ...s, kostenEur: kosten }}
         />
       </div>
     </div>

@@ -74,9 +74,20 @@ export function AuditOrders({ orders }: { orders: Order[] }) {
             const auf = offen === o.id
             return (
               <>
-                <tr key={o.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/60">
+                <tr
+                  key={o.id}
+                  className={`border-b border-gray-50 last:border-0 hover:bg-gray-50/60 ${
+                    o.quelle === 'test' ? 'opacity-50' : ''}`}
+                >
                   <td className="px-4 py-3">
-                    <div className="font-medium text-gray-900">{o.firma}</div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-900">{o.firma}</span>
+                      {o.quelle === 'test' ? (
+                        <span className="rounded border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700">
+                          Test
+                        </span>
+                      ) : null}
+                    </div>
                     {o.url ? <div className="text-xs text-gray-500">{o.url}</div> : null}
                   </td>
                   <td className="px-4 py-3">
@@ -87,7 +98,7 @@ export function AuditOrders({ orders }: { orders: Order[] }) {
                   </td>
                   <td className="px-4 py-3 text-gray-600">{dauer(o.created_at, o.finished_at)}</td>
                   <td className="px-4 py-3 text-gray-600">
-                    {o.quelle === 'crm' ? 'CRM' : 'Oberfläche'}
+                    {o.quelle === 'crm' ? 'CRM' : o.quelle === 'test' ? 'Test' : 'Oberfläche'}
                     {o.extern_id ? <span className="ml-1 text-xs text-gray-400">#{o.extern_id}</span> : null}
                   </td>
                   <td className="px-4 py-3 text-right">

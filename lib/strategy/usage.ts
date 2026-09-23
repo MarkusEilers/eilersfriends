@@ -181,15 +181,15 @@ export async function recordUsage(input: {
     ? (input.tokensIn / 1_000_000) * price.input_per_1m + (input.tokensOut / 1_000_000) * price.output_per_1m
     : 0
 
-  const verbraucht: Record<string, number> = {}
+  const spentInWindow: Record<string, number> = {}
   for (const [k, v] of Object.entries(input.units ?? {})) {
     const n = Math.max(0, Number(v) || 0)
-    if (n > 0) verbraucht[k] = n
+    if (n > 0) spentInWindow[k] = n
   }
   let stueckKosten = 0
-  if (Object.keys(verbraucht).length) {
+  if (Object.keys(spentInWindow).length) {
     const preise = await unitPrices(at)
-    for (const [k, n] of Object.entries(verbraucht)) stueckKosten += n * (preise[k]?.price_eur ?? 0)
+    for (const [k, n] of Object.entries(spentInWindow)) stueckKosten += n * (preise[k]?.price_eur ?? 0)
   }
   const cost = tokenKosten + stueckKosten
   const s = await settingsFor(input.companyId)
@@ -202,7 +202,7 @@ export async function recordUsage(input: {
       balance_after, ai_run_id)
     VALUES (${input.companyId}, ${input.productId ?? null}, ${at.toISOString()}, 'usage', ${input.action},
       ${input.agentKey ?? null}, ${input.model}, ${input.tokensIn}, ${input.tokensOut},
-      ${JSON.stringify(verbraucht)}::jsonb, ${stueckKosten},
+      ${JSON.stringify(spentInWindow)}::jsonb, ${stueckKosten},
       ${cost}, ${amount}, ${s?.markup_factor ?? 10}, ${balance}, ${input.aiRunId ?? null})`)
   return { costEur: cost, amountEur: amount, balance, unitCostEur: stueckKosten }
 }

@@ -16,7 +16,7 @@ export const maxDuration = 300
  * Besteller ein, im Sekundentakt zu fragen — und bleibt stehen, wenn er es
  * nicht tut.
  *
- * Der Antrieb liegt jetzt bei uns (lib/services/antrieb.ts). Diese Stelle
+ * Der Antrieb liegt jetzt bei uns (lib/services/driver.ts). Diese Stelle
  * liest nur.
  */
 export async function GET(req: Request, { params }: { params: Promise<{ service: string; id: string }> }) {

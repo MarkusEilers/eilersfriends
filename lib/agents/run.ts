@@ -5,10 +5,10 @@ import { PFLICHT_PACKS } from './material'
 import { loadPacks, renderPacks, bannedWords, catalogIndex, loadItems, renderIndex, type IndexRow } from './knowledge'
 import { lint, lintReport, type Finding } from './lint'
 import { callModel as rufeModell } from '@/lib/ai/call'
-import { arbeitsBudgetMs, schleifenBudgetMs } from '@/lib/laufzeit'
+import { workBudgetMs, loopBudgetMs } from '@/lib/runtime-limits'
 import { resolveModel } from '@/lib/strategy/models'
 import { recordUsage } from '@/lib/strategy/usage'
-import { runSearch, COLLECT_INSTRUCTION, sucheAnbieter } from '@/lib/strategy/research/web'
+import { runSearch, COLLECT_INSTRUCTION, searchProvider } from '@/lib/strategy/research/web'
 import { factMap } from '@/lib/strategy/facts'
 import { catalogFor, renderCatalog } from '@/lib/content/catalog'
 
@@ -24,9 +24,9 @@ import { catalogFor, renderCatalog } from '@/lib/content/catalog'
 
 /**
  * Was ein Anlauf schafft. Haengt am Tarif, nicht an einer Wunschzahl —
- * siehe lib/laufzeit.ts.
+ * siehe lib/runtime-limits.ts.
  */
-const BUDGET_MS = arbeitsBudgetMs()
+const BUDGET_MS = workBudgetMs()
 
 /**
  * Kein Fehler, sondern eine Vertagung.
@@ -35,7 +35,7 @@ const BUDGET_MS = arbeitsBudgetMs()
  * das hier. Der Cursor bleibt stehen, der Schritt geht auf offen zurueck, und
  * der naechste Anlauf macht dort weiter, wo dieser aufgehoert hat.
  */
-class Vertagt extends Error {
+class Deferred extends Error {
   constructor(public readonly stand: string) { super(stand) }
 }
 
@@ -189,7 +189,7 @@ export async function advance(runId: string): Promise<RunHandle> {
           out.tokensIn ?? 0, out.tokensOut ?? 0, out.units ?? {})
       }
     } catch (e) {
-      if (e instanceof Vertagt) {
+      if (e instanceof Deferred) {
         await db.execute(sql`
           UPDATE agent_run_steps SET status = 'offen', error = ${e.stand}, started_at = NULL
           WHERE run_id = ${runId} AND seq = ${cursor}`)
@@ -273,7 +273,7 @@ interface StepOut {
   model?: string
   tokensIn?: number
   tokensOut?: number
-  /** Was neben den Tokens verbraucht wurde: { web_search: 12, bild: 2 } */
+  /** Was neben den Tokens spentInWindow wurde: { web_search: 12, bild: 2 } */
   units?: Record<string, number>
 }
 
@@ -404,7 +404,7 @@ async function recherche(step: StepDef, ctx: Ctx): Promise<StepOut> {
       material: findings.map((f) => `#### ${f.query}\n${f.text}\n${(f.citations ?? []).map((c) => `- ${c.url}`).join('\n')}`).join('\n\n'),
       quellen: findings.flatMap((f) => f.citations ?? []),
     },
-    model: sucheAnbieter().modell, tokensIn: tin, tokensOut: tout,
+    model: searchProvider().modell, tokensIn: tin, tokensOut: tout,
     units: suchen ? { web_search: suchen } : {},
   }
 }
@@ -420,7 +420,7 @@ async function recherche(step: StepDef, ctx: Ctx): Promise<StepOut> {
  * Beobachtet im Auswahl-Schritt: „j.filter is not a function", und der Lauf
  * stand. Deshalb geht hier jede Modellliste durch diesen Filter.
  */
-function alsListe<T>(x: unknown): T[] {
+function asList<T>(x: unknown): T[] {
   if (Array.isArray(x)) return x as T[]
   // Ein einzelnes Objekt statt einer Liste ist ein haeufiger Ausrutscher und
   // meistens als ein Eintrag gemeint.
@@ -565,7 +565,7 @@ ${renderIndex(rows)}`,
     temperature: 0.3, maxTokens: 2000,
   }, ctx)
 
-  let picked = alsListe<{ pack: string; key: string; als: string; warum: string }>(
+  let picked = asList<{ pack: string; key: string; als: string; warum: string }>(
     (res.value as { gewaehlt?: unknown }).gewaehlt)
 
   // Eine vorgegebene Stimme ist keine Anregung. Was der Auftraggeber gewaehlt
@@ -700,7 +700,7 @@ async function quellen(step: StepDef, ctx: Ctx): Promise<StepOut> {
    * dazu, und die Klassen, die es abdeckt, fallen aus der Recherche.
    */
   type Mitgebracht = { titel: string; inhalt?: string; url?: string; art?: string; stand?: string; deckt?: string[] }
-  const mitgebracht = alsListe<Mitgebracht>(ctx.input.vorhandenes)
+  const mitgebracht = asList<Mitgebracht>(ctx.input.vorhandenes)
   const abgedeckt = new Set(mitgebracht.flatMap((v) => v.deckt ?? []))
 
   const gewaehlt = (e.quellen ?? Object.keys(FRAGEN))
@@ -715,12 +715,12 @@ async function quellen(step: StepDef, ctx: Ctx): Promise<StepOut> {
     // Wie beim Schreiben: lieber sauber vertagen als mitten im Schritt
     // abgeschnitten werden.
     const fertigeKlassen = new Set(alle.map((a) => a.klasse)).size
-    if (fertigeKlassen && Date.now() - start > schleifenBudgetMs()) {
+    if (fertigeKlassen && Date.now() - start > loopBudgetMs()) {
       await db.execute(sql`
         INSERT INTO agent_artifacts (run_id, step_key, kind, label, payload)
         VALUES (${ctx.runId}, ${step.key}, 'quellen-teil',
                 ${`${fertigeKlassen} von ${gewaehlt.length} Klassen`}, ${JSON.stringify(alle)}::jsonb)`)
-      throw new Vertagt(`${fertigeKlassen} von ${gewaehlt.length} Quellenklassen geprüft.`)
+      throw new Deferred(`${fertigeKlassen} von ${gewaehlt.length} Quellenklassen geprüft.`)
     }
 
     const fragen = (FRAGEN[klasse] ?? []).slice(0, jeKlasse)
@@ -779,7 +779,7 @@ async function quellen(step: StepDef, ctx: Ctx): Promise<StepOut> {
       quellen: alle.flatMap((f) => (f.citations as unknown[]) ?? []),
       suchen,
     },
-    model: sucheAnbieter().modell, tokensIn: tin, tokensOut: tout,
+    model: searchProvider().modell, tokensIn: tin, tokensOut: tout,
     units: suchen ? { web_search: suchen } : {},
   }
 }
@@ -801,12 +801,12 @@ async function skelett(step: StepDef, ctx: Ctx): Promise<StepOut> {
     paraphrase?: string; beats?: string[]
   }
   const plan = (ctx.results[step.source ?? 'struktur'] as { abschnitte?: Abschnitt[] }) ?? {}
-  const parts = alsListe<Abschnitt>(plan.abschnitte)
+  const parts = asList<Abschnitt>(plan.abschnitte)
   const kette = (ctx.results.kette as { ziele?: Array<{ id?: string; satz?: string; schwere?: string }> }) ?? {}
-  const ziele = alsListe<{ id?: string; satz?: string; schwere?: string }>(kette.ziele)
+  const ziele = asList<{ id?: string; satz?: string; schwere?: string }>(kette.ziele)
   const ev = (ctx.results.evidenz as { belege?: Array<{ id?: string }> }) ?? {}
   const belegIds = new Set(
-    alsListe<{ id?: string }>(ev.belege).map((b) => String(b.id ?? '').toUpperCase()).filter(Boolean))
+    asList<{ id?: string }>(ev.belege).map((b) => String(b.id ?? '').toUpperCase()).filter(Boolean))
 
   const befunde: Array<{ art: string; schwere: 'fehler' | 'warnung'; text: string }> = []
   const ids = (s: string) => [...String(s).toUpperCase().matchAll(/\b([BE]\d+)\b/g)].map((m) => m[1])
@@ -953,7 +953,7 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
     beleg?: string; stufe?: string; quelle?: string
     paraphrase?: string; wirkung?: string; befund?: string
   }
-  const parts = alsListe<Teil>(plan.abschnitte)
+  const parts = asList<Teil>(plan.abschnitte)
   if (!parts.length) throw new Error(`Keine Gliederung in "${from}"`)
 
   // Die Zwischenueberschriften koennen aus einem eigenen Schritt kommen, der
@@ -966,7 +966,7 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
     const q = (ctx.results.beats as {
       abschnitte?: Array<{ name?: string; paraphrase?: string; wirkung?: string; befund?: string }>
     }) ?? {}
-    const liste = alsListe<{ name?: string; paraphrase?: string; wirkung?: string; befund?: string }>(q.abschnitte)
+    const liste = asList<{ name?: string; paraphrase?: string; wirkung?: string; befund?: string }>(q.abschnitte)
     parts.forEach((s, i) => {
       const t = liste[i]
       if (t?.paraphrase) (s as { paraphrase?: string }).paraphrase = t.paraphrase
@@ -977,7 +977,7 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
 
   if (step.headings) {
     const h = (ctx.results[step.headings] as { ueberschriften?: string[] }) ?? {}
-    const list = alsListe<string>(h.ueberschriften)
+    const list = asList<string>(h.ueberschriften)
     parts.forEach((s, i) => { if (list[i]) s.name = list[i] })
   }
 
@@ -1024,9 +1024,9 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
   const start = Date.now()
 
   for (const s of offen) {
-    if (out.length > (parts.length - offen.length) && Date.now() - start > schleifenBudgetMs()) {
+    if (out.length > (parts.length - offen.length) && Date.now() - start > loopBudgetMs()) {
       await merken()
-      throw new Vertagt(`${out.length} von ${parts.length} Abschnitten stehen — weiter beim nächsten Anlauf.`)
+      throw new Deferred(`${out.length} von ${parts.length} Abschnitten stehen — weiter beim nächsten Anlauf.`)
     }
     const budget = Math.max(60, Number(s.woerter) || 200)
     const write = async (extra: Record<string, unknown>) => {
@@ -1285,7 +1285,7 @@ async function flicken(step: StepDef, ctx: Ctx): Promise<StepOut> {
     if (offen.length) {
       const res = await ask(step, ctx, { auftraege: offen, anzahl: offen.length })
       tin += res.tokensIn; tout += res.tokensOut; model = res.model
-      const liste = alsListe<{ nr?: number; neu?: string }>((res.value as { austausch?: unknown }).austausch)
+      const liste = asList<{ nr?: number; neu?: string }>((res.value as { austausch?: unknown }).austausch)
       for (const a of liste) {
         const auftrag = offen.find((o) => o.nr === Number(a.nr))
         let ersatz = String(a.neu ?? '').trim()

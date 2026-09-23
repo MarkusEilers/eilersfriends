@@ -4,10 +4,12 @@ import { auth } from '@/lib/auth'
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { verifyApiKey, hasScope } from '@/lib/events/auth'
-import { createOrder, listOrders, settingsFor, updateOrder } from '@/lib/services/schema'
+import {
+  createOrder, listOrders, settingsFor, updateOrder, logCall, finishCall,
+} from '@/lib/services/schema'
 import { AUDIT_DEFAULTS, type AuditSettings } from '@/lib/services/messaging-audit'
 import { activeAgent, startRun } from '@/lib/agents/run'
-import { stosseAn } from '@/lib/services/antrieb'
+import { kick } from '@/lib/services/driver'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -57,140 +59,170 @@ async function firmaFinden(name: string, url: string | null): Promise<string | n
 }
 
 export async function POST(req: Request, { params }: { params: Promise<{ service: string }> }) {
+  const begonnen = Date.now()
   const { service } = await params
   const dienst = DIENSTE[service]
-  if (!dienst) return NextResponse.json({ error: `Unbekannter Dienst "${service}"` }, { status: 404 })
+
+  const roh = (await req.json().catch(() => ({}))) as Record<string, unknown>
+
+  /**
+   * Erst schreiben, dass jemand angeklopft hat. Dann pruefen.
+   *
+   * Die Reihenfolge ist der ganze Punkt: Am 23.09. kam eine Bestellung an, die
+   * Route starb zwischen Firma-Anlegen und Auftrag-Anlegen, und danach gab es
+   * keine einzige Zeile, die das bezeugt haette. Ein Protokoll, das erst
+   * geschrieben wird, wenn alles gutgegangen ist, protokolliert nichts.
+   */
+  const callId = await logCall({
+    serviceKey: service,
+    firma: typeof roh.firma === 'string' ? roh.firma : null,
+    externId: typeof roh.externId === 'string' ? roh.externId : null,
+    rumpf: roh,
+  })
+  const abschluss = async (status: number, patch: { orderId?: string | null; fehler?: string | null } = {}) => {
+    await finishCall(callId, { status, dauerMs: Date.now() - begonnen, ...patch })
+  }
+
+  if (!dienst) {
+    await abschluss(404, { fehler: `Unbekannter Dienst "${service}"` })
+    return NextResponse.json({ error: `Unbekannter Dienst "${service}"` }, { status: 404 })
+  }
 
   const ctx = await wer(req)
-  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  if (!ctx) {
+    await abschluss(401, { fehler: 'unauthorized' })
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  }
 
-  const body = (await req.json().catch(() => ({}))) as {
+  const body = roh as {
     firma?: string; url?: string; orgId?: string
-    externId?: string; hinweis?: string
+    externId?: string; hinweis?: string; test?: boolean
     einstellungen?: Partial<AuditSettings>
-    /**
-     * Was das CRM schon weiss.
-     *
-     * Ein Audit, das die Branche erst recherchiert, obwohl sie im Lead-Satz
-     * steht, verbrennt Suchanfragen fuer eine Antwort, die schon vorlag. Alles
-     * hier ist freiwillig — was fehlt, wird recherchiert.
-     *
-     * Wichtig und im Agenten hart hinterlegt: Diese Angaben stuetzen das
-     * Urteil, erscheinen aber nie in der Kundenfassung. Ein Kunde, der in
-     * seinem Audit einen Satz aus unserem CRM wiederfindet, ist kein Kunde
-     * mehr.
-     */
-    crm?: {
-      branche?: string
-      groesse?: string
-      umsatz?: string
-      ansprechpartner?: string
-      rolle?: string
-      deal_stand?: string
-      lead_quelle?: string
-      notizen?: string
-      gespraeche?: string[]
-      wettbewerber?: string[]
-      [k: string]: unknown
-    }
-    /**
-     * Was schon da ist.
-     *
-     * Im CRM liegt oft mehr als ein Lead-Satz: ein frueherer Audit, eine
-     * Gespraechsnotiz, ein Angebot, eine Website-Analyse, ein Transkript.
-     * Das alles nochmal zu recherchieren kostet Suchanfragen fuer Antworten,
-     * die schon vorliegen — und liefert schlechtere, weil ein Transkript
-     * Dinge enthaelt, die keine Website hergibt.
-     *
-     * `deckt` ist der wichtige Teil: Steht dort eine Quellenklasse, ueberspringt
-     * die Recherche sie. Wer ein halbes Jahr altes Audit mitschickt, will nicht,
-     * dass die Website nochmal von vorne gelesen wird.
-     */
+    crm?: Record<string, unknown>
     vorhandenes?: Array<{
-      titel: string
-      inhalt?: string
-      url?: string
+      titel: string; inhalt?: string; url?: string
       art?: 'audit' | 'notiz' | 'transkript' | 'angebot' | 'analyse' | 'sonstiges'
-      stand?: string
-      deckt?: string[]
+      stand?: string; deckt?: string[]
     }>
   }
   if (!body.firma && !body.url) {
+    await abschluss(400, { fehler: 'firma oder url ist Pflicht' })
     return NextResponse.json({ error: 'firma oder url ist Pflicht' }, { status: 400 })
   }
   const firma = body.firma ?? String(body.url).replace(/^https?:\/\//, '').split('/')[0]
-  // Ein gebundener Schluessel bestellt fuer seine Firma. Was im Rumpf steht,
-  // waere sonst eine Einladung, fuer jemand anderen zu bestellen — und die
-  // Rechnung ginge an den Falschen.
-  const orgId = ctx.frei
-    ? (body.orgId ?? await firmaFinden(firma, body.url ?? null))
-    : ctx.orgId
-
-  // Geltende Einstellungen: Grundeinstellung, Kundeneinstellung, und was der
-  // Aufrufer fuer diesen einen Auftrag mitschickt.
-  const gespeichert = await settingsFor(service, orgId, dienst.defaults)
-  const einstellungen = { ...gespeichert, ...(body.einstellungen ?? {}) }
-
-  const crm = body.crm ?? null
-  const vorhandenes = (body.vorhandenes ?? []).filter((v) => v?.titel && (v.inhalt || v.url))
-  const order = await createOrder({
-    serviceKey: service, orgId, firma, url: body.url ?? null,
-    auftrag: { hinweis: body.hinweis ?? null, einstellungen, crm, vorhandenes },
-    quelle: ctx.kind, externId: body.externId ?? null,
-  })
-
-  // Was das CRM mitbringt, gehoert auch an die Firma — dann steht es beim
-  // naechsten Auftrag schon da, ohne dass jemand es nochmal schickt.
-  if (orgId && crm && (crm.branche || crm.groesse)) {
-    await db.execute(sql`
-      UPDATE companies SET
-        industry = COALESCE(NULLIF(${crm.branche ?? null}::text, ''), industry),
-        size = COALESCE(NULLIF(${crm.groesse ?? null}::text, ''), size),
-        updated_at = now()
-      WHERE id = ${orgId}::uuid`).catch(() => {})
-  }
-
-  const agent = await activeAgent(dienst.agent)
-  if (!agent) {
-    await updateOrder(order.id, {
-      status: 'fehler',
-      fehler: `Kein aktiver Agent "${dienst.agent}" — der Auftrag ist angelegt und kann nachlaufen, `
-        + 'sobald er bestueckt ist.',
-    })
-    return NextResponse.json({
-      ok: false, auftragId: order.id, status: 'fehler',
-      error: `Kein aktiver Agent "${dienst.agent}"`,
-    }, { status: 503 })
-  }
-
-  const run = await startRun({
-    agentKey: dienst.agent,
-    input: { firma, url: body.url ?? null, hinweis: body.hinweis ?? null, einstellungen, crm, vorhandenes },
-    orgId, productId: null, userId: ctx.userId, via: ctx.kind,
-  })
-  await updateOrder(order.id, { status: 'laeuft', runId: run.id })
 
   /**
-   * Ab hier ist es unsere Sache.
+   * Der Auftrag entsteht jetzt — vor allem anderen.
    *
-   * Der Besteller hat einmal bestellt — er soll nicht nachfassen muessen,
-   * damit etwas passiert. Der Antrieb schiebt den Auftrag von selbst weiter,
-   * Durchgang fuer Durchgang, bis er fertig ist.
+   * Vorher stand er am Ende einer Kette aus Firma suchen, Einstellungen laden,
+   * Agent pruefen, Lauf starten. Jeder dieser Schritte konnte werfen, und dann
+   * gab es nichts, in das der Fehler haette geschrieben werden koennen. Jetzt
+   * ist die Reihenfolge umgedreht: erst die Zeile, dann die Arbeit. Was
+   * schiefgeht, landet sichtbar in derselben Zeile.
    *
-   * Deshalb antworten wir sofort und stossen erst danach an: Wer auf das
-   * Ergebnis wartet, wartet Minuten bis Stunden und verliert unterwegs die
-   * Verbindung.
+   * `org_id` bleibt zunaechst leer. Sie zu ermitteln ist selbst ein Schritt,
+   * der scheitern kann — und ein Auftrag ohne Firmenzuordnung ist immer noch
+   * besser als kein Auftrag.
    */
-  after(() => stosseAn())
+  let order
+  try {
+    order = await createOrder({
+      serviceKey: service, orgId: null, firma, url: body.url ?? null,
+      auftrag: { hinweis: body.hinweis ?? null, roh: true },
+      quelle: body.test === true ? 'test' : ctx.kind,
+      externId: body.externId ?? null,
+    })
+  } catch (e) {
+    const text = e instanceof Error ? e.message : String(e)
+    await abschluss(500, { fehler: `Auftrag konnte nicht angelegt werden: ${text}` })
+    return NextResponse.json({ error: 'Auftrag konnte nicht angelegt werden', detail: text }, { status: 500 })
+  }
 
-  return NextResponse.json({
-    ok: true,
-    auftragId: order.id,
-    laufId: run.id,
-    status: 'laeuft',
-    abfragen: `/api/services/${service}/${order.id}`,
-    hinweis: 'Der Auftrag läuft von selbst weiter. Abfragen ist möglich, aber nicht nötig.',
-  }, { status: 202 })
+  try {
+    // Ein gebundener Schluessel bestellt fuer seine Firma. Was im Rumpf steht,
+    // waere sonst eine Einladung, fuer jemand anderen zu bestellen — und die
+    // Rechnung ginge an den Falschen.
+    const orgId = ctx.frei
+      ? (body.orgId ?? await firmaFinden(firma, body.url ?? null))
+      : ctx.orgId
+
+    const gespeichert = await settingsFor(service, orgId, dienst.defaults)
+    const einstellungen = { ...gespeichert, ...(body.einstellungen ?? {}) }
+
+    const crm = body.crm ?? null
+    const vorhandenes = (body.vorhandenes ?? []).filter((v) => v?.titel && (v.inhalt || v.url))
+
+    await updateOrder(order.id, {
+      orgId,
+      auftrag: { hinweis: body.hinweis ?? null, einstellungen, crm, vorhandenes },
+    })
+
+    // Was das CRM mitbringt, gehoert auch an die Firma — dann steht es beim
+    // naechsten Auftrag schon da, ohne dass jemand es nochmal schickt.
+    if (orgId && crm && (crm.branche || crm.groesse)) {
+      await db.execute(sql`
+        UPDATE companies SET
+          industry = COALESCE(NULLIF(${(crm.branche as string) ?? null}::text, ''), industry),
+          size = COALESCE(NULLIF(${(crm.groesse as string) ?? null}::text, ''), size),
+          updated_at = now()
+        WHERE id = ${orgId}::uuid`).catch(() => {})
+    }
+
+    const agent = await activeAgent(dienst.agent)
+    if (!agent) {
+      const text = `Kein aktiver Agent "${dienst.agent}" — der Auftrag ist angelegt und kann `
+        + 'nachlaufen, sobald er bestueckt ist.'
+      await updateOrder(order.id, { status: 'fehler', fehler: text })
+      await abschluss(503, { orderId: order.id, fehler: text })
+      return NextResponse.json({
+        ok: false, auftragId: order.id, status: 'fehler', error: text,
+      }, { status: 503 })
+    }
+
+    const run = await startRun({
+      agentKey: dienst.agent,
+      input: { firma, url: body.url ?? null, hinweis: body.hinweis ?? null, einstellungen, crm, vorhandenes },
+      orgId, productId: null, userId: ctx.userId, via: ctx.kind,
+    })
+    await updateOrder(order.id, { status: 'laeuft', runId: run.id })
+
+    /**
+     * Ab hier ist es unsere Sache.
+     *
+     * Der Besteller hat einmal bestellt — er soll nicht nachfassen muessen,
+     * damit etwas passiert. Der Antrieb schiebt den Auftrag von selbst weiter,
+     * Durchgang fuer Durchgang, bis er fertig ist.
+     */
+    after(() => kick())
+
+    await abschluss(202, { orderId: order.id })
+    return NextResponse.json({
+      ok: true,
+      auftragId: order.id,
+      laufId: run.id,
+      status: 'laeuft',
+      abfragen: `/api/services/${service}/${order.id}`,
+      hinweis: 'Der Auftrag läuft von selbst weiter. Abfragen ist möglich, aber nicht nötig.',
+    }, { status: 202 })
+  } catch (e) {
+    /**
+     * Was hier ankommt, ist ein Absturz nach der Bestellung.
+     *
+     * Er gehoert in den Auftrag, nicht ins Nichts: Der Besteller bekommt eine
+     * Kennung, unter der er nachsehen kann, und wir sehen auf der Dienstseite,
+     * dass etwas liegengeblieben ist — statt es Wochen spaeter aus der
+     * Firmentabelle zu rekonstruieren.
+     */
+    const text = e instanceof Error ? `${e.message}\n${e.stack ?? ''}` : String(e)
+    console.error(`[services/${service}] Auftrag ${order.id} abgestuerzt:`, e)
+    await updateOrder(order.id, { status: 'fehler', fehler: text.slice(0, 4000) })
+    await abschluss(500, { orderId: order.id, fehler: text.slice(0, 2000) })
+    return NextResponse.json({
+      ok: false, auftragId: order.id, status: 'fehler',
+      error: 'Der Auftrag ist angelegt, die Vorbereitung ist gescheitert.',
+      detail: e instanceof Error ? e.message : String(e),
+    }, { status: 500 })
+  }
 }
 
 export async function GET(req: Request, { params }: { params: Promise<{ service: string }> }) {
