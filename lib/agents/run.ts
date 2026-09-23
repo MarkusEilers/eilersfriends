@@ -687,7 +687,20 @@ async function quellen(step: StepDef, ctx: Ctx): Promise<StepOut> {
     ],
   }
 
-  const gewaehlt = (e.quellen ?? Object.keys(FRAGEN)).filter((k) => FRAGEN[k])
+  /**
+   * Was schon vorliegt, wird nicht nochmal gesucht.
+   *
+   * Ein mitgeschicktes Audit oder Transkript ist meistens besser als das, was
+   * eine Suche findet — und es kostet nichts. Also kommt es als Material
+   * dazu, und die Klassen, die es abdeckt, fallen aus der Recherche.
+   */
+  type Mitgebracht = { titel: string; inhalt?: string; url?: string; art?: string; stand?: string; deckt?: string[] }
+  const mitgebracht = alsListe<Mitgebracht>(ctx.input.vorhandenes)
+  const abgedeckt = new Set(mitgebracht.flatMap((v) => v.deckt ?? []))
+
+  const gewaehlt = (e.quellen ?? Object.keys(FRAGEN))
+    .filter((k) => FRAGEN[k])
+    .filter((k) => !abgedeckt.has(k))
   const alle: Array<{ klasse: string; query: string; text: string; citations: unknown[]; error?: string }> = []
   let tin = 0, tout = 0, suchen = 0
   const leer: string[] = []
@@ -721,19 +734,43 @@ async function quellen(step: StepDef, ctx: Ctx): Promise<StepOut> {
     VALUES (${ctx.runId}, ${step.key}, 'quellen',
             ${`${gewaehlt.length} Klassen, ${suchen} Suchen`}, ${JSON.stringify(alle)}::jsonb)`)
 
-  const material = alle
+  const gesucht = alle
     .map((f) => `#### ${f.klasse} — ${f.query}\n${f.text}\n${
       (f.citations as Array<{ url?: string }> ?? []).map((c) => `- ${c.url}`).join('\n')}`)
     .join('\n\n')
+
+  // Das Mitgebrachte steht VOR dem Gesuchten. Es ist aelter, aber meistens
+  // naeher dran: Ein Gespraechsprotokoll weiss Dinge, die keine Website hergibt.
+  const vorweg = mitgebracht.length
+    ? mitgebracht.map((v) => [
+      `#### ${v.art ?? 'mitgebracht'} — ${v.titel}`,
+      v.stand ? `_Stand: ${v.stand}_` : '',
+      v.url ? `Quelle: ${v.url}` : '',
+      v.inhalt ?? '',
+    ].filter(Boolean).join('\n')).join('\n\n')
+    : ''
+
+  const material = [
+    vorweg ? `### Was schon vorlag\n\n${vorweg}` : '',
+    gesucht ? `### Was die Recherche ergab\n\n${gesucht}` : '',
+  ].filter(Boolean).join('\n\n')
 
   return {
     value: {
       material,
       klassen: gewaehlt,
+      mitgebracht: mitgebracht.map((v) => v.titel),
+      uebersprungen: [...abgedeckt],
       leer,
-      leer_hinweis: leer.length
-        ? `Ohne Fund: ${leer.join(', ')}. Das gehört in den Bericht — eine leere Klasse ist ein Befund, kein Loch.`
-        : 'Jede geprüfte Klasse hat etwas hergegeben.',
+      leer_hinweis: [
+        leer.length
+          ? `Ohne Fund: ${leer.join(', ')}. Das gehört in den Bericht — eine leere Klasse ist ein Befund, kein Loch.`
+          : 'Jede geprüfte Klasse hat etwas hergegeben.',
+        abgedeckt.size
+          ? `Nicht neu recherchiert, weil bereits mitgeliefert: ${[...abgedeckt].join(', ')}. `
+            + 'Das mitgebrachte Material kann älter sein — im Bericht mit seinem Stand nennen.'
+          : '',
+      ].filter(Boolean).join(' '),
       quellen: alle.flatMap((f) => (f.citations as unknown[]) ?? []),
       suchen,
     },

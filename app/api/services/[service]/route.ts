@@ -93,6 +93,27 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
       wettbewerber?: string[]
       [k: string]: unknown
     }
+    /**
+     * Was schon da ist.
+     *
+     * Im CRM liegt oft mehr als ein Lead-Satz: ein frueherer Audit, eine
+     * Gespraechsnotiz, ein Angebot, eine Website-Analyse, ein Transkript.
+     * Das alles nochmal zu recherchieren kostet Suchanfragen fuer Antworten,
+     * die schon vorliegen — und liefert schlechtere, weil ein Transkript
+     * Dinge enthaelt, die keine Website hergibt.
+     *
+     * `deckt` ist der wichtige Teil: Steht dort eine Quellenklasse, ueberspringt
+     * die Recherche sie. Wer ein halbes Jahr altes Audit mitschickt, will nicht,
+     * dass die Website nochmal von vorne gelesen wird.
+     */
+    vorhandenes?: Array<{
+      titel: string
+      inhalt?: string
+      url?: string
+      art?: 'audit' | 'notiz' | 'transkript' | 'angebot' | 'analyse' | 'sonstiges'
+      stand?: string
+      deckt?: string[]
+    }>
   }
   if (!body.firma && !body.url) {
     return NextResponse.json({ error: 'firma oder url ist Pflicht' }, { status: 400 })
@@ -111,9 +132,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
   const einstellungen = { ...gespeichert, ...(body.einstellungen ?? {}) }
 
   const crm = body.crm ?? null
+  const vorhandenes = (body.vorhandenes ?? []).filter((v) => v?.titel && (v.inhalt || v.url))
   const order = await createOrder({
     serviceKey: service, orgId, firma, url: body.url ?? null,
-    auftrag: { hinweis: body.hinweis ?? null, einstellungen, crm },
+    auftrag: { hinweis: body.hinweis ?? null, einstellungen, crm, vorhandenes },
     quelle: ctx.kind, externId: body.externId ?? null,
   })
 
@@ -143,7 +165,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
 
   const run = await startRun({
     agentKey: dienst.agent,
-    input: { firma, url: body.url ?? null, hinweis: body.hinweis ?? null, einstellungen, crm },
+    input: { firma, url: body.url ?? null, hinweis: body.hinweis ?? null, einstellungen, crm, vorhandenes },
     orgId, productId: null, userId: ctx.userId, via: ctx.kind,
   })
   await updateOrder(order.id, { status: 'laeuft', runId: run.id })

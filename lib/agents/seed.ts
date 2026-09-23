@@ -1477,6 +1477,8 @@ Zwei Regeln dazu, und die zweite ist die wichtigere:
 
 Erstens: Was im CRM steht, ist nicht belegt. Es ist Kontext, kein Zitat. Eine Bewertung stuetzt sich auf Quellen, nicht auf unsere Notizen.
 
+Eine Ausnahme davon: mitgeliefertes Material — ein frueherer Audit, ein Gespraechsprotokoll, eine Analyse. Das ist zitierfaehig, aber IMMER mit seinem Stand. "Aus dem Audit vom Maerz" ist ein Beleg, "wie wir wissen" ist keiner. Und wo sich Mitgebrachtes und Recherche widersprechen, gewinnt das Neuere — und der Widerspruch gehoert in den Bericht, weil er selbst ein Befund ist.
+
 Zweitens: Nichts davon erscheint in der Kundenfassung. Kein Satz, keine Zahl, keine Anspielung. Ein Kunde, der in seinem Audit einen Satz aus unserem CRM wiedererkennt, ist kein Kunde mehr — und zwar zu Recht.`
 
 export async function seedAuditAgent() {
