@@ -1,6 +1,26 @@
 {
   "crons": [
     {
+      "path": "/api/services/antrieb",
+      "schedule": "*/2 * * * *"
+    },
+    {
+      "path": "/api/cron/agents-sweep",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/schedule-cache-refresh",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/webhook-deliver",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/schedule-reminders",
+      "schedule": "0 7 * * *"
+    },
+    {
       "path": "/api/cron/assessments",
       "schedule": "0 8 * * *"
     },
@@ -9,40 +29,12 @@
       "schedule": "0 9 * * *"
     },
     {
-      "path": "/api/cron/webhook-deliver",
-      "schedule": "0 4 * * *"
-    },
-    {
-      "path": "/api/cron/schedule-reminders",
-      "schedule": "0 7 * * *"
-    },
-    {
-      "path": "/api/cron/schedule-cache-refresh",
-      "schedule": "0 8 * * *"
-    },
-    {
-      "path": "/api/cron/schedule-cache-refresh",
-      "schedule": "0 12 * * *"
-    },
-    {
-      "path": "/api/cron/schedule-cache-refresh",
-      "schedule": "0 16 * * *"
-    },
-    {
-      "path": "/api/cron/health-check",
-      "schedule": "0 8 * * *"
-    },
-    {
-      "path": "/api/cron/health-check",
-      "schedule": "0 20 * * *"
-    },
-    {
       "path": "/api/cron/blog-publish",
-      "schedule": "0 5 * * *"
+      "schedule": "*/15 * * * *"
     },
     {
-      "path": "/api/cron/agents-sweep",
-      "schedule": "30 5 * * *"
+      "path": "/api/cron/health-check",
+      "schedule": "0 8,20 * * *"
     }
   ]
 }
