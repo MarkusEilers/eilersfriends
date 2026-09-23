@@ -1473,6 +1473,8 @@ WAS WIR SCHON WISSEN, KOMMT AUS DEM CRM — UND BLEIBT DORT.
 
 Zum Auftrag koennen Vorkenntnisse gehoeren: Branche, Groesse, Ansprechpartner, Stand des Gespraechs, Notizen aus frueheren Kontakten. Sie helfen beim Einordnen und ersparen Recherche.
 
+Dazu kommt oft ein freier Hintergrundtext — das, was jemand aufgeschrieben hat, ohne es in Felder zu sortieren: wie das Gespraech lief, was der Ansprechpartner wirklich umtreibt, was im Unternehmen gerade los ist. Unsortiert heisst nicht wertlos; der Satz, auf den es ankommt, steht fast immer dort und nicht im Formular. Fuer ihn gelten dieselben zwei Regeln.
+
 Zwei Regeln dazu, und die zweite ist die wichtigere:
 
 Erstens: Was im CRM steht, ist nicht belegt. Es ist Kontext, kein Zitat. Eine Bewertung stuetzt sich auf Quellen, nicht auf unsere Notizen.
@@ -1543,6 +1545,7 @@ Anlass: {{aufnahme.hinweis}}
 
 Was wir vorher schon wussten (Kontext, kein Beleg — und nichts davon geht in die Kundenfassung):
 {{eingabe.crm}}
+{{eingabe.background}}
 
 Was die Quellen hergegeben haben:
 {{sammeln.material}}
@@ -1588,6 +1591,7 @@ Drei Spalten je Zeile: der beworbene Schmerz, der echte Schmerz in den Worten de
 Wo die Firma trifft, sagst Du das auch. Ein Audit, das nur Luecken findet, ist unglaubwuerdig.`,
         user: `Was wir vorher schon wussten (Kontext, kein Beleg):
 {{eingabe.crm}}
+{{eingabe.background}}
 
 Was die Firma sagt:
 {{sammeln.material}}
@@ -1665,6 +1669,7 @@ Anlass: {{aufnahme.hinweis}}
 
 Was wir vorher wussten — hier darf es vorkommen, das ist die interne Fassung:
 {{eingabe.crm}}
+{{eingabe.background}}
 
 Bewertung: {{werte.dimensionen}}
 Gesamtbild: {{werte.gesamt}}

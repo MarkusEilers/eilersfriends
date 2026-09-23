@@ -64,6 +64,25 @@ async function firmaFinden(name: string, url: string | null): Promise<string | n
   return neu[0]?.id ?? null
 }
 
+/**
+ * Wieviel Hintergrund ins Kontextfenster passt.
+ *
+ * Ein Blob hat keine natuerliche Grenze — wer ein ganzes Postfach hineinkippt,
+ * sprengt den ersten Modellaufruf und der Auftrag stirbt an Stelle eins. Also
+ * eine Grenze, und zwar eine sichtbare: Was abgeschnitten wird, steht im Text
+ * selbst, damit im Bericht niemand raetselt, warum die Haelfte fehlt.
+ */
+const BACKGROUND_MAX = 40_000
+
+function kuerzeBackground(x: string | null): string | null {
+  if (!x) return null
+  const t = x.trim()
+  if (!t) return null
+  if (t.length <= BACKGROUND_MAX) return t
+  return `${t.slice(0, BACKGROUND_MAX)}\n\n[… hier abgeschnitten: ${t.length - BACKGROUND_MAX} `
+    + 'weitere Zeichen wurden mitgeschickt, aber nicht verarbeitet.]'
+}
+
 export async function POST(req: Request, { params }: { params: Promise<{ service: string }> }) {
   const begonnen = Date.now()
   const { service } = await params
@@ -112,6 +131,20 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
   const body = roh as {
     firma?: string; url?: string; orgId?: string
     externId?: string; hinweis?: string; test?: boolean
+    /**
+     * Freier Hintergrundtext.
+     *
+     * Neben `crm` (sortiert in Felder) und `vorhandenes` (ganze Dokumente)
+     * die dritte, einfachste Form: hinschreiben, was man weiss, ohne es
+     * vorher in ein Formular zu zwingen. Der Satz, auf den es ankommt, steht
+     * fast immer dort und nicht im Feld daneben.
+     *
+     * Es gelten dieselben zwei Regeln wie fuer `crm`: Kontext, kein Beleg —
+     * und nichts davon erscheint in der Kundenfassung.
+     */
+    background?: string
+    /** Deutsches Synonym, damit niemand raten muss. */
+    hintergrund?: string
     einstellungen?: Partial<AuditSettings>
     crm?: Record<string, unknown>
     vorhandenes?: Array<{
@@ -166,10 +199,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
 
     const crm = body.crm ?? null
     const vorhandenes = (body.vorhandenes ?? []).filter((v) => v?.titel && (v.inhalt || v.url))
+    const background = kuerzeBackground(body.background ?? body.hintergrund ?? null)
 
     await updateOrder(order.id, {
       orgId,
-      auftrag: { hinweis: body.hinweis ?? null, einstellungen, crm, vorhandenes },
+      auftrag: { hinweis: body.hinweis ?? null, einstellungen, crm, vorhandenes, background },
     })
 
     // Was das CRM mitbringt, gehoert auch an die Firma — dann steht es beim
@@ -196,7 +230,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
 
     const run = await startRun({
       agentKey: dienst.agent,
-      input: { firma, url: body.url ?? null, hinweis: body.hinweis ?? null, einstellungen, crm, vorhandenes },
+      input: {
+        firma, url: body.url ?? null, hinweis: body.hinweis ?? null,
+        einstellungen, crm, vorhandenes, background,
+      },
       orgId, productId: null, userId: ctx.userId, via: ctx.kind,
     })
     await updateOrder(order.id, { status: 'laeuft', runId: run.id })
