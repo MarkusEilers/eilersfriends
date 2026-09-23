@@ -1,21 +1,17 @@
 /**
  * Wie lange eine Funktion wirklich laufen darf.
  *
- * Zwoelf Routen standen mit `maxDuration = 300` im Code, und der Tarif gab
- * sechzig. Die Zahl im Code war kein Wunsch, sie war eine Behauptung — und die
- * Budgetpruefungen, die daraus abgeleitet waren, pruefen bei 170 Sekunden auf
- * etwas, das nach sechzig schon vorbei ist.
+ * Die Zahl stand bisher an zwoelf Stellen als `maxDuration = 300`, und die
+ * davon abgeleiteten Budgets standen an vier weiteren als 170_000 oder
+ * 230_000. Wer den Tarif wechselt, muesste sie alle finden.
  *
- * Sichtbar war davon nichts. Die Laeufe waren resumierbar, also lief alles
- * weiter; es lief nur in Portionen von einem Fuenftel der geplanten Groesse,
- * und niemand konnte sagen warum.
- *
- * Deshalb steht die Wahrheit ab jetzt an einer Stelle. Nach einem Tarifwechsel
- * ist es eine Umgebungsvariable und kein Streifzug durch zwoelf Dateien.
+ * Also eine Stelle. Der Wert gilt fuer dieses Projekt geprueft: Fluid Compute
+ * ist aktiv, `functionDefaultTimeout` steht auf 300 — auch auf Hobby. Wer auf
+ * Pro geht und 800 Sekunden will, aendert hier eine Umgebungsvariable.
  */
 
-/** Was der Tarif hergibt. Hobby: 60. Pro: 300. Fluid: bis 800. */
-export const FUNKTION_SEKUNDEN = Number(process.env.FUNCTION_MAX_SECONDS ?? 60)
+/** Was der Tarif hergibt. Hobby und Pro: 300 mit Fluid. Pro maximal: 800. */
+export const FUNKTION_SEKUNDEN = Number(process.env.FUNCTION_MAX_SECONDS ?? 300)
 
 /**
  * Wieviel Zeit eine Arbeitsschleife sich nehmen darf.
