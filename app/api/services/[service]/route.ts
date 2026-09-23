@@ -74,7 +74,7 @@ async function firmaFinden(name: string, url: string | null): Promise<string | n
  */
 const BACKGROUND_MAX = 40_000
 
-function kuerzeBackground(x: string | null): string | null {
+function clampBackground(x: string | null): string | null {
   if (!x) return null
   const t = x.trim()
   if (!t) return null
@@ -84,11 +84,11 @@ function kuerzeBackground(x: string | null): string | null {
 }
 
 export async function POST(req: Request, { params }: { params: Promise<{ service: string }> }) {
-  const begonnen = Date.now()
+  const startedAt = Date.now()
   const { service } = await params
   const dienst = DIENSTE[service]
 
-  const roh = (await req.json().catch(() => ({}))) as Record<string, unknown>
+  const raw = (await req.json().catch(() => ({}))) as Record<string, unknown>
 
   /**
    * Erst schreiben, dass jemand angeklopft hat. Dann pruefen.
@@ -100,35 +100,35 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
    */
   const callId = await logCall({
     serviceKey: service,
-    firma: typeof roh.firma === 'string' ? roh.firma : null,
-    externId: typeof roh.externId === 'string' ? roh.externId : null,
-    rumpf: roh,
+    company: typeof raw.firma === 'string' ? raw.firma : null,
+    externId: typeof raw.externId === 'string' ? raw.externId : null,
+    body: raw,
   })
   /**
    * Wer es war, steht erst nach der Auth fest — also wird es nachgetragen.
    * Ohne Name im Protokoll ist bei drei Schluesseln nicht zu klaeren, welches
    * System angeklopft hat.
    */
-  let wesen: { keyId: string | null; keyName: string | null; orgId: string | null } =
+  let caller: { keyId: string | null; keyName: string | null; orgId: string | null } =
     { keyId: null, keyName: null, orgId: null }
-  const abschluss = async (status: number, patch: { orderId?: string | null; fehler?: string | null } = {}) => {
-    await finishCall(callId, { status, dauerMs: Date.now() - begonnen, ...wesen, ...patch })
+  const finish = async (status: number, patch: { orderId?: string | null; error?: string | null } = {}) => {
+    await finishCall(callId, { status, durationMs: Date.now() - startedAt, ...caller, ...patch })
   }
 
   if (!dienst) {
-    await abschluss(404, { fehler: `Unbekannter Dienst "${service}"` })
+    await finish(404, { error: `Unbekannter Dienst "${service}"` })
     return NextResponse.json({ error: `Unbekannter Dienst "${service}"` }, { status: 404 })
   }
 
   const ctx = await wer(req)
   if (!ctx) {
-    await abschluss(401, { fehler: 'unauthorized' })
+    await finish(401, { error: 'unauthorized' })
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
-  wesen = { keyId: ctx.keyId, keyName: ctx.keyName, orgId: ctx.orgId }
+  caller = { keyId: ctx.keyId, keyName: ctx.keyName, orgId: ctx.orgId }
 
-  const body = roh as {
+  const body = raw as {
     firma?: string; url?: string; orgId?: string
     externId?: string; hinweis?: string; test?: boolean
     /**
@@ -139,12 +139,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
      * vorher in ein Formular zu zwingen. Der Satz, auf den es ankommt, steht
      * fast immer dort und nicht im Feld daneben.
      *
-     * Es gelten dieselben zwei Regeln wie fuer `crm`: Kontext, kein Beleg —
-     * und nichts davon erscheint in der Kundenfassung.
+     * Typischer Inhalt: Rechercheergebnisse und alles, was ueber den Kunden
+     * bekannt ist. Beides darf gemischt drinstehen — der Agent trennt selbst,
+     * was zitierfaehig ist und was nur einordnet.
      */
     background?: string
-    /** Deutsches Synonym, damit niemand raten muss. */
-    hintergrund?: string
     einstellungen?: Partial<AuditSettings>
     crm?: Record<string, unknown>
     vorhandenes?: Array<{
@@ -154,7 +153,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
     }>
   }
   if (!body.firma && !body.url) {
-    await abschluss(400, { fehler: 'firma oder url ist Pflicht' })
+    await finish(400, { error: 'firma oder url ist Pflicht' })
     return NextResponse.json({ error: 'firma oder url ist Pflicht' }, { status: 400 })
   }
   const firma = body.firma ?? String(body.url).replace(/^https?:\/\//, '').split('/')[0]
@@ -176,13 +175,13 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
   try {
     order = await createOrder({
       serviceKey: service, orgId: null, firma, url: body.url ?? null,
-      auftrag: { hinweis: body.hinweis ?? null, roh: true },
+      auftrag: { hinweis: body.hinweis ?? null, vorlaeufig: true },
       quelle: body.test === true ? 'test' : ctx.kind,
       externId: body.externId ?? null,
     })
   } catch (e) {
     const text = e instanceof Error ? e.message : String(e)
-    await abschluss(500, { fehler: `Auftrag konnte nicht angelegt werden: ${text}` })
+    await finish(500, { error: `Auftrag konnte nicht angelegt werden: ${text}` })
     return NextResponse.json({ error: 'Auftrag konnte nicht angelegt werden', detail: text }, { status: 500 })
   }
 
@@ -199,7 +198,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
 
     const crm = body.crm ?? null
     const vorhandenes = (body.vorhandenes ?? []).filter((v) => v?.titel && (v.inhalt || v.url))
-    const background = kuerzeBackground(body.background ?? body.hintergrund ?? null)
+    const background = clampBackground(body.background ?? null)
 
     await updateOrder(order.id, {
       orgId,
@@ -222,7 +221,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
       const text = `Kein aktiver Agent "${dienst.agent}" — der Auftrag ist angelegt und kann `
         + 'nachlaufen, sobald er bestueckt ist.'
       await updateOrder(order.id, { status: 'fehler', fehler: text })
-      await abschluss(503, { orderId: order.id, fehler: text })
+      await finish(503, { orderId: order.id, error: text })
       return NextResponse.json({
         ok: false, auftragId: order.id, status: 'fehler', error: text,
       }, { status: 503 })
@@ -247,7 +246,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
      */
     after(() => kick())
 
-    await abschluss(202, { orderId: order.id })
+    await finish(202, { orderId: order.id })
     return NextResponse.json({
       ok: true,
       auftragId: order.id,
@@ -268,7 +267,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ service
     const text = e instanceof Error ? `${e.message}\n${e.stack ?? ''}` : String(e)
     console.error(`[services/${service}] Auftrag ${order.id} abgestuerzt:`, e)
     await updateOrder(order.id, { status: 'fehler', fehler: text.slice(0, 4000) })
-    await abschluss(500, { orderId: order.id, fehler: text.slice(0, 2000) })
+    await finish(500, { orderId: order.id, error: text.slice(0, 2000) })
     return NextResponse.json({
       ok: false, auftragId: order.id, status: 'fehler',
       error: 'Der Auftrag ist angelegt, die Vorbereitung ist gescheitert.',

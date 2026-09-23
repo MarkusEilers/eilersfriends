@@ -12,10 +12,10 @@ import { useState } from 'react'
  */
 
 type Call = {
-  id: string; service_key: string; methode: string; status: number | null
-  key_name: string | null; firma: string | null; extern_id: string | null
-  order_id: string | null; fehler: string | null; rumpf: unknown
-  dauer_ms: number | null; created_at: string
+  id: string; service_key: string; method: string; status: number | null
+  key_name: string | null; company: string | null; extern_id: string | null
+  order_id: string | null; error: string | null; body: unknown
+  duration_ms: number | null; created_at: string
 }
 
 function farbe(status: number | null): string {
@@ -74,7 +74,7 @@ export function ServiceCalls({ calls }: { calls: Call[] }) {
                 >
                   <td className="px-4 py-2.5 whitespace-nowrap text-gray-600">{zeit(c.created_at)}</td>
                   <td className="px-4 py-2.5">
-                    <span className="font-medium text-gray-900">{c.firma ?? '—'}</span>
+                    <span className="font-medium text-gray-900">{c.company ?? '—'}</span>
                     {c.extern_id ? (
                       <span className="ml-1 text-xs text-gray-400">#{c.extern_id}</span>
                     ) : null}
@@ -84,8 +84,8 @@ export function ServiceCalls({ calls }: { calls: Call[] }) {
                     <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${farbe(c.status)}`}>
                       {c.status ?? 'offen'}
                     </span>
-                    {c.dauer_ms !== null ? (
-                      <span className="ml-2 text-xs text-gray-400">{c.dauer_ms} ms</span>
+                    {c.duration_ms !== null ? (
+                      <span className="ml-2 text-xs text-gray-400">{c.duration_ms} ms</span>
                     ) : null}
                   </td>
                   <td className="px-4 py-2.5">
@@ -97,16 +97,16 @@ export function ServiceCalls({ calls }: { calls: Call[] }) {
                 {offen === c.id ? (
                   <tr key={`${c.id}-detail`} className="border-b border-gray-50 bg-gray-50/70">
                     <td colSpan={5} className="px-4 py-3">
-                      {c.fehler ? (
+                      {c.error ? (
                         <pre className="mb-3 overflow-x-auto whitespace-pre-wrap rounded-lg bg-red-50 p-3 text-xs text-red-800">
-                          {c.fehler}
+                          {c.error}
                         </pre>
                       ) : null}
                       <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-400">
                         Was geschickt wurde
                       </div>
                       <pre className="max-h-64 overflow-auto rounded-lg bg-white p-3 text-xs text-gray-700">
-                        {JSON.stringify(c.rumpf, null, 2)}
+                        {JSON.stringify(c.body, null, 2)}
                       </pre>
                     </td>
                   </tr>

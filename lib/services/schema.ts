@@ -13,9 +13,9 @@ import { db } from '@/lib/db'
  * Kunde abweichen, ohne dass jemand die Grundeinstellung anfasst.
  */
 
-let bereit = false
+let schemaReady = false
 export async function ensureServiceSchema() {
-  if (bereit) return
+  if (schemaReady) return
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS service_settings (
       id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -76,7 +76,7 @@ export async function ensureServiceSchema() {
    * Ein DELETE gibt es hier deshalb nicht mehr. Wer aufraeumt, setzt ein Datum.
    * Die Zeile verschwindet aus den Listen und bleibt in der Datenbank.
    */
-  await db.execute(sql`ALTER TABLE service_orders ADD COLUMN IF NOT EXISTS geloescht_at TIMESTAMPTZ`)
+  await db.execute(sql`ALTER TABLE service_orders ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS service_orders_idx ON service_orders (service_key, created_at DESC)`)
   await db.execute(sql`
     CREATE INDEX IF NOT EXISTS service_orders_offen ON service_orders (status, updated_at)
@@ -102,23 +102,23 @@ export async function ensureServiceSchema() {
     CREATE TABLE IF NOT EXISTS service_calls (
       id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       service_key TEXT NOT NULL,
-      methode     TEXT NOT NULL DEFAULT 'POST',
+      method      TEXT NOT NULL DEFAULT 'POST',
       status      INT,
       key_id      UUID,
       key_name    TEXT,
       org_id      UUID,
-      firma       TEXT,
+      company     TEXT,
       extern_id   TEXT,
       order_id    UUID,
-      fehler      TEXT,
-      rumpf       JSONB,
-      dauer_ms    INT,
+      error       TEXT,
+      body        JSONB,
+      duration_ms INT,
       created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
     )`)
   await db.execute(sql`
     CREATE INDEX IF NOT EXISTS service_calls_idx ON service_calls (created_at DESC)`)
 
-  bereit = true
+  schemaReady = true
 }
 
 export type OrderStatus = 'offen' | 'laeuft' | 'fertig' | 'fehler' | 'abgebrochen'
@@ -180,7 +180,7 @@ export async function listOrders(serviceKey: string, limit = 50): Promise<Servic
   const rows = await db.execute(sql`
     SELECT o.*, c.name AS org_name FROM service_orders o
     LEFT JOIN companies c ON c.id = o.org_id
-    WHERE o.service_key = ${serviceKey} AND o.geloescht_at IS NULL
+    WHERE o.service_key = ${serviceKey} AND o.deleted_at IS NULL
     ORDER BY o.created_at DESC LIMIT ${limit}`)
   return rows as unknown as ServiceOrder[]
 }
@@ -212,7 +212,7 @@ export async function openOrders(limit = 5, ruheSekunden = 20): Promise<ServiceO
   const rows = await db.execute(sql`
     SELECT * FROM service_orders
     WHERE status IN ('offen','laeuft')
-      AND geloescht_at IS NULL
+      AND deleted_at IS NULL
       AND schuebe < 60
       AND updated_at < now() - (${ruheSekunden} * interval '1 second')
     ORDER BY updated_at ASC LIMIT ${limit}`)
@@ -265,26 +265,26 @@ export async function updateOrder(id: string, patch: {
  */
 export interface CallLog {
   serviceKey: string
-  methode?: string
+  method?: string
   status?: number | null
   keyId?: string | null
   keyName?: string | null
   orgId?: string | null
-  firma?: string | null
+  company?: string | null
   externId?: string | null
   orderId?: string | null
-  fehler?: string | null
-  rumpf?: unknown
-  dauerMs?: number | null
+  error?: string | null
+  body?: unknown
+  durationMs?: number | null
 }
 
 /** Der Rumpf, aber in einer Groesse, die man noch lesen kann. */
-function kuerzen(x: unknown, grenze = 4000): unknown {
+function clip(x: unknown, limit = 4000): unknown {
   try {
     const s = JSON.stringify(x)
     if (!s) return null
-    if (s.length <= grenze) return JSON.parse(s)
-    return { gekuerzt: true, laenge: s.length, anfang: s.slice(0, grenze) }
+    if (s.length <= limit) return JSON.parse(s)
+    return { gekuerzt: true, laenge: s.length, anfang: s.slice(0, limit) }
   } catch {
     return { gekuerzt: true, fehler: 'nicht serialisierbar' }
   }
@@ -295,13 +295,13 @@ export async function logCall(c: CallLog): Promise<string | null> {
     await ensureServiceSchema()
     const rows = (await db.execute(sql`
       INSERT INTO service_calls
-        (service_key, methode, status, key_id, key_name, org_id, firma, extern_id,
-         order_id, fehler, rumpf, dauer_ms)
-      VALUES (${c.serviceKey}, ${c.methode ?? 'POST'}, ${c.status ?? null},
+        (service_key, method, status, key_id, key_name, org_id, company, extern_id,
+         order_id, error, body, duration_ms)
+      VALUES (${c.serviceKey}, ${c.method ?? 'POST'}, ${c.status ?? null},
               ${c.keyId ?? null}::uuid, ${c.keyName ?? null}, ${c.orgId ?? null}::uuid,
-              ${c.firma ?? null}, ${c.externId ?? null}, ${c.orderId ?? null}::uuid,
-              ${c.fehler ?? null}, ${JSON.stringify(kuerzen(c.rumpf) ?? null)}::jsonb,
-              ${c.dauerMs ?? null})
+              ${c.company ?? null}, ${c.externId ?? null}, ${c.orderId ?? null}::uuid,
+              ${c.error ?? null}, ${JSON.stringify(clip(c.body) ?? null)}::jsonb,
+              ${c.durationMs ?? null})
       RETURNING id`)) as unknown as Array<{ id: string }>
     return rows[0]?.id ?? null
   } catch (e) {
@@ -312,7 +312,7 @@ export async function logCall(c: CallLog): Promise<string | null> {
 
 /** Nachtragen, was erst am Ende feststeht. */
 export async function finishCall(id: string | null, patch: {
-  status?: number; orderId?: string | null; fehler?: string | null; dauerMs?: number
+  status?: number; orderId?: string | null; error?: string | null; durationMs?: number
   keyId?: string | null; keyName?: string | null; orgId?: string | null
 }) {
   if (!id) return
@@ -321,8 +321,8 @@ export async function finishCall(id: string | null, patch: {
       UPDATE service_calls SET
         status = COALESCE(${patch.status ?? null}, status),
         order_id = COALESCE(${patch.orderId ?? null}::uuid, order_id),
-        fehler = COALESCE(${patch.fehler ?? null}, fehler),
-        dauer_ms = COALESCE(${patch.dauerMs ?? null}, dauer_ms),
+        error = COALESCE(${patch.error ?? null}, error),
+        duration_ms = COALESCE(${patch.durationMs ?? null}, duration_ms),
         key_id = COALESCE(${patch.keyId ?? null}::uuid, key_id),
         key_name = COALESCE(${patch.keyName ?? null}, key_name),
         org_id = COALESCE(${patch.orgId ?? null}::uuid, org_id)
@@ -333,10 +333,10 @@ export async function finishCall(id: string | null, patch: {
 }
 
 export interface ServiceCall {
-  id: string; service_key: string; methode: string; status: number | null
-  key_name: string | null; org_id: string | null; firma: string | null
-  extern_id: string | null; order_id: string | null; fehler: string | null
-  rumpf: unknown; dauer_ms: number | null; created_at: string
+  id: string; service_key: string; method: string; status: number | null
+  key_name: string | null; org_id: string | null; company: string | null
+  extern_id: string | null; order_id: string | null; error: string | null
+  body: unknown; duration_ms: number | null; created_at: string
 }
 
 export async function listCalls(serviceKey: string | null, limit = 100): Promise<ServiceCall[]> {
@@ -360,13 +360,13 @@ export async function listCalls(serviceKey: string | null, limit = 100): Promise
 export async function hideOrder(id: string) {
   await ensureServiceSchema()
   await db.execute(sql`
-    UPDATE service_orders SET geloescht_at = now(), updated_at = now()
-    WHERE id = ${id}::uuid AND geloescht_at IS NULL`)
+    UPDATE service_orders SET deleted_at = now(), updated_at = now()
+    WHERE id = ${id}::uuid AND deleted_at IS NULL`)
 }
 
 /** Zurueckholen, was versehentlich weggeraeumt wurde. */
 export async function restoreOrder(id: string) {
   await ensureServiceSchema()
   await db.execute(sql`
-    UPDATE service_orders SET geloescht_at = NULL, updated_at = now() WHERE id = ${id}::uuid`)
+    UPDATE service_orders SET deleted_at = NULL, updated_at = now() WHERE id = ${id}::uuid`)
 }

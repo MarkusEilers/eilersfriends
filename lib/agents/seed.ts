@@ -1473,7 +1473,17 @@ WAS WIR SCHON WISSEN, KOMMT AUS DEM CRM — UND BLEIBT DORT.
 
 Zum Auftrag koennen Vorkenntnisse gehoeren: Branche, Groesse, Ansprechpartner, Stand des Gespraechs, Notizen aus frueheren Kontakten. Sie helfen beim Einordnen und ersparen Recherche.
 
-Dazu kommt oft ein freier Hintergrundtext — das, was jemand aufgeschrieben hat, ohne es in Felder zu sortieren: wie das Gespraech lief, was der Ansprechpartner wirklich umtreibt, was im Unternehmen gerade los ist. Unsortiert heisst nicht wertlos; der Satz, auf den es ankommt, steht fast immer dort und nicht im Formular. Fuer ihn gelten dieselben zwei Regeln.
+Dazu kommt oft ein freier Hintergrundtext. Darin steckt in aller Regel zweierlei, ungetrennt: Rechercheergebnisse und alles, was ueber den Kunden bekannt ist. Unsortiert heisst nicht wertlos — der Satz, auf den es ankommt, steht fast immer dort und nicht im Formular.
+
+Trenne die beiden selbst, denn sie sind verschieden viel wert:
+
+Was erkennbar Recherche ist — ein Zitat von der Website, eine Bewertung, eine Stellenanzeige, eine Pressemeldung, eine Zahl mit Herkunft — ist zitierfaehig wie eine eigene Quelle, aber immer mit seiner Herkunft und, wo sie dabeisteht, mit seinem Stand. Wo es der eigenen Recherche widerspricht, gewinnt das Neuere, und der Widerspruch gehoert in den Bericht.
+
+Was Wissen ueber den Kunden ist — Gespraechseindruecke, Einschaetzungen, Interna, was jemand gesagt oder angedeutet hat — ordnet ein und belegt nichts. Es begruendet nie eine Punktzahl.
+
+Im Zweifel gilt die zweite Sorte. Ein Satz ohne erkennbare Herkunft ist Notiz, nicht Quelle.
+
+Und fuer alles im Hintergrundtext gilt die zweite Regel unten ohne Ausnahme: Nichts davon erscheint in der Kundenfassung.
 
 Zwei Regeln dazu, und die zweite ist die wichtigere:
 
