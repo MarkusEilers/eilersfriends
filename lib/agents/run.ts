@@ -5,6 +5,7 @@ import { PFLICHT_PACKS } from './material'
 import { loadPacks, renderPacks, bannedWords, catalogIndex, loadItems, renderIndex, type IndexRow } from './knowledge'
 import { lint, lintReport, type Finding } from './lint'
 import { callModel as rufeModell } from '@/lib/ai/call'
+import { arbeitsBudgetMs, schleifenBudgetMs } from '@/lib/laufzeit'
 import { resolveModel } from '@/lib/strategy/models'
 import { recordUsage } from '@/lib/strategy/usage'
 import { runSearch, COLLECT_INSTRUCTION, sucheAnbieter } from '@/lib/strategy/research/web'
@@ -21,7 +22,11 @@ import { catalogFor, renderCatalog } from '@/lib/content/catalog'
  * Recherche plus drei Varianten passen dort nicht hinein.
  */
 
-const BUDGET_MS = 230_000
+/**
+ * Was ein Anlauf schafft. Haengt am Tarif, nicht an einer Wunschzahl —
+ * siehe lib/laufzeit.ts.
+ */
+const BUDGET_MS = arbeitsBudgetMs()
 
 /**
  * Kein Fehler, sondern eine Vertagung.
@@ -155,7 +160,7 @@ export async function advance(runId: string): Promise<RunHandle> {
 
   let cursor = run.cursor
   while (cursor < def.steps.length) {
-    if (Date.now() - t0 > BUDGET_MS - 40_000) break
+    if (Date.now() - t0 > BUDGET_MS) break
     const step = def.steps[cursor]
 
     if (step.onlyIf && !truthy(ctx.input[step.onlyIf])) {
@@ -710,7 +715,7 @@ async function quellen(step: StepDef, ctx: Ctx): Promise<StepOut> {
     // Wie beim Schreiben: lieber sauber vertagen als mitten im Schritt
     // abgeschnitten werden.
     const fertigeKlassen = new Set(alle.map((a) => a.klasse)).size
-    if (fertigeKlassen && Date.now() - start > 170_000) {
+    if (fertigeKlassen && Date.now() - start > schleifenBudgetMs()) {
       await db.execute(sql`
         INSERT INTO agent_artifacts (run_id, step_key, kind, label, payload)
         VALUES (${ctx.runId}, ${step.key}, 'quellen-teil',
@@ -1019,7 +1024,7 @@ async function sections(step: StepDef, ctx: Ctx): Promise<StepOut> {
   const start = Date.now()
 
   for (const s of offen) {
-    if (out.length > (parts.length - offen.length) && Date.now() - start > 170_000) {
+    if (out.length > (parts.length - offen.length) && Date.now() - start > schleifenBudgetMs()) {
       await merken()
       throw new Vertagt(`${out.length} von ${parts.length} Abschnitten stehen — weiter beim nächsten Anlauf.`)
     }

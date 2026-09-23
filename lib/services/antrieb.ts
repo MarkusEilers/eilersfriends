@@ -1,5 +1,6 @@
 import { driveRun } from '@/lib/agents/drive'
 import { offeneAuftraege, updateOrder, zaehleSchub, type ServiceOrder } from './schema'
+import { arbeitsBudgetMs } from '@/lib/laufzeit'
 
 /**
  * Der Antrieb fuer Dienst-Auftraege.
@@ -17,7 +18,7 @@ import { offeneAuftraege, updateOrder, zaehleSchub, type ServiceOrder } from './
  * Sicherheitsnetz taugt er, als Motor nicht.
  */
 
-const BUDGET_MS = 200_000
+const BUDGET_MS = arbeitsBudgetMs()
 
 export async function schiebeAuftrag(order: ServiceOrder): Promise<ServiceOrder['status']> {
   if (!order.run_ids.length) return order.status
