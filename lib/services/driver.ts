@@ -34,10 +34,47 @@ const STILLSTAND_MAX = 6
 
 export async function advanceOrder(order: ServiceOrder): Promise<ServiceOrder['status']> {
   if (!order.run_ids.length) return order.status
-  await countPush(order.id)
-
   const lauf = order.run_ids[order.run_ids.length - 1]
-  const state = await driveRun(lauf, 6).catch(() => null)
+
+  /**
+   * Erst nachsehen, wo er steht — dann arbeiten.
+   *
+   * Der Waechter stand zuerst hinter driveRun, und dort kam er nie an: Ein
+   * Recherche-Schritt schoepft das Zeitbudget der Funktion aus, die Laufzeit
+   * endet mitten drin, und alles danach faellt aus. Der Schub-Zaehler davor
+   * stieg trotzdem — es sah also aus wie Arbeit und war eine Schleife, und
+   * ausgerechnet die Stelle, die das melden sollte, wurde abgeschnitten.
+   *
+   * Vorne steht er richtig. Der Stand ist dann der, den der vorige Durchgang
+   * hinterlassen hat, und genau danach fragen wir: Ist der Auftrag seit dem
+   * letzten Aufgreifen weitergekommen?
+   */
+  const stand = await standDesLaufs(lauf, null)
+  const stillstand = await trackProgress(order.id, stand)
+  if (stillstand >= STILLSTAND_MAX) {
+    await updateOrder(order.id, {
+      status: 'fehler',
+      fehler: `Kein Fortschritt über ${stillstand} Schübe — der Auftrag stand bei "${stand}" `
+        + 'und wurde angehalten, statt dieselbe Arbeit weiter zu bezahlen.',
+    })
+    console.error(`[driver] Auftrag ${order.id} angehalten: Stillstand bei "${stand}"`)
+    return 'fehler'
+  }
+
+  await countPush(order.id)
+  /**
+   * Ein Schritt pro Durchgang, nicht sechs.
+   *
+   * Sechs war die Annahme, Schritte seien kurz. Ein Recherche-Schritt nimmt
+   * sich bis zu 210 Sekunden und vertagt sich dann selbst — danach waren von
+   * den 300 Sekunden der Funktion keine sechs Schritte mehr uebrig, sondern
+   * gar keiner. Die Laufzeit endete mitten im zweiten, und alles, was danach
+   * kam (Status schreiben, Waechter), fiel aus.
+   *
+   * Einer pro Durchgang kehrt sauber zurueck. Der Antrieb stoesst sich selbst
+   * wieder an, und alle zwei Minuten kommt ohnehin der Herzschlag.
+   */
+  const state = await driveRun(lauf, 1).catch(() => null)
 
   if (state?.status === 'fertig') {
     await updateOrder(order.id, { status: 'fertig', ergebnis: state.output })
@@ -48,25 +85,6 @@ export async function advanceOrder(order: ServiceOrder): Promise<ServiceOrder['s
     return 'fehler'
   }
 
-  /**
-   * Bewegt er sich noch?
-   *
-   * Der Stand ist Schritt plus dessen eigene Standmeldung — bei einer
-   * Recherche etwa "sammeln · 3 von 6 Quellenklassen geprueft". Aendert der
-   * sich ueber mehrere Schuebe nicht, dreht der Auftrag sich, und
-   * Weiterschieben heisst nur, denselben Modellaufruf nochmal zu bezahlen.
-   */
-  const stand = await standDesLaufs(lauf, state?.cursor ?? null)
-  const stillstand = await trackProgress(order.id, stand)
-  if (stillstand >= STILLSTAND_MAX) {
-    await updateOrder(order.id, {
-      status: 'fehler',
-      fehler: `Kein Fortschritt ueber ${stillstand} Schuebe — der Auftrag stand bei "${stand}" `
-        + 'und wurde angehalten, statt dieselbe Arbeit weiter zu bezahlen.',
-    })
-    console.error(`[driver] Auftrag ${order.id} angehalten: Stillstand bei "${stand}"`)
-    return 'fehler'
-  }
   return 'laeuft'
 }
 
@@ -151,5 +169,19 @@ async function standDesLaufs(runId: string, cursor: number | null): Promise<stri
     WHERE run_id = ${runId}::uuid AND status IN ('laeuft', 'offen')
     ORDER BY seq LIMIT 1`)) as unknown as Array<{ step_key: string; status: string; note: string }>
   const s = rows[0]
-  return `${cursor ?? '?'} · ${s?.step_key ?? '—'} · ${s?.status ?? '—'} · ${s?.note ?? ''}`
+
+  /**
+   * Das Teil-Artefakt gehoert mit in den Stand.
+   *
+   * Ein Schritt, der sich selbst vertagt, legt vorher ab, was er geschafft hat
+   * — mit einem Label wie "4 von 6 Klassen" oder "3/5". Genau diese Zahl ist
+   * der Fortschritt. Die Schrittzeile allein bleibt derweil auf 'laeuft'
+   * stehen und saehe bei echter Arbeit genauso aus wie bei einer Schleife.
+   */
+  const art = (await db.execute(sql`
+    SELECT label FROM agent_artifacts
+    WHERE run_id = ${runId}::uuid AND kind LIKE '%-teil'
+    ORDER BY created_at DESC LIMIT 1`)) as unknown as Array<{ label: string }>
+
+  return `${cursor ?? '?'} · ${s?.step_key ?? '—'} · ${s?.status ?? '—'} · ${s?.note ?? ''} · ${art[0]?.label ?? ''}`
 }
