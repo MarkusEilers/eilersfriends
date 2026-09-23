@@ -455,6 +455,7 @@ function render(tpl: string, ctx: Ctx, extra?: Record<string, unknown>): string 
 async function ask(step: StepDef, ctx: Ctx, extra?: Record<string, unknown>) {
   const model = resolveModel((step.modelRole ?? ctx.def.default_model_role) as never, null)
   return rufeModell({
+    anlass: { runId: ctx.runId, agentKey: ctx.def?.key ?? null, stepKey: step.key },
     model,
     system: render(step.system ?? '', ctx, extra),
     user: render(step.user ?? '', ctx, extra),
@@ -752,7 +753,8 @@ async function quellen(step: StepDef, ctx: Ctx): Promise<StepOut> {
     const fragen = (FRAGEN[klasse] ?? []).slice(0, jeKlasse)
     let ergiebig = false
     for (const q of fragen) {
-      const f = await runSearch(klasse, q, COLLECT_INSTRUCTION)
+      const f = await runSearch(klasse, q, COLLECT_INSTRUCTION,
+        { runId: ctx.runId, agentKey: ctx.def?.key ?? null, stepKey: `${step.key}:${klasse}` })
       tin += f.tokensIn; tout += f.tokensOut; suchen += f.searches ?? 0
       alle.push({ klasse, query: q, text: f.text, citations: f.citations, error: f.error })
       if ((f.citations?.length ?? 0) > 0) ergiebig = true

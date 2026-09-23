@@ -23,6 +23,14 @@ export interface ModelCall {
   schema?: Record<string, unknown> | null
   temperature?: number
   maxTokens?: number
+  /**
+   * Wofuer dieser Aufruf war — Lauf und Schritt.
+   *
+   * Nur fuers Verbrauchsprotokoll. Ohne das steht in der Abrechnung eine
+   * Zahl ohne Anlass, und die Frage "wofuer war das" ist danach nicht mehr
+   * zu beantworten.
+   */
+  anlass?: { runId?: string | null; agentKey?: string | null; stepKey?: string | null }
 }
 
 export interface ModelResult {
@@ -78,6 +86,61 @@ async function recordSpend(model: string, tokens: number) {
   await db.execute(sql`INSERT INTO model_window (model, tokens) VALUES (${model}, ${tokens})`)
   if (Math.random() < 0.05) {
     await db.execute(sql`DELETE FROM model_window WHERE at < now() - interval '10 minutes'`)
+  }
+}
+
+let spendTableReady = false
+
+/**
+ * Das Verbrauchsprotokoll.
+ *
+ * Getrennt von model_window, das nur ein Zehn-Minuten-Fenster fuer die
+ * Minutenbremse fuehrt und sich selbst aufraeumt. Hier bleibt, was es
+ * gekostet hat.
+ *
+ * Warum unmittelbar nach dem Aufruf und nicht am Ende des Schritts: Der
+ * teuerste Lauf des 23.09. steht in agent_runs mit null Tokens. Er hat zwoelf
+ * Durchgaenge lang gesucht und dabei ein aufgeladenes Guthaben verbraucht —
+ * aber jeder Durchgang wurde von der Laufzeitgrenze abgeschnitten, bevor der
+ * Schritt seine Summe schreiben konnte. Bezahlt war es trotzdem. Eine
+ * Buchhaltung, die nur beim guten Ausgang schreibt, fuehrt genau die Faelle
+ * nicht, um die es geht.
+ */
+async function ensureSpendTable() {
+  if (spendTableReady) return
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS model_spend (
+      id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      model      TEXT NOT NULL,
+      provider   TEXT NOT NULL,
+      tokens_in  INT NOT NULL DEFAULT 0,
+      tokens_out INT NOT NULL DEFAULT 0,
+      searches   INT NOT NULL DEFAULT 0,
+      run_id     UUID,
+      agent_key  TEXT,
+      step_key   TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )`)
+  await db.execute(sql`CREATE INDEX IF NOT EXISTS model_spend_idx ON model_spend (created_at DESC)`)
+  await db.execute(sql`CREATE INDEX IF NOT EXISTS model_spend_run ON model_spend (run_id)`)
+  spendTableReady = true
+}
+
+export async function logSpend(x: {
+  model: string; provider?: string
+  tokensIn?: number; tokensOut?: number; searches?: number
+  runId?: string | null; agentKey?: string | null; stepKey?: string | null
+}) {
+  try {
+    await ensureSpendTable()
+    await db.execute(sql`
+      INSERT INTO model_spend (model, provider, tokens_in, tokens_out, searches, run_id, agent_key, step_key)
+      VALUES (${x.model}, ${x.provider ?? (x.model.startsWith('claude') ? 'anthropic' : 'openai')},
+              ${x.tokensIn ?? 0}, ${x.tokensOut ?? 0}, ${x.searches ?? 0},
+              ${x.runId ?? null}::uuid, ${x.agentKey ?? null}, ${x.stepKey ?? null})`)
+  } catch (e) {
+    // Eine kaputte Buchhaltung darf keinen Lauf kosten.
+    console.error('[ai] Verbrauch nicht protokolliert:', e)
   }
 }
 
@@ -156,6 +219,11 @@ async function callOnce(c: ModelCall): Promise<ModelResult> {
   await throttle(c.model, geschaetzt)
   const r = anbieter === 'claude' ? await postClaude(c, body) : await postOpenAI(c, body)
   await recordSpend(c.model, r.tokensIn + r.tokensOut)
+  await logSpend({
+    model: c.model, provider: anbieter === 'claude' ? 'anthropic' : 'openai',
+    tokensIn: r.tokensIn, tokensOut: r.tokensOut,
+    runId: c.anlass?.runId, agentKey: c.anlass?.agentKey, stepKey: c.anlass?.stepKey,
+  })
   return r
 }
 

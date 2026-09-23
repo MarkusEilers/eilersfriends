@@ -15,6 +15,8 @@
  * uns eine Zeile im Bericht — nicht das ganze Ergebnis.
  */
 
+import { logSpend } from '@/lib/ai/call'
+
 export interface SearchFinding {
   source: string
   query: string
@@ -51,17 +53,47 @@ const PROVIDER: Anbieter =
   (process.env.STRATEGY_SEARCH_PROVIDER as Anbieter | undefined)
   ?? (process.env.ANTHROPIC_API_KEY ? 'claude' : 'openai')
 
-const CLAUDE_MODEL = process.env.STRATEGY_SEARCH_MODEL_CLAUDE ?? 'claude-sonnet-5'
+/**
+ * Suchen ist Sammeln, nicht Urteilen.
+ *
+ * Deshalb hier das kleine Modell. Der Skill sagt es selbst: "Die
+ * Quellen-Recherche ist der teuerste Teil des Audits, braucht aber kein
+ * Frontier-Modell — sie sammelt Zitate, keine Urteile." Gemessen am 23.09.:
+ * ein einziger Recherche-Schritt zog 874.000 Eingabe-Tokens, weil jede
+ * Websuche ihre Treffer in den Kontext holt. Mit Sonnet sind das rund 2,60
+ * Euro fuer Arbeit, die aus Abschreiben besteht.
+ *
+ * Bewertet wird weiterhin mit dem grossen Modell — dort entsteht die
+ * Qualitaet, fuer die der Kunde uns haelt.
+ */
+const CLAUDE_MODEL = process.env.STRATEGY_SEARCH_MODEL_CLAUDE ?? 'claude-haiku-4-5-20251001'
 const OPENAI_MODEL = process.env.STRATEGY_SEARCH_MODEL ?? 'gpt-4.1'
 
 /** Wie viele Suchen ein einzelner Auftrag ausloesen darf. */
 const MAX_SUCHEN = Number(process.env.STRATEGY_SEARCH_MAX ?? 5)
 
 /** Ein Suchlauf mit Websuche. Gibt Text plus die tatsaechlich benutzten Quellen zurueck. */
-export async function runSearch(source: string, query: string, instruction: string): Promise<SearchFinding> {
-  return PROVIDER === 'claude'
-    ? searchClaude(source, query, instruction)
-    : searchOpenAI(source, query, instruction)
+export async function runSearch(
+  source: string, query: string, instruction: string,
+  anlass?: { runId?: string | null; agentKey?: string | null; stepKey?: string | null },
+): Promise<SearchFinding> {
+  const f = PROVIDER === 'claude'
+    ? await searchClaude(source, query, instruction)
+    : await searchOpenAI(source, query, instruction)
+
+  /**
+   * Eine Suche kostet zweimal: die Tokens und die Suchanfrage selbst.
+   *
+   * Die Anfrage taucht in keiner Token-Rechnung auf, steht aber auf der
+   * Abrechnung. Deshalb wird sie hier mitgeschrieben — und zwar auch dann,
+   * wenn die Suche mit einem Fehler zurueckkam, denn verbraucht ist
+   * verbraucht.
+   */
+  await logSpend({
+    model: PROVIDER === 'claude' ? CLAUDE_MODEL : OPENAI_MODEL, tokensIn: f.tokensIn, tokensOut: f.tokensOut, searches: f.searches,
+    runId: anlass?.runId, agentKey: anlass?.agentKey, stepKey: anlass?.stepKey ?? `suche:${source}`,
+  })
+  return f
 }
 
 /**
