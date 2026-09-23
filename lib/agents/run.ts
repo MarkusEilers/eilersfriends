@@ -706,16 +706,42 @@ async function quellen(step: StepDef, ctx: Ctx): Promise<StepOut> {
   const gewaehlt = (e.quellen ?? Object.keys(FRAGEN))
     .filter((k) => FRAGEN[k])
     .filter((k) => !abgedeckt.has(k))
-  const alle: Array<{ klasse: string; query: string; text: string; citations: unknown[]; error?: string }> = []
+
+  type Fund = { klasse: string; query: string; text: string; citations: unknown[]; error?: string }
+  let alle: Fund[] = []
+
+  /**
+   * Da weitermachen, wo der letzte Anlauf aufgehoert hat.
+   *
+   * Ohne das hier lief dieser Schritt im Kreis, und zwar lautlos: Bei jedem
+   * Schub fing die Schleife wieder bei der ersten Klasse an, schaffte drei
+   * oder vier, vertagte, fing wieder bei der ersten an. Der Auftrag sah
+   * arbeitsam aus — zwoelf Schuebe, immer neue Artefakte — und stand doch
+   * seit dem ersten Durchgang an derselben Stelle. Gekostet hat jede Runde
+   * trotzdem, weil dieselben Suchen noch einmal liefen.
+   *
+   * Der Schreib-Schritt macht das seit je richtig. Hier fehlte es.
+   */
+  {
+    const rows = (await db.execute(sql`
+      SELECT payload FROM agent_artifacts
+      WHERE run_id = ${ctx.runId} AND step_key = ${step.key} AND kind = 'quellen-teil'
+      ORDER BY created_at DESC LIMIT 1`)) as unknown as Array<{ payload: Fund[] }>
+    const bisher = rows[0]?.payload
+    if (Array.isArray(bisher) && bisher.length) alle = bisher
+  }
+  const schonGeprueft = new Set(alle.map((a) => a.klasse))
+  const offeneKlassen = gewaehlt.filter((k) => !schonGeprueft.has(k))
+
   let tin = 0, tout = 0, suchen = 0
   const leer: string[] = []
   const start = Date.now()
 
-  for (const klasse of gewaehlt) {
+  for (const klasse of offeneKlassen) {
     // Wie beim Schreiben: lieber sauber vertagen als mitten im Schritt
     // abgeschnitten werden.
     const fertigeKlassen = new Set(alle.map((a) => a.klasse)).size
-    if (fertigeKlassen && Date.now() - start > loopBudgetMs()) {
+    if (fertigeKlassen < gewaehlt.length && Date.now() - start > loopBudgetMs()) {
       await db.execute(sql`
         INSERT INTO agent_artifacts (run_id, step_key, kind, label, payload)
         VALUES (${ctx.runId}, ${step.key}, 'quellen-teil',

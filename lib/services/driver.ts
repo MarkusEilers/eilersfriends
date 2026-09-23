@@ -1,5 +1,7 @@
 import { driveRun } from '@/lib/agents/drive'
-import { openOrders, updateOrder, countPush, type ServiceOrder } from './schema'
+import { sql } from 'drizzle-orm'
+import { db } from '@/lib/db'
+import { openOrders, updateOrder, countPush, trackProgress, type ServiceOrder } from './schema'
 import { workBudgetMs } from '@/lib/runtime-limits'
 
 /**
@@ -20,6 +22,16 @@ import { workBudgetMs } from '@/lib/runtime-limits'
 
 const BUDGET_MS = workBudgetMs()
 
+/**
+ * Wieviele Schuebe ein Auftrag am selben Punkt stehen darf.
+ *
+ * Grosszuegig genug fuer einen langsamen Schritt, der wirklich arbeitet — ein
+ * Recherche-Schritt mit Minutenbremse braucht durchaus zwei, drei Anlaeufe fuer
+ * dieselbe Klasse. Eng genug, dass eine echte Schleife nach einer Viertelstunde
+ * auffliegt statt nach einer Nacht.
+ */
+const STILLSTAND_MAX = 6
+
 export async function advanceOrder(order: ServiceOrder): Promise<ServiceOrder['status']> {
   if (!order.run_ids.length) return order.status
   await countPush(order.id)
@@ -33,6 +45,26 @@ export async function advanceOrder(order: ServiceOrder): Promise<ServiceOrder['s
   }
   if (state?.status === 'fehler') {
     await updateOrder(order.id, { status: 'fehler', fehler: 'Lauf abgebrochen — siehe Lauf-Protokoll.' })
+    return 'fehler'
+  }
+
+  /**
+   * Bewegt er sich noch?
+   *
+   * Der Stand ist Schritt plus dessen eigene Standmeldung — bei einer
+   * Recherche etwa "sammeln · 3 von 6 Quellenklassen geprueft". Aendert der
+   * sich ueber mehrere Schuebe nicht, dreht der Auftrag sich, und
+   * Weiterschieben heisst nur, denselben Modellaufruf nochmal zu bezahlen.
+   */
+  const stand = await standDesLaufs(lauf, state?.cursor ?? null)
+  const stillstand = await trackProgress(order.id, stand)
+  if (stillstand >= STILLSTAND_MAX) {
+    await updateOrder(order.id, {
+      status: 'fehler',
+      fehler: `Kein Fortschritt ueber ${stillstand} Schuebe — der Auftrag stand bei "${stand}" `
+        + 'und wurde angehalten, statt dieselbe Arbeit weiter zu bezahlen.',
+    })
+    console.error(`[driver] Auftrag ${order.id} angehalten: Stillstand bei "${stand}"`)
     return 'fehler'
   }
   return 'laeuft'
@@ -101,4 +133,23 @@ function basisUrl(): string {
   if (gesetzt) return gesetzt.replace(/\/$/, '')
   console.warn('[driver] Keine Basis-URL in der Umgebung — greife auf die feste Adresse zurueck.')
   return 'https://www.eilersfriends.com'
+}
+
+
+/**
+ * Wo genau ein Lauf steht, als ein Satz.
+ *
+ * Der Cursor allein reicht nicht: Ein Schritt, der sich selbst vertagt, laesst
+ * den Cursor stehen und schreibt seinen Fortschritt in die eigene Zeile
+ * ("3 von 6 Quellenklassen geprueft"). Genau dieser Text ist das, was sich
+ * aendern muss, damit von Fortschritt die Rede sein kann.
+ */
+async function standDesLaufs(runId: string, cursor: number | null): Promise<string> {
+  const rows = (await db.execute(sql`
+    SELECT step_key, status, COALESCE(error, '') AS note
+    FROM agent_run_steps
+    WHERE run_id = ${runId}::uuid AND status IN ('laeuft', 'offen')
+    ORDER BY seq LIMIT 1`)) as unknown as Array<{ step_key: string; status: string; note: string }>
+  const s = rows[0]
+  return `${cursor ?? '?'} · ${s?.step_key ?? '—'} · ${s?.status ?? '—'} · ${s?.note ?? ''}`
 }

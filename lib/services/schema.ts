@@ -76,6 +76,22 @@ export async function ensureServiceSchema() {
    * Ein DELETE gibt es hier deshalb nicht mehr. Wer aufraeumt, setzt ein Datum.
    * Die Zeile verschwindet aus den Listen und bleibt in der Datenbank.
    */
+  /**
+   * Der Fortschritts-Waechter.
+   *
+   * Ein Auftrag, der sich schiebt, sieht arbeitsam aus — neue Schuebe, neue
+   * Artefakte, Status "laeuft". Ob er dabei VORANKOMMT, stand nirgends. Der
+   * aiqbee-Lauf hat zwoelf Schuebe lang dieselbe Quellenklasse gesucht und
+   * dabei jedes Mal bezahlt; aufgefallen ist es nur, weil jemand in die
+   * Artefakte geschaut hat.
+   *
+   * Also wird der Stand mitgeschrieben: `progress` ist die Beschreibung, wo
+   * der Auftrag steht, `progress_push` der Schub, bei dem sie sich zuletzt
+   * geaendert hat. Bleibt sie ueber mehrere Schuebe gleich, ist das keine
+   * Arbeit mehr, sondern eine Schleife.
+   */
+  await db.execute(sql`ALTER TABLE service_orders ADD COLUMN IF NOT EXISTS progress TEXT`)
+  await db.execute(sql`ALTER TABLE service_orders ADD COLUMN IF NOT EXISTS progress_push INT NOT NULL DEFAULT 0`)
   await db.execute(sql`ALTER TABLE service_orders ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS service_orders_idx ON service_orders (service_key, created_at DESC)`)
   await db.execute(sql`
@@ -369,4 +385,22 @@ export async function restoreOrder(id: string) {
   await ensureServiceSchema()
   await db.execute(sql`
     UPDATE service_orders SET deleted_at = NULL, updated_at = now() WHERE id = ${id}::uuid`)
+}
+
+
+/**
+ * Wo der Auftrag steht — und seit wann.
+ *
+ * Gibt zurueck, wieviele Schuebe seit der letzten echten Veraenderung
+ * vergangen sind. Null heisst: Es ist gerade etwas passiert.
+ */
+export async function trackProgress(id: string, stand: string): Promise<number> {
+  await ensureServiceSchema()
+  const rows = (await db.execute(sql`
+    UPDATE service_orders SET
+      progress = ${stand},
+      progress_push = CASE WHEN progress IS DISTINCT FROM ${stand} THEN schuebe ELSE progress_push END
+    WHERE id = ${id}::uuid
+    RETURNING schuebe - progress_push AS stillstand`)) as unknown as Array<{ stillstand: number }>
+  return Number(rows[0]?.stillstand ?? 0)
 }
