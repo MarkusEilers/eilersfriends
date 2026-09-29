@@ -1887,5 +1887,168 @@
     "frameworksTitle": "Roba nuestros frameworks — con agentes de IA.",
     "frameworksDesc": "Beef Radar, Ofertas B2B irresistibles, Instant Influence y más — cada uno con plano y un agente de IA entrenado.",
     "frameworksCta": "Ver los frameworks"
+  },
+  "callCheck": {
+    "meta": {
+      "title": "Análisis de conversación · Mystery shopping por tu cuenta",
+      "description": "Sube la transcripción de una primera reunión de ventas y descubre dónde se torció: preguntas, objeciones, oferta, empatía — con tres frases para tu próxima conversación."
+    },
+    "hero": {
+      "badge": "Análisis de conversación",
+      "headline": "¿Dónde se torció tu última primera reunión?",
+      "subline": "Sube la transcripción. Recibes el mismo análisis que en un mystery shopping: cinco criterios, tu cadena de preguntas, las objeciones — y tres frases que puedes decir tal cual la próxima vez.",
+      "facts": [
+        "Tarda alrededor de un minuto",
+        "La transcripción no se guarda",
+        "Gratis"
+      ]
+    },
+    "form": {
+      "step1": "Pega la transcripción",
+      "step1Hint": "De Teams, Zoom, Meet, Granola o como archivo (.txt, .vtt, .srt). Idealmente con un nombre antes de cada intervención.",
+      "placeholder": "Anna Berger: Gracias por tu tiempo …\nMarkus: Con gusto. ¿Qué te llevó a …",
+      "upload": "Elegir archivo",
+      "words": "{count} palabras",
+      "tooShort": "Son muy pocas palabras para un análisis — al menos {min}.",
+      "tooLong": "La transcripción es demasiado larga. Acórtala a un máximo de {max} palabras.",
+      "noSpeakers": "No encontramos nombres de interlocutores. El análisis funciona igual, pero faltarán la cuota de habla y las preguntas en serie.",
+      "whoAreYou": "¿Quién eres tú en la conversación?",
+      "whoAreYouHint": "Así contamos bien tu cuota de habla y tus preguntas.",
+      "step2": "¿A dónde enviamos el resultado?",
+      "firstName": "Nombre",
+      "email": "Email",
+      "consent": "Acepto que la transcripción se procese para el análisis. Solo se guarda el análisis con citas breves, no la transcripción. Tengo el consentimiento de mis interlocutores.",
+      "newsletter": "Envíame también la newsletter de Markus sobre ventas B2B (baja en cualquier momento).",
+      "submit": "Analizar la conversación",
+      "working": [
+        "Leyendo la conversación …",
+        "Ordenando tus preguntas …",
+        "Buscando objeciones …",
+        "Comprobando si la oferta conecta con el dolor …",
+        "Escribiendo tres frases para tu próxima conversación …"
+      ],
+      "errors": {
+        "invalid_input": "Revisa tus datos, por favor.",
+        "too_short": "La transcripción es demasiado corta para un análisis.",
+        "too_long": "La transcripción es demasiado larga.",
+        "rate_limited": "Hoy ya has analizado tres conversaciones. Mañana puedes seguir.",
+        "daily_cap": "Hoy ya no quedan análisis disponibles. Vuelve a intentarlo mañana.",
+        "analysis_failed": "El análisis ha fallado. Inténtalo de nuevo.",
+        "network": "Sin conexión. Inténtalo de nuevo."
+      }
+    },
+    "what": {
+      "headline": "Qué recibes",
+      "items": [
+        {
+          "title": "Cinco criterios",
+          "body": "Preguntas inteligentes, suposiciones peligrosas, preguntas en serie, oferta, empatía — cada valoración con una cita de tu conversación."
+        },
+        {
+          "title": "Tu cadena de preguntas",
+          "body": "Cada pregunta clasificada: abierta o cerrada, dolor, evidencia, impacto o hipótesis. Ves dónde se rompe la cadena."
+        },
+        {
+          "title": "Tres frases",
+          "body": "Las tres palancas con más efecto, cada una con una frase que puedes decir exactamente así la próxima vez."
+        }
+      ]
+    },
+    "privacy": "La transcripción solo se procesa para el análisis y después se descarta. Guardamos los resultados y citas breves para que puedas volver a abrir el enlace.",
+    "result": {
+      "badge": "Tu análisis de conversación",
+      "hello": "{name}, aquí está tu conversación.",
+      "helloAnon": "Aquí está tu conversación.",
+      "running": "El análisis sigue en curso. Esta página se recargará enseguida.",
+      "failed": "Este análisis ha fallado.",
+      "notFound": "Este análisis no existe.",
+      "metrics": {
+        "share": "Tu cuota de habla",
+        "questions": "Preguntas",
+        "open": "abiertas",
+        "serial": "Preguntas en serie"
+      },
+      "criteriaTitle": "Cinco criterios",
+      "notAssessed": "sin evaluar",
+      "tipsTitle": "Tres frases para tu próxima conversación",
+      "tipSay": "La próxima vez, di",
+      "questionsTitle": "Tu cadena de preguntas",
+      "questionsHint": "La secuencia fuerte es dolor → evidencia → impacto. Quien se queda en el dolor recoge opiniones, no un business case.",
+      "category": {
+        "P/G": "Dolor / objetivo",
+        "E": "Evidencia",
+        "I": "Impacto",
+        "H": "Hipótesis",
+        "closed": "cerrada"
+      },
+      "protocolTitle": "Lo que dijo el cliente",
+      "protocol": {
+        "pain_gain": "Dolores y objetivos",
+        "evidence": "Evidencias",
+        "impact": "Impacto"
+      },
+      "protocolEmpty": "Nada en esta categoría.",
+      "objectionsTitle": "Objeciones",
+      "objectionsEmpty": "No surgieron objeciones en esta conversación.",
+      "status": {
+        "addressed": "tratada",
+        "partially_addressed": "en parte",
+        "unaddressed": "ignorada"
+      },
+      "skillmapTitle": "Tu mapa de habilidades",
+      "draft": "Borrador",
+      "skillmapHint": "El mismo mapa de habilidades que en el seller report: 19 habilidades en cinco dimensiones, grado 1 a 5. Una sola conversación no las muestra todas — lo que no ocurrió aparece rayado, con el motivo. La medición completa se hace con simulación, rituales y resultados.",
+      "notMeasured": "sin determinar",
+      "dimensionNotMeasured": "No medible en esta conversación",
+      "learningTitle": "Dónde más compensa practicar",
+      "learningCta": "Ir al framework correspondiente",
+      "ctaTitle": "¿Lo quieres para todo tu equipo?",
+      "ctaBody": "En el mystery shopping, Markus habla con tu equipo como cliente y analiza cada conversación — 13 habilidades, un informe de 14 páginas, un debriefing.",
+      "ctaButton": "Ver mystery shopping",
+      "again": "Analizar otra conversación",
+      "measuredOf": "{n} de {total} habilidades medidas",
+      "gradeLegend": [
+        "no aplicado",
+        "en parte",
+        "aplicado con limpieza",
+        "dirigido y eficaz",
+        "ejemplar"
+      ]
+    },
+    "criteria": {
+      "smart_questions": "Preguntas inteligentes",
+      "assumptions": "Sin suposiciones peligrosas",
+      "serial_questions": "Una pregunta cada vez",
+      "offer": "Oferta irresistible",
+      "empathy": "Empatía táctica"
+    },
+    "dimensions": {
+      "D1": "Pipeline y palancas",
+      "D2": "Estrategia y preparación",
+      "D3": "Discovery y primera reunión",
+      "D4": "Mensaje y persuasión",
+      "D5": "Oferta · negociación · cierre"
+    },
+    "skills": {
+      "S01": "Elegir tu mindset",
+      "S02": "Trabajar con profesionalidad",
+      "S03": "Preparar estratégicamente",
+      "S04": "Despertar curiosidad",
+      "S05": "Empatía táctica",
+      "S06": "The Drill",
+      "S07": "La lista",
+      "S08": "Ofertas irresistibles",
+      "S09": "Aprovechar objeciones",
+      "S10": "Moderar las luces amarillas",
+      "S11": "Acompañar a la decisión",
+      "S12": "Nivel de conversación y proceso",
+      "S13": "Take away the solution",
+      "S14": "Business acumen",
+      "S15": "Visibilidad / imán",
+      "S16": "Herramientas (IA)",
+      "S17": "Presentar de forma cautivadora",
+      "S18": "Involucrar a la audiencia",
+      "S19": "Relaciones sostenibles"
+    }
   }
 }

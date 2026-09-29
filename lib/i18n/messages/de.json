@@ -1888,5 +1888,168 @@
     "frameworksTitle": "Klaut unsere Frameworks — inkl. AI-Agenten.",
     "frameworksDesc": "Beef Radar, Unwiderstehliche B2B-Angebote, Instant Influence und mehr — jedes mit Bauplan und trainiertem AI-Agenten.",
     "frameworksCta": "Zu den Frameworks"
+  },
+  "callCheck": {
+    "meta": {
+      "title": "Gesprächs-Check · Mystery Shopping zum Selbermachen",
+      "description": "Lade das Transkript eines Erstgesprächs hoch und sieh, wo es gekippt ist: Fragen, Einwände, Angebot, Empathie — mit drei Sätzen für das nächste Gespräch."
+    },
+    "hero": {
+      "badge": "Gesprächs-Check",
+      "headline": "Wo ist Dein letztes Erstgespräch gekippt?",
+      "subline": "Lade das Transkript hoch. Du bekommst dieselbe Auswertung wie in einem Mystery Shopping: fünf Kriterien, Deine Fragekette, die Einwände — und drei Sätze, die Du beim nächsten Mal wörtlich sagen kannst.",
+      "facts": [
+        "Dauert rund eine Minute",
+        "Transkript wird nicht gespeichert",
+        "Kostenlos"
+      ]
+    },
+    "form": {
+      "step1": "Transkript einfügen",
+      "step1Hint": "Aus Teams, Zoom, Meet, Granola oder als Datei (.txt, .vtt, .srt). Am besten mit Namen vor jedem Beitrag.",
+      "placeholder": "Anna Berger: Danke, dass Sie sich die Zeit nehmen …\nMarkus: Gern. Was hat Sie dazu gebracht, …",
+      "upload": "Datei wählen",
+      "words": "{count} Wörter",
+      "tooShort": "Das sind noch zu wenige Wörter für eine Auswertung — mindestens {min}.",
+      "tooLong": "Das Transkript ist zu lang. Bitte kürze es auf höchstens {max} Wörter.",
+      "noSpeakers": "Wir finden keine Sprechernamen. Die Auswertung klappt trotzdem, die Kennzahlen zu Redeanteil und Serienfragen fehlen dann.",
+      "whoAreYou": "Wer bist Du im Gespräch?",
+      "whoAreYouHint": "Damit zählen wir Redeanteil und Fragen richtig.",
+      "step2": "Wohin sollen wir das Ergebnis schicken?",
+      "firstName": "Vorname",
+      "email": "E-Mail",
+      "consent": "Ich bin damit einverstanden, dass das Transkript zur Auswertung verarbeitet wird. Gespeichert wird nur die Auswertung mit kurzen Zitaten, nicht das Transkript. Ich habe die Einwilligung meiner Gesprächspartner.",
+      "newsletter": "Schick mir auch Markus' Newsletter zu B2B-Vertrieb (jederzeit abbestellbar).",
+      "submit": "Gespräch auswerten",
+      "working": [
+        "Lese das Gespräch …",
+        "Sortiere Deine Fragen …",
+        "Suche die Einwände …",
+        "Prüfe, ob das Angebot an den Schmerz andockt …",
+        "Formuliere drei Sätze für Dein nächstes Gespräch …"
+      ],
+      "errors": {
+        "invalid_input": "Bitte prüf Deine Eingaben.",
+        "too_short": "Das Transkript ist zu kurz für eine Auswertung.",
+        "too_long": "Das Transkript ist zu lang.",
+        "rate_limited": "Du hast heute schon drei Gespräche auswerten lassen. Morgen geht es weiter.",
+        "daily_cap": "Heute sind alle Auswertungen vergeben. Versuch es morgen wieder.",
+        "analysis_failed": "Die Auswertung ist fehlgeschlagen. Bitte versuch es noch einmal.",
+        "network": "Keine Verbindung. Bitte versuch es noch einmal."
+      }
+    },
+    "what": {
+      "headline": "Was Du bekommst",
+      "items": [
+        {
+          "title": "Fünf Kriterien",
+          "body": "Smarte Fragen, gefährliche Annahmen, Serienfragen, Angebot, Empathie — jede Bewertung mit Zitat aus Deinem Gespräch."
+        },
+        {
+          "title": "Deine Fragekette",
+          "body": "Jede Frage eingeordnet: offen oder geschlossen, Schmerz, Beleg, Folge oder Hypothese. Du siehst, wo die Kette abreißt."
+        },
+        {
+          "title": "Drei Sätze",
+          "body": "Drei Hebel mit der größten Wirkung, jeweils mit einem Satz, den Du beim nächsten Mal genau so sagen kannst."
+        }
+      ]
+    },
+    "privacy": "Das Transkript wird nur für die Auswertung verarbeitet und danach verworfen. Gespeichert werden die Ergebnisse und kurze Zitate, damit Du den Link später wieder öffnen kannst.",
+    "result": {
+      "badge": "Dein Gesprächs-Check",
+      "hello": "{name}, hier ist Dein Gespräch.",
+      "helloAnon": "Hier ist Dein Gespräch.",
+      "running": "Die Auswertung läuft noch. Diese Seite lädt sich gleich neu.",
+      "failed": "Diese Auswertung ist fehlgeschlagen.",
+      "notFound": "Diese Auswertung gibt es nicht.",
+      "metrics": {
+        "share": "Dein Redeanteil",
+        "questions": "Fragen",
+        "open": "davon offen",
+        "serial": "Serienfragen"
+      },
+      "criteriaTitle": "Fünf Kriterien",
+      "notAssessed": "nicht bewertet",
+      "tipsTitle": "Drei Sätze für Dein nächstes Gespräch",
+      "tipSay": "Sag beim nächsten Mal",
+      "questionsTitle": "Deine Fragekette",
+      "questionsHint": "Stark ist die Abfolge Schmerz → Beleg → Folge. Wer beim Schmerz stehen bleibt, hat Meinungen gesammelt, keinen Business Case.",
+      "category": {
+        "P/G": "Schmerz / Ziel",
+        "E": "Beleg",
+        "I": "Folge",
+        "H": "Hypothese",
+        "closed": "geschlossen"
+      },
+      "protocolTitle": "Was der Kunde gesagt hat",
+      "protocol": {
+        "pain_gain": "Schmerz und Ziele",
+        "evidence": "Belege",
+        "impact": "Folgen"
+      },
+      "protocolEmpty": "Nichts in dieser Kategorie.",
+      "objectionsTitle": "Einwände",
+      "objectionsEmpty": "Im Gespräch kamen keine Einwände vor.",
+      "status": {
+        "addressed": "behandelt",
+        "partially_addressed": "teilweise",
+        "unaddressed": "übergangen"
+      },
+      "skillmapTitle": "Deine Skill-Map",
+      "draft": "Entwurf",
+      "skillmapHint": "Dieselbe Skill-Map wie im Seller-Report: 19 Skills in fünf Dimensionen, Grad 1 bis 5. Ein einzelnes Gespräch zeigt nicht alle — was darin nicht vorkam, ist schraffiert, mit dem Grund. Die vollständige Messung läuft über Simulation, Rituale und Ergebnisse.",
+      "notMeasured": "nicht bestimmt",
+      "dimensionNotMeasured": "In diesem Gespräch nicht messbar",
+      "learningTitle": "Wo sich Üben am meisten lohnt",
+      "learningCta": "Zum passenden Framework",
+      "ctaTitle": "Willst Du das für Dein ganzes Team?",
+      "ctaBody": "Im Mystery Shopping spricht Markus selbst als Kunde mit Deinem Team und wertet jedes Gespräch aus — 13 Skills, 14-Seiten-Report, Debriefing.",
+      "ctaButton": "Mystery Shopping ansehen",
+      "again": "Weiteres Gespräch auswerten",
+      "measuredOf": "{n} von {total} Skills gemessen",
+      "gradeLegend": [
+        "nicht angewendet",
+        "ansatzweise",
+        "sauber angewendet",
+        "gezielt und wirksam",
+        "vorbildlich"
+      ]
+    },
+    "criteria": {
+      "smart_questions": "Smarte Fragen",
+      "assumptions": "Keine gefährlichen Annahmen",
+      "serial_questions": "Eine Frage auf einmal",
+      "offer": "Unwiderstehliches Angebot",
+      "empathy": "Taktische Empathie"
+    },
+    "dimensions": {
+      "D1": "Pipeline & Hebel",
+      "D2": "Strategie & Vorbereitung",
+      "D3": "Discovery & Erstgespräch",
+      "D4": "Botschaft & Überzeugung",
+      "D5": "Angebot · Verhandlung · Closing"
+    },
+    "skills": {
+      "S01": "Mindset wählen",
+      "S02": "Professionell arbeiten",
+      "S03": "Strategisch vorbereiten",
+      "S04": "Kunden neugierig machen",
+      "S05": "Taktische Empathie",
+      "S06": "The Drill",
+      "S07": "Die Liste",
+      "S08": "Unwiderstehliche Angebote",
+      "S09": "Einwände nutzen",
+      "S10": "Yellow Lights moderieren",
+      "S11": "Zur Entscheidung begleiten",
+      "S12": "Gesprächsebene & Prozess",
+      "S13": "Take away the solution",
+      "S14": "Business Acumen",
+      "S15": "Sichtbarkeit / Magnet",
+      "S16": "Werkzeuge (AI)",
+      "S17": "Fesselnd präsentieren",
+      "S18": "Audience einbinden",
+      "S19": "Beziehungen ökologisch"
+    }
   }
 }

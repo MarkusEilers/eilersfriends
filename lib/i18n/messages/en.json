@@ -1887,5 +1887,168 @@
     "frameworksTitle": "Steal our frameworks — AI agents included.",
     "frameworksDesc": "Beef Radar, Irresistible B2B Offers, Instant Influence and more — each with a blueprint and a trained AI agent.",
     "frameworksCta": "See the frameworks"
+  },
+  "callCheck": {
+    "meta": {
+      "title": "Call Check · Mystery shopping, do it yourself",
+      "description": "Upload the transcript of a first sales call and see where it tipped: questions, objections, offer, empathy — with three sentences for your next call."
+    },
+    "hero": {
+      "badge": "Call Check",
+      "headline": "Where did your last first call tip over?",
+      "subline": "Upload the transcript. You get the same analysis as in a mystery shopping: five criteria, your chain of questions, the objections — and three sentences you can say word for word next time.",
+      "facts": [
+        "Takes about a minute",
+        "Transcript is not stored",
+        "Free"
+      ]
+    },
+    "form": {
+      "step1": "Paste your transcript",
+      "step1Hint": "From Teams, Zoom, Meet, Granola or as a file (.txt, .vtt, .srt). Ideally with a name before each turn.",
+      "placeholder": "Anna Berger: Thanks for taking the time …\nMarkus: My pleasure. What made you …",
+      "upload": "Choose file",
+      "words": "{count} words",
+      "tooShort": "That is too few words for an analysis — at least {min}.",
+      "tooLong": "The transcript is too long. Please shorten it to at most {max} words.",
+      "noSpeakers": "We cannot find speaker names. The analysis still works, but talk share and serial questions will be missing.",
+      "whoAreYou": "Who are you in this call?",
+      "whoAreYouHint": "So we count your talk share and questions correctly.",
+      "step2": "Where should we send the result?",
+      "firstName": "First name",
+      "email": "Email",
+      "consent": "I agree that the transcript is processed for the analysis. Only the analysis with short quotes is stored, not the transcript. I have my conversation partners' consent.",
+      "newsletter": "Also send me Markus' newsletter on B2B sales (unsubscribe any time).",
+      "submit": "Analyse the call",
+      "working": [
+        "Reading the call …",
+        "Sorting your questions …",
+        "Looking for objections …",
+        "Checking whether the offer connects to the pain …",
+        "Writing three sentences for your next call …"
+      ],
+      "errors": {
+        "invalid_input": "Please check your input.",
+        "too_short": "The transcript is too short for an analysis.",
+        "too_long": "The transcript is too long.",
+        "rate_limited": "You have already analysed three calls today. Tomorrow you can continue.",
+        "daily_cap": "All analyses for today are taken. Please try again tomorrow.",
+        "analysis_failed": "The analysis failed. Please try again.",
+        "network": "No connection. Please try again."
+      }
+    },
+    "what": {
+      "headline": "What you get",
+      "items": [
+        {
+          "title": "Five criteria",
+          "body": "Smart questions, dangerous assumptions, serial questions, offer, empathy — every rating with a quote from your call."
+        },
+        {
+          "title": "Your chain of questions",
+          "body": "Every question classified: open or closed, pain, evidence, impact or hypothetical. You see where the chain breaks."
+        },
+        {
+          "title": "Three sentences",
+          "body": "The three levers with the biggest effect, each with a sentence you can say exactly like that next time."
+        }
+      ]
+    },
+    "privacy": "The transcript is processed only for the analysis and discarded afterwards. We store the results and short quotes so you can open the link again later.",
+    "result": {
+      "badge": "Your call check",
+      "hello": "{name}, here is your call.",
+      "helloAnon": "Here is your call.",
+      "running": "The analysis is still running. This page reloads shortly.",
+      "failed": "This analysis failed.",
+      "notFound": "This analysis does not exist.",
+      "metrics": {
+        "share": "Your talk share",
+        "questions": "Questions",
+        "open": "open",
+        "serial": "Serial questions"
+      },
+      "criteriaTitle": "Five criteria",
+      "notAssessed": "not assessed",
+      "tipsTitle": "Three sentences for your next call",
+      "tipSay": "Next time, say",
+      "questionsTitle": "Your chain of questions",
+      "questionsHint": "The strong sequence is pain → evidence → impact. Stopping at pain collects opinions, not a business case.",
+      "category": {
+        "P/G": "Pain / goal",
+        "E": "Evidence",
+        "I": "Impact",
+        "H": "Hypothetical",
+        "closed": "closed"
+      },
+      "protocolTitle": "What the customer said",
+      "protocol": {
+        "pain_gain": "Pains and goals",
+        "evidence": "Evidence",
+        "impact": "Impact"
+      },
+      "protocolEmpty": "Nothing in this category.",
+      "objectionsTitle": "Objections",
+      "objectionsEmpty": "No objections came up in this call.",
+      "status": {
+        "addressed": "handled",
+        "partially_addressed": "partly",
+        "unaddressed": "skipped"
+      },
+      "skillmapTitle": "Your skill map",
+      "draft": "Draft",
+      "skillmapHint": "The same skill map as in the seller report: 19 skills in five dimensions, grade 1 to 5. A single call does not show all of them — what did not happen is hatched, with the reason. The full measurement runs on simulation, rituals and results.",
+      "notMeasured": "not determined",
+      "dimensionNotMeasured": "Not measurable in this call",
+      "learningTitle": "Where practice pays off most",
+      "learningCta": "Go to the matching framework",
+      "ctaTitle": "Want this for your whole team?",
+      "ctaBody": "In a mystery shopping, Markus talks to your team as a customer and analyses every call — 13 skills, a 14-page report, a debriefing.",
+      "ctaButton": "See mystery shopping",
+      "again": "Analyse another call",
+      "measuredOf": "{n} of {total} skills measured",
+      "gradeLegend": [
+        "not applied",
+        "partly",
+        "applied cleanly",
+        "targeted and effective",
+        "exemplary"
+      ]
+    },
+    "criteria": {
+      "smart_questions": "Smart questions",
+      "assumptions": "No dangerous assumptions",
+      "serial_questions": "One question at a time",
+      "offer": "Irresistible offer",
+      "empathy": "Tactical empathy"
+    },
+    "dimensions": {
+      "D1": "Pipeline & levers",
+      "D2": "Strategy & preparation",
+      "D3": "Discovery & first call",
+      "D4": "Message & persuasion",
+      "D5": "Offer · negotiation · closing"
+    },
+    "skills": {
+      "S01": "Choose your mindset",
+      "S02": "Work professionally",
+      "S03": "Prepare strategically",
+      "S04": "Make customers curious",
+      "S05": "Tactical empathy",
+      "S06": "The Drill",
+      "S07": "The List",
+      "S08": "Irresistible offers",
+      "S09": "Use objections",
+      "S10": "Moderate yellow lights",
+      "S11": "Guide to a decision",
+      "S12": "Conversation level & process",
+      "S13": "Take away the solution",
+      "S14": "Business acumen",
+      "S15": "Visibility / magnet",
+      "S16": "Tools (AI)",
+      "S17": "Present compellingly",
+      "S18": "Engage the audience",
+      "S19": "Relationships, sustainably"
+    }
   }
 }
