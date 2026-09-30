@@ -1966,7 +1966,9 @@
         "share": "Tu cuota de habla",
         "questions": "Preguntas",
         "open": "abiertas",
-        "serial": "Preguntas en serie"
+        "serial": "Preguntas en serie",
+        "monologue": "Monólogo más largo",
+        "words": "{n} palabras"
       },
       "criteriaTitle": "Cinco criterios",
       "notAssessed": "sin evaluar",
@@ -2013,7 +2015,11 @@
         "aplicado con limpieza",
         "dirigido y eficaz",
         "ejemplar"
-      ]
+      ],
+      "turningTitle": "Aquí se torció",
+      "customerSaid": "El cliente",
+      "youSaid": "Tú",
+      "better": "Lo que habría funcionado aquí"
     },
     "criteria": {
       "smart_questions": "Preguntas inteligentes",

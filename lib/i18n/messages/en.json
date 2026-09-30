@@ -1966,7 +1966,9 @@
         "share": "Your talk share",
         "questions": "Questions",
         "open": "open",
-        "serial": "Serial questions"
+        "serial": "Serial questions",
+        "monologue": "Longest monologue",
+        "words": "{n} words"
       },
       "criteriaTitle": "Five criteria",
       "notAssessed": "not assessed",
@@ -2013,7 +2015,11 @@
         "applied cleanly",
         "targeted and effective",
         "exemplary"
-      ]
+      ],
+      "turningTitle": "This is where it tipped",
+      "customerSaid": "The customer",
+      "youSaid": "You",
+      "better": "What would have worked here"
     },
     "criteria": {
       "smart_questions": "Smart questions",

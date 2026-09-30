@@ -49,7 +49,7 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
   return (
     <div className="min-h-screen bg-[#FAFAF8]">
       {/* Head: the shape of the call */}
-      <section className="bg-[#0F1E3A] px-6 pb-16 pt-16 text-white">
+      <section className="bg-[#0F1E3A] px-6 pb-32 pt-16 text-white">
         <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <span className="inline-block rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs font-bold uppercase tracking-widest text-[#5DDBF5]">
@@ -65,7 +65,7 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
                 { k: t('result.metrics.share'), v: m.sellerShare != null ? `${m.sellerShare} %` : '—' },
                 { k: t('result.metrics.questions'), v: String(r.questions.length) },
                 { k: t('result.metrics.open'), v: r.questions.length ? `${Math.round((openQ / r.questions.length) * 100)} %` : '—' },
-                { k: t('result.metrics.serial'), v: m.sellerTurns ? String(m.serialQuestionTurns) : '—' },
+                { k: t('result.metrics.monologue'), v: m.sellerTurns ? t('result.metrics.words', { n: m.longestSellerMonologue }) : '—' },
               ].map((x) => (
                 <div key={x.k} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                   <dt className="text-[11px] uppercase tracking-wider text-white/55">{x.k}</dt>
@@ -82,6 +82,28 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
       </section>
 
       <div className="mx-auto max-w-6xl space-y-10 px-6 py-14">
+        {/* The answer to the question the page asked: where did it tip? */}
+        {r.turning_point ? (
+          <section className="-mt-32 rounded-[2rem] border border-gray-100 bg-white p-6 shadow-xl shadow-[#0F1E3A]/10 sm:p-10">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#EB0028]">{t('result.turningTitle')}</p>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className="rounded-2xl bg-[#FAFAF8] p-5">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-gray-500">{t('result.customerSaid')}</p>
+                <p className="mt-2 text-lg font-medium text-gray-900">„{r.turning_point.customer_quote}"</p>
+              </div>
+              <div className="rounded-2xl border border-[#F5BBBC] bg-[#FFEBEC] p-5">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#B3001F]">{t('result.youSaid')}</p>
+                <p className="mt-2 text-lg font-medium text-gray-900">„{r.turning_point.seller_reaction}"</p>
+              </div>
+            </div>
+            <p className="mt-5 max-w-3xl text-base text-gray-700">{r.turning_point.effect}</p>
+            <div className="mt-5 rounded-2xl bg-[#0F1E3A] p-5 text-white">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#5DDBF5]">{t('result.better')}</p>
+              <p className="mt-1 text-lg font-medium">„{r.turning_point.better}"</p>
+            </div>
+          </section>
+        ) : null}
+
         {/* The three sentences — what to take away first */}
         <section>
           <h2 className="text-2xl font-bold text-gray-900">{t('result.tipsTitle')}</h2>

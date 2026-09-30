@@ -36,8 +36,11 @@ export interface SkillResult { key: SkillKey; measurable: boolean; grade: number
 export interface CriterionResult { key: CriterionKey; score: number | null; finding: string; evidence: string[] }
 export interface DimensionResult { key: DimensionKey; grade: number | null; measured: number; total: number }
 
+export interface TurningPoint { customer_quote: string; seller_reaction: string; effect: string; better: string }
+
 export interface CheckResult {
   summary: string
+  turning_point: TurningPoint | null
   criteria: CriterionResult[]
   skills: SkillResult[]
   dimensions: DimensionResult[]
@@ -107,8 +110,15 @@ function normalise(raw: Record<string, unknown>, fallbackNote: string, notObserv
     // Fallback: the weakest measured skill.
     : ([...skills].filter((s) => s.measurable).sort((a, b) => (a.grade ?? 0) - (b.grade ?? 0))[0]?.key ?? 'S06')
 
+  const tp = raw.turning_point as Partial<TurningPoint> | undefined
+  const turning_point = tp && tp.customer_quote && tp.seller_reaction
+    ? { customer_quote: String(tp.customer_quote), seller_reaction: String(tp.seller_reaction),
+        effect: String(tp.effect ?? ''), better: String(tp.better ?? '') }
+    : null
+
   return {
     summary: String(raw.summary ?? ''),
+    turning_point,
     criteria,
     skills,
     dimensions,

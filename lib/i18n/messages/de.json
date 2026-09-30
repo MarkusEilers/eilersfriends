@@ -1967,7 +1967,9 @@
         "share": "Dein Redeanteil",
         "questions": "Fragen",
         "open": "davon offen",
-        "serial": "Serienfragen"
+        "serial": "Serienfragen",
+        "monologue": "Längster Monolog",
+        "words": "{n} Wörter"
       },
       "criteriaTitle": "Fünf Kriterien",
       "notAssessed": "nicht bewertet",
@@ -2014,7 +2016,11 @@
         "sauber angewendet",
         "gezielt und wirksam",
         "vorbildlich"
-      ]
+      ],
+      "turningTitle": "Hier ist es gekippt",
+      "customerSaid": "Der Kunde",
+      "youSaid": "Du",
+      "better": "Was hier gewirkt hätte"
     },
     "criteria": {
       "smart_questions": "Smarte Fragen",
