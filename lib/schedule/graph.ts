@@ -276,3 +276,29 @@ export async function statusNow(slug: string): Promise<'available' | 'meeting' |
   const now = Date.now()
   return busy.some(b => b.start <= now && b.end > now) ? 'meeting' : 'available'
 }
+
+
+/**
+ * All calendars of one person with a fresh token each — the primary
+ * connection plus every active extra calendar (other tenants included).
+ * Used by the personal assistant endpoint; the booking flow keeps its own path.
+ */
+export async function calendarsForPerson(slug: string): Promise<Array<{ calendar: string; token: string }>> {
+  const out: Array<{ calendar: string; token: string }> = []
+  const primary = await accessTokenFor(slug)
+  if (primary) {
+    let label = 'primary'
+    try {
+      const me = await fetch('https://graph.microsoft.com/v1.0/me?$select=mail,userPrincipalName', { headers: { Authorization: `Bearer ${primary}` } })
+      const d = await me.json() as { mail?: string; userPrincipalName?: string }
+      label = (d.mail || d.userPrincipalName || 'primary').toLowerCase()
+    } catch { /* label stays "primary" */ }
+    out.push({ calendar: label, token: primary })
+  }
+  for (const cal of await getActiveExtraCalendars(slug)) {
+    if (out.some((c) => c.calendar === cal.msEmail.toLowerCase())) continue
+    const t = await accessTokenForCalendar(cal)
+    if (t) out.push({ calendar: cal.msEmail.toLowerCase(), token: t })
+  }
+  return out
+}
