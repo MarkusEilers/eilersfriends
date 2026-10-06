@@ -133,9 +133,12 @@ export async function freeTime(person: string, from: string, to: string, minMinu
   const { events } = await listEvents(person, from, to)
   const busy = events.filter((e) => !e.allDay && e.showAs !== 'free')
   const out: Array<{ start: string; end: string; minutes: number }> = []
+  // The range is half-open like the event query: "to" 2026-10-09T00:00 ends
+  // before the 9th. Counting that day would report it as entirely free,
+  // because none of its events were fetched.
   const first = new Date(`${toGraphTime(from).dateTime.slice(0, 10)}T00:00:00Z`)
-  const last = new Date(`${toGraphTime(to).dateTime.slice(0, 10)}T00:00:00Z`)
-  for (let d = first; d <= last; d = new Date(d.getTime() + 864e5)) {
+  const until = new Date(`${toGraphTime(to).dateTime}Z`)
+  for (let d = first; d < until; d = new Date(d.getTime() + 864e5)) {
     const day = d.toISOString().slice(0, 10)
     const wd = d.getUTCDay()
     if (wd === 0 || wd === 6) continue
