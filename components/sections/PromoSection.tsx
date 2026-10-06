@@ -19,21 +19,24 @@ export async function PromoSection() {
           <h2 className="mt-2 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>{t('heading')}</h2>
         </div>
 
-        {/* Quiz-Teaser — Hero der Promo-Sektion */}
-        <Link href={'/#newsletter' as '/'} className="group mt-10 block overflow-hidden rounded-3xl p-8 sm:p-10"
+        {/* Teaser — Hero der Promo-Sektion.
+            Übergang: zeigt auf den Gesprächs-Check, bis die Quiz-Engine steht.
+            Vorher führte er zur Newsletter-Anmeldung und versprach eine Analyse,
+            die es nicht gab. Die Quiz-Texte bleiben in promo.quiz*. */}
+        <Link href={'/gespraechs-check' as '/'} className="group mt-10 block overflow-hidden rounded-3xl p-8 sm:p-10"
           style={{ background: 'linear-gradient(135deg, #0F1E3A 0%, #15315E 100%)' }}>
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-widest"
                 style={{ backgroundColor: 'rgba(147,184,245,0.15)', color: '#93B8F5', border: '1px solid rgba(147,184,245,0.35)' }}>
-                <Sparkles size={12} /> {t('quizTag')}
+                <Sparkles size={12} /> {t('checkTag')}
               </span>
-              <h3 className="mt-4 text-2xl font-bold text-white sm:text-3xl">{t('quizTitle')}</h3>
-              <p className="mt-3 text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>{t('quizDesc')}</p>
+              <h3 className="mt-4 text-2xl font-bold text-white sm:text-3xl">{t('checkTitle')}</h3>
+              <p className="mt-3 text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>{t('checkDesc')}</p>
             </div>
             <span className="inline-flex flex-shrink-0 items-center gap-2 self-start rounded-full px-6 py-3 text-sm font-bold text-white transition-transform group-hover:translate-x-0.5"
               style={{ backgroundColor: '#1A5FD4' }}>
-              {t('quizCta')} <ArrowRight size={16} />
+              {t('checkCta')} <ArrowRight size={16} />
             </span>
           </div>
         </Link>

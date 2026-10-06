@@ -1811,7 +1811,11 @@
     "frameworksTag": "Kostenlos",
     "frameworksTitle": "Klaut unsere Frameworks — inkl. AI-Agenten.",
     "frameworksDesc": "Beef Radar, Unwiderstehliche B2B-Angebote, Instant Influence und mehr — jedes mit Bauplan und trainiertem AI-Agenten.",
-    "frameworksCta": "Zu den Frameworks"
+    "frameworksCta": "Zu den Frameworks",
+    "checkTag": "Call check · free",
+    "checkTitle": "Where did your last first call tip over?",
+    "checkDesc": "Upload the transcript and get the same analysis as in a mystery shopping: your chain of questions, the objections, the moment it tipped — and three sentences for your next call.",
+    "checkCta": "Analyse a call"
   },
   "callCheck": {
     "meta": {

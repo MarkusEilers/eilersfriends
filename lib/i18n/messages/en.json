@@ -1886,7 +1886,11 @@
     "frameworksTag": "Free",
     "frameworksTitle": "Steal our frameworks — AI agents included.",
     "frameworksDesc": "Beef Radar, Irresistible B2B Offers, Instant Influence and more — each with a blueprint and a trained AI agent.",
-    "frameworksCta": "See the frameworks"
+    "frameworksCta": "See the frameworks",
+    "checkTag": "Call check · free",
+    "checkTitle": "Where did your last first call tip over?",
+    "checkDesc": "Upload the transcript and get the same analysis as in a mystery shopping: your chain of questions, the objections, the moment it tipped — and three sentences for your next call.",
+    "checkCta": "Analyse a call"
   },
   "callCheck": {
     "meta": {

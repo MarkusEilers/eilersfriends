@@ -1887,7 +1887,11 @@
     "frameworksTag": "Kostenlos",
     "frameworksTitle": "Klaut unsere Frameworks — inkl. AI-Agenten.",
     "frameworksDesc": "Beef Radar, Unwiderstehliche B2B-Angebote, Instant Influence und mehr — jedes mit Bauplan und trainiertem AI-Agenten.",
-    "frameworksCta": "Zu den Frameworks"
+    "frameworksCta": "Zu den Frameworks",
+    "checkTag": "Gesprächs-Check · kostenlos",
+    "checkTitle": "Wo ist Dein letztes Erstgespräch gekippt?",
+    "checkDesc": "Lade das Transkript hoch und bekomm dieselbe Auswertung wie in einem Mystery Shopping: Deine Fragekette, die Einwände, die Stelle, an der es gekippt ist — und drei Sätze für das nächste Gespräch.",
+    "checkCta": "Gespräch auswerten"
   },
   "callCheck": {
     "meta": {

@@ -1886,7 +1886,11 @@
     "frameworksTag": "Gratis",
     "frameworksTitle": "Roba nuestros frameworks — con agentes de IA.",
     "frameworksDesc": "Beef Radar, Ofertas B2B irresistibles, Instant Influence y más — cada uno con plano y un agente de IA entrenado.",
-    "frameworksCta": "Ver los frameworks"
+    "frameworksCta": "Ver los frameworks",
+    "checkTag": "Análisis de conversación · gratis",
+    "checkTitle": "¿Dónde se torció tu última primera reunión?",
+    "checkDesc": "Sube la transcripción y recibe el mismo análisis que en un mystery shopping: tu cadena de preguntas, las objeciones, el momento en que se torció — y tres frases para tu próxima conversación.",
+    "checkCta": "Analizar una conversación"
   },
   "callCheck": {
     "meta": {
