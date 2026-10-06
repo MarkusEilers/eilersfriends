@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
-import { calendarsForPerson, sendMailAs } from '@/lib/schedule/graph'
+import { calendarsForPerson } from '@/lib/schedule/graph'
 
 /**
  * Personal calendar assistant — the part that Claude chats and the SecondBrain
@@ -299,10 +299,30 @@ export async function recentActions(person: string, limit = 20) {
   return rows
 }
 
-export async function sendMail(person: string, keyName: string | null, a: { to: string; subject: string; body: string }) {
+/**
+ * A draft in the mailbox — never sent. The person reviews it in Outlook and
+ * sends it themselves. Needs Mail.ReadWrite; connections made before that
+ * scope existed get a clear message instead of a Graph error.
+ */
+export async function draftMail(person: string, keyName: string | null, a: {
+  to: string[]; cc?: string[]; subject: string; body: string; mailbox?: string
+}) {
+  const c = await tokenFor(person, a.mailbox)
   const html = a.body.split(/\n{2,}/).map((p) => `<p>${p.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\n/g, '<br>')}</p>`).join('')
-  const r = await sendMailAs(person, a.to, a.subject, html)
-  if (!r.ok) throw new Error(r.error ?? 'send_failed')
-  await log(person, keyName, 'mail', null, null, null, { to: a.to, subject: a.subject })
-  return { sent: true, to: a.to, subject: a.subject }
+  const rcpt = (xs: string[] = []) => xs.filter(Boolean).map((address) => ({ emailAddress: { address } }))
+  let draft: { id?: string; webLink?: string }
+  try {
+    draft = await graph(c.token, '/me/messages', {
+      method: 'POST',
+      body: JSON.stringify({ subject: a.subject, body: { contentType: 'HTML', content: html }, toRecipients: rcpt(a.to), ccRecipients: rcpt(a.cc) }),
+    }) as { id?: string; webLink?: string }
+  } catch (e) {
+    const m = e instanceof Error ? e.message : String(e)
+    if (/access is denied|denied|forbidden|insufficient/i.test(m)) {
+      throw new Error(`no_draft_permission: Das Postfach ${c.calendar} erlaubt noch keine Entwürfe. Einmal unter /admin/schedule neu verbinden (Mail.ReadWrite bestätigen).`)
+    }
+    throw e
+  }
+  await log(person, keyName, 'draft', c.calendar, draft.id ?? null, null, { to: a.to, cc: a.cc ?? [], subject: a.subject })
+  return { drafted: true, sent: false, mailbox: c.calendar, subject: a.subject, to: a.to, open_in_outlook: draft.webLink ?? null }
 }

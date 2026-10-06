@@ -8,13 +8,21 @@ const CLIENT_SECRET = process.env.MS_CLIENT_SECRET || ''
 export const REDIRECT_URI = process.env.MS_REDIRECT_URI || 'https://www.eilersfriends.com/api/schedule/oauth/callback'
 const BASE_SCOPE = 'offline_access openid email profile https://graph.microsoft.com/Calendars.ReadWrite'
 export const SCOPE = BASE_SCOPE + ' https://graph.microsoft.com/Mail.Send'
+/**
+ * Mail.ReadWrite on top — needed to put drafts into the mailbox for the
+ * personal assistant (it prepares mails, it never sends them). New
+ * connections ask for it; old ones keep working on the narrower scopes until
+ * they are reconnected.
+ */
+const FULL_SCOPE = SCOPE + ' https://graph.microsoft.com/Mail.ReadWrite'
+const SCOPE_LADDER = [FULL_SCOPE, SCOPE, BASE_SCOPE]
 
 export function graphConfigured(): boolean { return Boolean(CLIENT_ID && CLIENT_SECRET) }
 
 export function authorizeUrl(state: string, authority: string = TENANT): string {
   const p = new URLSearchParams({
     client_id: CLIENT_ID, response_type: 'code', redirect_uri: REDIRECT_URI,
-    response_mode: 'query', scope: SCOPE, state, prompt: 'select_account',
+    response_mode: 'query', scope: FULL_SCOPE, state, prompt: 'select_account',
   })
   return `https://login.microsoftonline.com/${authority}/oauth2/v2.0/authorize?${p.toString()}`
 }
@@ -57,13 +65,12 @@ async function accessTokenFor(slug: string): Promise<string | null> {
   const rt = await getRefreshToken(slug)
   if (!rt) return null
   let t: { access_token: string; refresh_token?: string } | null = null
-  try {
-    t = await tokenRequest({ grant_type: 'refresh_token', refresh_token: rt, scope: SCOPE })
-  } catch {
-    // Fallback: alte Verbindungen ohne Mail.Send-Consent behalten Kalender-Zugriff
-    try { t = await tokenRequest({ grant_type: 'refresh_token', refresh_token: rt, scope: BASE_SCOPE }) }
-    catch { await markRevoked(slug).catch(() => {}); return null }
+  // Widest consent first; older connections fall back step by step and keep
+  // what they had (calendar, then calendar + send).
+  for (const scope of SCOPE_LADDER) {
+    try { t = await tokenRequest({ grant_type: 'refresh_token', refresh_token: rt, scope }); break } catch { /* next */ }
   }
+  if (!t) { await markRevoked(slug).catch(() => {}); return null }
   if (t.refresh_token) await saveConnection(slug, t.refresh_token, null).catch(() => {})
   return t.access_token
 }
@@ -100,11 +107,10 @@ function berlinParts(d: Date, tz: string) {
 export async function accessTokenForCalendar(cal: ExtraCalToken): Promise<string | null> {
   const authority = cal.tenantId || ADD_AUTHORITY
   let t: { access_token: string; refresh_token?: string } | null = null
-  try { t = await tokenRequestAt(authority, { grant_type: 'refresh_token', refresh_token: cal.refreshToken, scope: SCOPE }) }
-  catch {
-    try { t = await tokenRequestAt(authority, { grant_type: 'refresh_token', refresh_token: cal.refreshToken, scope: BASE_SCOPE }) }
-    catch { await markExtraCalendarRevoked(cal.id).catch(() => {}); return null }
+  for (const scope of SCOPE_LADDER) {
+    try { t = await tokenRequestAt(authority, { grant_type: 'refresh_token', refresh_token: cal.refreshToken, scope }); break } catch { /* next */ }
   }
+  if (!t) { await markExtraCalendarRevoked(cal.id).catch(() => {}); return null }
   if (t.refresh_token) await setExtraCalendarRefresh(cal.id, t.refresh_token).catch(() => {})
   return t.access_token
 }

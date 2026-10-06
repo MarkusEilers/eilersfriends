@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { verifyApiKey, hasScope, type ApiKeyContext } from '@/lib/events/auth'
 import {
-  listEvents, freeTime, createBlock, moveEvent, updateEvent, deleteEvent, recentActions, sendMail,
+  listEvents, freeTime, createBlock, moveEvent, updateEvent, deleteEvent, recentActions, draftMail,
 } from './calendar'
 
 /**
@@ -13,7 +13,8 @@ import {
  *                                 send headers (claude.ai custom connectors)
  *
  * A key works only if it is bound to a person (scope "person:<slug>") and
- * carries calendar:read; writes need calendar:write, mail needs mail:send.
+ * carries calendar:read; writes need calendar:write, mail drafts mail:draft.
+ * There is deliberately no tool that sends mail.
  */
 
 const SUPPORTED = ['2025-06-18', '2025-03-26', '2024-11-05']
@@ -25,6 +26,7 @@ Arbeitsweise:
 - Verschieben oder Löschen: vorher die betroffenen Termine nennen und Bestätigung abwarten, außer der Nutzer hat ausdrücklich gesagt, dass Du es direkt tun sollst.
 - Termine mit anderen Teilnehmern nicht anfassen. Das Werkzeug weist sie ab; notify_attendees: true nur, wenn der Nutzer genau das will — die anderen bekommen dann eine Nachricht.
 - Prioritäten: importance (low/normal/high) und categories. Fokuszeit: calendar_create_block mit show_as "busy".
+- E-Mails nur als Entwurf (mail_draft). Es gibt kein Werkzeug zum Senden; der Nutzer schickt selbst.
 - Jede Änderung wird protokolliert (assistant_recent_actions) und lässt sich damit zurückdrehen.`
 
 type Tool = { name: string; description: string; scope: string; inputSchema: Record<string, unknown> }
@@ -103,9 +105,17 @@ const TOOLS: Tool[] = [
     inputSchema: { type: 'object', properties: { limit: { type: 'number' } } },
   },
   {
-    name: 'mail_send', scope: 'mail:send',
-    description: 'Sendet eine E-Mail im Namen des Nutzers. Nur nach ausdrücklicher Bestätigung von Empfänger, Betreff und Text.',
-    inputSchema: { type: 'object', required: ['to', 'subject', 'body'], properties: { to: str('Empfänger'), subject: str('Betreff'), body: str('Text, Absätze mit Leerzeile') } },
+    name: 'mail_draft', scope: 'mail:draft',
+    description: 'Legt eine E-Mail als Entwurf im Postfach ab. Sendet nie — der Nutzer prüft und schickt sie selbst aus Outlook.',
+    inputSchema: {
+      type: 'object', required: ['to', 'subject', 'body'],
+      properties: {
+        to: { type: 'array', items: { type: 'string' }, description: 'Empfänger' },
+        cc: { type: 'array', items: { type: 'string' } },
+        subject: str('Betreff'), body: str('Text, Absätze mit Leerzeile'),
+        mailbox: str('Postfach-Adresse, Standard: Hauptkonto'),
+      },
+    },
   },
 ]
 
@@ -139,7 +149,10 @@ async function call(ctx: ApiKeyContext, person: string, name: string, a: Record<
       id: String(a.id), calendar: a.calendar as string | undefined, notify_attendees: a.notify_attendees === true,
     })
     case 'assistant_recent_actions': return recentActions(person, Number(a.limit ?? 20))
-    case 'mail_send': return sendMail(person, key, { to: String(a.to), subject: String(a.subject), body: String(a.body) })
+    case 'mail_draft': return draftMail(person, key, {
+      to: (Array.isArray(a.to) ? a.to : [a.to]).map(String), cc: Array.isArray(a.cc) ? a.cc.map(String) : [],
+      subject: String(a.subject), body: String(a.body), mailbox: a.mailbox as string | undefined,
+    })
     default: throw new Error(`unknown_tool:${name}`)
   }
 }
