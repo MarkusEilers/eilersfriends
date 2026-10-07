@@ -16,7 +16,7 @@ import { OfferBlockEditor, type BlockRow } from './OfferBlockEditor'
 interface Goal { v: string }
 interface UnderstandingData { title?: string; goals?: string[]; challenges?: string[] }
 interface EmpathyData { title?: string; statement?: string; successMessage?: string }
-interface TrackStepE { title: string; durationH?: number | string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[] }
+interface TrackStepE { title: string; headline?: string; durationH?: number | string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[]; milestones?: string[]; origin?: string }
 interface TrackPhaseE { name: string; goal?: string; steps?: TrackStepE[] }
 interface EconomicResultData { icon?: 'target'|'users'|'trending-up'|'shield'|'zap'|'star'; title: string; description?: string }
 interface PricingOptData { type?: 'DIY'|'DWY'|'DFY'; title: string; description?: string; price: number; monthlyDuration?: number; features?: string[]; recommended?: boolean }

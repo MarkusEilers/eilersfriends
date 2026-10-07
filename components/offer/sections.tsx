@@ -391,7 +391,9 @@ export function OfferTimeline({ phases }: { phases: { title?: string; descriptio
 }
 
 // ─── Bausteine-Track — Phasen mit Schritten (Dauer/Teams/Input/Output) ────────
-export interface TrackStep { title: string; durationH?: number | string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[] }
+/** headline: Überschrift über dem Schritt (z. B. „Million Dollar Message"). milestones: Etappen-Hinweise.
+ *  origin: Herkunft aus der alten Roadmap — nur intern, wird nicht gezeigt. */
+export interface TrackStep { title: string; headline?: string; durationH?: number | string; description?: string; teams?: string[]; inputs?: string[]; outputs?: string[]; milestones?: string[]; origin?: string }
 export interface TrackDeliverable { title: string; description?: string }
 /** lane: 0 = Hauptstrang, 1/2 = parallel laufende Straenge (max. 3). */
 export interface TrackPhase {
@@ -468,11 +470,17 @@ export function OfferTrack({ phases, heading = 'Beauftragte Leistungen im Überb
                       <div className="mt-4 ml-4 space-y-3 border-l-2 pl-5" style={{ borderColor: `${c}33` }}>
                         {(ph.steps ?? []).map((st, si) => (
                           <div key={si} className="rounded-2xl border border-gray-200 bg-white p-5">
+                            {st.headline && <p className="mb-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: c }}>{st.headline}</p>}
                             <div className="flex items-start justify-between gap-3">
                               <h4 className="text-sm font-bold" style={{ color: '#0D0D0B' }}>{st.title}</h4>
                               {st.durationH ? <span className="flex-shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold" style={{ backgroundColor: '#EBF1FF', color: '#1A5FD4' }}>{st.durationH}h</span> : null}
                             </div>
                             {st.description && <p className="mt-1.5 text-sm leading-relaxed" style={{ color: '#4B5563' }}>{st.description}</p>}
+                            {st.milestones?.length ? (
+                              <div className="mt-3 flex flex-wrap gap-1.5">
+                                {st.milestones.map((m, mi) => (<span key={mi} className="rounded-full border px-2.5 py-0.5 text-[11px] font-semibold" style={{ borderColor: c, color: c }}>{m}</span>))}
+                              </div>
+                            ) : null}
                             {st.teams?.length ? (
                               <div className="mt-3 flex flex-wrap gap-1.5">
                                 {st.teams.map((t, ti) => (<span key={ti} className="rounded-md px-2 py-0.5 text-[11px] font-medium" style={{ backgroundColor: '#F3F4F6', color: '#374151' }}>{t}</span>))}
