@@ -170,14 +170,14 @@
     "stat1Label": "Monate Begleitung",
     "stat2Value": "30",
     "stat2Label": "Exklusive Plätze",
-    "stat3Value": "13",
+    "stat3Value": "19",
     "stat3Label": "Core Skills",
     "trust1": "867+ trainierte Verkäufer:innen",
     "trust2": "90-Tage Geld-zurück-Garantie",
     "trust3": "15+ Jahre Erfahrung",
     "cta": "Mehr über die Academy",
     "subtext": "Wie wir die besten Verkäufer:innen noch besser machen — und den übrigen 82 % eine echte Chance geben, Erwartungen zu erfüllen und Ziele zu erreichen.",
-    "step1Desc": "Jede:r Teilnehmer:in durchläuft ein realistisches Szenario, in dem 13 entscheidende Sales-Skills individuell gemessen werden.",
+    "step1Desc": "Jede:r Teilnehmer:in durchläuft ein realistisches Szenario, in dem 19 entscheidende Sales-Skills individuell gemessen werden.",
     "step2Desc": "Aus dem Benchmark entwickeln wir für jede:n Seller einen maßgeschneiderten Entwicklungsplan in 5 Schwierigkeitsstufen."
   },
   "programme": {
@@ -476,7 +476,7 @@
       "headline1": "Damit Dein Team die wichtigen Erwartungen erfüllen kann, braucht es",
       "headlineAccent": "diese Skills.",
       "subheadline": "Von Unsicherheit zu planbaren Umsätzen.",
-      "subtext": "Die SalesMade Academy ist ein 12-monatiges Transformationsprogramm für B2B-Software-Seller:innen. Sie geht auf jede einzelne Person ein und entwickelt 13 wichtige Fähigkeiten und Rituale auf das Niveau von Ausnahme-Verkäufern in der Software-Industrie. Damit macht die Academy Deine Verkäufer:innen zu unverzichtbaren Sparringspartnern für Eure gemeinsamen Kunden.",
+      "subtext": "Die SalesMade Academy ist ein 12-monatiges Transformationsprogramm für B2B-Software-Seller:innen. Sie geht auf jede einzelne Person ein und entwickelt 19 wichtige Fähigkeiten und Rituale auf das Niveau von Ausnahme-Verkäufern in der Software-Industrie. Damit macht die Academy Deine Verkäufer:innen zu unverzichtbaren Sparringspartnern für Eure gemeinsamen Kunden.",
       "cta": "Jetzt Benchmarking-Gespräch buchen",
       "note": "Nur noch wenige Plätze für den Soft-Launch verfügbar.",
       "pills": [
@@ -571,7 +571,7 @@
       "step1Label": "Schritt 1",
       "step1Title": "Simuliertes Kundenszenario",
       "step1Pre": "Jeder Teilnehmer durchläuft ein realistisches Kundenszenario, in dem ",
-      "step1Accent": "13 entscheidende Sales-Skills",
+      "step1Accent": "19 entscheidende Sales-Skills",
       "step1Post": " individuell gemessen und bewertet werden.",
       "step2Label": "Schritt 2",
       "step2Title": "Individueller Lernpfad",
@@ -588,11 +588,11 @@
           "label": "Exklusive Plätze"
         },
         {
-          "value": "13",
+          "value": "19",
           "label": "Core Skills"
         },
         {
-          "value": "24",
+          "value": "19",
           "label": "Trainings-Module"
         }
       ],
@@ -681,7 +681,7 @@
     "finalCta": {
       "eyebrow": "Schließen wir das Sales Education Gap.",
       "headline": "45 Minuten für Deine nächsten 36 Monate.",
-      "subtext": "Wie überzeugend arbeitet Dein Software-Sales-Team im direkten Vergleich? Unser unverbindlicher Benchmark kann Dir wertvolle Einblicke geben. Dein Team durchläuft ein realistisches Kundenszenario, in dem wir 13 entscheidende Sales-Skills beobachten und bewerten.",
+      "subtext": "Wie überzeugend arbeitet Dein Software-Sales-Team im direkten Vergleich? Unser unverbindlicher Benchmark kann Dir wertvolle Einblicke geben. Dein Team durchläuft ein realistisches Kundenszenario, in dem wir 19 entscheidende Sales-Skills beobachten und bewerten.",
       "cta": "Jetzt Benchmarking-Gespräch buchen",
       "note": "Nur noch wenige Plätze für den Soft-Launch verfügbar."
     },
@@ -758,7 +758,7 @@
         },
         {
           "left": "Keine Messung der Wirkung",
-          "right": "13 Sales-Skills individuell bewertet · quartalsweise Re-Assessment"
+          "right": "19 Sales-Skills individuell bewertet · quartalsweise Re-Assessment"
         },
         {
           "left": "Same Kurs für alle",
@@ -1145,7 +1145,7 @@
     "crosslink": {
       "eyebrow": "Auch interessant",
       "headline": "Markus baut nicht nur Bühnen-Momente.",
-      "body": "Hinter den Keynotes steht ein System: die SalesMade Academy. 12 Monate, 13 Sales-Skills, AI-powered — für B2B-Teams, die planbare Umsätze wollen.",
+      "body": "Hinter den Keynotes steht ein System: die SalesMade Academy. 12 Monate, 19 Sales-Skills, AI-powered — für B2B-Teams, die planbare Umsätze wollen.",
       "cta": "Zur SalesMade Academy"
     },
     "finalCta": {
@@ -1336,8 +1336,8 @@
       "eyebrowPost": " Module",
       "headline": "Was Deine Verkäufer:innen beherrschen werden.",
       "subtextPre": "",
-      "subtextPost": " Skills in fünf Disziplinen. Jeder Skill kommt als eigenständiges Modul mit Bauplan, AI-Werkzeugen und einem Sparring-Szenario, in dem er live geübt wird.",
-      "footer1": "Jedes Modul wird gemessen — nicht nur „besucht\". Über alle 16 Skills hinweg gibt es ",
+      "subtextPost": " Skills in fünf Dimensionen. Jeder Skill kommt als eigenständiges Modul mit Bauplan, AI-Werkzeugen und einem Sparring-Szenario, in dem er live geübt wird.",
+      "footer1": "Jedes Modul wird gemessen — nicht nur „besucht\". Über alle 19 Skills hinweg gibt es ",
       "footer2": "fünf Schwierigkeitsstufen im Sparring",
       "footer3": ", in denen Deine Verkäufer:innen ihr Können live unter Beweis stellen.",
       "disciplines": [
@@ -1346,12 +1346,12 @@
           "description": "Systematisch, planbar, skalierbar — bevor das erste Gespräch beginnt.",
           "skills": [
             {
-              "name": "Social Media Rockstar",
-              "tagline": "Der 9-Schritte-AI-Content-Prozess für magnetische Inbound-Leads"
+              "name": "Sichtbarkeit / Opportunity-Magnet",
+              "tagline": "Bekannt für die Probleme Deiner Kunden — mit dem 9-Schritte-Content-Prozess von Social Media Rockstar"
             },
             {
-              "name": "The Magnetic Outreach Framework",
-              "tagline": "Intriguing Cold Call + Godfather Letters — Outbound, das nicht nervt"
+              "name": "Beziehungen ökologisch aufbauen",
+              "tagline": "Geben, bevor man nimmt — die Beziehung wird durch Nutzung stärker, nicht verbraucht"
             }
           ]
         },
@@ -1360,20 +1360,24 @@
           "description": "Was wir tun, bevor wir den Mund aufmachen.",
           "skills": [
             {
-              "name": "Customer Intelligence & Account Research",
-              "tagline": "Wer sitzt da, was zählt für sie"
+              "name": "Mindset wählen",
+              "tagline": "Locus of Control statt Abwärtsspirale — Confidence entsteht durch Handeln"
             },
             {
-              "name": "The Identity Switch",
-              "tagline": "Wer wird mein ICP gerade — und positioniere ich uns dafür?"
+              "name": "Professionell arbeiten",
+              "tagline": "Wochenplanung, Prioritäten, Verbindlichkeit — Standing, das man sieht"
             },
             {
-              "name": "Funnel Math",
-              "tagline": "Die Zahlen hinter dem System"
+              "name": "Gespräche strategisch vorbereiten",
+              "tagline": "18-Min-AI-Worksheet vor jedem wichtigen Gespräch"
             },
             {
-              "name": "Strategische Vorbereitung",
-              "tagline": "18-Min AI-Worksheet vor jedem wichtigen Gespräch"
+              "name": "Gesprächsebene & Prozess",
+              "tagline": "Zwischen Sache, Beziehung und Prozess wechseln — und den Entscheidungsweg steuern"
+            },
+            {
+              "name": "Werkzeuge (AI)",
+              "tagline": "Account-Research, Vorbereitung, Follow-up — das passende Werkzeug für jede Aufgabe"
             }
           ]
         },
@@ -1382,16 +1386,16 @@
           "description": "Die ersten 60 Sekunden bis zum ersten Value-Hit.",
           "skills": [
             {
-              "name": "Instant Influence",
-              "tagline": "Die 3 Zutaten, die Kunden im ersten Gespräch gewinnen"
+              "name": "Kunden neugierig machen",
+              "tagline": "Aufmerksamkeit gewinnen, bevor es ums Produkt geht"
             },
             {
-              "name": "Limbische Kommunikation & Körpersprache",
-              "tagline": "Was Kunden lesen, bevor wir reden"
-            },
-            {
-              "name": "Taktische Empathie & Vertrauensaufbau",
+              "name": "Taktische Empathie",
               "tagline": "90 Sekunden zur Resonanz, Voss-Style"
+            },
+            {
+              "name": "The Drill",
+              "tagline": "Systematisch in die Tiefe fragen: Schmerz, Beleg, Folge"
             }
           ]
         },
@@ -1400,16 +1404,20 @@
           "description": "Wir tragen Sinn, nicht Features.",
           "skills": [
             {
-              "name": "Core Messages",
-              "tagline": "Die 11 Botschaften, die jede:r Unternehmer:in im Schlaf können sollte"
+              "name": "Die Liste",
+              "tagline": "Bedarfe und Kriterien gemeinsam sichtbar machen — damit aus dem Erstgespräch eine Entscheidung wird"
             },
             {
-              "name": "Belief Bridge / Überzeugungspfad",
-              "tagline": "Die Brücke vom alten ins neue Glaubenssystem bauen"
+              "name": "Business Acumen",
+              "tagline": "Business Case und Kosten des Nichtstuns beweisen, nicht behaupten"
             },
             {
-              "name": "Bulletproof Delivery / Optimum Path",
-              "tagline": "Der gezielte Weg zum ersten erlebten Value"
+              "name": "Fesselnd präsentieren",
+              "tagline": "Story und Spannungsbogen statt Feature-Liste — Sinn vor Folien"
+            },
+            {
+              "name": "Audience einbinden",
+              "tagline": "Aus Monolog wird Dialog — Resonanz im Raum statt Senden"
             }
           ]
         },
@@ -1418,24 +1426,24 @@
           "description": "Vom Vorschlag zum verbindlichen Ja.",
           "skills": [
             {
-              "name": "Unwiderstehliche B2B-Angebote",
+              "name": "Unwiderstehliche Angebote",
               "tagline": "Der 8-Schritte-Bauplan"
             },
             {
-              "name": "Beef Radar",
-              "tagline": "Value-Kommunikation passend zu den echten Needs"
-            },
-            {
-              "name": "Einwände gezielt vorwegnehmen",
+              "name": "Einwände nutzen",
               "tagline": "Bevor sie ausgesprochen werden, sind sie schon entwaffnet"
             },
             {
-              "name": "Bombensichere Verhandlungen",
-              "tagline": "Die 9 Prinzipien für mehrwertige Abschlüsse"
+              "name": "Yellow Lights moderieren",
+              "tagline": "Warnsignale erkennen und souverän moderieren, statt überrollt zu werden"
             },
             {
-              "name": "Recommendation Pitch",
-              "tagline": "Verkaufen, indem man empfiehlt — Käufer:in im Driver-Seat"
+              "name": "Zur Entscheidung begleiten",
+              "tagline": "Verkaufen, indem man empfiehlt — der Kunde verliert nie das Gesicht"
+            },
+            {
+              "name": "Take away the solution",
+              "tagline": "Die Lösung bewusst zurücknehmen, damit echter Bedarf sichtbar wird"
             }
           ]
         }
@@ -1554,7 +1562,7 @@
             "90 Min. monatliches Live-Training mit Top-Praktikern",
             "120 Min. Group-Coaching pro Monat",
             "Offene Community mit erfahrenen Coaches",
-            "Alle 16 Trainingsmodule (Sofortzugang)",
+            "Alle 19 Trainingsmodule (Sofortzugang)",
             "Sparring in 5 Schwierigkeitsstufen",
             "Playbooks, Vorlagen, E-Mails, Poster",
             "GPT Engines für Vorbereitung & Follow-Up",
@@ -1763,7 +1771,7 @@
       "whatsNext": "Was als Nächstes passiert",
       "step1": "Du bekommst <b>binnen 5 Minuten</b> eine Email mit Account-Setup + WhatsApp-Einladung.",
       "step2": "<b>Onboarding-Call mit Markus</b> binnen 24 Stunden — Du wählst den Slot in der Email.",
-      "step3": "Die <b>Sales-Simulation</b> startet direkt nach dem Setup — Dein 13-Skill-Assessment ist live.",
+      "step3": "Die <b>Sales-Simulation</b> startet direkt nach dem Setup — Dein 19-Skill-Assessment ist live.",
       "toMember": "Zum Member-Bereich →",
       "askQuestion": "Frage senden",
       "reference": "Referenz"
@@ -1831,7 +1839,7 @@
       "problemBody": "Im Kundengespräch entscheidet, wie souverän jemand führt, fragt, Einwände hält und abschließt. Dafür hatte fast niemand je eine Ausbildung. Die Folge: Abschlüsse schwanken, Zyklen ziehen sich, und am Ende verkauft der Rabatt.",
       "chanceBadge": "Die neue Chance",
       "chanceH2": "Gemeinsam bauen wir das Können auf und bringen Dein Team ins Machen.",
-      "chanceBody": "Können entsteht durch wiederholtes Training und Mikro-Erfolge. Die Academy beginnt mit einem Assessment über 13 Skills, baut daraus einen Plan individuell für jeden Teilnehmer und trainiert gezielt jeden Monat eine spezifische Fähigkeit — mit Sparring in mehreren Schwierigkeitsstufen und Re-Assessment jedes Quartal. Sichtbarer und spürbarer Fortschritt jeden Monat, der Selbstsicherheit und Ergebnisse produziert.",
+      "chanceBody": "Können entsteht durch wiederholtes Training und Mikro-Erfolge. Die Academy beginnt mit einem Assessment über 19 Skills, baut daraus einen Plan individuell für jeden Teilnehmer und trainiert gezielt jeden Monat eine spezifische Fähigkeit — mit Sparring in mehreren Schwierigkeitsstufen und Re-Assessment jedes Quartal. Sichtbarer und spürbarer Fortschritt jeden Monat, der Selbstsicherheit und Ergebnisse produziert.",
       "flywheelEyebrow": "12 Monate Transformation durch Training On The Job.",
       "includedLabel": "Enthalten:",
       "includedText": "monatliches 1:1-Coaching mit Markus, individuelle Frameworks, Playbook-Library, monatliches Group-Training.",

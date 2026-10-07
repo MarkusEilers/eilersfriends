@@ -170,14 +170,14 @@
     "stat1Label": "Months of Support",
     "stat2Value": "30",
     "stat2Label": "Exclusive Spots",
-    "stat3Value": "13",
+    "stat3Value": "19",
     "stat3Label": "Core Skills",
     "trust1": "867+ trained salespeople",
     "trust2": "90-Day money-back guarantee",
     "trust3": "15+ years experience",
     "cta": "Learn more about the Academy",
     "subtext": "How we make the best salespeople even better — and give the remaining 82% a real chance to meet expectations and achieve their goals.",
-    "step1Desc": "Each participant goes through a realistic customer scenario where 13 critical sales skills are individually measured.",
+    "step1Desc": "Each participant goes through a realistic customer scenario where 19 critical sales skills are individually measured.",
     "step2Desc": "From the benchmark we build a custom development plan per seller — with adapted scenarios across 5 difficulty levels."
   },
   "programme": {
@@ -570,7 +570,7 @@
       "step1Label": "Step 1",
       "step1Title": "Simulated customer scenario",
       "step1Pre": "Every participant runs through a realistic customer scenario in which ",
-      "step1Accent": "13 decisive sales skills",
+      "step1Accent": "19 decisive sales skills",
       "step1Post": " are measured and assessed individually.",
       "step2Label": "Step 2",
       "step2Title": "Individual learning path",
@@ -587,11 +587,11 @@
           "label": "exclusive seats"
         },
         {
-          "value": "13",
+          "value": "19",
           "label": "core skills"
         },
         {
-          "value": "24",
+          "value": "19",
           "label": "training modules"
         }
       ],
@@ -680,7 +680,7 @@
     "finalCta": {
       "eyebrow": "Let's close the Sales Education Gap.",
       "headline": "45 minutes for your next 36 months.",
-      "subtext": "How convincingly does your software sales team work in direct comparison? Our no-obligation benchmark can give you valuable insights. Your team runs through a realistic customer scenario in which we observe and assess 13 decisive sales skills.",
+      "subtext": "How convincingly does your software sales team work in direct comparison? Our no-obligation benchmark can give you valuable insights. Your team runs through a realistic customer scenario in which we observe and assess 19 decisive sales skills.",
       "cta": "Book a benchmarking conversation",
       "note": "Only a few seats left in the soft-launch."
     },
@@ -757,7 +757,7 @@
         },
         {
           "left": "No measurement of impact",
-          "right": "13 sales skills assessed individually · quarterly re-assessment"
+          "right": "19 sales skills assessed individually · quarterly re-assessment"
         },
         {
           "left": "Same course for everyone",
@@ -1144,7 +1144,7 @@
     "crosslink": {
       "eyebrow": "Also interesting",
       "headline": "Markus doesn't just build stage moments.",
-      "body": "Behind the keynotes is a system: the SalesMade Academy. 12 months, 13 sales skills, AI-powered — for B2B teams that want predictable revenue.",
+      "body": "Behind the keynotes is a system: the SalesMade Academy. 12 months, 19 sales skills, AI-powered — for B2B teams that want predictable revenue.",
       "cta": "To the SalesMade Academy"
     },
     "finalCta": {
@@ -1335,8 +1335,8 @@
       "eyebrowPost": " modules",
       "headline": "What your sellers will master.",
       "subtextPre": "",
-      "subtextPost": " skills across five disciplines. Each skill comes as a standalone module with a blueprint, AI tools and a sparring scenario where it is practised live.",
-      "footer1": "Every module is measured — not just \"attended\". Across all 16 skills there are ",
+      "subtextPost": " skills across five dimensions. Each skill comes as a standalone module with a blueprint, AI tools and a sparring scenario where it is practised live.",
+      "footer1": "Every module is measured — not just \"attended\". Across all 19 skills there are ",
       "footer2": "five difficulty levels in sparring",
       "footer3": " where your sellers prove their capability live.",
       "disciplines": [
@@ -1345,12 +1345,12 @@
           "description": "Systematic, predictable, scalable — before the first conversation starts.",
           "skills": [
             {
-              "name": "Social Media Rockstar",
-              "tagline": "The 9-step AI content process for magnetic inbound leads"
+              "name": "Visibility / opportunity magnet",
+              "tagline": "Known for your customers' problems — with Social Media Rockstar's 9-step content process"
             },
             {
-              "name": "The Magnetic Outreach Framework",
-              "tagline": "Intriguing cold call + godfather letters — outbound that does not annoy"
+              "name": "Relationships, sustainably",
+              "tagline": "Give before you take — the relationship grows stronger with use, not weaker"
             }
           ]
         },
@@ -1359,20 +1359,24 @@
           "description": "What we do before we open our mouths.",
           "skills": [
             {
-              "name": "Customer intelligence & account research",
-              "tagline": "Who sits there, what matters to them"
+              "name": "Choose your mindset",
+              "tagline": "Locus of control instead of a downward spiral — confidence comes from action"
             },
             {
-              "name": "The Identity Switch",
-              "tagline": "Who is my ICP right now — and do I position us for that?"
+              "name": "Work professionally",
+              "tagline": "Weekly planning, priorities, reliability — standing people can see"
             },
             {
-              "name": "Funnel math",
-              "tagline": "The numbers behind the system"
+              "name": "Prepare calls strategically",
+              "tagline": "18-minute AI worksheet before every important conversation"
             },
             {
-              "name": "Strategic preparation",
-              "tagline": "18-min AI worksheet before every important conversation"
+              "name": "Conversation level & process",
+              "tagline": "Switch between content, relationship and process — and steer the decision path"
+            },
+            {
+              "name": "Tools (AI)",
+              "tagline": "Account research, preparation, follow-up — the right tool for each job"
             }
           ]
         },
@@ -1381,16 +1385,16 @@
           "description": "The first 60 seconds to the first value hit.",
           "skills": [
             {
-              "name": "Instant Influence",
-              "tagline": "The 3 ingredients that win customers in the first conversation"
+              "name": "Make customers curious",
+              "tagline": "Win attention before it is about the product"
             },
             {
-              "name": "Limbic communication & body language",
-              "tagline": "What customers read before we speak"
-            },
-            {
-              "name": "Tactical empathy & trust building",
+              "name": "Tactical empathy",
               "tagline": "90 seconds to resonance, Voss-style"
+            },
+            {
+              "name": "The Drill",
+              "tagline": "Question systematically into depth: pain, evidence, impact"
             }
           ]
         },
@@ -1399,42 +1403,46 @@
           "description": "We carry meaning, not features.",
           "skills": [
             {
-              "name": "Core Messages",
-              "tagline": "The 11 messages every entrepreneur should master in their sleep"
+              "name": "The List",
+              "tagline": "Make needs and criteria visible together — so the first call turns into a decision"
             },
             {
-              "name": "Belief Bridge",
-              "tagline": "Build the bridge from old to new belief systems"
+              "name": "Business acumen",
+              "tagline": "Prove the business case and the cost of doing nothing, don't claim it"
             },
             {
-              "name": "Bulletproof Delivery / Optimum Path",
-              "tagline": "The targeted path to the first experienced value"
+              "name": "Present compellingly",
+              "tagline": "Story and suspense instead of a feature list — meaning before slides"
+            },
+            {
+              "name": "Engage the audience",
+              "tagline": "Monologue becomes dialogue — resonance in the room instead of broadcasting"
             }
           ]
         },
         {
           "name": "Offer · negotiation · closing",
-          "description": "From proposal to binding yes.",
+          "description": "From proposal to a binding yes.",
           "skills": [
             {
-              "name": "Irresistible B2B offers",
+              "name": "Irresistible offers",
               "tagline": "The 8-step blueprint"
             },
             {
-              "name": "Beef Radar",
-              "tagline": "Value communication matched to real needs"
+              "name": "Use objections",
+              "tagline": "Disarmed before they are spoken"
             },
             {
-              "name": "Pre-empt objections",
-              "tagline": "Before they are spoken, they are already disarmed"
+              "name": "Moderate yellow lights",
+              "tagline": "Spot warning signs and moderate them calmly instead of being run over"
             },
             {
-              "name": "Bulletproof negotiations",
-              "tagline": "The 9 principles for value-rich closes"
+              "name": "Guide to a decision",
+              "tagline": "Sell by recommending — the customer never loses face"
             },
             {
-              "name": "Recommendation Pitch",
-              "tagline": "Selling by recommending — buyer in the driver seat"
+              "name": "Take away the solution",
+              "tagline": "Deliberately take the solution off the table so real need becomes visible"
             }
           ]
         }
@@ -1553,7 +1561,7 @@
             "90 min monthly live training with top practitioners",
             "120 min group coaching per month",
             "Open community with experienced coaches",
-            "All 16 training modules (instant access)",
+            "All 19 training modules (instant access)",
             "Sparring across 5 difficulty levels",
             "Playbooks, templates, emails, posters",
             "GPT engines for prep & follow-up",
@@ -1830,7 +1838,7 @@
       "problemBody": "In a customer conversation, what matters is how confidently someone leads, asks, holds objections and closes. Almost no one was ever trained for that. The result: deals fluctuate, cycles drag on, and in the end the discount does the selling.",
       "chanceBadge": "The new opportunity",
       "chanceH2": "Together we build the skill and get your team into action.",
-      "chanceBody": "Skill is built through repeated training and micro-wins. The Academy starts with an assessment across 13 skills, builds an individual plan for each participant from it, and deliberately trains one specific ability each month — with sparring at several difficulty levels and re-assessment every quarter. Visible, tangible progress every month that produces confidence and results.",
+      "chanceBody": "Skill is built through repeated training and micro-wins. The Academy starts with an assessment across 19 skills, builds an individual plan for each participant from it, and deliberately trains one specific ability each month — with sparring at several difficulty levels and re-assessment every quarter. Visible, tangible progress every month that produces confidence and results.",
       "flywheelEyebrow": "12 months of transformation through on-the-job training.",
       "includedLabel": "Included:",
       "includedText": "monthly 1:1 coaching with Markus, individual frameworks, playbook library, monthly group training.",

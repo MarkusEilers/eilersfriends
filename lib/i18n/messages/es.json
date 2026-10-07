@@ -170,14 +170,14 @@
     "stat1Label": "Meses de acompañamiento",
     "stat2Value": "30",
     "stat2Label": "Plazas exclusivas",
-    "stat3Value": "13",
+    "stat3Value": "19",
     "stat3Label": "Skills clave",
     "trust1": "867+ vendedores entrenados",
     "trust2": "Garantía de 90 días",
     "trust3": "15+ años de experiencia",
     "cta": "Más sobre la Academy",
     "subtext": "Cómo hacemos aún mejores a los mejores vendedores — y damos al 82 % restante una oportunidad real de cumplir expectativas y alcanzar objetivos.",
-    "step1Desc": "Cada participante atraviesa un escenario realista en el que se miden de forma individual 13 skills decisivos de ventas.",
+    "step1Desc": "Cada participante atraviesa un escenario realista en el que se miden de forma individual 19 skills decisivos de ventas.",
     "step2Desc": "A partir del benchmark desarrollamos para cada seller un plan de desarrollo a medida en 5 niveles de dificultad."
   },
   "programme": {
@@ -570,7 +570,7 @@
       "step1Label": "Paso 1",
       "step1Title": "Escenario de cliente simulado",
       "step1Pre": "Cada participante atraviesa un escenario realista en el que se miden y evalúan de forma individual ",
-      "step1Accent": "13 skills de ventas decisivos",
+      "step1Accent": "19 skills de ventas decisivos",
       "step1Post": ".",
       "step2Label": "Paso 2",
       "step2Title": "Itinerario individual de aprendizaje",
@@ -587,11 +587,11 @@
           "label": "plazas exclusivas"
         },
         {
-          "value": "13",
+          "value": "19",
           "label": "skills clave"
         },
         {
-          "value": "24",
+          "value": "19",
           "label": "módulos de training"
         }
       ],
@@ -680,7 +680,7 @@
     "finalCta": {
       "eyebrow": "Cerremos la Sales Education Gap.",
       "headline": "45 minutos para tus próximos 36 meses.",
-      "subtext": "¿Cómo de convincente trabaja tu equipo de ventas de software en comparación directa? Nuestro benchmark sin compromiso te puede dar perspectiva valiosa. Tu equipo recorre un escenario realista en el que observamos y evaluamos 13 skills decisivos de ventas.",
+      "subtext": "¿Cómo de convincente trabaja tu equipo de ventas de software en comparación directa? Nuestro benchmark sin compromiso te puede dar perspectiva valiosa. Tu equipo recorre un escenario realista en el que observamos y evaluamos 19 skills decisivos de ventas.",
       "cta": "Reservar conversación de benchmarking",
       "note": "Quedan pocas plazas para el soft-launch."
     },
@@ -757,7 +757,7 @@
         },
         {
           "left": "Sin medición del impacto",
-          "right": "13 skills de ventas evaluados individualmente · re-assessment trimestral"
+          "right": "19 skills de ventas evaluados individualmente · re-assessment trimestral"
         },
         {
           "left": "Mismo curso para todos",
@@ -1144,7 +1144,7 @@
     "crosslink": {
       "eyebrow": "También te puede interesar",
       "headline": "Markus no solo construye momentos sobre el escenario.",
-      "body": "Detrás de las keynotes hay un sistema: la SalesMade Academy. 12 meses, 13 skills de venta, con IA — para equipos B2B que quieren ingresos predecibles.",
+      "body": "Detrás de las keynotes hay un sistema: la SalesMade Academy. 12 meses, 19 skills de venta, con IA — para equipos B2B que quieren ingresos predecibles.",
       "cta": "A la SalesMade Academy"
     },
     "finalCta": {
@@ -1335,22 +1335,22 @@
       "eyebrowPost": " módulos",
       "headline": "Lo que tus vendedores van a dominar.",
       "subtextPre": "",
-      "subtextPost": " skills en cinco disciplinas. Cada skill es un módulo independiente con plano, herramientas de IA y un escenario de sparring donde se practica en vivo.",
-      "footer1": "Cada módulo se mide — no solo se \"asiste\". A lo largo de los 16 skills hay ",
+      "subtextPost": " skills en cinco dimensiones. Cada skill es un módulo independiente con plano, herramientas de IA y un escenario de sparring donde se practica en vivo.",
+      "footer1": "Cada módulo se mide — no solo se \"asiste\". A lo largo de los 19 skills hay ",
       "footer2": "cinco niveles de dificultad en el sparring",
       "footer3": " donde tus vendedores demuestran su capacidad en vivo.",
       "disciplines": [
         {
           "name": "Pipeline y palancas",
-          "description": "Sistemático, predecible, escalable — antes de que empiece la primera conversación.",
+          "description": "Sistemático, previsible, escalable — antes de la primera conversación.",
           "skills": [
             {
-              "name": "Social Media Rockstar",
-              "tagline": "El proceso AI de 9 pasos para inbound leads magnéticos"
+              "name": "Visibilidad / imán de oportunidades",
+              "tagline": "Conocido por los problemas de tus clientes — con el proceso de contenido en 9 pasos de Social Media Rockstar"
             },
             {
-              "name": "The Magnetic Outreach Framework",
-              "tagline": "Intriguing Cold Call + Godfather Letters — outbound que no molesta"
+              "name": "Relaciones sostenibles",
+              "tagline": "Dar antes de pedir — la relación se fortalece con el uso, no se agota"
             }
           ]
         },
@@ -1359,20 +1359,24 @@
           "description": "Lo que hacemos antes de abrir la boca.",
           "skills": [
             {
-              "name": "Customer Intelligence & Account Research",
-              "tagline": "Quién está allí, qué les importa"
+              "name": "Elegir tu mindset",
+              "tagline": "Locus de control en vez de espiral descendente — la confianza nace de la acción"
             },
             {
-              "name": "The Identity Switch",
-              "tagline": "¿Quién es mi ICP ahora — y nos posicionamos para él?"
+              "name": "Trabajar con profesionalidad",
+              "tagline": "Planificación semanal, prioridades, compromiso — un standing que se ve"
             },
             {
-              "name": "Funnel Math",
-              "tagline": "Los números detrás del sistema"
+              "name": "Preparar conversaciones estratégicamente",
+              "tagline": "Worksheet de IA de 18 minutos antes de cada conversación importante"
             },
             {
-              "name": "Preparación estratégica",
-              "tagline": "AI-Worksheet de 18 min antes de cada conversación importante"
+              "name": "Nivel de conversación y proceso",
+              "tagline": "Cambiar entre contenido, relación y proceso — y dirigir el camino de decisión"
+            },
+            {
+              "name": "Herramientas (IA)",
+              "tagline": "Research de cuentas, preparación, follow-up — la herramienta adecuada para cada tarea"
             }
           ]
         },
@@ -1381,60 +1385,64 @@
           "description": "Los primeros 60 segundos hasta el primer value hit.",
           "skills": [
             {
-              "name": "Instant Influence",
-              "tagline": "Los 3 ingredientes que ganan clientes en la primera conversación"
+              "name": "Despertar curiosidad",
+              "tagline": "Ganar atención antes de hablar del producto"
             },
             {
-              "name": "Comunicación límbica y lenguaje corporal",
-              "tagline": "Lo que los clientes leen antes de que hablemos"
-            },
-            {
-              "name": "Empatía táctica y construcción de confianza",
+              "name": "Empatía táctica",
               "tagline": "90 segundos hasta la resonancia, estilo Voss"
+            },
+            {
+              "name": "The Drill",
+              "tagline": "Preguntar en profundidad de forma sistemática: dolor, evidencia, impacto"
             }
           ]
         },
         {
           "name": "Mensaje y persuasión",
-          "description": "Llevamos sentido, no features.",
+          "description": "Transmitimos sentido, no funcionalidades.",
           "skills": [
             {
-              "name": "Core Messages",
-              "tagline": "Los 11 mensajes que toda founder debería dominar dormida"
+              "name": "La lista",
+              "tagline": "Hacer visibles juntos necesidades y criterios — para que la primera reunión lleve a una decisión"
             },
             {
-              "name": "Belief Bridge",
-              "tagline": "Construir el puente del viejo al nuevo sistema de creencias"
+              "name": "Business acumen",
+              "tagline": "Demostrar el business case y el coste de no hacer nada, no afirmarlo"
             },
             {
-              "name": "Bulletproof Delivery / Optimum Path",
-              "tagline": "El camino dirigido al primer valor experimentado"
+              "name": "Presentar de forma cautivadora",
+              "tagline": "Historia y tensión en vez de lista de funciones — sentido antes que diapositivas"
+            },
+            {
+              "name": "Involucrar a la audiencia",
+              "tagline": "El monólogo se convierte en diálogo — resonancia en la sala en vez de emitir"
             }
           ]
         },
         {
           "name": "Oferta · negociación · cierre",
-          "description": "De la propuesta al sí vinculante.",
+          "description": "De la propuesta a un sí vinculante.",
           "skills": [
             {
-              "name": "Ofertas B2B irresistibles",
-              "tagline": "El plano de 8 pasos"
+              "name": "Ofertas irresistibles",
+              "tagline": "El plano en 8 pasos"
             },
             {
-              "name": "Beef Radar",
-              "tagline": "Comunicación de valor adaptada a las necesidades reales"
+              "name": "Aprovechar objeciones",
+              "tagline": "Desarmadas antes de ser pronunciadas"
             },
             {
-              "name": "Anticipar objeciones",
-              "tagline": "Antes de que se digan, ya están desarmadas"
+              "name": "Moderar las luces amarillas",
+              "tagline": "Detectar señales de alarma y moderarlas con calma en vez de ser arrollado"
             },
             {
-              "name": "Negociaciones a prueba de bombas",
-              "tagline": "Los 9 principios para cierres con más valor"
+              "name": "Acompañar a la decisión",
+              "tagline": "Vender recomendando — el cliente nunca pierde la cara"
             },
             {
-              "name": "Recommendation Pitch",
-              "tagline": "Vender recomendando — el comprador en el asiento del piloto"
+              "name": "Take away the solution",
+              "tagline": "Retirar la solución a propósito para que se vea la necesidad real"
             }
           ]
         }
@@ -1553,7 +1561,7 @@
             "90 min de training en vivo al mes con top practitioners",
             "120 min de group coaching al mes",
             "Comunidad abierta con coaches experimentados",
-            "Los 16 módulos de training (acceso inmediato)",
+            "Los 19 módulos de training (acceso inmediato)",
             "Sparring en 5 niveles de dificultad",
             "Playbooks, plantillas, emails, posters",
             "GPT Engines para preparación y follow-up",
@@ -1762,7 +1770,7 @@
       "whatsNext": "Qué sucede a continuación",
       "step1": "Recibirás un email <b>en 5 minutos</b> con la configuración de la cuenta + invitación a WhatsApp.",
       "step2": "<b>Llamada de onboarding con Markus</b> en 24 horas — eliges la franja en el email.",
-      "step3": "La <b>simulación de ventas</b> empieza justo tras la configuración — tu evaluación de 13 skills está activa.",
+      "step3": "La <b>simulación de ventas</b> empieza justo tras la configuración — tu evaluación de 19 skills está activa.",
       "toMember": "Al área de miembros →",
       "askQuestion": "Enviar una pregunta",
       "reference": "Referencia"
@@ -1830,7 +1838,7 @@
       "problemBody": "En una conversación con el cliente, lo que decide es con qué soltura alguien conduce, pregunta, sostiene objeciones y cierra. Casi nadie recibió formación para eso. El resultado: los cierres fluctúan, los ciclos se alargan y al final vende el descuento.",
       "chanceBadge": "La nueva oportunidad",
       "chanceH2": "Juntos construimos la habilidad y ponemos a tu equipo en acción.",
-      "chanceBody": "La habilidad se construye con entrenamiento repetido y micro-éxitos. La Academy empieza con una evaluación de 13 skills, crea un plan individual para cada participante y entrena cada mes una capacidad concreta — con sparring en varios niveles y reevaluación cada trimestre. Progreso visible y tangible cada mes que produce seguridad y resultados.",
+      "chanceBody": "La habilidad se construye con entrenamiento repetido y micro-éxitos. La Academy empieza con una evaluación de 19 skills, crea un plan individual para cada participante y entrena cada mes una capacidad concreta — con sparring en varios niveles y reevaluación cada trimestre. Progreso visible y tangible cada mes que produce seguridad y resultados.",
       "flywheelEyebrow": "12 meses de transformación con entrenamiento en el puesto.",
       "includedLabel": "Incluido:",
       "includedText": "coaching 1:1 mensual con Markus, frameworks individuales, biblioteca de playbooks, entrenamiento grupal mensual.",
