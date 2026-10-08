@@ -42,6 +42,15 @@ export async function updateStep(fd: FormData) {
   await requireAdmin()
   const id = fd.get('id')?.toString(); const programId = fd.get('programId')?.toString(); if (!id || !programId) return
   const dur = nn(fd.get('durationH'))
+  // Teams, Input, Output usw. liegen in meta — daraus entsteht der Projektplan.
+  const list = (v: FormDataEntryValue | null, sep: RegExp) => (v?.toString() ?? '').split(sep).map((x) => x.trim()).filter(Boolean)
+  const metaPatch = fd.has('teams') ? {
+    teams: list(fd.get('teams'), /,/),
+    inputs: list(fd.get('inputs'), /\n/),
+    outputs: list(fd.get('outputs'), /\n/),
+    milestones: list(fd.get('milestones'), /\|/),
+    headline: nn(fd.get('headline')),
+  } : {}
   await db.execute(sql`UPDATE program_steps SET
       title=${fd.get('title')?.toString() || 'Schritt'},
       description=${nn(fd.get('description'))},
@@ -51,6 +60,7 @@ export async function updateStep(fd: FormData) {
       is_bonus=${fd.get('isBonus') === '1'},
       framework_id=${nn(fd.get('frameworkId'))},
       requires_step_id=${nn(fd.get('requiresStepId'))},
+      meta=COALESCE(meta, '{}'::jsonb) || ${JSON.stringify(metaPatch)}::jsonb,
       updated_at=now()
     WHERE id=${id}`)
   rp(programId)

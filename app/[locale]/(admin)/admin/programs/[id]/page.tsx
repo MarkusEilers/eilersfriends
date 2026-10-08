@@ -11,14 +11,15 @@ const TYPES: [string, string][] = [
   ['lesson', 'Lesson'], ['homework', 'Homework'], ['sparring', 'Sparring Session'],
   ['story', 'Story'], ['info_why', 'Info: Warum wichtig'], ['info_how', 'Info: Wie gelernt'],
   ['tool_intro', 'Tool-Vorstellung'], ['exercise', 'Exercise'], ['examples', 'Beispiele'],
-  ['tool_agent', 'Tool/Agent'], ['bonus', 'Bonus'],
+  ['tool_agent', 'Tool/Agent'], ['bonus', 'Bonus'], ['workshop', 'Workshop'],
 ]
 const FORMATS: [string, string][] = [
   ['', '—'], ['self_paced', 'Self-paced'], ['live_group', 'Live-Gruppe'], ['one_on_one', '1:1'],
   ['upload', 'Upload'], ['video', 'Video'], ['worksheet', 'Worksheet'], ['agent', 'Agent'],
 ]
 
-interface StepRow { id: string; phase_id: string; title: string; description: string | null; type: string; format: string | null; duration_h: number | null; is_bonus: boolean; framework_id: string | null; requires_step_id: string | null }
+interface StepMeta { teams?: string[]; inputs?: string[]; outputs?: string[]; headline?: string; milestones?: string[] }
+interface StepRow { id: string; phase_id: string; title: string; description: string | null; type: string; format: string | null; duration_h: number | null; is_bonus: boolean; framework_id: string | null; requires_step_id: string | null; meta: StepMeta | null }
 interface PhaseRow { id: string; name: string; goal: string | null }
 interface Fw { id: string; slug: string; title: string }
 
@@ -32,7 +33,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
   } catch { notFound() }
 
   const phases = (await db.execute(sql`SELECT id, name, goal FROM program_phases WHERE program_id=${id} ORDER BY sort_order`)) as unknown as PhaseRow[]
-  const steps = (await db.execute(sql`SELECT id, phase_id, title, description, type, format, duration_h, is_bonus, framework_id, requires_step_id FROM program_steps WHERE program_id=${id} ORDER BY sort_order`)) as unknown as StepRow[]
+  const steps = (await db.execute(sql`SELECT id, phase_id, title, description, type, format, duration_h, is_bonus, framework_id, requires_step_id, meta FROM program_steps WHERE program_id=${id} ORDER BY sort_order`)) as unknown as StepRow[]
   const allFw = (await db.execute(sql`SELECT id, slug, title FROM landing_pages WHERE template_key='framework-leadmagnet' ORDER BY title`)) as unknown as Fw[]
   const linked = (await db.execute(sql`SELECT lp.id, lp.slug, lp.title FROM program_frameworks pf JOIN landing_pages lp ON lp.id=pf.framework_id WHERE pf.program_id=${id} ORDER BY pf.sort_order`)) as unknown as Fw[]
   const linkedIds = new Set(linked.map((f) => f.id))
@@ -107,7 +108,14 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                         <input type="number" name="durationH" defaultValue={st.duration_h ?? ''} placeholder="Std." className={`${inp} w-16`} />
                         <button type="submit" className="rounded-lg bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white hover:opacity-90"><Save size={12} /></button>
                       </div>
+                      <input name="headline" defaultValue={st.meta?.headline ?? ''} placeholder="Überschrift über dem Schritt (optional)" className={`${inp} w-full`} />
                       <textarea name="description" defaultValue={st.description ?? ''} placeholder="Beschreibung" rows={2} className={`${inp} w-full`} />
+                      <div className="grid gap-2 sm:grid-cols-3">
+                        <input name="teams" defaultValue={(st.meta?.teams ?? []).join(', ')} placeholder="Teams (Komma-getrennt)" className={inp} />
+                        <textarea name="inputs" defaultValue={(st.meta?.inputs ?? []).join('\n')} placeholder="Nötiger Input (eine Zeile je Punkt)" rows={2} className={inp} />
+                        <textarea name="outputs" defaultValue={(st.meta?.outputs ?? []).join('\n')} placeholder="Output (eine Zeile je Punkt)" rows={2} className={inp} />
+                      </div>
+                      <input name="milestones" defaultValue={(st.meta?.milestones ?? []).join(' | ')} placeholder="Etappen-Hinweise (mit | trennen)" className={`${inp} w-full`} />
                       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                         <select name="type" defaultValue={st.type} className={inp}>{TYPES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select>
                         <select name="format" defaultValue={st.format ?? ''} className={inp}>{FORMATS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select>
@@ -117,7 +125,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                         </select>
                         <select name="requiresStepId" defaultValue={st.requires_step_id ?? ''} className={inp}>
                           <option value="">setzt voraus: —</option>
-                          {phSteps.filter((o) => o.id !== st.id).map((o) => <option key={o.id} value={o.id}>{o.title}</option>)}
+                          {steps.filter((o) => o.id !== st.id).map((o) => <option key={o.id} value={o.id}>{o.title}</option>)}
                         </select>
                       </div>
                       <label className="flex items-center gap-1.5 text-xs text-gray-500"><input type="checkbox" name="isBonus" value="1" defaultChecked={st.is_bonus} className="h-3.5 w-3.5" /> Bonus</label>
