@@ -32,6 +32,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Angebote',  href: '/admin/offers', icon: FileSignature },
       { label: 'Kunden & Teams', href: '/admin/companies', icon: Building2 },
+      { label: 'Signal-Mails', href: '/admin/signals', icon: Mail },
       { label: 'Checkouts', href: '/admin/checkout', icon: ShoppingCart },
       { label: 'Terminbuchung', href: '/admin/schedule', icon: CalendarClock },
       { label: 'Logoleiste',href: '/admin/logos',  icon: ImageIcon },

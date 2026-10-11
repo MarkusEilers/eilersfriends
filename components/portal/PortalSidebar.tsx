@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { signOutAdminAction } from '@/lib/actions/offers'
-import { LayoutDashboard, FileSignature, User, Menu, X, LogOut, BookOpen, GraduationCap, Shield, Receipt, Compass } from 'lucide-react'
+import { LayoutDashboard, FileSignature, User, Menu, X, LogOut, BookOpen, GraduationCap, Shield, Receipt, Compass, Map as MapIcon } from 'lucide-react'
 
 const PORTAL_NAV = [
+  { label: 'Programm Guide',   href: '/dashboard/guide',      icon: MapIcon },
   { label: 'Dashboard',        href: '/dashboard',            icon: LayoutDashboard },
   { label: 'Strategie',        href: '/dashboard/strategie',  icon: Compass },
   { label: 'Meine Frameworks', href: '/dashboard/frameworks', icon: BookOpen },

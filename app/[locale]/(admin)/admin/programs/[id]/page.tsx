@@ -4,6 +4,10 @@ import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { ChevronLeft, Plus, Trash2, Save } from 'lucide-react'
 import { addPhase, updatePhase, deletePhase, addStep, updateStep, deleteStep, addProgramFramework, removeProgramFramework } from '@/lib/actions/program-content'
+import { releaseProgramVersion, addStepResource, deleteStepResource } from '@/lib/actions/rollouts-admin'
+import { ensureRolloutSchema } from '@/lib/rollouts/schema'
+
+const RES_KINDS: [string, string][] = [['resource', 'Ressource'], ['video', 'Video'], ['framework', 'Framework'], ['worksheet', 'Worksheet'], ['task_template', 'Aufgabe'], ['agent', 'Agent'], ['signal_mail', 'Signal-Mail-Text']]
 
 interface PageProps { params: Promise<{ id: string }> }
 
@@ -37,6 +41,9 @@ export default async function ProgramDetailPage({ params }: PageProps) {
   const allFw = (await db.execute(sql`SELECT id, slug, title FROM landing_pages WHERE template_key='framework-leadmagnet' ORDER BY title`)) as unknown as Fw[]
   const linked = (await db.execute(sql`SELECT lp.id, lp.slug, lp.title FROM program_frameworks pf JOIN landing_pages lp ON lp.id=pf.framework_id WHERE pf.program_id=${id} ORDER BY pf.sort_order`)) as unknown as Fw[]
   const linkedIds = new Set(linked.map((f) => f.id))
+  await ensureRolloutSchema()
+  const versions = (await db.execute(sql`SELECT id, version, status, changelog, released_at::text AS released_at, (SELECT count(*)::int FROM rollouts r WHERE r.program_version_id=v.id) AS rollouts FROM program_versions v WHERE program_id=${id} ORDER BY released_at DESC`)) as unknown as { id: string; version: string; status: string; changelog: string | null; released_at: string; rollouts: number }[]
+  const resources = (await db.execute(sql`SELECT r.id, r.program_step_id, r.kind, r.title, r.url, r.audience, r.offset_days, r.is_internal FROM step_resources r JOIN program_steps s ON s.id=r.program_step_id WHERE s.program_id=${id} ORDER BY r.sort_order, r.created_at`)) as unknown as { id: string; program_step_id: string; kind: string; title: string; url: string | null; audience: string[]; offset_days: number | null; is_internal: boolean }[]
 
   const inp = 'rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm outline-none focus:border-blue-300'
 
@@ -69,6 +76,21 @@ export default async function ProgramDetailPage({ params }: PageProps) {
             {allFw.filter((f) => !linkedIds.has(f.id)).map((f) => (<option key={f.id} value={f.id}>{f.title.split(' — ')[0]}</option>))}
           </select>
           <button type="submit" className="rounded-full bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90">Hinzufügen</button>
+        </form>
+      </div>
+
+      {/* Versionen */}
+      <div className="mt-8 rounded-2xl border border-gray-100 bg-white p-5">
+        <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Versionen</p>
+        <p className="mb-3 text-xs text-gray-400">Eine Version friert den aktuellen Stand ein. Rollouts bei Kunden hängen an genau einer Version — Änderungen hier wirken erst mit der nächsten Version.</p>
+        <ul className="mb-3 space-y-1 text-xs">
+          {versions.map((v) => (<li key={v.id} className="flex gap-3"><span className="font-mono font-semibold text-gray-800">{v.version}</span><span className="text-gray-400">{new Date(v.released_at).toLocaleDateString('de-DE')}</span><span className="text-gray-500">{v.rollouts} Rollout{v.rollouts === 1 ? '' : 's'}</span>{v.changelog && <span className="text-gray-500">· {v.changelog}</span>}</li>))}
+          {!versions.length && <li className="text-gray-400">Noch keine Version.</li>}
+        </ul>
+        <form action={releaseProgramVersion} className="flex items-center gap-2">
+          <input type="hidden" name="programId" value={id} />
+          <input name="changelog" placeholder="Was hat sich geändert? (optional)" className={`${inp} flex-1`} />
+          <button type="submit" className="rounded-full bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90">Version freigeben</button>
         </form>
       </div>
 
@@ -130,6 +152,33 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                       </div>
                       <label className="flex items-center gap-1.5 text-xs text-gray-500"><input type="checkbox" name="isBonus" value="1" defaultChecked={st.is_bonus} className="h-3.5 w-3.5" /> Bonus</label>
                     </form>
+                    <div className="mt-2 rounded-lg bg-gray-50 p-2">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Material am Schritt</p>
+                      <ul className="mt-1 space-y-0.5">
+                        {resources.filter((r) => r.program_step_id === st.id).map((r) => (
+                          <li key={r.id} className="flex items-center gap-2 text-xs text-gray-700">
+                            <span className="rounded bg-white px-1.5 py-0.5 text-[10px] text-gray-500">{RES_KINDS.find((k) => k[0] === r.kind)?.[1] ?? r.kind}</span>
+                            {r.url ? <a href={r.url} target="_blank" rel="noreferrer" className="text-blue-700 hover:underline">{r.title}</a> : r.title}
+                            {r.audience?.length ? <span className="text-gray-400">({r.audience.join(', ')})</span> : null}
+                            {r.offset_days !== null ? <span className="text-gray-400">T{r.offset_days >= 0 ? '+' : ''}{r.offset_days}</span> : null}
+                            {r.is_internal && <span className="text-amber-600">intern</span>}
+                            <form action={deleteStepResource} className="ml-auto"><input type="hidden" name="id" value={r.id} /><input type="hidden" name="programId" value={id} /><button type="submit" className="text-gray-400 hover:text-red-500"><Trash2 size={11} /></button></form>
+                          </li>
+                        ))}
+                      </ul>
+                      <form action={addStepResource} className="mt-1.5 grid grid-cols-2 gap-1.5 sm:grid-cols-6">
+                        <input type="hidden" name="stepId" value={st.id} /><input type="hidden" name="programId" value={id} />
+                        <select name="kind" className={`${inp} text-xs`}>{RES_KINDS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select>
+                        <input name="title" placeholder="Titel" className={`${inp} text-xs sm:col-span-2`} />
+                        <input name="url" placeholder="URL (optional)" className={`${inp} text-xs`} />
+                        <input name="audience" placeholder="Teams, z. B. sales" className={`${inp} text-xs`} />
+                        <span className="flex items-center gap-1">
+                          <input name="offsetDays" type="number" placeholder="T±" className={`${inp} w-14 text-xs`} />
+                          <label className="flex items-center gap-1 text-[10px] text-gray-500"><input type="checkbox" name="isInternal" value="1" />intern</label>
+                          <button type="submit" className="rounded-md bg-gray-900 px-2 py-1 text-[11px] font-semibold text-white"><Plus size={11} /></button>
+                        </span>
+                      </form>
+                    </div>
                     <form action={deleteStep} className="mt-1 text-right"><input type="hidden" name="id" value={st.id} /><input type="hidden" name="programId" value={id} />
                       <button type="submit" className="text-[11px] text-gray-400 hover:text-red-500">löschen</button>
                     </form>

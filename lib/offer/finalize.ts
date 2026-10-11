@@ -5,6 +5,7 @@ import { getStripe } from '@/lib/stripe'
 import { sendEmail } from '@/lib/email/resend'
 import { appendAudit, listAudit, verifyChain, saveArchive, sha256 } from './audit'
 import { buildCertificatePdf } from './certificate'
+import { rolloutsFromOffer } from '@/lib/rollouts/from-offer'
 
 interface PricingOption { type?: string; title?: string; price?: number; monthlyDuration?: number; recommended?: boolean }
 
@@ -30,6 +31,9 @@ export async function finalizeOffer(offerId: string, baseUrl: string): Promise<{
     WHERE id=${offerId} AND status <> 'paid'
   `)
   await recordOfferEvent(offerId, 'signed', emails[0] ?? null, { signers: signers.length, names })
+
+  // Programmheft: Rollouts aus dem Angebot. Darf den Abschluss nie blockieren.
+  try { await rolloutsFromOffer(offerId) } catch (e) { console.error('rolloutsFromOffer', e) }
 
   const method = String(o.chosen_method ?? 'invoice')
   const rhythm = String(o.chosen_rhythm ?? 'upfront')
