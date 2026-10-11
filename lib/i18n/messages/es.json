@@ -303,12 +303,27 @@
   "auth": {
     "login": "Iniciar sesión",
     "loginTitle": "Bienvenido de nuevo",
-    "loginSubtext": "Inicia sesión para abrir tu portal de aprendizaje.",
+    "loginSubtext": "Inicia sesión para trabajar en tus objetivos de crecimiento.",
     "email": "E-mail",
     "password": "Contraseña",
     "submit": "Iniciar sesión",
     "error": "E-mail o contraseña incorrectos.",
-    "forgotPassword": "¿Has olvidado tu contraseña?"
+    "forgotPassword": "¿Has olvidado tu contraseña?",
+    "greet": {
+      "morning": "Buenos días{name}",
+      "lateMorning": "Hola{name}",
+      "noon": "Hola{name}",
+      "afternoon": "Buenas tardes{name}",
+      "evening": "Buenas noches{name}",
+      "night": "¿Trabajando de noche{name}?"
+    },
+    "slot": {
+      "morgen": "Luz de la mañana",
+      "tag": "Luz del día",
+      "abend": "Luz del atardecer",
+      "nacht": "Noche"
+    },
+    "notYou": "¿No eres {name}?"
   },
   "frameworks": {
     "instant-influence": {

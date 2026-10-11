@@ -303,12 +303,27 @@
   "auth": {
     "login": "Sign In",
     "loginTitle": "Welcome back",
-    "loginSubtext": "Sign in to open your learning portal.",
+    "loginSubtext": "Sign in to work on your growth goals.",
     "email": "Email",
     "password": "Password",
     "submit": "Sign In",
     "error": "Incorrect email or password.",
-    "forgotPassword": "Forgot password?"
+    "forgotPassword": "Forgot password?",
+    "greet": {
+      "morning": "Good morning{name}",
+      "lateMorning": "Morning{name}",
+      "noon": "Hello{name}",
+      "afternoon": "Good afternoon{name}",
+      "evening": "Good evening{name}",
+      "night": "Still up{name}?"
+    },
+    "slot": {
+      "morgen": "Morning light",
+      "tag": "Daylight",
+      "abend": "Evening light",
+      "nacht": "Night"
+    },
+    "notYou": "Not {name}?"
   },
   "frameworks": {
     "instant-influence": {

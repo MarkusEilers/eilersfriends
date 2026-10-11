@@ -287,12 +287,27 @@
   "auth": {
     "login": "Войти",
     "loginTitle": "С возвращением",
-    "loginSubtext": "Войдите, чтобы открыть ваш учебный портал.",
+    "loginSubtext": "Войдите, чтобы работать над целями роста.",
     "email": "Email",
     "password": "Пароль",
     "submit": "Войти",
     "error": "Неверный email или пароль.",
-    "forgotPassword": "Забыли пароль?"
+    "forgotPassword": "Забыли пароль?",
+    "greet": {
+      "morning": "Доброе утро{name}",
+      "lateMorning": "Привет{name}",
+      "noon": "Добрый день{name}",
+      "afternoon": "Добрый день{name}",
+      "evening": "Добрый вечер{name}",
+      "night": "Не спится{name}?"
+    },
+    "slot": {
+      "morgen": "Утренний свет",
+      "tag": "Дневной свет",
+      "abend": "Вечерний свет",
+      "nacht": "Ночь"
+    },
+    "notYou": "Не {name}?"
   },
   "frameworks": {
     "instant-influence": {
