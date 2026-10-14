@@ -21,7 +21,7 @@ export interface GuideStep {
   status: string; teams: { key: string; name: string }[]; items: GuideItem[]; needs: string[]
   note: string | null; challenge: string | null; joint: string | null; draft: boolean
   headline: string | null; milestones: string[]; links: Record<string, string>; resources: GuideResource[]
-  canTick: boolean; canComplete: boolean
+  canTick: boolean; canComplete: boolean; readOnly: boolean
 }
 export interface GuideProgram {
   rolloutId: string; prefix: string; color: string; title: string; tagline: string | null
@@ -34,6 +34,8 @@ export interface Guide {
   teams: { key: string; name: string }[]
   viewer: { userId: string; role: OrgRole | 'ef'; teamKeys: string[] }
   pendingChanges: number
+  /** Vorschau durch Eilers+Friends: Sicht des Kunden, aber nur lesen */
+  readOnly: boolean
 }
 
 export async function viewerContext(userId: string, platformRole: string | undefined, companyId: string) {
@@ -67,12 +69,21 @@ export async function companyForUser(userId: string): Promise<string | null> {
   return rows[0]?.company_id ?? null
 }
 
-export async function loadGuide(companyId: string, userId: string, platformRole?: string): Promise<Guide | null> {
+export async function loadGuide(companyId: string, userId: string, platformRole?: string, preview?: { userId?: string; teamKey?: string }): Promise<Guide | null> {
   await ensureRolloutSchema()
   const [co] = (await db.execute(sql`SELECT id, name FROM companies WHERE id=${companyId}`)) as unknown as { id: string; name: string }[]
   if (!co) return null
-  const ctx = await viewerContext(userId, platformRole, companyId)
+  let ctx = await viewerContext(userId, platformRole, companyId)
   if (!ctx.role) return null
+  const isEf = ctx.role === 'ef'
+  if (isEf && preview?.userId) {
+    const as = await viewerContext(preview.userId, 'client', companyId)
+    ctx = { role: as.role ?? 'viewer', teamKeys: as.teamKeys }
+  } else if (isEf && preview?.teamKey) {
+    const [t] = (await db.execute(sql`SELECT program_role_key FROM org_teams WHERE company_id=${companyId} AND key=${preview.teamKey}`)) as unknown as { program_role_key: string | null }[]
+    ctx = { role: 'member', teamKeys: t?.program_role_key ? [t.program_role_key] : [] }
+  }
+  const readOnly = isEf && !!(preview?.userId || preview?.teamKey)
 
   const teams = (await db.execute(sql`SELECT key, name, program_role_key FROM org_teams WHERE company_id=${companyId} ORDER BY sort_order`)) as unknown as { key: string; name: string; program_role_key: string | null }[]
   const teamName = (k: string) => teams.find((t) => t.program_role_key === k)?.name ?? (k === 'programm' ? 'Programm' : k.charAt(0).toUpperCase() + k.slice(1))
@@ -84,7 +95,7 @@ export async function loadGuide(companyId: string, userId: string, platformRole?
     WHERE r.company_id=${companyId} AND r.status <> 'archived'
     ORDER BY r.start_date NULLS LAST, r.created_at`)) as unknown as
     { id: string; code_prefix: string; color: string; title: string; start_date: string | null; end_date: string | null; cadence: string; locale: string; phase: string; meta: Record<string, unknown>; version: string; snapshot: Snapshot }[]
-  if (!rollouts.length) return { company: co, locale: 'de', programs: [], steps: [], teams: [], viewer: { userId, role: ctx.role, teamKeys: ctx.teamKeys }, pendingChanges: 0 }
+  if (!rollouts.length) return { company: co, locale: 'de', programs: [], steps: [], teams: [], viewer: { userId, role: ctx.role, teamKeys: ctx.teamKeys }, pendingChanges: 0, readOnly }
 
   const ids = rollouts.map((r) => r.id)
   const rsteps = (await db.execute(sql`
@@ -130,6 +141,7 @@ export async function loadGuide(companyId: string, userId: string, platformRole?
         resources: res.filter((x) => x.program_step_id === st.id && (!x.audience?.length || x.audience.some((a) => st.teams.includes(a)))).map((x) => ({ id: x.id, kind: x.kind, title: x.title, url: x.url, body: x.body })),
         canTick: mayTick(ctx.role, ctx.teamKeys, st.teams),
         canComplete: mayComplete(ctx.role, ctx.teamKeys, st.teams),
+        readOnly,
       })
     }
     const tagline = (r.locale !== 'de' && snap.program.i18n?.[r.locale]?.tagline) || snap.program.tagline
@@ -145,5 +157,6 @@ export async function loadGuide(companyId: string, userId: string, platformRole?
     teams: [...usedTeams].map((k) => ({ key: k, name: teamName(k) })),
     viewer: { userId, role: ctx.role, teamKeys: ctx.teamKeys },
     pendingChanges: pending,
+    readOnly,
   }
 }

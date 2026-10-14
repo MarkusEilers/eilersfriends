@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { ArrowRight, Sparkles, Building2, Package } from 'lucide-react'
 import { getProductsAction, getOverviewAction } from '@/lib/actions/strategy'
-import { ProductSwitcher } from '@/components/strategy/ProductSwitcher'
+import { ProductsInline } from '@/components/strategy/ProductsInline'
 import { StatusBadge, type StepStatus } from '@/components/strategy/StatusBadge'
 import { ProgressRing } from '@/components/strategy/ProgressRing'
 
@@ -18,7 +18,7 @@ export default async function StrategiePage({ searchParams }: { searchParams: Pr
   const sp = await searchParams
   const products = await getProductsAction()
   const activeProduct = products.find((p) => p.id === sp.product) ?? products[0] ?? null
-  const { steps } = await getOverviewAction(activeProduct?.id ?? null)
+  const { steps, companyId, productStepCount, isCoach } = await getOverviewAction(activeProduct?.id ?? null)
   const rows = steps as unknown as StepRow[]
 
   const companySteps = rows.filter((s) => s.scope === 'company')
@@ -36,11 +36,24 @@ export default async function StrategiePage({ searchParams }: { searchParams: Pr
           </span>
           <h1 className="mt-1.5 text-2xl font-bold text-gray-900 sm:text-3xl">Euer Weg zum Markt</h1>
           <p className="mt-1 text-sm text-gray-500">
-            {productSteps.length} Schritte je Produkt — vom idealen Kunden bis zur Erstansprache.
+            {productStepCount} Schritte je Produkt — vom idealen Kunden bis zur Erstansprache.
           </p>
         </div>
-        <ProductSwitcher products={products} activeId={activeProduct?.id} />
       </div>
+
+      {!companyId && (
+        <div className="mt-6 rounded-2xl border border-purple-200 bg-purple-50 px-5 py-4 text-sm text-purple-900">
+          {isCoach ? 'Wähle oben unter „Ansehen als" eine Firma — dann siehst und bearbeitest Du deren Strategie.' : 'Euer Konto ist noch keiner Organisation zugeordnet. Meldet Euch kurz bei Eilers+Friends.'}
+        </div>
+      )}
+
+      {/* Produkte — inline anlegen, umbenennen, auswählen */}
+      {companyId && (
+        <section className="mt-6">
+          <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400"><Package size={13} /> Eure Produkte</h2>
+          <ProductsInline products={products as { id: string; name: string; slug: string; description?: string | null }[]} activeId={activeProduct?.id} />
+        </section>
+      )}
 
       {/* Fortschritt */}
       <div className="mt-6 flex items-center gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4">
@@ -73,12 +86,9 @@ export default async function StrategiePage({ searchParams }: { searchParams: Pr
         </h2>
 
         {!activeProduct ? (
-          <div className="mt-3 rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center">
-            <p className="text-sm font-semibold text-gray-900">Legt zuerst ein Produkt an.</p>
-            <p className="mx-auto mt-1 max-w-sm text-sm text-gray-500">
-              Die 13 Schritte laufen je Produkt — so bleibt jede Strategie sauber getrennt.
-            </p>
-          </div>
+          <p className="mt-3 rounded-2xl border border-dashed border-gray-200 bg-white px-5 py-4 text-sm text-gray-500">
+            Sobald oben ein Produkt angelegt ist, stehen hier die {productStepCount} Schritte dafür.
+          </p>
         ) : (
           <div className="mt-3 space-y-2">
             {productSteps.map((s) => <StepRowCard key={s.key} step={s} productId={activeProduct.id} />)}

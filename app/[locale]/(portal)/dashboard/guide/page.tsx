@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { companyForUser, loadGuide } from '@/lib/rollouts/guide'
 import { GuideClient } from '@/components/guide/GuideClient'
+import { getViewAs } from '@/lib/view-as'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,8 +15,10 @@ export default async function GuidePage({ searchParams }: { searchParams: Promis
   if (!s?.user?.id) redirect('/auth/login')
   const { company } = await searchParams
   const isEf = s.user.role === 'admin' || s.user.role === 'coach'
-  const companyId = (isEf && company) ? company : await companyForUser(s.user.id)
-  const guide = companyId ? await loadGuide(companyId, s.user.id, s.user.role) : null
+  const viewAs = isEf ? await getViewAs() : null
+  const companyId = (isEf && company) ? company : viewAs?.companyId ?? await companyForUser(s.user.id)
+  const preview = viewAs && viewAs.companyId === companyId && (viewAs.userId || viewAs.teamKey) ? { userId: viewAs.userId, teamKey: viewAs.teamKey } : undefined
+  const guide = companyId ? await loadGuide(companyId, s.user.id, s.user.role, preview) : null
 
   if (!guide || !guide.programs.length) {
     return (

@@ -1,5 +1,7 @@
 'use server'
 
+import { getViewAs } from '@/lib/view-as'
+
 import { revalidatePath } from 'next/cache'
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
@@ -17,7 +19,9 @@ export async function currentContext() {
   const res = await db.execute(sql`SELECT company_id FROM users WHERE id = ${session.user.id} LIMIT 1`)
   const companyId = (res as unknown as Array<{ company_id: string | null }>)[0]?.company_id ?? null
   const isCoach = session.user.role === 'admin' || session.user.role === 'coach'
-  return { userId: session.user.id, role: session.user.role, companyId, isCoach }
+  // Vorschau „Ansehen als": Eilers+Friends arbeitet in der Firma, die gerade angesehen wird
+  const viewAs = isCoach ? await getViewAs() : null
+  return { userId: session.user.id, role: session.user.role, companyId: viewAs?.companyId ?? companyId, isCoach }
 }
 
 export async function getProductsAction(companyIdOverride?: string) {
@@ -38,9 +42,28 @@ export async function createProductAction(name: string, description?: string) {
 
 export async function getOverviewAction(productId?: string | null) {
   const ctx = await currentContext()
-  if (!ctx.companyId) return { steps: [], companyId: null }
+  const [{ n }] = (await db.execute(sql`SELECT count(*)::int AS n FROM strategy_steps WHERE is_active AND scope='product'`)) as unknown as { n: number }[]
+  if (!ctx.companyId) return { steps: [], companyId: null, productStepCount: n, isCoach: ctx.isCoach }
   const steps = await listStepStates(ctx.companyId, productId ?? null)
-  return { steps, companyId: ctx.companyId }
+  return { steps, companyId: ctx.companyId, productStepCount: n, isCoach: ctx.isCoach }
+}
+
+/** Produkt inline umbenennen / beschreiben — nur in der eigenen Firma. */
+export async function updateProductAction(id: string, name: string, description?: string | null) {
+  const ctx = await currentContext()
+  if (!ctx.companyId || !name.trim()) throw new Error('nicht erlaubt')
+  await db.execute(sql`UPDATE strategy_products SET name=${name.trim()}, description=${description ?? null}, updated_at=now() WHERE id=${id} AND company_id=${ctx.companyId}`)
+  revalidatePath('/dashboard/strategie')
+  return { ok: true }
+}
+
+/** Archivieren statt löschen — erarbeitete Schritte bleiben erhalten. */
+export async function archiveProductAction(id: string) {
+  const ctx = await currentContext()
+  if (!ctx.companyId) throw new Error('nicht erlaubt')
+  await db.execute(sql`UPDATE strategy_products SET status='archived', archived_at=now(), updated_at=now() WHERE id=${id} AND company_id=${ctx.companyId}`)
+  revalidatePath('/dashboard/strategie')
+  return { ok: true }
 }
 
 /** Schritt öffnen: Status anlegen falls nötig, Bausteine + Kommentare laden. */

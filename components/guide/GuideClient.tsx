@@ -218,8 +218,8 @@ function StepCard({ s, t, loc, open }: { s: GuideStep; t: Lbl; loc: string; open
       <ul className="mt-2 space-y-1.5">
         {xs.map((i) => (
           <li key={i.id}>
-            <label className={`flex items-start gap-2 text-sm ${s.canTick ? 'cursor-pointer' : ''}`}>
-              <input type="checkbox" checked={i.done} disabled={!s.canTick || pending} onChange={(e) => tick(i.id, e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-gray-300" />
+            <label className={`flex items-start gap-2 text-sm ${s.canTick && !s.readOnly ? 'cursor-pointer' : ''}`}>
+              <input type="checkbox" checked={i.done} disabled={!s.canTick || s.readOnly || pending} onChange={(e) => tick(i.id, e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-gray-300" />
               <span className={i.done ? 'text-gray-400 line-through' : 'text-gray-700'}>{i.label}</span>
             </label>
           </li>
@@ -281,10 +281,10 @@ function StepCard({ s, t, loc, open }: { s: GuideStep; t: Lbl; loc: string; open
           {s.links.strategy_step_key && (
             <Link href={`/dashboard/strategie/${s.links.strategy_step_key}` as '/'} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-white" style={{ backgroundColor: '#1A5FD4' }}>{t.work} →</Link>
           )}
-          {s.canComplete && (
+          {s.canComplete && !s.readOnly && (
             <button type="button" disabled={pending} onClick={() => setDone(!done)} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">{done ? t.reopen : t.markDone}</button>
           )}
-          {s.canComplete && (
+          {s.canComplete && !s.readOnly && (
             <button type="button" onClick={() => setShowPropose((v) => !v)} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-500 hover:text-gray-800"><MessageSquarePlus size={13} />{t.propose}</button>
           )}
         </div>

@@ -6,6 +6,7 @@ import { listTeams, listMembers } from '@/lib/org/schema'
 import { ensureRolloutSchema } from '@/lib/rollouts/schema'
 import { decideChange } from '@/lib/actions/rollouts-admin'
 import { InviteButton } from '@/components/admin/InviteButton'
+import { setViewAs } from '@/lib/actions/view-as'
 
 const ROLE_LABEL: Record<string, string> = { owner: 'Owner', admin: 'PowerUser', lead: 'Lead', member: 'Member', viewer: 'Viewer' }
 const PROGRAM_ROLE_LABEL: Record<string, string> = { marketing: 'Marketing', sales: 'Sales', programm: 'Programm' }
@@ -38,7 +39,10 @@ export default async function CompanyTeamPage({ params }: { params: Promise<{ id
 
       <div className="mt-6 flex items-baseline justify-between">
         <h2 className="text-sm font-bold uppercase tracking-widest text-gray-400">Programme (Rollouts)</h2>
-        <Link href={`/dashboard/guide?company=${id}` as '/'} className="text-xs font-semibold text-blue-700 hover:underline">Programm Guide als Kunde ansehen →</Link>
+        <form action={setViewAs}>
+          <input type="hidden" name="value" value={JSON.stringify({ companyId: id, label: `${co.name} · Gesamtsicht` })} />
+          <button className="text-xs font-semibold text-blue-700 hover:underline">Kundenbereich ansehen →</button>
+        </form>
       </div>
       <div className="mt-2 overflow-hidden rounded-xl border border-gray-100 bg-white">
         <table className="w-full text-sm">
@@ -93,7 +97,12 @@ export default async function CompanyTeamPage({ params }: { params: Promise<{ id
             <div key={t.id} className="rounded-2xl border border-gray-200 bg-white p-5">
               <div className="flex items-baseline justify-between">
                 <h3 className="text-base font-bold text-gray-900">{t.name}</h3>
-                <span className="text-xs text-gray-400">{t.program_role_key ? `in Programmen: ${PROGRAM_ROLE_LABEL[t.program_role_key] ?? t.program_role_key}` : 'kein Programm-Team'}</span>
+                <span className="flex items-center gap-3 text-xs text-gray-400">{t.program_role_key ? `in Programmen: ${PROGRAM_ROLE_LABEL[t.program_role_key] ?? t.program_role_key}` : 'kein Programm-Team'}
+                  <form action={setViewAs}>
+                    <input type="hidden" name="value" value={JSON.stringify({ companyId: id, teamKey: t.key, label: `${co.name} · Team ${t.name}` })} />
+                    <button className="font-semibold text-purple-700 hover:underline">als Team ansehen</button>
+                  </form>
+                </span>
               </div>
               <ul className="mt-3 divide-y divide-gray-50">
                 {ms.map((m) => (
@@ -103,6 +112,10 @@ export default async function CompanyTeamPage({ params }: { params: Promise<{ id
                       <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${m.org_role === 'admin' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>{ROLE_LABEL[m.org_role] ?? m.org_role}</span>
                       <span className="text-[11px] text-gray-400">{m.has_login ? 'Login aktiv' : m.invited_at ? 'Link erzeugt' : 'nicht eingeladen'}</span>
                       <InviteButton userId={m.user_id} companyId={id} hasLogin={m.has_login} />
+                      <form action={setViewAs}>
+                        <input type="hidden" name="value" value={JSON.stringify({ companyId: id, userId: m.user_id, label: `${co.name} · ${m.name}` })} />
+                        <button className="text-[11px] font-semibold text-purple-700 hover:underline">ansehen</button>
+                      </form>
                     </span>
                   </li>))}
                 {!ms.length && <li className="py-2 text-sm text-gray-400">Noch niemand im Team.</li>}
