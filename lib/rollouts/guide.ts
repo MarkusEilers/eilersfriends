@@ -73,8 +73,9 @@ export async function loadGuide(companyId: string, userId: string, platformRole?
   await ensureRolloutSchema()
   const [co] = (await db.execute(sql`SELECT id, name FROM companies WHERE id=${companyId}`)) as unknown as { id: string; name: string }[]
   if (!co) return null
-  let ctx = await viewerContext(userId, platformRole, companyId)
-  if (!ctx.role) return null
+  const base = await viewerContext(userId, platformRole, companyId)
+  if (!base.role) return null
+  let ctx: { role: OrgRole | 'ef'; teamKeys: string[] } = { role: base.role, teamKeys: base.teamKeys }
   const isEf = ctx.role === 'ef'
   if (isEf && preview?.userId) {
     const as = await viewerContext(preview.userId, 'client', companyId)
