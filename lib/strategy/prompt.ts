@@ -142,6 +142,7 @@ export interface AssembledPrompt {
   temperature: number
   outputSchema: Record<string, unknown>
   produces: string[]
+  consumes: string[]
   allowResearch: boolean
   promptId: string
   promptVersion: number
@@ -223,6 +224,7 @@ export async function assemble(input: {
     temperature: Number(p.temperature ?? 0.7),
     outputSchema: p.output_schema ?? {},
     produces: p.produces ?? [],
+    consumes: p.consumes ?? [],
     allowResearch: p.allow_research,
     promptId: p.id, promptVersion: p.version, modelRole: p.model_role,
     promptKind: p.prompt_kind ?? ROLE_DEFAULT_KIND[p.model_role],

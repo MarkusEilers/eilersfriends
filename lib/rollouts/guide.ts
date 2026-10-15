@@ -116,6 +116,13 @@ export async function loadGuide(companyId: string, userId: string, platformRole?
     { id: string; program_step_id: string; kind: string; title: string; url: string | null; body: string | null; audience: string[] }[]) : []
   const [{ n: pending }] = (await db.execute(sql`SELECT count(*)::int AS n FROM rollout_changes WHERE rollout_id = ANY(${pgArr(ids)}::uuid[]) AND status='proposed'`)) as unknown as { n: number }[]
 
+  // Strategie-Schritt je Programmschritt (13 Step GTM) — lebt im Katalog, nicht in der Version
+  const stratMap = new Map<number, string>()
+  try {
+    const sm = (await db.execute(sql`SELECT key, program_step_n FROM strategy_steps WHERE is_active AND program_step_n IS NOT NULL ORDER BY (scope='product') DESC, sort_order`)) as unknown as { key: string; program_step_n: number }[]
+    for (const r of sm) if (!stratMap.has(r.program_step_n)) stratMap.set(r.program_step_n, r.key)
+  } catch { /* Katalog noch ohne Zuordnung */ }
+
   const locale = rollouts[0].locale
   const programs: GuideProgram[] = []
   const steps: GuideStep[] = []
@@ -138,7 +145,8 @@ export async function loadGuide(companyId: string, userId: string, platformRole?
         teams: st.teams.map((k) => ({ key: k, name: teamName(k) })),
         items: items.filter((i) => i.rollout_step_id === rs.id).map((i) => ({ id: i.id, kind: i.kind, label: i.label, done: !!i.done_at, doneBy: i.done_by_name, doneAt: i.done_at })),
         needs, note: rs.note, challenge: rs.challenge, joint: rs.joint_code, draft: eff.draft,
-        headline: st.headline, milestones: st.milestones, links: st.links ?? {},
+        headline: st.headline, milestones: st.milestones,
+        links: snap.program.slug === 'salesmade-13-step-gtm' && stratMap.has(st.n) ? { ...(st.links ?? {}), strategy_step_key: stratMap.get(st.n)! } : (st.links ?? {}),
         resources: res.filter((x) => x.program_step_id === st.id && (!x.audience?.length || x.audience.some((a) => st.teams.includes(a)))).map((x) => ({ id: x.id, kind: x.kind, title: x.title, url: x.url, body: x.body })),
         canTick: mayTick(ctx.role, ctx.teamKeys, st.teams),
         canComplete: mayComplete(ctx.role, ctx.teamKeys, st.teams),

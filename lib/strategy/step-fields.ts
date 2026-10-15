@@ -49,6 +49,13 @@ export const STEP_FIELDS: Record<string, StepField[]> = {
     { key: 'to', label: 'Der gewünschte SOLL-Zustand', type: 'short' },
     { key: 'phases', label: 'Die Phasen dazwischen', help: 'Je Phase: Name, was sich verändert (von X → zu Y).' },
   ],
+  'validate-hypotheses': [
+    { key: 'personas', label: 'Die drei Ziel-Personas', help: 'Wen Ihr befragt — je Zeile Rolle und Firmentyp.' },
+    { key: 'partners', label: 'Interviewpartner (3 × 3)', help: 'Je Persona drei Namen oder Firmen. Was noch fehlt, schreibt Ihr als Lücke dazu.' },
+    { key: 'hypotheses', label: 'Was Ihr prüfen wollt', help: 'Die Annahmen aus ICP, Beef Radar und Roadmap, die stimmen müssen.' },
+    { key: 'learnings', label: 'Was die Gespräche gezeigt haben', help: 'Bestätigt, widerlegt, neu — mit Zitat, wo möglich.' },
+    { key: 'objections', label: 'Einwand-Katalog', help: 'Jeder Einwand, den Ihr gehört habt, in den Worten der Gesprächspartner.' },
+  ],
   'irresistible-offer': [
     { key: 'core', label: 'Das Kernangebot', help: 'Was genau bekommt der Kunde?' },
     { key: 'value_stack', label: 'Was noch dazugehört', help: 'Alles, was den Wert erhöht.' },

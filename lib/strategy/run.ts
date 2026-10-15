@@ -1,5 +1,6 @@
 import { assemble } from './prompt'
 import { putFacts, type FactInput } from './facts'
+import { snapshotInputs } from './lineage'
 import { noteTemplateUse } from './templates'
 import { callModel } from '@/lib/ai/call'
 import { recordUsage } from './usage'
@@ -58,6 +59,8 @@ export async function runAgent(input: {
   try { asm = await assemble(input) } catch (e) { return { ok: false, error: e instanceof Error ? e.message : String(e) } }
 
   const started = Date.now()
+  // Input-Versionen VOR dem Lauf festhalten — daraus wird die Herkunft des Outputs
+  const inputs = await snapshotInputs(input.companyId, input.productId ?? null, asm.consumes ?? []).catch(() => [])
 
   // Der Aufruf selbst liegt in lib/ai/call.ts — dort steckt auch die
   // Minutenbremse und das Wissen darueber, welcher Anbieter zu welchem
@@ -116,7 +119,7 @@ export async function runAgent(input: {
       companyId: input.companyId, productId: input.productId ?? null,
       facts: extractFacts(parsed, asm.produces),
       source: 'agent', stepId: input.stepId ?? null, blockId: input.blockId ?? null,
-      aiRunId: runId ?? null, userId: input.userId ?? null,
+      aiRunId: runId ?? null, userId: input.userId ?? null, derivedFrom: inputs,
     })
     return { ok: true, output: parsed, facts, missing: asm.missing, runId, model: asm.model, promptVersion: asm.promptVersion }
   }

@@ -1,5 +1,7 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
+import { sql } from 'drizzle-orm'
+import { db } from '@/lib/db'
 import { ArrowLeft, Clock, BookOpen, Lightbulb, Bot, Wrench } from 'lucide-react'
 import { openStepAction, getProductsAction } from '@/lib/actions/strategy'
 import { StatusBadge, type StepStatus } from '@/components/strategy/StatusBadge'
@@ -19,6 +21,16 @@ export default async function StrategieStepPage({ params, searchParams }:
   { params: Promise<{ stepKey: string }>; searchParams: Promise<{ product?: string }> }) {
   const { stepKey } = await params
   const sp = await searchParams
+
+  // Produkt-Schritt ohne Produkt (z. B. Absprung aus dem Programm Guide): erstes Produkt nehmen
+  if (!sp.product) {
+    const [st] = (await db.execute(sql`SELECT scope FROM strategy_steps WHERE key=${stepKey}`)) as unknown as { scope: string }[]
+    if (st?.scope === 'product') {
+      const ps = await getProductsAction()
+      if (ps[0]) redirect(`/dashboard/strategie/${stepKey}?product=${ps[0].id}` as '/')
+      redirect('/dashboard/strategie' as '/')
+    }
+  }
 
   let payload
   try { payload = await openStepAction(stepKey, sp.product ?? null) } catch { notFound() }

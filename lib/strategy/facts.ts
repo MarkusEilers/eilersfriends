@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { ensureFactSchema } from './schema'
 import { AUTO_CONFIRM_THRESHOLD } from './models'
 import { mergeItems, normalizeItems, type FactItem, type ItemOrigin } from './items'
+import { propagateStale, recordLineage, type InputRef } from './lineage'
 
 export interface FactKey {
   key: string; label: string; scope: 'company' | 'product'
@@ -78,6 +79,8 @@ export async function putFacts(input: {
   facts: FactInput[]
   source?: 'user' | 'agent' | 'research' | 'import'
   stepId?: string | null; blockId?: string | null; aiRunId?: string | null; userId?: string | null
+  /** Aus welchen Input-Versionen dieser Output entstanden ist (vor dem Lauf gezogen). */
+  derivedFrom?: InputRef[]
 }): Promise<{ written: number; drafts: number }> {
   await ensureFactSchema()
   let written = 0, drafts = 0
@@ -107,14 +110,18 @@ export async function putFacts(input: {
     if (prev) {
       await db.execute(sql`UPDATE strategy_facts SET is_current = false, updated_at = now() WHERE id = ${prev.id}`)
     }
-    await db.execute(sql`
+    const ins = (await db.execute(sql`
       INSERT INTO strategy_facts (company_id, product_id, key, value, source, source_step_id, source_block_id,
                                   ai_run_id, evidence, confidence, status, version, supersedes_id, created_by)
       VALUES (${input.companyId}, ${input.productId ?? null}, ${f.key}, ${JSON.stringify(value)}::jsonb,
               ${source}, ${input.stepId ?? null}, ${input.blockId ?? null}, ${input.aiRunId ?? null},
               ${f.evidence ?? null}, ${confidence}, ${status}, ${(prev?.version ?? 0) + 1},
-              ${prev?.id ?? null}, ${input.userId ?? null})`)
+              ${prev?.id ?? null}, ${input.userId ?? null})
+      RETURNING id`)) as unknown as { id: string }[]
     written++
+    // Herkunft festhalten und alles überholen, was auf der alten Version steht
+    await recordLineage({ kind: 'fact', id: ins[0].id }, (input.derivedFrom ?? []).filter((d) => d.key !== f.key)).catch(() => {})
+    if (prev) await propagateStale({ companyId: input.companyId, productId: input.productId ?? null, changedKey: f.key, cause: { kind: 'fact', id: ins[0].id, key: f.key } }).catch(() => {})
   }
   return { written, drafts }
 }
@@ -237,9 +244,11 @@ export async function addUserItems(input: {
   if (prev) {
     await db.execute(sql`UPDATE strategy_facts SET is_current=false, updated_at=now() WHERE id=${prev.id}`)
   }
-  await db.execute(sql`
+  const ins = (await db.execute(sql`
     INSERT INTO strategy_facts (company_id, product_id, key, value, source, confidence, status, version, supersedes_id, created_by)
     VALUES (${input.companyId}, ${input.productId ?? null}, ${input.key}, ${JSON.stringify(items)}::jsonb,
-            'user', 1.0, 'confirmed', ${(prev?.version ?? 0) + 1}, ${prev?.id ?? null}, ${input.userId ?? null})`)
+            'user', 1.0, 'confirmed', ${(prev?.version ?? 0) + 1}, ${prev?.id ?? null}, ${input.userId ?? null})
+    RETURNING id`)) as unknown as { id: string }[]
+  if (prev) await propagateStale({ companyId: input.companyId, productId: input.productId ?? null, changedKey: input.key, cause: { kind: 'fact', id: ins[0].id, key: input.key } }).catch(() => {})
   return { total: items.length, added: fresh.length }
 }

@@ -200,6 +200,9 @@ export async function ensureStrategySchema() {
       created_at   TIMESTAMPTZ DEFAULT now()
     )`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS ai_runs_company_idx ON ai_runs (company_id, created_at DESC)`)
+  // Zuordnung zum Programm (SalesMade 13 Step GTM): Nummer + Gruppe, z. B. 2 · ICP & Wettbewerb
+  await db.execute(sql`ALTER TABLE strategy_steps ADD COLUMN IF NOT EXISTS program_step_n INTEGER`)
+  await db.execute(sql`ALTER TABLE strategy_steps ADD COLUMN IF NOT EXISTS group_title TEXT`)
 
   ensured = true
 }
@@ -213,25 +216,30 @@ export interface StepSeed {
   scope: 'company' | 'product'
   icon: string
   estimatedMin: number
+  /** Schritt im Programm „SalesMade 13 Step GTM“ */
+  programN: number
+  group: string
 }
 
 export const STRATEGY_STEPS: StepSeed[] = [
-  { key: 'foundation',    title: 'Fundament',        subtitle: 'Kultur, Origin Story und wofuer Ihr steht.',        scope: 'company', icon: 'building', estimatedMin: 45 },
-  { key: 'success-goals', title: 'Was Erfolg heisst', subtitle: 'Objectives und Key Results fuer die Organisation.', scope: 'company', icon: 'target',   estimatedMin: 40 },
-
-  { key: 'product-goals',      title: 'Produkt-Ziele',             subtitle: 'Was dieses Produkt erreichen soll.',              scope: 'product', icon: 'flag',       estimatedMin: 30 },
-  { key: 'icp',                title: 'Ideales Kundenprofil',      subtitle: 'Wer kauft — und warum ausgerechnet bei Euch.',    scope: 'product', icon: 'users',      estimatedMin: 60 },
-  { key: 'compete',            title: 'Wettbewerb',                subtitle: 'Wer sonst um dieselbe Entscheidung kaempft.',     scope: 'product', icon: 'swords',     estimatedMin: 45 },
-  { key: 'beef-radar',         title: 'Beef Radar',                subtitle: 'WAS · WIE · WARUM — Euer echter Unterschied.',    scope: 'product', icon: 'radar',      estimatedMin: 60 },
-  { key: 'conviction-path',    title: 'Ueberzeugungspfad',         subtitle: 'Welche Ueberzeugungen in welcher Reihenfolge.',   scope: 'product', icon: 'route',      estimatedMin: 75 },
-  { key: 'signature-solution', title: 'Bulletproof Value Roadmap', subtitle: 'Der Weg vom IST zum SOLL, in Phasen.',            scope: 'product', icon: 'map',        estimatedMin: 75 },
-  { key: 'irresistible-offer', title: 'Unwiderstehliches Angebot', subtitle: 'Mehr als Leistung und Preis.',                    scope: 'product', icon: 'gift',       estimatedMin: 60 },
-  { key: 'soft-launch',        title: 'Soft Launch',               subtitle: 'Die Einfuehrung in Etappen statt mit Knall.',     scope: 'product', icon: 'rocket',     estimatedMin: 50 },
-  { key: 'funnel-math',        title: 'Funnel-Mathematik',         subtitle: 'Welche Zahlen zu Eurem Ziel fuehren.',            scope: 'product', icon: 'calculator', estimatedMin: 45 },
-  { key: 'high-value-content', title: 'High Value Content',        subtitle: 'Inhalte, die Autoritaet aufbauen.',               scope: 'product', icon: 'file-text',  estimatedMin: 60 },
-  { key: 'ads-lab',            title: 'Ads Lab',                   subtitle: 'Anzeigen, die qualifizierte Gespraeche bringen.', scope: 'product', icon: 'megaphone',  estimatedMin: 45 },
-  { key: 'landing-page',       title: 'Landingpage',               subtitle: 'Die Seite, auf der die Entscheidung faellt.',     scope: 'product', icon: 'layout',     estimatedMin: 50 },
-  { key: 'outreach',           title: 'Outreach-Sequenz',          subtitle: '14 Beats — systematische Erstansprache.',         scope: 'product', icon: 'send',       estimatedMin: 75 },
+  // 1 · Kick Off and Intro — Organisation + Produkt-Ziele
+  { key: 'foundation',          title: 'Fundament',                 subtitle: 'Kultur, Origin Story und wofür Ihr steht.',         scope: 'company', icon: 'building',   estimatedMin: 45, programN: 1,  group: 'Kick Off and Intro' },
+  { key: 'success-goals',       title: 'Was Erfolg heißt',          subtitle: 'Objectives und Key Results für die Organisation.',  scope: 'company', icon: 'target',     estimatedMin: 40, programN: 1,  group: 'Kick Off and Intro' },
+  { key: 'product-goals',       title: 'Produkt-Ziele',             subtitle: 'Was dieses Produkt erreichen soll.',                scope: 'product', icon: 'flag',       estimatedMin: 30, programN: 1,  group: 'Kick Off and Intro' },
+  // 2 · ICP & Wettbewerb (Million Dollar Message) — zwei Arbeitsbereiche, ein Programmschritt
+  { key: 'icp',                 title: 'Ideales Kundenprofil',      subtitle: 'Wer kauft — und warum ausgerechnet bei Euch.',      scope: 'product', icon: 'users',      estimatedMin: 60, programN: 2,  group: 'ICP & Wettbewerb' },
+  { key: 'compete',             title: 'Wettbewerb',                subtitle: 'Wer sonst um dieselbe Entscheidung kämpft.',        scope: 'product', icon: 'swords',     estimatedMin: 45, programN: 2,  group: 'ICP & Wettbewerb' },
+  { key: 'beef-radar',          title: 'Beef Radar',                subtitle: 'WAS · WIE · WARUM — Euer echter Unterschied.',      scope: 'product', icon: 'radar',      estimatedMin: 60, programN: 3,  group: 'Beef Radar' },
+  { key: 'conviction-path',     title: 'Überzeugungspfad',          subtitle: 'Welche Überzeugungen in welcher Reihenfolge.',      scope: 'product', icon: 'route',      estimatedMin: 75, programN: 4,  group: 'Überzeugungspfad' },
+  { key: 'signature-solution',  title: 'Bulletproof Value Roadmap', subtitle: 'Der Weg vom IST zum SOLL, in Phasen.',              scope: 'product', icon: 'map',        estimatedMin: 75, programN: 5,  group: 'Bulletproof Value Roadmap' },
+  { key: 'validate-hypotheses', title: 'Hypothesen validieren',     subtitle: 'Die Basis in Interviews mit Ziel-Personas prüfen.', scope: 'product', icon: 'messages',   estimatedMin: 60, programN: 6,  group: 'Hypothesen validieren' },
+  { key: 'irresistible-offer',  title: 'Unwiderstehliches Angebot', subtitle: 'Mehr als Leistung und Preis.',                      scope: 'product', icon: 'gift',       estimatedMin: 60, programN: 7,  group: 'Unwiderstehliches Angebot' },
+  { key: 'funnel-math',         title: 'Know Your Numbers',         subtitle: 'Welche Zahlen zu Eurem Ziel führen.',               scope: 'product', icon: 'calculator', estimatedMin: 45, programN: 8,  group: 'Know Your Numbers' },
+  { key: 'soft-launch',         title: 'Soft Launch',               subtitle: 'ICP und Messaging am Markt testen.',                scope: 'product', icon: 'rocket',     estimatedMin: 50, programN: 9,  group: 'Soft Launch' },
+  { key: 'high-value-content',  title: 'High Value Content',        subtitle: 'Früh Wert liefern, Vertrauen aufbauen.',            scope: 'product', icon: 'file-text',  estimatedMin: 60, programN: 10, group: 'High Value Content' },
+  { key: 'ads-lab',             title: 'Ads Lab',                   subtitle: 'Anzeigen, die qualifizierte Gespräche bringen.',    scope: 'product', icon: 'megaphone',  estimatedMin: 45, programN: 11, group: 'Ads Lab' },
+  { key: 'landing-page',        title: 'Landingpage',               subtitle: 'Die Seite, auf der die Entscheidung fällt.',        scope: 'product', icon: 'layout',     estimatedMin: 50, programN: 12, group: 'Landingpage' },
+  { key: 'outreach',            title: 'Outreach-Sequenz',          subtitle: '14 Beats — systematische Erstansprache.',           scope: 'product', icon: 'send',       estimatedMin: 75, programN: 13, group: 'Outreach-Sequenz' },
 ]
 
 export async function seedStrategySteps() {
@@ -239,12 +247,13 @@ export async function seedStrategySteps() {
   for (let i = 0; i < STRATEGY_STEPS.length; i++) {
     const s = STRATEGY_STEPS[i]
     await db.execute(sql`
-      INSERT INTO strategy_steps (key, title, subtitle, scope, sort_order, icon, estimated_min)
-      VALUES (${s.key}, ${s.title}, ${s.subtitle}, ${s.scope}, ${i + 1}, ${s.icon}, ${s.estimatedMin})
+      INSERT INTO strategy_steps (key, title, subtitle, scope, sort_order, icon, estimated_min, program_step_n, group_title)
+      VALUES (${s.key}, ${s.title}, ${s.subtitle}, ${s.scope}, ${i + 1}, ${s.icon}, ${s.estimatedMin}, ${s.programN}, ${s.group})
       ON CONFLICT (key) DO UPDATE SET
         title = EXCLUDED.title, subtitle = EXCLUDED.subtitle, scope = EXCLUDED.scope,
         sort_order = EXCLUDED.sort_order, icon = EXCLUDED.icon,
-        estimated_min = EXCLUDED.estimated_min, updated_at = now()
+        estimated_min = EXCLUDED.estimated_min, program_step_n = EXCLUDED.program_step_n,
+        group_title = EXCLUDED.group_title, updated_at = now()
     `)
   }
 }
@@ -298,7 +307,7 @@ export async function listStepStates(companyId: string, productId?: string | nul
   await ensureStrategySchema()
   const res = await db.execute(sql`
     SELECT st.id AS step_id, st.key, st.title, st.subtitle, st.scope, st.sort_order,
-           st.icon, st.estimated_min,
+           st.icon, st.estimated_min, st.program_step_n, st.group_title,
            ss.id AS state_id, ss.status, ss.progress, ss.data,
            ss.submitted_at, ss.approved_at, ss.review_note
     FROM strategy_steps st

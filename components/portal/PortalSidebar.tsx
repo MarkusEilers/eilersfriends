@@ -27,6 +27,8 @@ export function PortalSidebar({ userName, userRole }: PortalSidebarProps) {
   const [open, setOpen] = useState(false)
   const cleanPath = pathname.replace(/^\/(de|en|es|ru)/, '') || '/'
 
+  const compact = cleanPath === '/dashboard/strategie' || cleanPath.startsWith('/dashboard/strategie/')
+
   function isActive(href: string) {
     return cleanPath === href || cleanPath.startsWith(href + '/')
   }
@@ -133,9 +135,32 @@ export function PortalSidebar({ userName, userRole }: PortalSidebarProps) {
         </div>
       )}
 
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-gray-200 bg-white lg:flex lg:sticky lg:top-0 lg:h-screen">
-        {NavContent}
-      </aside>
+      {compact ? (
+        // Im Strategie-Bereich: schmale Icon-Leiste, damit der Strategie-Baum Platz hat
+        <aside className="hidden w-16 shrink-0 flex-col items-center border-r border-gray-200 bg-white py-4 lg:flex lg:sticky lg:top-0 lg:h-screen">
+          <Link href="/dashboard" className="mb-4 text-sm font-bold text-gray-900" title="Eilers+Friends">E<span style={{ color: '#1A5FD4' }}>+</span>F</Link>
+          <nav className="flex flex-1 flex-col items-center gap-1">
+            {PORTAL_NAV.map((item) => {
+              const Icon = item.icon
+              const active = isActive(item.href)
+              return (
+                <Link key={item.href} href={item.href as '/'} title={item.label} aria-label={item.label}
+                  className={`flex h-10 w-10 items-center justify-center rounded-lg transition-colors ${active ? 'bg-blue-50 text-blue-700' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-900'}`}>
+                  <Icon size={17} />
+                </Link>
+              )
+            })}
+          </nav>
+          {(userRole === 'admin' || userRole === 'coach') && (
+            <Link href={'/admin' as '/'} title="Zum Admin-Panel" className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg text-purple-500 hover:bg-purple-50"><Shield size={16} /></Link>
+          )}
+          <div title={userName} className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white" style={{ backgroundColor: '#1A5FD4' }}>{userName.charAt(0).toUpperCase()}</div>
+        </aside>
+      ) : (
+        <aside className="hidden w-64 shrink-0 flex-col border-r border-gray-200 bg-white lg:flex lg:sticky lg:top-0 lg:h-screen">
+          {NavContent}
+        </aside>
+      )}
     </>
   )
 }

@@ -1,6 +1,7 @@
 'use server'
 
 import { getViewAs } from '@/lib/view-as'
+import { listStale } from '@/lib/strategy/lineage'
 
 import { revalidatePath } from 'next/cache'
 import { sql } from 'drizzle-orm'
@@ -108,3 +109,34 @@ export async function addCommentAction(stateId: string, body: string, isInternal
   revalidatePath('/dashboard/strategie')
   return c
 }
+
+
+/**
+ * Daten für die zweite Navigation (Strategie-Baum): Organisations-Schritte,
+ * Produkte mit ihren Schritten, Status, Fortschritt und was überholt ist.
+ */
+export async function getStrategyTreeAction() {
+  const ctx = await currentContext()
+  if (!ctx.companyId) return { companyId: null, isCoach: ctx.isCoach, company: [], products: [] as TreeProduct[] }
+  const company = (await listStepStates(ctx.companyId, null)) as unknown as TreeStep[]
+  const prods = await listProducts(ctx.companyId)
+  const products: TreeProduct[] = []
+  for (const p of prods) {
+    const steps = ((await listStepStates(ctx.companyId, p.id)) as unknown as TreeStep[]).filter((s) => s.scope === 'product')
+    const stale = await listStale(ctx.companyId, p.id).catch(() => [])
+    const staleSteps = new Set(stale.map((x) => x.step_key).filter(Boolean) as string[])
+    products.push({ id: p.id, name: p.name, steps: steps.map((s) => ({ ...s, stale: staleSteps.has(s.key) })) })
+  }
+  const staleCo = await listStale(ctx.companyId, null).catch(() => [])
+  const staleCoSteps = new Set(staleCo.map((x) => x.step_key).filter(Boolean) as string[])
+  return {
+    companyId: ctx.companyId, isCoach: ctx.isCoach,
+    company: company.filter((s) => s.scope === 'company').map((s) => ({ ...s, stale: staleCoSteps.has(s.key) })),
+    products,
+  }
+}
+export interface TreeStep {
+  key: string; title: string; scope: 'company' | 'product'; status: string | null; progress: number | null
+  program_step_n: number | null; group_title: string | null; stale?: boolean
+}
+export interface TreeProduct { id: string; name: string; steps: TreeStep[] }
