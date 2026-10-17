@@ -80,7 +80,7 @@ export default async function CallCheckPage({ params, searchParams }: { params: 
             </ul>
           </div>
           <div className="mx-auto w-full max-w-[380px] rounded-[2rem] border border-white/10 bg-white/[0.04] p-4 backdrop-blur">
-            <Radar axes={sample} notAssessed={t('result.notAssessed')} />
+            <Radar axes={sample} notAssessed={t('result.notAssessed')} theme="dark" />
           </div>
         </div>
       </section>

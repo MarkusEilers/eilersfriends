@@ -2104,6 +2104,28 @@
         "offer_requested": "Offer requested",
         "nothing": "Nothing happened",
         "lost": "Declined"
+      },
+      "timeline": {
+        "title": "How the call went",
+        "hint": "Top lane: the seller. Bottom lane: the customer. Width follows the words, not the clock. Above: the stages. Below: the moments that triggered feedback.",
+        "seller": "Seller",
+        "customer": "Customer",
+        "start": "Start",
+        "end": "End",
+        "phases": "Stages",
+        "rating": {
+          "good": "worked",
+          "mixed": "mixed",
+          "weak": "something was lost here"
+        },
+        "kinds": {
+          "turning": "Turning point",
+          "feedback": "Feedback",
+          "strength": "Strength",
+          "objection": "Objection",
+          "signal_pos": "Buying signal",
+          "signal_neg": "Warning sign"
+        }
       }
     },
     "criteria": {

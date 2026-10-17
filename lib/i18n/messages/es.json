@@ -2104,6 +2104,28 @@
         "offer_requested": "Oferta solicitada",
         "nothing": "No pasó nada",
         "lost": "Rechazado"
+      },
+      "timeline": {
+        "title": "Cómo fue la conversación",
+        "hint": "Arriba habla el vendedor, abajo el cliente. El ancho sigue a las palabras, no al reloj. Encima, las etapas; debajo, los momentos que motivaron un comentario.",
+        "seller": "Vendedor",
+        "customer": "Cliente",
+        "start": "Inicio",
+        "end": "Final",
+        "phases": "Etapas",
+        "rating": {
+          "good": "funcionó",
+          "mixed": "mixto",
+          "weak": "aquí se perdió algo"
+        },
+        "kinds": {
+          "turning": "Punto de inflexión",
+          "feedback": "Comentario",
+          "strength": "Fortaleza",
+          "objection": "Objeción",
+          "signal_pos": "Señal de compra",
+          "signal_neg": "Señal de alerta"
+        }
       }
     },
     "criteria": {

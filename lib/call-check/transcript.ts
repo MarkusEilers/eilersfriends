@@ -109,6 +109,8 @@ export interface CallMetrics {
   longestSellerMonologue: number
   customerTurns: number
   sellerTurns: number
+  /** Ab 18.10.2026: Ablauf ohne Inhalt — wer sprach, wie viele Wörter. Nur für die Verlaufsgrafik. */
+  timeline?: Array<{ r: 's' | 'c' | 'o'; w: number }>
 }
 
 /**
@@ -147,12 +149,36 @@ export function computeMetrics(p: ParsedTranscript, seller: string | null): Call
   }
 }
 
-/** Compact form for the model: one line per turn, seller marked. */
+/** Compact form for the model: one line per turn, numbered (#1 …), seller marked. */
 export function renderForModel(p: ParsedTranscript, seller: string | null): string {
   return p.turns
-    .map((t) => {
+    .map((t, i) => {
       const role = seller ? (t.speaker === seller ? 'VERKÄUFER' : 'KUNDE') : 'SPRECHER'
-      return `[${role} · ${t.speaker}] ${t.text}`
+      return `[#${i + 1} · ${role} · ${t.speaker}] ${t.text}`
     })
     .join('\n')
+}
+
+/**
+ * The shape of the call without its content: per turn only who spoke and how
+ * many words. Safe to store — nothing of what was said survives in it.
+ */
+export function computeTimeline(p: ParsedTranscript, seller: string | null): Array<{ r: 's' | 'c' | 'o'; w: number }> {
+  return p.turns.map((t) => ({
+    r: !seller || t.speaker === '?' ? 'o' : t.speaker === seller ? 's' : 'c',
+    w: countWords(t.text),
+  }))
+}
+
+/** 1-based number of the turn that contains a quote, or null. Tolerant to punctuation and case. */
+export function locateQuote(p: ParsedTranscript, quote: string | null | undefined): number | null {
+  if (!quote) return null
+  const norm = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
+  const q = norm(quote).split(' ').slice(0, 8).join(' ')
+  if (q.length < 6) return null
+  const i = p.turns.findIndex((t) => norm(t.text).includes(q))
+  if (i >= 0) return i + 1
+  const short = q.split(' ').slice(0, 4).join(' ')
+  const j = short.length >= 8 ? p.turns.findIndex((t) => norm(t.text).includes(short)) : -1
+  return j >= 0 ? j + 1 : null
 }

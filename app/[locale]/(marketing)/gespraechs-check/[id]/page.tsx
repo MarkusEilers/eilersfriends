@@ -14,6 +14,7 @@ import { CallStand } from '@/components/call-check/CallStand'
 import { OfferDraftPanel } from '@/components/call-check/OfferDraftPanel'
 import { OutcomePicker } from '@/components/call-check/OutcomePicker'
 import { auth } from '@/lib/auth'
+import { CallTimeline, type TimelineMarker } from '@/components/call-check/CallTimeline'
 
 export const dynamic = 'force-dynamic'
 
@@ -58,7 +59,7 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
     <div className="min-h-screen bg-[#FAFAF8]">
       {/* Head: the shape of the call */}
       <section className="bg-[#0F1E3A] px-6 pb-32 pt-16 text-white">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="mx-auto max-w-6xl">
           <div>
             <span className="inline-block rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs font-bold uppercase tracking-widest text-[#5DDBF5]">
               {t('result.badge')}
@@ -81,10 +82,6 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
                 </div>
               ))}
             </dl>
-          </div>
-          <div className="mx-auto w-full max-w-[400px] rounded-[2rem] border border-white/10 bg-white/[0.04] p-4">
-            <Radar notAssessed={t('result.notAssessed')}
-              axes={r.criteria.map((c) => ({ label: t(`criteria.${c.key}`), value: c.score }))} />
           </div>
         </div>
       </section>
@@ -110,6 +107,17 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
               <p className="mt-1 text-lg font-medium">„{r.turning_point.better}"</p>
             </div>
           </section>
+        ) : null}
+
+        {/* The call as a strip: who spoke when, stages, moments that triggered feedback */}
+        {m.timeline && m.timeline.length > 1 ? (
+          <CallTimeline turns={m.timeline} phases={r.phases ?? []} markers={timelineMarkers(r, t)} L={{
+            title: t('result.timeline.title'), hint: t('result.timeline.hint'),
+            seller: t('result.timeline.seller'), customer: t('result.timeline.customer'),
+            start: t('result.timeline.start'), end: t('result.timeline.end'), phases: t('result.timeline.phases'),
+            rating: t.raw('result.timeline.rating') as Record<'good' | 'mixed' | 'weak', string>,
+            kinds: t.raw('result.timeline.kinds') as TimelineMarkerKinds,
+          }} />
         ) : null}
 
         {/* Where the call stands: probability, depth, buying signals */}
@@ -144,6 +152,10 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
         {/* Five criteria in detail */}
         <section className="rounded-3xl border border-gray-100 bg-white p-6 sm:p-8">
           <h2 className="text-2xl font-bold text-gray-900">{t('result.criteriaTitle')}</h2>
+          <div className="mt-6">
+            <Radar notAssessed={t('result.notAssessed')}
+              axes={r.criteria.map((c) => ({ label: t(`criteria.${c.key}`), value: c.score }))} />
+          </div>
           <ul className="mt-6 divide-y divide-gray-100">
             {r.criteria.map((c) => (
               <li key={c.key} className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
@@ -292,4 +304,37 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
       </div>
     </div>
   )
+}
+
+type TimelineMarkerKinds = Record<TimelineMarker['kind'], string>
+
+const cut = (x: string, n = 70) => (x.length > n ? `${x.slice(0, n - 1).trimEnd()}…` : x)
+
+/** Everything with a turn number becomes a pin on the strip. Feedback at the same turn is shown once. */
+function timelineMarkers(r: CheckResult, t: (k: string) => string): TimelineMarker[] {
+  const out: TimelineMarker[] = []
+  const feedbackTurns = new Set<number>()
+  if (r.turning_point?.turn) {
+    out.push({ turn: r.turning_point.turn, kind: 'turning', label: cut(`„${r.turning_point.customer_quote}"`), detail: r.turning_point.effect })
+    feedbackTurns.add(r.turning_point.turn)
+  }
+  for (const tip of r.tips) {
+    if (!tip.turn || feedbackTurns.has(tip.turn)) continue
+    out.push({ turn: tip.turn, kind: 'feedback', label: tip.title, detail: `${t('result.tipSay')}: „${tip.try_next}"` })
+    feedbackTurns.add(tip.turn)
+  }
+  for (const mo of r.moments ?? []) {
+    if (mo.kind === 'feedback' && feedbackTurns.has(mo.turn)) continue
+    out.push({ turn: mo.turn, kind: mo.kind, label: mo.label, detail: mo.note })
+    if (mo.kind === 'feedback') feedbackTurns.add(mo.turn)
+  }
+  for (const o of r.objections) {
+    if (!o.turn) continue
+    out.push({ turn: o.turn, kind: 'objection', label: cut(`„${o.objection}"`), detail: t(`result.status.${o.status}`) })
+  }
+  for (const b of r.buying_signals ?? []) {
+    if (!b.turn) continue
+    out.push({ turn: b.turn, kind: b.type === 'positive' ? 'signal_pos' : 'signal_neg', label: b.signal, detail: b.quote ? `„${b.quote}"` : undefined })
+  }
+  return out
 }

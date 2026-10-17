@@ -1,5 +1,5 @@
 import { callModel } from '@/lib/ai/call'
-import { parseTranscript, computeMetrics, renderForModel, type CallMetrics } from './transcript'
+import { parseTranscript, computeMetrics, renderForModel, computeTimeline, locateQuote, type CallMetrics, type ParsedTranscript } from './transcript'
 import { systemPrompt, outputSchema, CRITERIA, SKILLS, DIMENSIONS, NOT_OBSERVABLE, MAX_GRADE, type SkillKey, type CriterionKey, type DimensionKey } from './rubric'
 
 /**
@@ -36,7 +36,9 @@ export interface SkillResult { key: SkillKey; measurable: boolean; grade: number
 export interface CriterionResult { key: CriterionKey; score: number | null; finding: string; evidence: string[] }
 export interface DimensionResult { key: DimensionKey; grade: number | null; measured: number; total: number }
 
-export interface TurningPoint { customer_quote: string; seller_reaction: string; effect: string; better: string }
+export interface TurningPoint { customer_quote: string; seller_reaction: string; effect: string; better: string; turn?: number | null }
+export interface Phase { from_turn: number; to_turn: number; label: string; rating: 'good' | 'mixed' | 'weak'; note: string }
+export interface Moment { turn: number; kind: 'strength' | 'feedback'; label: string; note: string }
 
 export interface CheckResult {
   summary: string
@@ -46,14 +48,17 @@ export interface CheckResult {
   dimensions: DimensionResult[]
   questions: Array<{ text: string; open: boolean; category: string | null }>
   protocol: { pain_gain: string[]; evidence: string[]; impact: string[] }
-  objections: Array<{ objection: string; response?: string | null; status: string }>
-  tips: Array<{ title: string; why: string; quote: string; try_next: string }>
+  objections: Array<{ objection: string; response?: string | null; status: string; turn?: number | null }>
+  tips: Array<{ title: string; why: string; quote: string; try_next: string; turn?: number | null }>
   learning: { skill: SkillKey; reason: string }
   /** Ab 17.10.2026 — ältere Checks haben die Felder nicht */
-  buying_signals?: Array<{ type: 'positive' | 'negative'; signal: string; quote: string }>
+  buying_signals?: Array<{ type: 'positive' | 'negative'; signal: string; quote: string; turn?: number | null }>
   purchase?: { probability: number | null; value_aligned: boolean; reasoning: string } | null
   offer_draft?: OfferDraft | null
   depth?: Depth
+  /** Ab 18.10.2026 — Etappen und Feedback-Stellen für die Verlaufsgrafik */
+  phases?: Phase[]
+  moments?: Moment[]
 }
 
 export interface OfferDraft {
@@ -74,6 +79,9 @@ export function computeDepth(questions: Array<{ category: string | null; open: b
 
 const clamp = (n: unknown): number | null =>
   typeof n === 'number' && Number.isFinite(n) ? Math.max(0, Math.min(100, Math.round(n))) : null
+
+const intOrNull = (n: unknown): number | null =>
+  typeof n === 'number' && Number.isFinite(n) && n >= 1 ? Math.round(n) : null
 
 const list = <T,>(x: unknown): T[] => (Array.isArray(x) ? (x as T[]) : x && typeof x === 'object' ? [x as T] : [])
 
@@ -134,7 +142,7 @@ function normalise(raw: Record<string, unknown>, fallbackNote: string, notObserv
   const tp = raw.turning_point as Partial<TurningPoint> | undefined
   const turning_point = tp && tp.customer_quote && tp.seller_reaction
     ? { customer_quote: String(tp.customer_quote), seller_reaction: String(tp.seller_reaction),
-        effect: String(tp.effect ?? ''), better: String(tp.better ?? '') }
+        effect: String(tp.effect ?? ''), better: String(tp.better ?? ''), turn: intOrNull(tp.turn) }
     : null
 
   return {
@@ -154,11 +162,24 @@ function normalise(raw: Record<string, unknown>, fallbackNote: string, notObserv
     learning: { skill: learningSkill, reason: String(learningRaw.reason ?? '') },
     buying_signals: list<{ type: string; signal: string; quote: string }>(raw.buying_signals)
       .filter((b) => b && (b.type === 'positive' || b.type === 'negative') && b.signal)
-      .map((b) => ({ type: b.type as 'positive' | 'negative', signal: String(b.signal), quote: String(b.quote ?? '') })).slice(0, 12),
+      .map((b) => ({ type: b.type as 'positive' | 'negative', signal: String(b.signal), quote: String(b.quote ?? ''), turn: intOrNull((b as { turn?: unknown }).turn) })).slice(0, 12),
     purchase: raw.purchase && typeof raw.purchase === 'object'
       ? { probability: clamp((raw.purchase as Record<string, unknown>).probability), value_aligned: Boolean((raw.purchase as Record<string, unknown>).value_aligned), reasoning: String((raw.purchase as Record<string, unknown>).reasoning ?? '') }
       : null,
     offer_draft: normaliseOffer(raw.offer_draft),
+    phases: list<Record<string, unknown>>(raw.phases)
+      .map((p) => ({
+        from_turn: intOrNull(p.from_turn) ?? 0, to_turn: intOrNull(p.to_turn) ?? 0, label: String(p.label ?? ''),
+        rating: (['good', 'mixed', 'weak'].includes(String(p.rating)) ? p.rating : 'mixed') as Phase['rating'],
+        note: String(p.note ?? ''),
+      }))
+      .filter((p) => p.from_turn >= 1 && p.to_turn >= p.from_turn && p.label).slice(0, 8),
+    moments: list<Record<string, unknown>>(raw.moments)
+      .map((m) => ({
+        turn: intOrNull(m.turn) ?? 0, kind: (m.kind === 'strength' ? 'strength' : 'feedback') as Moment['kind'],
+        label: String(m.label ?? ''), note: String(m.note ?? ''),
+      }))
+      .filter((m) => m.turn >= 1 && m.label).slice(0, 12),
     depth: computeDepth(
       list<{ category: string | null; open: boolean }>(raw.questions),
       { pain_gain: list<string>(p.pain_gain), evidence: list<string>(p.evidence), impact: list<string>(p.impact) },
@@ -210,10 +231,37 @@ export async function analyseTranscript(input: {
     : input.locale === 'es'
       ? 'No visible en una sola conversación — se mide en simulación y rituales.'
       : 'Aus einem einzelnen Gespräch nicht ablesbar — wird in Simulation und Ritualen gemessen.'
-  const result = normalise((res.value ?? {}) as Record<string, unknown>, fallback, notObservable)
+  const raw = (res.value ?? {}) as Record<string, unknown>
+  const result = normalise(raw, fallback, notObservable)
+  // Without a seller from the user, take the one the model identified.
+  const rs = typeof raw.seller === 'string' ? raw.seller : null
+  const effectiveSeller = seller ?? (rs && parsed.speakers.some((s) => s.name === rs) ? rs : null)
+  placeOnTimeline(result, parsed)
+  metrics.timeline = computeTimeline(parsed, effectiveSeller)
   return {
     result, metrics, model: res.model,
     tokensIn: res.tokensIn, tokensOut: res.tokensOut,
     costEur: costEur(res.model, res.tokensIn, res.tokensOut),
   }
+}
+
+
+/**
+ * Every quoted item gets the number of the turn it belongs to, so the page can
+ * pin it on the timeline. The model's own number is checked against the
+ * transcript; if it is off or missing, the quote is looked up. Runs while the
+ * transcript is still in memory — afterwards it is gone.
+ */
+function placeOnTimeline(r: CheckResult, p: ParsedTranscript) {
+  const n = p.turns.length
+  const valid = (t: number | null | undefined) => (t && t >= 1 && t <= n ? t : null)
+  const place = (quote: string | null | undefined, given: number | null | undefined) =>
+    locateQuote(p, quote) ?? valid(given)
+  if (r.turning_point) r.turning_point.turn = place(r.turning_point.customer_quote, r.turning_point.turn)
+  r.tips = r.tips.map((t) => ({ ...t, turn: place(t.quote, t.turn) }))
+  r.objections = r.objections.map((o) => ({ ...o, turn: place(o.objection, o.turn) }))
+  r.buying_signals = (r.buying_signals ?? []).map((b) => ({ ...b, turn: place(b.quote, b.turn) }))
+  r.phases = (r.phases ?? []).map((ph) => ({ ...ph, from_turn: Math.min(ph.from_turn, n), to_turn: Math.min(ph.to_turn, n) }))
+    .filter((ph) => ph.from_turn >= 1)
+  r.moments = (r.moments ?? []).filter((m) => m.turn <= n)
 }

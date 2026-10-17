@@ -2105,6 +2105,28 @@
         "offer_requested": "Angebot angefragt",
         "nothing": "Nichts passiert",
         "lost": "Abgesagt"
+      },
+      "timeline": {
+        "title": "So ist das Gespräch verlaufen",
+        "hint": "Oben spricht der Verkäufer, unten der Kunde. Die Breite folgt den Wörtern, nicht der Uhr. Darüber die Etappen, darunter die Stellen, zu denen es eine Rückmeldung gibt.",
+        "seller": "Verkäufer",
+        "customer": "Kunde",
+        "start": "Anfang",
+        "end": "Ende",
+        "phases": "Etappen",
+        "rating": {
+          "good": "hat gewirkt",
+          "mixed": "gemischt",
+          "weak": "hier ging etwas verloren"
+        },
+        "kinds": {
+          "turning": "Wendepunkt",
+          "feedback": "Rückmeldung",
+          "strength": "Stärke",
+          "objection": "Einwand",
+          "signal_pos": "Kaufsignal",
+          "signal_neg": "Warnsignal"
+        }
       }
     },
     "criteria": {

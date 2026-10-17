@@ -182,14 +182,31 @@ steps: drei bis fünf Schritte, wie man von heute zum Ergebnis kommt
 cost_of_inaction: was es kostet, nichts zu tun — nur mit Zahlen aus dem Gespräch, sonst leer
 risk_reversal: wie man ihm das Risiko nehmen könnte, passend zu seinen Bedenken
 next_step: der konkrete nächste Schritt mit Termin, wenn einer besprochen wurde
-missing: was im Gespräch fehlte, um das Angebot belastbar zu machen (z. B. "keine Zahl zur Folge", "Entscheider unbekannt")`
+missing: was im Gespräch fehlte, um das Angebot belastbar zu machen (z. B. "keine Zahl zur Folge", "Entscheider unbekannt")
+
+## Verlauf
+
+Die Beiträge im Transkript sind nummeriert: [#1 …], [#2 …]. Gib bei turning_point, objections, buying_signals und tips in "turn" die Nummer des Beitrags an, aus dem das Zitat stammt.
+
+phases: Teil das Gespräch in drei bis sieben Etappen, in Reihenfolge und lückenlos vom ersten bis zum letzten Beitrag (z. B. Einstieg, Bedarf, Präsentation, Preis, Nächster Schritt). Für jede Etappe:
+- from_turn, to_turn: erster und letzter Beitrag
+- label: Name der Etappe, höchstens drei Wörter
+- rating: good (hat beim Kunden gewirkt), mixed, weak (hier ging etwas verloren) — gemessen an der Reaktion des Kunden
+- note: ein Satz mit Beleg, was in dieser Etappe passiert ist
+
+moments: bis zu zehn Stellen, die eine Rückmeldung wert sind, in Reihenfolge:
+- turn: Nummer des Beitrags
+- kind: strength (hat gewirkt — etwas, das der Verkäufer wiederholen sollte) oder feedback (hier ging etwas verloren)
+- label: höchstens sechs Wörter
+- note: ein Satz, was passiert ist und was es bewirkt hat
+Mindestens zwei strength, wenn es sie gibt. Die Stellen hinter dem Wendepunkt und den drei Tipps sind feedback-Stellen; nimm sie nicht doppelt auf.`
 }
 
 export function outputSchema() {
   const quote = { type: 'string', description: 'Wörtliches Zitat aus dem Transkript, höchstens 30 Wörter' }
   return {
     type: 'object',
-    required: ['seller', 'summary', 'turning_point', 'criteria', 'skills', 'questions', 'protocol', 'objections', 'tips', 'learning', 'buying_signals', 'purchase', 'offer_draft'],
+    required: ['seller', 'summary', 'turning_point', 'criteria', 'skills', 'questions', 'protocol', 'objections', 'tips', 'learning', 'buying_signals', 'purchase', 'offer_draft', 'phases', 'moments'],
     properties: {
       seller: { type: 'string', description: 'Sprecherlabel des Verkäufers, wie im Transkript' },
       summary: { type: 'string', description: 'Worum es im Gespräch ging und wo es endete — zwei Sätze' },
@@ -199,6 +216,7 @@ export function outputSchema() {
         properties: {
           customer_quote: quote,
           seller_reaction: quote,
+          turn: { type: 'integer', description: 'Nummer des Kundenbeitrags (#)' },
           effect: { type: 'string' },
           better: { type: 'string', description: 'Ein Satz zum wörtlichen Nachsprechen' },
         },
@@ -260,6 +278,7 @@ export function outputSchema() {
           properties: {
             objection: { type: 'string' },
             response: { type: ['string', 'null'] },
+            turn: { type: 'integer', description: 'Nummer des Beitrags (#)' },
             status: { type: 'string', enum: ['addressed', 'partially_addressed', 'unaddressed'] },
           },
         },
@@ -273,6 +292,7 @@ export function outputSchema() {
             title: { type: 'string' },
             why: { type: 'string' },
             quote: quote,
+            turn: { type: 'integer', description: 'Nummer des Beitrags (#), aus dem das Zitat stammt' },
             try_next: { type: 'string', description: 'Ein Satz zum wörtlichen Nachsprechen' },
           },
         },
@@ -294,6 +314,7 @@ export function outputSchema() {
             type: { type: 'string', enum: ['positive', 'negative'] },
             signal: { type: 'string', description: 'Was das Signal bedeutet, kurz' },
             quote: quote,
+            turn: { type: 'integer', description: 'Nummer des Beitrags (#)' },
           },
         },
       },
@@ -304,6 +325,33 @@ export function outputSchema() {
           probability: { type: 'number', description: '0–100' },
           value_aligned: { type: 'boolean' },
           reasoning: { type: 'string' },
+        },
+      },
+      phases: {
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['from_turn', 'to_turn', 'label', 'rating', 'note'],
+          properties: {
+            from_turn: { type: 'integer' },
+            to_turn: { type: 'integer' },
+            label: { type: 'string' },
+            rating: { type: 'string', enum: ['good', 'mixed', 'weak'] },
+            note: { type: 'string' },
+          },
+        },
+      },
+      moments: {
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['turn', 'kind', 'label', 'note'],
+          properties: {
+            turn: { type: 'integer' },
+            kind: { type: 'string', enum: ['strength', 'feedback'] },
+            label: { type: 'string' },
+            note: { type: 'string' },
+          },
         },
       },
       offer_draft: {
