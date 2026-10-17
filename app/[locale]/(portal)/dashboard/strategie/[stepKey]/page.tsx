@@ -9,9 +9,13 @@ import { StepWorkflow } from '@/components/strategy/StepWorkflow'
 import { StepEditor } from '@/components/strategy/StepEditor'
 import { CommentPanel } from '@/components/strategy/CommentPanel'
 import { fieldsForStep } from '@/lib/strategy/step-fields'
+import { getStepIOAction } from '@/lib/actions/strategy-agents'
+import { StepIOBanner, StepInputs, StepOutputs } from '@/components/strategy/StepIO'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
+// Agenten-Läufe (Server Actions) erben die Laufzeit der Seite
+export const maxDuration = 300
 
 const BLOCK_ICON: Record<string, React.ElementType> = {
   opening_story: BookOpen, example: Lightbulb, agent: Bot, tool: Wrench,
@@ -43,6 +47,8 @@ export default async function StrategieStepPage({ params, searchParams }:
   const status = (state.status ?? 'available') as StepStatus
   const readOnly = status === 'submitted' || status === 'in_review' || status === 'approved'
   const fields = fieldsForStep(step.key as string)
+
+  const io = await getStepIOAction(stepKey, product?.id ?? null).catch(() => null)
 
   const stories = blocks.filter((b) => b.kind === 'opening_story')
   const extras = blocks.filter((b) => b.kind !== 'opening_story' && b.kind !== 'exercise')
@@ -77,6 +83,8 @@ export default async function StrategieStepPage({ params, searchParams }:
         </div>
       ) : null}
 
+      {io && <StepIOBanner io={io} />}
+
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-6">
           {/* Opening Story */}
@@ -90,9 +98,12 @@ export default async function StrategieStepPage({ params, searchParams }:
             </section>
           ))}
 
-          {/* Arbeitsfläche */}
+          {/* Input */}
+          {io && <StepInputs io={io} productId={product?.id ?? null} />}
+
+          {/* Work — Arbeitsfläche */}
           <section className="rounded-2xl border border-gray-200 bg-white p-6">
-            <h2 className="text-sm font-bold text-gray-900">Eure Arbeit</h2>
+            <h2 className="text-sm font-bold text-gray-900">Work <span className="font-normal text-gray-400">· Eure Arbeit</span></h2>
             <p className="mt-0.5 text-xs text-gray-500">Kurz und konkret — lieber ein präziser Satz als drei vage.</p>
             <div className="mt-5">
               <StepEditor stateId={String(state.id)} fields={fields}
@@ -112,6 +123,9 @@ export default async function StrategieStepPage({ params, searchParams }:
               </section>
             )
           })}
+
+          {/* Output + Agenten */}
+          {io && <StepOutputs io={io} stepKey={stepKey} productId={product?.id ?? null} />}
 
           {/* Workflow */}
           <section className="rounded-2xl border border-gray-200 bg-white p-6">
