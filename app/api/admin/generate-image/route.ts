@@ -5,7 +5,8 @@ import { landingPages, landingPageSections } from '@/lib/db/schema'
 import { auth } from '@/lib/auth'
 
 export const runtime = 'nodejs'
-export const maxDuration = 90
+// GPT-Image-2 in hoher Qualität braucht oft 60–150 s — 90 s waren zu knapp (Abbruch durch Vercel)
+export const maxDuration = 300
 
 type Provider = 'openai-2' | 'openai-1' | 'gemini'
 

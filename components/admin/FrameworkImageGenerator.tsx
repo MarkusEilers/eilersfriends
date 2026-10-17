@@ -38,7 +38,14 @@ export function FrameworkImageGenerator({ slug, heroPrompt, cardPrompt, hasImage
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ slug, prompt, provider, size, quality, target }),
       })
-      const data = await res.json()
+      // Bricht Vercel ab (Zeitlimit), kommt Klartext statt JSON zurück — dann verständlich melden
+      const raw = await res.text()
+      let data: { error?: string; detail?: unknown } = {}
+      try { data = JSON.parse(raw) } catch {
+        throw new Error(res.status === 504 || /timeout|timed out|An error occurred/i.test(raw)
+          ? 'Zeitüberschreitung beim Bildmodell. Bitte erneut versuchen oder Qualität „medium" wählen.'
+          : `Serverfehler (HTTP ${res.status}): ${raw.slice(0, 120)}`)
+      }
       if (!res.ok) {
         const msg = data.detail
           ? `${data.error}: ${typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail).slice(0, 200)}`
