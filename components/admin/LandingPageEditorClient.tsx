@@ -292,16 +292,17 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
               <option value="archived">Archived</option>
             </select>
           </div>
-          {page.status === 'published' && (
-            <a
-              href={`/lp/${page.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-2 inline-flex items-center gap-1 text-xs text-blue-600 hover:underline"
-            >
-              <ExternalLink size={11} /> /lp/{page.slug}
-            </a>
-          )}
+          {(() => {
+            // Wo die Seite öffentlich liegt: Gesprächs-Check und Frameworks haben eigene Adressen
+            const path = page.slug === 'gespraechs-check' ? '/gespraechs-check'
+              : (page as { templateKey?: string | null }).templateKey === 'framework-leadmagnet' ? `/frameworks/${page.slug}` : `/lp/${page.slug}`
+            const url = page.status === 'published' ? path : `${path}?preview=1`
+            return (
+              <a href={url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs text-blue-600 hover:underline">
+                <ExternalLink size={11} /> {page.status === 'published' ? path : `Vorschau · ${path}`}
+              </a>
+            )
+          })()}
         </div>
 
         <div className="p-4">

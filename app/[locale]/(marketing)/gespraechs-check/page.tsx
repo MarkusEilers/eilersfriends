@@ -7,23 +7,26 @@ import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { LpRender } from '@/components/lp/LpRender'
 import { localize, ensureLpI18n } from '@/lib/lp/i18n'
+import { auth } from '@/lib/auth'
+import { PreviewBanner } from '@/components/lp/PreviewBanner'
 
 /**
  * Kommt die Seite aus dem Landingpage-System (Slug „gespraechs-check“,
  * veröffentlicht, mit Sektion „call_check“), wird sie von dort gerendert —
  * bearbeitbar und übersetzbar im Backend. Sonst gilt die eingebaute Fassung.
  */
-async function fromLandingPages(locale: string) {
+async function fromLandingPages(locale: string, preview = false) {
   try {
     await ensureLpI18n()
     const rows = (await db.execute(sql`
-      SELECT s.id, s.type, s.is_visible, s.content, s.content_i18n, p.accent_color, p.email_list
+      SELECT s.id, s.type, s.is_visible, s.content, s.content_i18n, p.accent_color, p.email_list, p.status, p.id AS page_id
       FROM landing_pages p JOIN landing_page_sections s ON s.landing_page_id = p.id
-      WHERE p.slug = 'gespraechs-check' AND p.status = 'published' AND s.is_visible
-      ORDER BY s."order"`)) as unknown as { id: string; type: string; is_visible: boolean; content: Record<string, unknown>; content_i18n: Record<string, unknown>; accent_color: string | null; email_list: string | null }[]
+      WHERE p.slug = 'gespraechs-check' AND (p.status = 'published' OR ${preview}) AND s.is_visible
+      ORDER BY s."order"`)) as unknown as { id: string; type: string; is_visible: boolean; content: Record<string, unknown>; content_i18n: Record<string, unknown>; accent_color: string | null; email_list: string | null; status: string; page_id: string }[]
     if (!rows.some((r) => r.type === 'call_check')) return null
     return (
       <div className="min-h-screen bg-[#FAFAF8]">
+        {rows[0].status !== 'published' && <PreviewBanner status={rows[0].status} editHref={`/admin/landing-pages/${rows[0].page_id}`} />}
         <LpRender accent={rows[0].accent_color ?? '#1A5FD4'} emailList={rows[0].email_list ?? 'framework-gespraechs-check'}
           sections={rows.map((r) => ({ id: r.id, type: r.type, isVisible: r.is_visible, content: localize(r.content, r.content_i18n, locale) }))} />
       </div>
@@ -36,9 +39,12 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t('title'), description: t('description') }
 }
 
-export default async function CallCheckPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function CallCheckPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams?: Promise<{ preview?: string }> }) {
   const { locale } = await params
-  const managed = await fromLandingPages(locale)
+  const sp = (await searchParams) ?? {}
+  const session = sp.preview ? await auth().catch(() => null) : null
+  const preview = !!sp.preview && (session?.user?.role === 'admin' || session?.user?.role === 'coach')
+  const managed = await fromLandingPages(locale, preview)
   if (managed) return managed
   const t = await getTranslations('callCheck')
   const facts = t.raw('hero.facts') as string[]

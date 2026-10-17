@@ -4,11 +4,14 @@ import { db } from '@/lib/db'
 import { landingPages, landingPageSections } from '@/lib/db/schema'
 import { and, asc, eq } from 'drizzle-orm'
 import { LpRender } from '@/components/lp/LpRender'
+import { PreviewBanner } from '@/components/lp/PreviewBanner'
+import { auth } from '@/lib/auth'
 import { getLocale } from 'next-intl/server'
 import { localize, sectionI18n } from '@/lib/lp/i18n'
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>
+  searchParams?: Promise<{ preview?: string }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -18,7 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       .select()
       .from(landingPages)
       .where(
-        and(
+        preview ? eq(landingPages.slug, slug) : and(
           eq(landingPages.slug, slug),
           eq(landingPages.status, 'published'),
         ),
@@ -32,8 +35,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   } catch { return {} }
 }
 
-export default async function FrameworkDetailPage({ params }: PageProps) {
+export default async function FrameworkDetailPage({ params, searchParams }: PageProps) {
   const { slug } = await params
+  // Eilers+Friends darf mit ?preview=1 auch Entwürfe ansehen
+  const sp = (await searchParams) ?? {}
+  const session = sp.preview ? await auth().catch(() => null) : null
+  const preview = !!sp.preview && (session?.user?.role === 'admin' || session?.user?.role === 'coach')
 
   let page: typeof landingPages.$inferSelect | null = null
   let sections: (typeof landingPageSections.$inferSelect)[] = []
@@ -70,6 +77,7 @@ export default async function FrameworkDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen" style={{ '--accent': accent } as React.CSSProperties}>
+      {page!.status !== 'published' && <PreviewBanner status={page!.status} editHref={`/admin/frameworks/${page!.id}`} />}
       <LpRender
         sections={sections.map((s) => ({
           id: s.id,

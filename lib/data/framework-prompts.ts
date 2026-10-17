@@ -25,6 +25,12 @@ const PALETTE = (
 )
 
 export const FRAMEWORK_PROMPTS: Record<string, FrameworkPrompts> = {
+  'gespraechs-check': {
+    hero:
+      `Cinematic landscape editorial photograph. A B2B seller in a dark navy shirt sits alone at a desk at the end of the day, over-ear headphones on, replaying a recorded customer call on an open laptop. On the screen, an abstract cool-cyan audio waveform and a column of transcript lines, one single line softly highlighted. His expression is the quiet moment of recognition — he has just found the exact sentence where the conversation tipped. An empty chair across the desk, an open notebook with a short hand-drawn chain of arrows. Floor-to-ceiling window with cool blue dusk light. ${PALETTE}`,
+    card:
+      `Cinematic square editorial photograph, medium shot. A seller wearing over-ear headphones leans toward a laptop, one finger resting on a softly glowing highlighted line in an abstract transcript on the screen, eyebrows slightly raised in recognition. Beside the laptop an open notebook with three short handwritten lines connected by arrows. Cool blue window light, dim modern office. The moment of seeing where the call tipped. ${PALETTE}`,
+  },
   'instant-influence': {
     hero:
       `Cinematic landscape editorial photograph. A confident young professional in a tailored navy shirt sits leaning forward across a polished walnut conference table, mid-eye-contact with someone off-frame, a slight genuine smile, hand gesturing naturally as if landing a key insight. Sunlit modern industrial office in the background — exposed brick, tall windows with cool morning light. The viewer feels the moment a discovery call is being *won*. ${PALETTE}`,

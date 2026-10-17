@@ -216,6 +216,16 @@ function Group({
                   >
                     <Edit3 size={11} /> Bearbeiten
                   </Link>
+                  {p.status !== 'published' && (
+                    <a
+                      href={p.slug === 'gespraechs-check' ? '/gespraechs-check?preview=1' : `/frameworks/${p.slug}?preview=1`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-50 border-amber-200"
+                    >
+                      <ExternalLink size={11} /> Vorschau
+                    </a>
+                  )}
                   {p.status === 'published' && (
                     <a
                       href={`/frameworks/${p.slug}`}
