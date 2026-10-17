@@ -109,8 +109,11 @@ export function StepOutputs({ io, stepKey, productId }: { io: StepIO; stepKey: s
     setRunning(agentKey); setMsg(null)
     const r = agentKey === '__research' ? await runStepResearchAction(stepKey, productId) : await runStepAgentAction(stepKey, productId, agentKey)
     setRunning(null)
-    if (!r.ok) setMsg({ tone: 'err', text: ('error' in r && r.error) || 'Lauf fehlgeschlagen' })
-    else setMsg({ tone: 'ok', text: 'missing' in r && r.missing?.length ? `Fertig — ohne ${r.missing.length} fehlende Inputs erzeugt, die Lücken sind gekennzeichnet.` : 'Fertig. Bitte prüfen und bestätigen.' })
+    if (!r.ok) setMsg({ tone: 'err', text: ('error' in r && typeof r.error === 'string' && r.error) || 'Lauf fehlgeschlagen' })
+    else {
+      const miss = 'missing' in r && Array.isArray(r.missing) ? r.missing.length : 0
+      setMsg({ tone: 'ok', text: miss ? `Fertig — ohne ${miss} fehlende Inputs erzeugt, die Lücken sind gekennzeichnet.` : 'Fertig. Bitte prüfen und bestätigen.' })
+    }
     router.refresh()
     return r.ok
   }
