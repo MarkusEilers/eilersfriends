@@ -37,6 +37,10 @@ export async function ensureCallCheckTable() {
     )`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS call_checks_email ON call_checks (lower(email), created_at DESC)`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS call_checks_ip ON call_checks (ip_hash, created_at DESC)`)
+  // Wie ist es ausgegangen? Nachträglich gesetzt — Grundlage, um Kaufwahrscheinlichkeit und Skill-Map zu kalibrieren.
+  await db.execute(sql`ALTER TABLE call_checks ADD COLUMN IF NOT EXISTS outcome TEXT`)
+  await db.execute(sql`ALTER TABLE call_checks ADD COLUMN IF NOT EXISTS outcome_at TIMESTAMPTZ`)
+  await db.execute(sql`ALTER TABLE call_checks ADD COLUMN IF NOT EXISTS offer_id UUID`)
   ready = true
 }
 
@@ -101,13 +105,21 @@ export async function finishCheck(publicId: string, x: {
 export interface StoredCheck {
   public_id: string; first_name: string | null; locale: string; status: string
   seller_label: string | null; word_count: number; metrics: unknown; result: unknown
-  created_at: string
+  created_at: string; outcome: string | null; offer_id: string | null; email?: string
+}
+
+export const OUTCOMES = ['won', 'follow_up', 'offer_requested', 'nothing', 'lost'] as const
+export type Outcome = (typeof OUTCOMES)[number]
+
+export async function setOutcome(publicId: string, outcome: Outcome) {
+  await ensureCallCheckTable()
+  await db.execute(sql`UPDATE call_checks SET outcome=${outcome}, outcome_at=now() WHERE public_id=${publicId} AND status='done'`)
 }
 
 export async function getCheck(publicId: string): Promise<StoredCheck | null> {
   await ensureCallCheckTable()
   const rows = (await db.execute(sql`
-    SELECT public_id, first_name, locale, status, seller_label, word_count, metrics, result, created_at
+    SELECT public_id, first_name, locale, status, seller_label, word_count, metrics, result, created_at, outcome, offer_id, email
     FROM call_checks WHERE public_id = ${publicId} LIMIT 1`)) as unknown as StoredCheck[]
   return rows[0] ?? null
 }

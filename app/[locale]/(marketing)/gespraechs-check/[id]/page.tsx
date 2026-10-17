@@ -9,6 +9,11 @@ import { SKILL_LINK } from '@/lib/call-check/rubric'
 import { Radar } from '@/components/call-check/Radar'
 import { SkillMap } from '@/components/call-check/SkillMap'
 import { AutoRefresh } from './AutoRefresh'
+import { computeDepth } from '@/lib/call-check/analyze'
+import { CallStand } from '@/components/call-check/CallStand'
+import { OfferDraftPanel } from '@/components/call-check/OfferDraftPanel'
+import { OutcomePicker } from '@/components/call-check/OutcomePicker'
+import { auth } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,6 +50,9 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
   const m = (check.metrics ?? {}) as CallMetrics
   const openQ = r.questions.filter((q) => q.open).length
   const cat = (q: { open: boolean; category: string | null }) => (q.open && q.category ? q.category : 'closed')
+  const depth = r.depth ?? computeDepth(r.questions, r.protocol)
+  const session = await auth().catch(() => null)
+  const isEf = session?.user?.role === 'admin' || session?.user?.role === 'coach'
 
   return (
     <div className="min-h-screen bg-[#FAFAF8]">
@@ -103,6 +111,14 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
             </div>
           </section>
         ) : null}
+
+        {/* Where the call stands: probability, depth, buying signals */}
+        <CallStand r={r} depth={depth} L={{
+          title: t('result.standTitle'), probability: t('result.probability'),
+          valueAligned: t('result.valueAligned'), valueNotAligned: t('result.valueNotAligned'),
+          depthTitle: t('result.depthTitle'), depthLevels: t.raw('result.depthLevels') as string[], depthHint: t('result.depthHint'),
+          positive: t('result.signalsPositive'), negative: t('result.signalsNegative'), noSignals: t('result.noSignals'),
+        }} />
 
         {/* The three sentences — what to take away first */}
         <section>
@@ -222,6 +238,15 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
           </section>
         </div>
 
+        {/* Offer drafted from what the customer said */}
+        {r.offer_draft && (
+          <OfferDraftPanel d={r.offer_draft} publicId={id} canCreate={isEf} offerId={check.offer_id ?? null} L={{
+            title: t('result.offerTitle'), hint: t('result.offerHint'), results: t('result.offerResults'), challenges: t('result.offerChallenges'),
+            steps: t('result.offerSteps'), costOfInaction: t('result.offerCost'), riskReversal: t('result.offerRisk'), nextStep: t('result.offerNext'),
+            missing: t('result.offerMissing'), create: t('result.offerCreate'), created: t('result.offerCreated'),
+          }} />
+        )}
+
         {/* Skill map — draft */}
         <SkillMap skills={r.skills} dimensions={r.dimensions}
           labels={{
@@ -261,6 +286,9 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
             </div>
           </section>
         </div>
+              {/* How did it end? */}
+        <OutcomePicker publicId={id} initial={check.outcome ?? null} title={t('result.outcomeTitle')} hint={t('result.outcomeHint')}
+          saved={t('result.outcomeSaved')} options={t.raw('result.outcomes') as Record<string, string>} />
       </div>
     </div>
   )

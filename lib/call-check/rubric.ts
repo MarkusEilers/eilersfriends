@@ -158,14 +158,38 @@ Genau drei. Der erste Tipp gehört zum Wendepunkt. Jeder Tipp: ein kurzer Titel,
 
 ## Lern-Empfehlung
 
-Genau ein Skill aus den vierzehn, der gemessen werden konnte,, an dem sich Üben am meisten lohnt, und warum — in zwei Sätzen.`
+Genau ein Skill aus den vierzehn, der gemessen werden konnte, an dem sich Üben am meisten lohnt, und warum — in zwei Sätzen.
+
+## Kaufsignale und Kaufwahrscheinlichkeit
+
+Kaufsignale kommen nur vom KUNDEN, jedes mit wörtlichem Zitat:
+positive — Interesse, Dringlichkeit, Fragen nach Ablauf, Preis, Start oder Referenzen, eine Zahl zur Folge, Einbeziehen weiterer Entscheider, Zustimmung zu einem nächsten Schritt.
+negative — Zögern, Vertagen, "schicken Sie mal was", Vergleich mit Alternativen ohne Kriterien, unbeantwortete Preis- oder Risikobedenken, kein Entscheider dabei.
+Höchstens je sechs. Keine Signale erfinden — lieber weniger.
+
+purchase.probability: Wahrscheinlichkeit 0–100, dass aus diesem Gespräch ein Auftrag wird — begründet mit den Signalen, der Tiefe (kam das Gespräch bis zu Folgen mit Zahl?) und den offenen Einwänden. Ohne Folgen (Impact) selten über 40. Ohne vereinbarten nächsten Schritt selten über 30.
+purchase.value_aligned: true nur, wenn der Kunde eine wirtschaftliche Folge genannt hat UND kein Preis-Einwand offen ist — dann kann der Kunde den Wert gegen den Preis rechnen.
+purchase.reasoning: zwei Sätze, mit Bezug auf konkrete Stellen.
+
+## Angebots-Entwurf
+
+Entwirf, was der Verkäufer diesem Kunden jetzt anbieten sollte — nur aus dem, was der Kunde im Gespräch gesagt hat. Keine erfundenen Zahlen, Referenzen oder Preise; was fehlt, lässt Du leer und schreibst es in missing.
+headline: "In <X Schritten> zu <Ergebnis, das der Kunde will> — ohne <Frustration, die der Kunde genannt hat>"
+results: bis zu fünf Ergebnisse, die der Kunde will, in seinen Worten
+challenges: bis zu fünf Hürden, die ihn heute aufhalten, in seinen Worten
+empathy: ein Satz, der zeigt, dass seine Lage verstanden ist — ohne "Ich verstehe"
+steps: drei bis fünf Schritte, wie man von heute zum Ergebnis kommt
+cost_of_inaction: was es kostet, nichts zu tun — nur mit Zahlen aus dem Gespräch, sonst leer
+risk_reversal: wie man ihm das Risiko nehmen könnte, passend zu seinen Bedenken
+next_step: der konkrete nächste Schritt mit Termin, wenn einer besprochen wurde
+missing: was im Gespräch fehlte, um das Angebot belastbar zu machen (z. B. "keine Zahl zur Folge", "Entscheider unbekannt")`
 }
 
 export function outputSchema() {
   const quote = { type: 'string', description: 'Wörtliches Zitat aus dem Transkript, höchstens 30 Wörter' }
   return {
     type: 'object',
-    required: ['seller', 'summary', 'turning_point', 'criteria', 'skills', 'questions', 'protocol', 'objections', 'tips', 'learning'],
+    required: ['seller', 'summary', 'turning_point', 'criteria', 'skills', 'questions', 'protocol', 'objections', 'tips', 'learning', 'buying_signals', 'purchase', 'offer_draft'],
     properties: {
       seller: { type: 'string', description: 'Sprecherlabel des Verkäufers, wie im Transkript' },
       summary: { type: 'string', description: 'Worum es im Gespräch ging und wo es endete — zwei Sätze' },
@@ -259,6 +283,42 @@ export function outputSchema() {
         properties: {
           skill: { type: 'string', enum: [...OBSERVABLE] },
           reason: { type: 'string' },
+        },
+      },
+      buying_signals: {
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['type', 'signal', 'quote'],
+          properties: {
+            type: { type: 'string', enum: ['positive', 'negative'] },
+            signal: { type: 'string', description: 'Was das Signal bedeutet, kurz' },
+            quote: quote,
+          },
+        },
+      },
+      purchase: {
+        type: 'object',
+        required: ['probability', 'value_aligned', 'reasoning'],
+        properties: {
+          probability: { type: 'number', description: '0–100' },
+          value_aligned: { type: 'boolean' },
+          reasoning: { type: 'string' },
+        },
+      },
+      offer_draft: {
+        type: 'object',
+        required: ['headline', 'results', 'challenges', 'empathy', 'steps', 'cost_of_inaction', 'risk_reversal', 'next_step', 'missing'],
+        properties: {
+          headline: { type: 'string' },
+          results: { type: 'array', items: { type: 'string' } },
+          challenges: { type: 'array', items: { type: 'string' } },
+          empathy: { type: 'string' },
+          steps: { type: 'array', items: { type: 'string' } },
+          cost_of_inaction: { type: 'string' },
+          risk_reversal: { type: 'string' },
+          next_step: { type: 'string' },
+          missing: { type: 'array', items: { type: 'string' } },
         },
       },
     },

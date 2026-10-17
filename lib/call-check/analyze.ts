@@ -49,6 +49,27 @@ export interface CheckResult {
   objections: Array<{ objection: string; response?: string | null; status: string }>
   tips: Array<{ title: string; why: string; quote: string; try_next: string }>
   learning: { skill: SkillKey; reason: string }
+  /** Ab 17.10.2026 — ältere Checks haben die Felder nicht */
+  buying_signals?: Array<{ type: 'positive' | 'negative'; signal: string; quote: string }>
+  purchase?: { probability: number | null; value_aligned: boolean; reasoning: string } | null
+  offer_draft?: OfferDraft | null
+  depth?: Depth
+}
+
+export interface OfferDraft {
+  headline: string; results: string[]; challenges: string[]; empathy: string; steps: string[]
+  cost_of_inaction: string; risk_reversal: string; next_step: string; missing: string[]
+}
+
+/** Wie weit kam das Gespräch: Schmerz/Ziel → Beleg → Folge. Gezählt, nicht geschätzt. */
+export interface Depth { level: 0 | 1 | 2 | 3; pain_gain: boolean; evidence: boolean; impact: boolean }
+export function computeDepth(questions: Array<{ category: string | null; open: boolean }>, protocol: { pain_gain: string[]; evidence: string[]; impact: string[] }): Depth {
+  const asked = (c: string) => questions.some((q) => q.open && q.category === c)
+  const pain_gain = protocol.pain_gain.length > 0 || asked('P/G')
+  const evidence = protocol.evidence.length > 0 || asked('E')
+  const impact = protocol.impact.length > 0 || asked('I')
+  const level = (pain_gain ? (evidence ? (impact ? 3 : 2) : 1) : 0) as Depth['level']
+  return { level, pain_gain, evidence, impact }
 }
 
 const clamp = (n: unknown): number | null =>
@@ -131,7 +152,30 @@ function normalise(raw: Record<string, unknown>, fallbackNote: string, notObserv
     objections: list<{ objection: string; response?: string | null; status: string }>(raw.objections).slice(0, 20),
     tips: list<{ title: string; why: string; quote: string; try_next: string }>(raw.tips).slice(0, 3),
     learning: { skill: learningSkill, reason: String(learningRaw.reason ?? '') },
+    buying_signals: list<{ type: string; signal: string; quote: string }>(raw.buying_signals)
+      .filter((b) => b && (b.type === 'positive' || b.type === 'negative') && b.signal)
+      .map((b) => ({ type: b.type as 'positive' | 'negative', signal: String(b.signal), quote: String(b.quote ?? '') })).slice(0, 12),
+    purchase: raw.purchase && typeof raw.purchase === 'object'
+      ? { probability: clamp((raw.purchase as Record<string, unknown>).probability), value_aligned: Boolean((raw.purchase as Record<string, unknown>).value_aligned), reasoning: String((raw.purchase as Record<string, unknown>).reasoning ?? '') }
+      : null,
+    offer_draft: normaliseOffer(raw.offer_draft),
+    depth: computeDepth(
+      list<{ category: string | null; open: boolean }>(raw.questions),
+      { pain_gain: list<string>(p.pain_gain), evidence: list<string>(p.evidence), impact: list<string>(p.impact) },
+    ),
   }
+}
+
+function normaliseOffer(x: unknown): OfferDraft | null {
+  if (!x || typeof x !== 'object') return null
+  const o = x as Record<string, unknown>
+  const strs = (v: unknown, n: number) => list<unknown>(v).map(String).filter(Boolean).slice(0, n)
+  const d: OfferDraft = {
+    headline: String(o.headline ?? ''), results: strs(o.results, 5), challenges: strs(o.challenges, 5),
+    empathy: String(o.empathy ?? ''), steps: strs(o.steps, 5), cost_of_inaction: String(o.cost_of_inaction ?? ''),
+    risk_reversal: String(o.risk_reversal ?? ''), next_step: String(o.next_step ?? ''), missing: strs(o.missing, 6),
+  }
+  return d.headline || d.results.length || d.challenges.length ? d : null
 }
 
 export async function analyseTranscript(input: {
@@ -156,7 +200,7 @@ export async function analyseTranscript(input: {
     user: `## Kennzahlen (gezählt)\n${facts}\n\n## Transkript\n${renderForModel(parsed, seller)}`,
     schema: outputSchema(),
     temperature: 0.2,
-    maxTokens: 6000,
+    maxTokens: 8000,
     anlass: { agentKey: 'call-check', stepKey: input.checkId },
   })
 
