@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       .select()
       .from(landingPages)
       .where(
-        preview ? eq(landingPages.slug, slug) : and(
+        and(
           eq(landingPages.slug, slug),
           eq(landingPages.status, 'published'),
         ),
@@ -50,7 +50,7 @@ export default async function FrameworkDetailPage({ params, searchParams }: Page
       .select()
       .from(landingPages)
       .where(
-        and(
+        preview ? eq(landingPages.slug, slug) : and(
           eq(landingPages.slug, slug),
           eq(landingPages.status, 'published'),
         ),
