@@ -16,6 +16,8 @@ import {
   publishLandingPage,
 } from '@/lib/actions/landing-pages'
 import { LpRender, type SimpleSection } from '@/components/lp/LpRender'
+import { overlay } from '@/lib/lp/overlay'
+import { saveSectionTranslation, translatePageAction } from '@/lib/actions/landing-pages'
 import { AiChatPanel } from './AiChatPanel'
 
 type LandingPage = {
@@ -39,7 +41,13 @@ type EditorSection = {
   dirty?: boolean
   /** local marker — JSON parse error */
   parseError?: string
+  /** Übersetzungen je Sprache (vollständiger Inhalt in der Zielsprache) */
+  contentI18n?: Record<string, Record<string, unknown>>
+  /** Sprachen mit ungespeicherter Übersetzung */
+  dirtyLangs?: string[]
 }
+
+const LANGS = [{ k: 'de', l: 'DE' }, { k: 'en', l: 'EN' }, { k: 'es', l: 'ES' }] as const
 
 const SECTION_TYPES = [
   { value: 'hero', label: '🚀 Hero' },
@@ -63,6 +71,7 @@ const SECTION_TYPES = [
   { value: 'cta', label: '🎯 CTA' },
   { value: 'coach_bio', label: '👤 Coach-Bio' },
   { value: 'spacer', label: '⎯ Spacer' },
+  { value: 'call_check', label: '🎙️ Gesprächs-Check (Formular)' },
 ]
 
 interface Props {
@@ -75,6 +84,8 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
   const [sections, setSections] = useState<EditorSection[]>(initialSections)
   const [selectedId, setSelectedId] = useState<string | null>(initialSections[0]?.id ?? null)
   const [showChat, setShowChat] = useState(false)
+  const [lang, setLang] = useState<'de' | 'en' | 'es'>('de')
+  const [translating, setTranslating] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const selected = sections.find((s) => s.id === selectedId)
@@ -86,9 +97,22 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
     )
   }
 
+  function viewContent(s: EditorSection): Record<string, unknown> {
+    if (lang === 'de') return s.content
+    return overlay(s.content, s.contentI18n?.[lang]) as Record<string, unknown>
+  }
+
   function applyContentJson(id: string, jsonStr: string) {
     try {
       const parsed = JSON.parse(jsonStr)
+      if (lang !== 'de') {
+        setSections((prev) => prev.map((s) => s.id === id ? {
+          ...s, parseError: undefined,
+          contentI18n: { ...(s.contentI18n ?? {}), [lang]: parsed },
+          dirtyLangs: [...new Set([...(s.dirtyLangs ?? []), lang])],
+        } : s))
+        return
+      }
       patchSection(id, { content: parsed, parseError: undefined })
     } catch (e) {
       // mark error but don't break preview
@@ -103,6 +127,9 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
   async function saveSection(s: EditorSection) {
     startTransition(async () => {
       try {
+        for (const l of s.dirtyLangs ?? []) await saveSectionTranslation(s.id, l, s.contentI18n?.[l] ?? null)
+        if (s.dirtyLangs?.length) setSections((prev) => prev.map((x) => x.id === s.id ? { ...x, dirtyLangs: [] } : x))
+        if (!s.dirty) return
         await upsertSection({
           id: s.id,
           landingPageId: page.id,
@@ -118,8 +145,17 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
     })
   }
 
+  async function translateAll() {
+    if (lang === 'de') return
+    setTranslating(true)
+    try {
+      const r = await translatePageAction(page.id, lang)
+      setSections((prev) => prev.map((s) => r.sections[s.id] ? { ...s, contentI18n: { ...(s.contentI18n ?? {}), [lang]: r.sections[s.id] } } : s))
+    } finally { setTranslating(false) }
+  }
+
   async function saveAll() {
-    const dirty = sections.filter((s) => s.dirty)
+    const dirty = sections.filter((s) => s.dirty || s.dirtyLangs?.length)
     for (const s of dirty) await saveSection(s)
   }
 
@@ -197,13 +233,13 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
         id: s.id,
         type: s.type,
         isVisible: s.isVisible,
-        content: s.content,
+        content: lang === 'de' ? s.content : (overlay(s.content, s.contentI18n?.[lang]) as Record<string, unknown>),
       })),
-    [sections],
+    [sections, lang],
   )
 
   const accent = page.accentColor ?? '#1A5FD4'
-  const dirtyCount = sections.filter((s) => s.dirty).length
+  const dirtyCount = sections.filter((s) => s.dirty || s.dirtyLangs?.length).length
 
   return (
     <div className="-m-6 -mt-0 lg:-m-8 lg:-mt-0 grid grid-cols-12 gap-0 min-h-[calc(100vh-3rem)]">
@@ -362,7 +398,7 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
                   </button>
                   <button
                     onClick={() => saveSection(selected)}
-                    disabled={!selected.dirty || isPending}
+                    disabled={(!selected.dirty && !selected.dirtyLangs?.length) || isPending}
                     className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold text-white shadow-sm disabled:opacity-40"
                     style={{ backgroundColor: accent }}
                   >
@@ -372,11 +408,30 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
                 </div>
               </div>
 
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-500">Sprache</span>
+                {LANGS.map((L) => {
+                  const has = L.k === 'de' || !!selected.contentI18n?.[L.k]
+                  return (
+                    <button key={L.k} type="button" onClick={() => setLang(L.k)}
+                      className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${lang === L.k ? 'bg-gray-900 text-white' : has ? 'bg-gray-100 text-gray-700' : 'border border-dashed border-gray-300 text-gray-400'}`}>
+                      {L.l}{L.k !== 'de' && !has ? ' ·' : ''}
+                    </button>
+                  )
+                })}
+                {lang !== 'de' && (
+                  <button type="button" onClick={translateAll} disabled={translating}
+                    className="ml-auto inline-flex items-center gap-1 rounded-full border border-gray-200 px-3 py-1 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+                    {translating ? <Loader2 size={11} className="animate-spin" /> : <Sparkles size={11} />} Fehlende Sektionen mit KI übersetzen
+                  </button>
+                )}
+              </div>
+              {lang !== 'de' && <p className="mb-2 text-[11px] text-gray-500">Du bearbeitest die {lang.toUpperCase()}-Fassung. Was hier fehlt, zeigt die Seite auf Deutsch.</p>}
               <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-1 block">
-                Inhalt (JSON)
+                Inhalt (JSON{lang !== 'de' ? ` · ${lang.toUpperCase()}` : ''})
               </label>
               <textarea
-                value={JSON.stringify(selected.content, null, 2)}
+                value={JSON.stringify(viewContent(selected), null, 2)}
                 onChange={(e) => applyContentJson(selected.id, e.target.value)}
                 rows={28}
                 spellCheck={false}

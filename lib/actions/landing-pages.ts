@@ -7,6 +7,8 @@ import { db } from '@/lib/db'
 import { landingPages, landingPageSections } from '@/lib/db/schema'
 import { eq, sql } from 'drizzle-orm'
 import { lpTemplates, type LpTemplate } from '@/lib/templates/program-welsh'
+import { ensureLpI18n, translatable, LP_LOCALES } from '@/lib/lp/i18n'
+import { callModel } from '@/lib/ai/call'
 
 /** New enum values introduced for Welsh-style program templates. */
 const NEW_SECTION_TYPES = [
@@ -19,6 +21,7 @@ const NEW_SECTION_TYPES = [
   'tweet_wall',
   'framework_steps',
   'lead_magnet',
+  'call_check',
 ] as const
 
 /**
@@ -211,4 +214,54 @@ export async function createLandingPageFromTemplate({
   )
 
   return page
+}
+
+
+// ── Übersetzungen ─────────────────────────────────────────────────────────────
+
+/** Übersetzung einer Sektion speichern (vollständiger Inhalt in der Zielsprache). */
+export async function saveSectionTranslation(sectionId: string, locale: string, content: Record<string, unknown> | null) {
+  await requireAdmin()
+  await ensureLpI18n()
+  if (!(LP_LOCALES as readonly string[]).includes(locale) || locale === 'de') throw new Error('Sprache nicht erlaubt')
+  if (content === null) {
+    await db.execute(sql`UPDATE landing_page_sections SET content_i18n = content_i18n - ${locale}, updated_at=now() WHERE id=${sectionId}`)
+  } else {
+    await db.execute(sql`UPDATE landing_page_sections SET content_i18n = jsonb_set(COALESCE(content_i18n, '{}'::jsonb), ${'{' + locale + '}'}::text[], ${JSON.stringify(content)}::jsonb), updated_at=now() WHERE id=${sectionId}`)
+  }
+  return { ok: true }
+}
+
+/**
+ * Alle Sektionen einer Seite per KI übersetzen (Deutsch → Zielsprache).
+ * Übersetzt nur Texte; Links, Farben und Icons bleiben. Bereits vorhandene
+ * Übersetzungen werden nur mit overwrite überschrieben.
+ */
+export async function translatePageAction(landingPageId: string, locale: 'en' | 'es', overwrite = false) {
+  await requireAdmin()
+  await ensureLpI18n()
+  const rows = (await db.execute(sql`SELECT id, type, content, content_i18n FROM landing_page_sections WHERE landing_page_id=${landingPageId} ORDER BY "order"`)) as unknown as
+    { id: string; type: string; content: Record<string, unknown>; content_i18n: Record<string, unknown> | null }[]
+  const lang = locale === 'en' ? 'English' : 'Spanish (neutral, for business readers)'
+  let done = 0
+  const out: Record<string, Record<string, unknown>> = {}
+  for (const r of rows) {
+    if (!overwrite && r.content_i18n?.[locale]) continue
+    const src = translatable(r.content)
+    if (!src || (typeof src === 'object' && !Object.keys(src as object).length)) continue
+    const res = await callModel({
+      model: process.env.LP_TRANSLATE_MODEL || 'gpt-4.1',
+      temperature: 0.2,
+      anlass: { agentKey: 'lp-translate', stepKey: locale },
+      system: `You translate German B2B landing page copy into ${lang}. Keep the JSON structure and keys exactly. Translate only the string values. Keep the tone: direct, concrete, no hype, no marketing clichés. Keep informal address (German "Du/Ihr" → English "you"; Spanish "tú/vosotros" style with "tú"). Keep product and framework names (SalesMade, Beef Radar, Gesprächs-Check → "Call Check" in English, "Análisis de conversación" in Spanish). Return only the JSON.`,
+      user: JSON.stringify(src),
+    })
+    const val = (res.value ?? null) as Record<string, unknown> | null
+    if (!val || typeof val !== 'object') continue
+    await db.execute(sql`UPDATE landing_page_sections SET content_i18n = jsonb_set(COALESCE(content_i18n, '{}'::jsonb), ${'{' + locale + '}'}::text[], ${JSON.stringify(val)}::jsonb), updated_at=now() WHERE id=${r.id}`)
+    out[r.id] = val
+    done++
+  }
+  revalidatePath(`/admin/landing-pages/${landingPageId}`)
+  return { ok: true, translated: done, sections: out }
 }

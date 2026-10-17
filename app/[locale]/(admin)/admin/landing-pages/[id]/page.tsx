@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { landingPages, landingPageSections } from '@/lib/db/schema'
 import { eq, asc } from 'drizzle-orm'
 import { LandingPageEditorClient } from '@/components/admin/LandingPageEditorClient'
+import { sectionI18n } from '@/lib/lp/i18n'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -32,5 +33,6 @@ export default async function LandingPageEditorPage({ params }: PageProps) {
     notFound()
   }
 
-  return <LandingPageEditorClient page={page!} sections={sections} />
+  const i18n = await sectionI18n(page!.id)
+  return <LandingPageEditorClient page={page!} sections={sections.map((s) => ({ ...s, contentI18n: (i18n.get(s.id) ?? {}) as Record<string, Record<string, unknown>> })) as never} />
 }

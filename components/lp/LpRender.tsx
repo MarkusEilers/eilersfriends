@@ -18,6 +18,7 @@ import { LpTweetWall } from './LpTweetWall'
 import { LpFrameworkSteps } from './LpFrameworkSteps'
 import { LpLeadMagnet } from './LpLeadMagnet'
 import { LpGeneric } from './LpGeneric'
+import { LpCallCheck } from './LpCallCheck'
 
 export interface SimpleSection {
   id: string
@@ -81,6 +82,8 @@ export function LpRender({
               return <LpEmailCapture key={s.id} content={content} accent={accent} emailList={emailList} />
             case 'cta':
               return <LpCta key={s.id} content={content} accent={accent} />
+            case 'call_check':
+              return <LpCallCheck key={s.id} content={content} />
             case 'coach_bio':
               return <LpCoachBio key={s.id} content={content} />
             case 'spacer':

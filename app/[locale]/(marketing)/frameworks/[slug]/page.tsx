@@ -4,6 +4,8 @@ import { db } from '@/lib/db'
 import { landingPages, landingPageSections } from '@/lib/db/schema'
 import { and, asc, eq } from 'drizzle-orm'
 import { LpRender } from '@/components/lp/LpRender'
+import { getLocale } from 'next-intl/server'
+import { localize, sectionI18n } from '@/lib/lp/i18n'
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>
@@ -63,6 +65,8 @@ export default async function FrameworkDetailPage({ params }: PageProps) {
   } catch { notFound() }
 
   const accent = page!.accentColor ?? '#1A5FD4'
+  const locale = await getLocale()
+  const i18n = await sectionI18n(page!.id).catch(() => new Map<string, Record<string, unknown>>())
 
   return (
     <div className="min-h-screen" style={{ '--accent': accent } as React.CSSProperties}>
@@ -71,7 +75,7 @@ export default async function FrameworkDetailPage({ params }: PageProps) {
           id: s.id,
           type: s.type,
           isVisible: s.isVisible,
-          content: s.content as Record<string, unknown>,
+          content: localize(s.content as Record<string, unknown>, i18n.get(s.id), locale),
         }))}
         accent={accent}
         emailList={page!.emailList ?? `framework-${page!.slug}`}
