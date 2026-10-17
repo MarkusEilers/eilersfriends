@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
 import { ensureWizardTables } from '@/lib/db/self-heal'
+import { pageUrl } from '@/lib/lp/public-path'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,6 +20,14 @@ interface LpRow extends Record<string, unknown> {
   title: string
   meta_description: string | null
   accent_color: string | null
+  status: string | null
+  template_key: string | null
+}
+
+/** Wizard gibt es bisher nur für b2b-angebote; alles andere öffnet die Seite (Entwurf als Vorschau). */
+function frameworkHref(fw: LpRow): string {
+  if (fw.slug === 'b2b-angebote') return '/dashboard/frameworks/b2b-angebote'
+  return pageUrl(fw.slug, fw.template_key, fw.status ?? 'draft')
 }
 
 function rowsOf<T>(r: unknown): T[] {
@@ -49,11 +58,13 @@ export default async function MyFrameworksPage() {
   }
 
   // All published framework-landing-pages (b2b-angebote etc.)
+  // Kunden: veröffentlichte Seiten. Admin/Coach: zusätzlich Framework-Entwürfe (Vorschau).
   const allRes = await db.execute(sql`
-    SELECT slug, title, meta_description, accent_color
+    SELECT slug, title, meta_description, accent_color, status, template_key
     FROM landing_pages
     WHERE status = 'published'
-    ORDER BY updated_at DESC
+       OR (${isAdmin} AND template_key = 'framework-leadmagnet' AND status = 'draft')
+    ORDER BY (status = 'published') DESC, updated_at DESC
   `)
   const allFrameworks = rowsOf<LpRow>(allRes)
   const subscribedSlugs = new Set(subscribed.map((s) => s.framework_slug))
@@ -123,16 +134,18 @@ export default async function MyFrameworksPage() {
 
       {isAdmin && notYetSubscribed.length > 0 && (
         <section>
-          <h2 className="mb-3 text-sm font-semibold text-gray-700">Verfuegbare Frameworks (Admin-Preview)</h2>
+          <h2 className="mb-3 text-sm font-semibold text-gray-700">Verfügbare Frameworks (Admin-Preview, inkl. Entwürfe)</h2>
           <ul className="grid gap-4 sm:grid-cols-2">
             {notYetSubscribed.map((fw) => (
               <li key={fw.slug} className="rounded-2xl border border-purple-200 bg-purple-50/30 p-5">
-                <p className="text-xs font-bold uppercase tracking-widest text-purple-700">Admin-Preview</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-purple-700">
+                  Admin-Preview{fw.status !== 'published' && <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-amber-800">Entwurf</span>}
+                </p>
                 <h3 className="mt-1 text-base font-bold text-gray-900">{fw.title}</h3>
                 {fw.meta_description && <p className="mt-1 text-xs text-gray-600 line-clamp-2">{fw.meta_description}</p>}
-                <Link href={`/dashboard/frameworks/${fw.slug}` as '/'} className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-purple-700">
+                <a href={frameworkHref(fw)} className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-purple-700">
                   <Eye size={12} /> Anschauen und testen <ArrowRight size={12} />
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
