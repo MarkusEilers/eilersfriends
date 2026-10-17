@@ -19,7 +19,8 @@ export function LocaleSwitcher({ className = '' }: { className?: string }) {
   const current = LOCALES.find((l) => l.code === locale) ?? LOCALES[0]
 
   function switchTo(code: string) {
-    router.replace(pathname, { locale: code })
+    const q = typeof window !== 'undefined' ? window.location.search : ''
+    router.replace((pathname + q) as typeof pathname, { locale: code })
     setOpen(false)
   }
 

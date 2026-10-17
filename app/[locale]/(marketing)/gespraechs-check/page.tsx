@@ -26,7 +26,7 @@ async function fromLandingPages(locale: string, preview = false) {
     if (!rows.some((r) => r.type === 'call_check')) return null
     return (
       <div className="min-h-screen bg-[#FAFAF8]">
-        {rows[0].status !== 'published' && <PreviewBanner status={rows[0].status} editHref={`/admin/landing-pages/${rows[0].page_id}`} />}
+        {rows[0].status !== 'published' && <PreviewBanner status={rows[0].status} editHref={`/admin/landing-pages/${rows[0].page_id}`} slug="gespraechs-check" locale={locale} />}
         <LpRender accent={rows[0].accent_color ?? '#1A5FD4'} emailList={rows[0].email_list ?? 'framework-gespraechs-check'}
           sections={rows.map((r) => ({ id: r.id, type: r.type, isVisible: r.is_visible, content: localize(r.content, r.content_i18n, locale) }))} />
       </div>

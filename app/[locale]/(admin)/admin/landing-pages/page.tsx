@@ -3,6 +3,7 @@ import { landingPages } from '@/lib/db/schema'
 import { desc } from 'drizzle-orm'
 import Link from 'next/link'
 import { Plus, ExternalLink, Globe, FileText, Archive, Sparkles } from 'lucide-react'
+import { pageUrl, publicPath } from '@/lib/lp/public-path'
 import { createLandingPage, createLandingPageFromTemplate } from '@/lib/actions/landing-pages'
 import { lpTemplates } from '@/lib/templates/program-welsh'
 import { redirect } from 'next/navigation'
@@ -154,15 +155,15 @@ function PageGroup({
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="font-semibold text-gray-900 truncate">{page.title}</p>
-                <p className="text-xs text-gray-400 mt-0.5 font-mono">/lp/{page.slug}</p>
+                <p className="text-xs text-gray-400 mt-0.5 font-mono">{publicPath(page.slug, page.templateKey)}</p>
               </div>
               <a
-                href={`/lp/${page.slug}`}
+                href={pageUrl(page.slug, page.templateKey, page.status)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 text-gray-300 hover:text-gray-600 transition-colors"
+                className={`relative z-10 shrink-0 inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${page.status === 'published' ? 'border-blue-200 text-blue-700 hover:bg-blue-50' : 'border-amber-300 text-amber-800 hover:bg-amber-50'}`}
               >
-                <ExternalLink size={14} />
+                <ExternalLink size={11} /> {page.status === 'published' ? 'Live' : 'Vorschau'}
               </a>
             </div>
             {page.emailList && (

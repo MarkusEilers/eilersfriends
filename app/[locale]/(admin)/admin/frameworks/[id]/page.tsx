@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { pageUrl } from '@/lib/lp/public-path'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { db } from '@/lib/db'
@@ -53,7 +54,7 @@ export default async function AdminFrameworkEditPage({ params }: PageProps) {
         <FrameworkMetaForm
           slug={row.slug}
           meta={meta}
-          liveHref={`/frameworks/${row.slug}`}
+          liveHref={pageUrl(row.slug, 'framework-leadmagnet', row.status)}
         />
 
         {/* Sidebar — image generator */}
@@ -97,9 +98,10 @@ export default async function AdminFrameworkEditPage({ params }: PageProps) {
                 </Link>
               </li>
               <li>
-                <Link href={`/frameworks/${row.slug}`} target="_blank" className="text-blue-600 underline">
-                  Detail-Seite öffnen ↗
-                </Link>
+                {row.status === 'published' ? 'Live: ' : 'Vorschau: '}
+                {(['de', 'en', 'es'] as const).map((l) => (
+                  <a key={l} href={pageUrl(row.slug, 'framework-leadmagnet', row.status, l)} target="_blank" rel="noopener noreferrer" className="mr-2 text-blue-600 underline">{l.toUpperCase()} ↗</a>
+                ))}
               </li>
               <li>
                 <Link href={`/admin/frameworks`} className="text-gray-500 underline">

@@ -13,6 +13,7 @@ import {
 import { seedB2BOffersAsFramework, seedAllFrameworks } from '@/lib/actions/seed-frameworks'
 import { FrameworkImageGenerator } from '@/components/admin/FrameworkImageGenerator'
 import { FRAMEWORK_PROMPTS } from '@/lib/data/framework-prompts'
+import { pageUrl } from '@/lib/lp/public-path'
 
 async function createFrameworkAction() {
   'use server'
@@ -218,7 +219,7 @@ function Group({
                   </Link>
                   {p.status !== 'published' && (
                     <a
-                      href={p.slug === 'gespraechs-check' ? '/gespraechs-check?preview=1' : `/frameworks/${p.slug}?preview=1`}
+                      href={pageUrl(p.slug, 'framework-leadmagnet', p.status ?? 'draft')}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-50 border-amber-200"
@@ -228,7 +229,7 @@ function Group({
                   )}
                   {p.status === 'published' && (
                     <a
-                      href={`/frameworks/${p.slug}`}
+                      href={pageUrl(p.slug, 'framework-leadmagnet', 'published')}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold text-blue-600 hover:bg-blue-50 border-blue-200"

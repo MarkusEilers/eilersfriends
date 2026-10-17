@@ -151,7 +151,9 @@ export function Navbar() {
   }, [])
 
   function switchLocale(code: string) {
-    router.replace(pathname, { locale: code })
+    // Query behalten — sonst fällt z. B. die Vorschau (?preview=1) beim Sprachwechsel weg
+    const q = typeof window !== 'undefined' ? window.location.search : ''
+    router.replace((pathname + q) as typeof pathname, { locale: code })
   }
 
   function handleMegaEnter(key: string) {

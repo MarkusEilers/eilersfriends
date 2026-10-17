@@ -63,7 +63,7 @@ export default async function LandingPageRoute({ params, searchParams }: PagePro
 
   return (
     <div className="min-h-screen" style={{ '--accent' : accent } as React.CSSProperties}>
-      {page!.status !== 'published' && <PreviewBanner status={page!.status} editHref={`/admin/landing-pages/${page!.id}`} />}
+      {page!.status !== 'published' && <PreviewBanner status={page!.status} editHref={`/admin/landing-pages/${page!.id}`} slug={page!.slug} templateKey={page!.templateKey} locale={locale} />}
       <LpRender sections={sections.map(s => ({ id: s.id, type: s.type, isVisible: s.isVisible, content: localize(s.content as Record<string, unknown>, i18n.get(s.id), locale) }))} accent={accent} emailList={page!.emailList ?? 'general'} />
     </div>
   )

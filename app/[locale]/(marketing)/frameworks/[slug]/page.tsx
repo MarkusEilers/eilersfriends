@@ -77,7 +77,7 @@ export default async function FrameworkDetailPage({ params, searchParams }: Page
 
   return (
     <div className="min-h-screen" style={{ '--accent': accent } as React.CSSProperties}>
-      {page!.status !== 'published' && <PreviewBanner status={page!.status} editHref={`/admin/frameworks/${page!.id}`} />}
+      {page!.status !== 'published' && <PreviewBanner status={page!.status} editHref={`/admin/frameworks/${page!.id}`} slug={page!.slug} templateKey={page!.templateKey} locale={locale} />}
       <LpRender
         sections={sections.map((s) => ({
           id: s.id,

@@ -17,6 +17,7 @@ import {
 } from '@/lib/actions/landing-pages'
 import { LpRender, type SimpleSection } from '@/components/lp/LpRender'
 import { overlay } from '@/lib/lp/overlay'
+import { pageUrl } from '@/lib/lp/public-path'
 import { saveSectionTranslation, translatePageAction } from '@/lib/actions/landing-pages'
 import { AiChatPanel } from './AiChatPanel'
 
@@ -292,17 +293,14 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
               <option value="archived">Archived</option>
             </select>
           </div>
-          {(() => {
-            // Wo die Seite öffentlich liegt: Gesprächs-Check und Frameworks haben eigene Adressen
-            const path = page.slug === 'gespraechs-check' ? '/gespraechs-check'
-              : (page as { templateKey?: string | null }).templateKey === 'framework-leadmagnet' ? `/frameworks/${page.slug}` : `/lp/${page.slug}`
-            const url = page.status === 'published' ? path : `${path}?preview=1`
-            return (
-              <a href={url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs text-blue-600 hover:underline">
-                <ExternalLink size={11} /> {page.status === 'published' ? path : `Vorschau · ${path}`}
+          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            {(['de', 'en', 'es'] as const).map((l) => (
+              <a key={l} href={pageUrl(page.slug, (page as { templateKey?: string | null }).templateKey, page.status, l)} target="_blank" rel="noopener noreferrer"
+                className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${page.status === 'published' ? 'border-blue-200 text-blue-700 hover:bg-blue-50' : 'border-amber-300 text-amber-800 hover:bg-amber-50'}`}>
+                <ExternalLink size={10} /> {page.status === 'published' ? 'Live' : 'Vorschau'} {l.toUpperCase()}
               </a>
-            )
-          })()}
+            ))}
+          </div>
         </div>
 
         <div className="p-4">

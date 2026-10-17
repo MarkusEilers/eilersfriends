@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { Link } from '@/lib/i18n/navigation'
+import { LocaleSwitcher } from './LocaleSwitcher'
 
 interface NavbarSlimProps {
   ctaLabel?: string
@@ -23,6 +24,8 @@ export function NavbarSlim({
             priority
           />
         </Link>
+        <div className="flex items-center gap-3">
+        <LocaleSwitcher />
         <a
           href={ctaHref}
           target={ctaHref.startsWith('http') ? '_blank' : undefined}
@@ -32,6 +35,7 @@ export function NavbarSlim({
         >
           {ctaLabel}
         </a>
+        </div>
       </div>
     </header>
   )
