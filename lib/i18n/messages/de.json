@@ -479,6 +479,28 @@
           "label": "Konversations-Karte für Live-Gespräche"
         }
       ]
+    },
+    "gespraechs-check": {
+      "posterSubtitle": "Dein Erstgespräch, gelesen wie im Mystery Shopping",
+      "tagline": "Was Dein Kunde gesagt hat. Und was Du daraus gemacht hast.",
+      "agentLabel": "Auswertung in unter fünf Minuten",
+      "deliverables": [
+        {
+          "icon": "ClipboardList",
+          "label": "Jede Frage und jeder Einwand, mit Zitat"
+        },
+        {
+          "icon": "Sparkles",
+          "label": "Kaufsignale und die Stelle, an der es kippt"
+        },
+        {
+          "icon": "Wand2",
+          "label": "Drei Sätze für Dein nächstes Gespräch"
+        }
+      ],
+      "title": "Gesprächs-Check: Dein Erstgespräch, ausgewertet wie im Mystery Shopping",
+      "metaDescription": "Lade das Transkript eines Erstgesprächs hoch. Du siehst jede Frage eingeordnet, jeden Einwand mit der Reaktion des Kunden, Kaufsignale und drei Sätze für das nächste Gespräch.",
+      "posterTitle": "GESPRÄCHS\nCHECK"
     }
   },
   "salesmadePage": {
@@ -1918,17 +1940,17 @@
   },
   "callCheck": {
     "meta": {
-      "title": "Gesprächs-Check · Mystery Shopping zum Selbermachen",
-      "description": "Lade das Transkript eines Erstgesprächs hoch und sieh, wo es gekippt ist: Fragen, Einwände, Angebot, Empathie — mit drei Sätzen für das nächste Gespräch."
+      "title": "Gesprächs-Check: Dein Erstgespräch, ausgewertet wie im Mystery Shopping",
+      "description": "Lade das Transkript eines Erstgesprächs hoch. Du siehst jede Frage eingeordnet, jeden Einwand mit der Reaktion des Kunden, Kaufsignale und drei Sätze für das nächste Gespräch."
     },
     "hero": {
       "badge": "Gesprächs-Check",
-      "headline": "Wo ist Dein letztes Erstgespräch gekippt?",
-      "subline": "Lade das Transkript hoch. Du bekommst dieselbe Auswertung wie in einem Mystery Shopping: fünf Kriterien, Deine Fragekette, die Einwände — und drei Sätze, die Du beim nächsten Mal wörtlich sagen kannst.",
+      "headline": "Was Dein Kunde gesagt hat. Und was Du daraus gemacht hast.",
+      "subline": "Lade das Transkript eines Erstgesprächs hoch. Du bekommst die Auswertung nach dem Raster, mit dem Markus Eilers Verkaufsteams im Mystery Shopping prüft. Jede Deiner Fragen wird eingeordnet, jeder Einwand mit der Reaktion des Kunden gezeigt. Dazu kommt die Stelle, an der das Gespräch kippt, und drei Sätze für das nächste.",
       "facts": [
-        "Dauert rund eine Minute",
-        "Transkript wird nicht gespeichert",
-        "Kostenlos"
+        "Unter fünf Minuten",
+        "Transkript wird nach der Auswertung gelöscht",
+        "Kostenlos mit Firmen-Adresse"
       ]
     },
     "form": {

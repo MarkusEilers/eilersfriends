@@ -479,6 +479,28 @@
           "label": "Tarjeta de conversación para charlas en vivo"
         }
       ]
+    },
+    "gespraechs-check": {
+      "posterTitle": "ANÁLISIS DE\nCONVERSACIÓN",
+      "posterSubtitle": "Tu primera reunión, leída como en un mystery shopping",
+      "tagline": "Lo que dijo tu cliente. Y lo que hiciste con ello.",
+      "agentLabel": "Análisis en menos de cinco minutos",
+      "deliverables": [
+        {
+          "icon": "ClipboardList",
+          "label": "Cada pregunta y objeción, con citas"
+        },
+        {
+          "icon": "Sparkles",
+          "label": "Señales de compra y el punto en que se tuerce"
+        },
+        {
+          "icon": "Wand2",
+          "label": "Tres frases para tu próxima conversación"
+        }
+      ],
+      "title": "Análisis de conversación: tu primera reunión, evaluada como en un mystery shopping",
+      "metaDescription": "Sube la transcripción de una primera reunión. Verás cada pregunta clasificada, cada objeción con la reacción del cliente, señales de compra y tres frases para la próxima conversación."
     }
   },
   "salesmadePage": {
@@ -1917,17 +1939,17 @@
   },
   "callCheck": {
     "meta": {
-      "title": "Análisis de conversación · Mystery shopping por tu cuenta",
-      "description": "Sube la transcripción de una primera reunión de ventas y descubre dónde se torció: preguntas, objeciones, oferta, empatía — con tres frases para tu próxima conversación."
+      "title": "Análisis de conversación: tu primera reunión, evaluada como en un mystery shopping",
+      "description": "Sube la transcripción de una primera reunión. Verás cada pregunta clasificada, cada objeción con la reacción del cliente, señales de compra y tres frases para la próxima conversación."
     },
     "hero": {
       "badge": "Análisis de conversación",
-      "headline": "¿Dónde se torció tu última primera reunión?",
-      "subline": "Sube la transcripción. Recibes el mismo análisis que en un mystery shopping: cinco criterios, tu cadena de preguntas, las objeciones — y tres frases que puedes decir tal cual la próxima vez.",
+      "headline": "Lo que dijo tu cliente. Y lo que hiciste con ello.",
+      "subline": "Sube la transcripción de una primera reunión. Recibes el análisis con la misma rejilla con la que Markus Eilers evalúa a equipos de ventas en un mystery shopping. Cada una de tus preguntas, clasificada; cada objeción, con la reacción del cliente. Además, el punto en el que la conversación se tuerce y tres frases para la próxima.",
       "facts": [
-        "Tarda alrededor de un minuto",
-        "La transcripción no se guarda",
-        "Gratis"
+        "Menos de cinco minutos",
+        "La transcripción se borra tras el análisis",
+        "Gratis con correo de empresa"
       ]
     },
     "form": {

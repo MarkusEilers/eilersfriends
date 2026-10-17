@@ -479,6 +479,28 @@
           "label": "Conversation card for live calls"
         }
       ]
+    },
+    "gespraechs-check": {
+      "posterTitle": "CALL\nCHECK",
+      "posterSubtitle": "Your first call, read like a mystery shopping",
+      "tagline": "What your customer said. And what you made of it.",
+      "agentLabel": "Analysis in under five minutes",
+      "deliverables": [
+        {
+          "icon": "ClipboardList",
+          "label": "Every question and objection, with quotes"
+        },
+        {
+          "icon": "Sparkles",
+          "label": "Buying signals and the point where it tips"
+        },
+        {
+          "icon": "Wand2",
+          "label": "Three sentences for your next call"
+        }
+      ],
+      "title": "Call Check: your first call, analysed like a mystery shopping",
+      "metaDescription": "Upload the transcript of a first call. You see every question classified, every objection with the customer's reaction, buying signals and three sentences for your next call."
     }
   },
   "salesmadePage": {
@@ -1917,17 +1939,17 @@
   },
   "callCheck": {
     "meta": {
-      "title": "Call Check · Mystery shopping, do it yourself",
-      "description": "Upload the transcript of a first sales call and see where it tipped: questions, objections, offer, empathy — with three sentences for your next call."
+      "title": "Call Check: your first call, analysed like a mystery shopping",
+      "description": "Upload the transcript of a first call. You see every question classified, every objection with the customer's reaction, buying signals and three sentences for your next call."
     },
     "hero": {
       "badge": "Call Check",
-      "headline": "Where did your last first call tip over?",
-      "subline": "Upload the transcript. You get the same analysis as in a mystery shopping: five criteria, your chain of questions, the objections — and three sentences you can say word for word next time.",
+      "headline": "What your customer said. And what you made of it.",
+      "subline": "Upload the transcript of a first call. You get an analysis built on the grid Markus Eilers uses to assess sales teams in a mystery shopping. Every question you asked is classified, every objection shown with the customer's reaction. Plus the point where the conversation tips, and three sentences for the next one.",
       "facts": [
-        "Takes about a minute",
-        "Transcript is not stored",
-        "Free"
+        "Under five minutes",
+        "Transcript deleted after the analysis",
+        "Free with a company email"
       ]
     },
     "form": {

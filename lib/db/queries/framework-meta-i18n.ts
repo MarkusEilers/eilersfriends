@@ -59,9 +59,11 @@ export async function resolveFrameworkMeta(
     tagline:        pickText(db.tagline,        i18n.tagline        as string | undefined, merged.tagline),
     agentLabel:     pickText(db.agentLabel,     i18n.agentLabel     as string | undefined, merged.agentLabel),
     tone:           db.tone ?? merged.tone,
-    deliverables:   (db.deliverables && db.deliverables.length > 0)
-                      ? db.deliverables
-                      : (i18n.deliverables as Deliverable[] | undefined) ?? merged.deliverables,
+    deliverables:   (!isDe && Array.isArray(i18n.deliverables) && (i18n.deliverables as Deliverable[]).length > 0)
+                      ? (i18n.deliverables as Deliverable[])
+                      : (db.deliverables && db.deliverables.length > 0)
+                        ? db.deliverables
+                        : (i18n.deliverables as Deliverable[] | undefined) ?? merged.deliverables,
     title:          (i18n.title          as string | undefined),
     metaDescription:(i18n.metaDescription as string | undefined),
   }
