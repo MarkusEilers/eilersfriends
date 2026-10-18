@@ -1851,7 +1851,7 @@
       "subline": "Upload the transcript. You get the same analysis as in a mystery shopping: five criteria, your chain of questions, the objections — and three sentences you can say word for word next time.",
       "facts": [
         "Takes about a minute",
-        "Transcript is not stored",
+        "Transcript encrypted, delete any time",
         "Free"
       ]
     },
@@ -1869,7 +1869,7 @@
       "step2": "Where should we send the result?",
       "firstName": "First name",
       "email": "Email",
-      "consent": "I agree that the transcript is processed for the analysis. Only the analysis with short quotes is stored, not the transcript. I have my conversation partners' consent.",
+      "consent": "I agree that the transcript is analysed and stored encrypted in my protected area. I can delete it there at any time. I have the consent of the other participants.",
       "newsletter": "Also send me Markus' newsletter on B2B sales (unsubscribe any time).",
       "submit": "Analyse the call",
       "working": [
@@ -1883,10 +1883,20 @@
         "invalid_input": "Please check your input.",
         "too_short": "The transcript is too short for an analysis.",
         "too_long": "The transcript is too long.",
-        "rate_limited": "You have already analysed three calls today. Tomorrow you can continue.",
+        "rate_limited": "The daily limit for this address is reached. Try again tomorrow.",
         "daily_cap": "All analyses for today are taken. Please try again tomorrow.",
         "analysis_failed": "The analysis failed. Please try again.",
-        "network": "No connection. Please try again."
+        "network": "No connection. Please try again.",
+        "freemail": "The Call Check is built for companies. Please use your address on your company's domain, not Gmail, GMX or similar.",
+        "payment_unavailable": "Payment is not available right now. Please try again in a moment."
+      },
+      "quota": {
+        "title": "Your 10 free calls have been analysed.",
+        "body": "Two ways to continue: we look at your calls together. Or you book 10 more analyses for your company.",
+        "call": "Book a call with us",
+        "buy": "10 more for €37 plus VAT",
+        "added": "Booked: 10 more calls for your company.",
+        "pending": "Payment is not confirmed yet. The credits appear as soon as Stripe reports it."
       }
     },
     "what": {

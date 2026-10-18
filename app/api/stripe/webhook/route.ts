@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { getStripe, getStripeWebhookSecret } from '@/lib/stripe'
 import { recordOfferEvent } from '@/lib/db/queries/offers'
 import type Stripe from 'stripe'
+import { addCredits } from '@/lib/call-check/store'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -44,6 +45,17 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
+        // Gesprächs-Check: Kontingent für die Firma (idempotent je Session)
+        if (session.metadata?.kind === 'call-check-credits' && session.payment_status === 'paid' && session.metadata.company_domain) {
+          await addCredits({
+            domain: session.metadata.company_domain,
+            checks: Number(session.metadata.checks) || 10,
+            email: session.metadata.email || session.customer_email || null,
+            sessionId: session.id,
+            amountEur: session.amount_total != null ? session.amount_total / 100 : null,
+          })
+          break
+        }
         const offerId = session.client_reference_id ?? session.metadata?.offerId
         if (offerId) {
           await db.execute(sql`

@@ -1948,7 +1948,7 @@
       "subline": "Sube la transcripción de una primera reunión. Recibes el análisis con la misma rejilla con la que Markus Eilers evalúa a equipos de ventas en un mystery shopping. Cada una de tus preguntas, clasificada; cada objeción, con la reacción del cliente. Además, el punto en el que la conversación se tuerce y tres frases para la próxima.",
       "facts": [
         "Menos de cinco minutos",
-        "La transcripción se borra tras el análisis",
+        "Transcripción cifrada, se puede borrar",
         "Gratis con correo de empresa"
       ]
     },
@@ -1966,7 +1966,7 @@
       "step2": "¿A dónde enviamos el resultado?",
       "firstName": "Nombre",
       "email": "Email",
-      "consent": "Acepto que la transcripción se procese para el análisis. Solo se guarda el análisis con citas breves, no la transcripción. Tengo el consentimiento de mis interlocutores.",
+      "consent": "Acepto que la transcripción se analice y se guarde cifrada en mi área protegida. Puedo borrarla allí en cualquier momento. Tengo el consentimiento de los demás participantes.",
       "newsletter": "Envíame también la newsletter de Markus sobre ventas B2B (baja en cualquier momento).",
       "submit": "Analizar la conversación",
       "working": [
@@ -1980,10 +1980,20 @@
         "invalid_input": "Revisa tus datos, por favor.",
         "too_short": "La transcripción es demasiado corta para un análisis.",
         "too_long": "La transcripción es demasiado larga.",
-        "rate_limited": "Hoy ya has analizado tres conversaciones. Mañana puedes seguir.",
+        "rate_limited": "Se ha alcanzado el límite diario para esta dirección. Mañana podrás seguir.",
         "daily_cap": "Hoy ya no quedan análisis disponibles. Vuelve a intentarlo mañana.",
         "analysis_failed": "El análisis ha fallado. Inténtalo de nuevo.",
-        "network": "Sin conexión. Inténtalo de nuevo."
+        "network": "Sin conexión. Inténtalo de nuevo.",
+        "freemail": "El análisis está pensado para empresas. Usa tu dirección con el dominio de tu empresa, no Gmail, GMX o similares.",
+        "payment_unavailable": "El pago no está disponible ahora mismo. Inténtalo de nuevo en un momento."
+      },
+      "quota": {
+        "title": "Ya se han analizado vuestras 10 conversaciones gratuitas.",
+        "body": "Dos maneras de seguir: revisamos juntos vuestras conversaciones. O reserváis 10 análisis más para vuestra empresa.",
+        "call": "Reunión con nosotros",
+        "buy": "10 más por 37 € + IVA",
+        "added": "Reservado: 10 conversaciones más para vuestra empresa.",
+        "pending": "El pago aún no está confirmado. El saldo aparecerá en cuanto Stripe lo notifique."
       }
     },
     "what": {

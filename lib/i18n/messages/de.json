@@ -1949,7 +1949,7 @@
       "subline": "Lade das Transkript eines Erstgesprächs hoch. Du bekommst die Auswertung nach dem Raster, mit dem Markus Eilers Verkaufsteams im Mystery Shopping prüft. Jede Deiner Fragen wird eingeordnet, jeder Einwand mit der Reaktion des Kunden gezeigt. Dazu kommt die Stelle, an der das Gespräch kippt, und drei Sätze für das nächste.",
       "facts": [
         "Unter fünf Minuten",
-        "Transkript wird nach der Auswertung gelöscht",
+        "Transkript verschlüsselt, jederzeit löschbar",
         "Kostenlos mit Firmen-Adresse"
       ]
     },
@@ -1967,7 +1967,7 @@
       "step2": "Wohin sollen wir das Ergebnis schicken?",
       "firstName": "Vorname",
       "email": "E-Mail",
-      "consent": "Ich bin damit einverstanden, dass das Transkript zur Auswertung verarbeitet wird. Gespeichert wird nur die Auswertung mit kurzen Zitaten, nicht das Transkript. Ich habe die Einwilligung meiner Gesprächspartner.",
+      "consent": "Ich bin damit einverstanden, dass das Transkript ausgewertet und verschlüsselt in meinem geschützten Bereich gespeichert wird. Ich kann es dort jederzeit löschen. Ich habe die Einwilligung meiner Gesprächspartner.",
       "newsletter": "Schick mir auch Markus' Newsletter zu B2B-Vertrieb (jederzeit abbestellbar).",
       "submit": "Gespräch auswerten",
       "working": [
@@ -1981,10 +1981,20 @@
         "invalid_input": "Bitte prüf Deine Eingaben.",
         "too_short": "Das Transkript ist zu kurz für eine Auswertung.",
         "too_long": "Das Transkript ist zu lang.",
-        "rate_limited": "Du hast heute schon drei Gespräche auswerten lassen. Morgen geht es weiter.",
+        "rate_limited": "Für heute ist das Limit für diese Adresse erreicht. Morgen geht es weiter.",
         "daily_cap": "Heute sind alle Auswertungen vergeben. Versuch es morgen wieder.",
         "analysis_failed": "Die Auswertung ist fehlgeschlagen. Bitte versuch es noch einmal.",
-        "network": "Keine Verbindung. Bitte versuch es noch einmal."
+        "network": "Keine Verbindung. Bitte versuch es noch einmal.",
+        "freemail": "Der Gesprächs-Check ist für Unternehmen gebaut. Bitte nutz Deine Adresse auf der Domain Deines Unternehmens, nicht Gmail, GMX und Co.",
+        "payment_unavailable": "Die Zahlung ist gerade nicht erreichbar. Bitte versuch es gleich noch einmal."
+      },
+      "quota": {
+        "title": "Eure 10 freien Gespräche sind ausgewertet.",
+        "body": "Zwei Wege, weiterzumachen: Wir schauen uns Eure Gespräche gemeinsam an. Oder Ihr bucht 10 weitere Auswertungen für Euer Unternehmen.",
+        "call": "Termin mit uns",
+        "buy": "10 weitere für 37 € zzgl. USt.",
+        "added": "Gebucht: 10 weitere Gespräche für Euer Unternehmen.",
+        "pending": "Die Zahlung ist noch nicht bestätigt. Das Kontingent erscheint, sobald Stripe sie meldet."
       }
     },
     "what": {

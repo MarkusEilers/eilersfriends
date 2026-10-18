@@ -3,8 +3,9 @@ import { z } from 'zod'
 import { parseTranscript } from '@/lib/call-check/transcript'
 import { analyseTranscript, LIMITS } from '@/lib/call-check/analyze'
 import {
-  createCheck, finishCheck, getCheck, hashIp, newPublicId, recentCounts, spentToday,
+  createCheck, finishCheck, getCheck, hashIp, newPublicId, recentCounts, spentToday, quotaFor,
 } from '@/lib/call-check/store'
+import { workDomain } from '@/lib/util/email'
 import { sendEmail } from '@/lib/email/resend'
 
 export const runtime = 'nodejs'
@@ -13,15 +14,15 @@ export const maxDuration = 300
 /**
  * The Gesprächs-Check: a transcript goes in, a result page comes out.
  *
- * Four brakes before any money is spent, because this is a free, public
- * endpoint and the last runaway cost us a full credit balance:
- * length limits, three checks per email and six per IP per day, and a daily
- * euro cap across everyone.
+ * Brakes before any money is spent, because this is a free, public endpoint
+ * and the last runaway cost us a full credit balance: company addresses only,
+ * length limits, a quota of 10 checks per company (more as paid packs),
+ * per-day limits per email and IP, and a daily euro cap across everyone.
  */
 
 const DAILY_EUR = Number(process.env.CALL_CHECK_DAILY_EUR ?? 15)
-const PER_EMAIL = 3
-const PER_IP = 6
+const PER_EMAIL = 10
+const PER_IP = 15
 
 const Body = z.object({
   email: z.string().email().max(200),
@@ -42,6 +43,9 @@ export async function POST(req: Request) {
   if (!parsedBody.success) return err('invalid_input', 400, { issues: parsedBody.error.issues.map((i) => i.path.join('.')) })
   const b = parsedBody.data
 
+  const domain = workDomain(b.email)
+  if (!domain) return err('freemail', 400)
+
   const transcript = parseTranscript(b.transcript)
   if (transcript.words < LIMITS.minWords) return err('too_short', 400, { min: LIMITS.minWords, words: transcript.words })
   if (transcript.words > LIMITS.maxWords) return err('too_long', 400, { max: LIMITS.maxWords, words: transcript.words })
@@ -51,11 +55,14 @@ export async function POST(req: Request) {
   const counts = await recentCounts(b.email, ipHash)
   if (counts.by_email >= PER_EMAIL || counts.by_ip >= PER_IP) return err('rate_limited', 429)
   if ((await spentToday()) >= DAILY_EUR) return err('daily_cap', 503)
+  const quota = await quotaFor(domain)
+  if (quota.remaining <= 0) return err('quota', 402, { used: quota.used, limit: quota.limit })
 
   const publicId = newPublicId()
   await createCheck({
     publicId, email: b.email, firstName: b.firstName ?? null, locale: b.locale,
     seller: b.seller ?? null, newsletter: b.newsletter, words: transcript.words, ipHash,
+    domain, transcript: b.transcript,
   })
 
   // The list. Newsletter only with the separate, explicit opt-in — and then

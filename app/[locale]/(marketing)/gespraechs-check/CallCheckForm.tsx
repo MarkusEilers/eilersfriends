@@ -23,6 +23,30 @@ export function CallCheckForm() {
   const [busy, setBusy] = useState(false)
   const [step, setStep] = useState(0)
   const [error, setError] = useState<string | null>(null)
+  const [quotaHit, setQuotaHit] = useState(false)
+  const [buying, setBuying] = useState(false)
+  const [notice, setNotice] = useState<string | null>(null)
+
+  // Back from Stripe: say whether the pack is booked.
+  useEffect(() => {
+    const c = new URLSearchParams(window.location.search).get('credits')
+    if (c === 'added') setNotice(t('quota.added'))
+    else if (c === 'pending') setNotice(t('quota.pending'))
+  }, [t])
+
+  async function buyCredits() {
+    setBuying(true)
+    try {
+      const res = await fetch('/api/call-check/credits', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email, locale }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (data.ok && data.url) { window.location.href = data.url; return }
+      setError(t.has(`errors.${data.error}`) ? t(`errors.${data.error}`) : t('errors.network'))
+    } catch { setError(t('errors.network')) }
+    setBuying(false)
+  }
 
   const parsed = useMemo(() => (text.trim() ? parseTranscript(text) : null), [text])
   const speakers = parsed?.speakers.filter((s) => s.name !== '?').slice(0, 6) ?? []
@@ -50,7 +74,7 @@ export function CallCheckForm() {
   }
 
   async function submit() {
-    setBusy(true); setError(null); setStep(0)
+    setBusy(true); setError(null); setQuotaHit(false); setStep(0)
     try {
       const res = await fetch('/api/call-check', {
         method: 'POST',
@@ -62,6 +86,7 @@ export function CallCheckForm() {
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok || !data.ok) {
+        if (data.error === 'quota') { setQuotaHit(true); setBusy(false); return }
         setError(t.has(`errors.${data.error}`) ? t(`errors.${data.error}`) : t('errors.analysis_failed'))
         setBusy(false)
         return
@@ -163,6 +188,22 @@ export function CallCheckForm() {
       </div>
 
       {error ? <p className="rounded-xl bg-[#FFEBEC] p-3 text-sm font-medium text-[#EB0028]">{error}</p> : null}
+      {notice ? <p className="rounded-xl bg-emerald-50 p-3 text-sm font-medium text-emerald-800">{notice}</p> : null}
+      {quotaHit ? (
+        <div className="rounded-2xl border border-[#BBCFF5] bg-[#EBF1FF] p-5">
+          <p className="text-base font-bold text-gray-900">{t('quota.title')}</p>
+          <p className="mt-1 text-sm text-gray-700">{t('quota.body')}</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <a href={`/${locale}/schedule`} className="inline-flex items-center gap-2 rounded-xl bg-[#0F1E3A] px-4 py-2.5 text-sm font-bold text-white">
+              {t('quota.call')} <ArrowRight size={16} />
+            </a>
+            <button type="button" onClick={buyCredits} disabled={buying}
+              className="inline-flex items-center gap-2 rounded-xl border border-[#1A5FD4] bg-white px-4 py-2.5 text-sm font-bold text-[#1A5FD4] disabled:opacity-50">
+              {buying ? <Loader2 className="animate-spin" size={16} /> : null}{t('quota.buy')}
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       <button type="button" onClick={submit} disabled={!canSubmit}
         className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#1A5FD4] px-6 py-4 text-base font-bold text-white shadow-lg shadow-[#1A5FD4]/25 transition hover:bg-[#154fb3] disabled:cursor-not-allowed disabled:opacity-40">
