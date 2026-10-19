@@ -1888,7 +1888,8 @@
         "analysis_failed": "The analysis failed. Please try again.",
         "network": "No connection. Please try again.",
         "freemail": "The Call Check is built for companies. Please use your address on your company's domain, not Gmail, GMX or similar.",
-        "payment_unavailable": "Payment is not available right now. Please try again in a moment."
+        "payment_unavailable": "Payment is not available right now. Please try again in a moment.",
+        "doi_required": "Please confirm your email address first. We have just sent you the link. After that you can analyse up to 10 calls for your company."
       },
       "quota": {
         "title": "Your 10 free calls have been analysed.",
@@ -1897,6 +1898,10 @@
         "buy": "10 more for €37 plus VAT",
         "added": "Booked: 10 more calls for your company.",
         "pending": "Payment is not confirmed yet. The credits appear as soon as Stripe reports it."
+      },
+      "doi": {
+        "verified": "Thanks, your address is confirmed. You can now analyse up to 10 calls for your company.",
+        "invalid": "The confirmation link has expired. Upload a call and we will send you a new one."
       }
     },
     "what": {

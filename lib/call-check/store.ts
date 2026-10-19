@@ -2,7 +2,7 @@ import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { createHash, randomBytes } from 'crypto'
 
-import { encrypt, decrypt } from '@/lib/schedule/crypto'
+import { encrypt, decrypt, signState, verifyState } from '@/lib/schedule/crypto'
 
 /**
  * Storage for the Gesprächs-Check.
@@ -16,6 +16,8 @@ import { encrypt, decrypt } from '@/lib/schedule/crypto'
 
 export const FREE_CHECKS_PER_COMPANY = 10
 export const CREDIT_PACK = { checks: 10, eurNet: 37 }
+/** Without a confirmed address (double opt-in) a person may run this many checks. */
+export const CHECKS_BEFORE_DOI = 2
 
 let ready = false
 export async function ensureCallCheckTable() {
@@ -64,6 +66,11 @@ export async function ensureCallCheckTable() {
       stripe_session_id TEXT UNIQUE,
       amount_eur        NUMERIC(10,2),
       created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
+    )`)
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS call_check_verified (
+      email        TEXT PRIMARY KEY,
+      verified_at  TIMESTAMPTZ NOT NULL DEFAULT now()
     )`)
   ready = true
 }
@@ -206,4 +213,50 @@ export async function getCheck(publicId: string): Promise<StoredCheck | null> {
     SELECT public_id, first_name, locale, status, seller_label, word_count, metrics, result, created_at, outcome, offer_id, email
     FROM call_checks WHERE public_id = ${publicId} LIMIT 1`)) as unknown as StoredCheck[]
   return rows[0] ?? null
+}
+
+
+/**
+ * Double opt-in. An address counts as confirmed when it clicked our
+ * confirmation link, confirmed the newsletter, or belongs to a portal account.
+ */
+export async function isVerified(email: string): Promise<boolean> {
+  await ensureCallCheckTable()
+  const e = email.toLowerCase()
+  const rows = (await db.execute(sql`
+    SELECT
+      EXISTS (SELECT 1 FROM call_check_verified WHERE email = ${e}) AS a,
+      EXISTS (SELECT 1 FROM newsletter_subscribers WHERE lower(email) = ${e} AND doi_confirmed_at IS NOT NULL) AS b,
+      EXISTS (SELECT 1 FROM public.users WHERE lower(email) = ${e}) AS c`).catch(async () =>
+      db.execute(sql`SELECT EXISTS (SELECT 1 FROM call_check_verified WHERE email = ${e}) AS a, false AS b, false AS c`)
+    )) as unknown as Array<{ a: boolean; b: boolean; c: boolean }>
+  const r = rows[0]
+  return !!(r && (r.a || r.b || r.c))
+}
+
+export async function markVerified(email: string) {
+  await ensureCallCheckTable()
+  await db.execute(sql`INSERT INTO call_check_verified (email) VALUES (${email.toLowerCase()}) ON CONFLICT (email) DO NOTHING`)
+}
+
+/** Checks a person has run so far (failed runs do not count). */
+export async function checksByEmail(email: string): Promise<number> {
+  await ensureCallCheckTable()
+  const rows = (await db.execute(sql`
+    SELECT count(*)::int AS n FROM call_checks WHERE lower(email) = lower(${email}) AND status <> 'error'`)) as unknown as Array<{ n: number }>
+  return rows[0]?.n ?? 0
+}
+
+/** Signed confirmation token: email + locale, valid for 14 days. */
+export function verifyToken(email: string, locale: string): string {
+  return signState(JSON.stringify({ e: email.toLowerCase(), l: locale, t: Date.now() }))
+}
+export function readVerifyToken(token: string): { email: string; locale: string } | null {
+  const raw = verifyState(token)
+  if (!raw) return null
+  try {
+    const o = JSON.parse(raw) as { e: string; l: string; t: number }
+    if (!o.e || Date.now() - o.t > 14 * 864e5) return null
+    return { email: o.e, locale: o.l || 'de' }
+  } catch { return null }
 }

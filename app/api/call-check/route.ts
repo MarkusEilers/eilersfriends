@@ -4,6 +4,7 @@ import { parseTranscript } from '@/lib/call-check/transcript'
 import { analyseTranscript, LIMITS } from '@/lib/call-check/analyze'
 import {
   createCheck, finishCheck, getCheck, hashIp, newPublicId, recentCounts, spentToday, quotaFor,
+  isVerified, checksByEmail, verifyToken, CHECKS_BEFORE_DOI,
 } from '@/lib/call-check/store'
 import { workDomain } from '@/lib/util/email'
 import { sendEmail } from '@/lib/email/resend'
@@ -55,6 +56,12 @@ export async function POST(req: Request) {
   const counts = await recentCounts(b.email, ipHash)
   if (counts.by_email >= PER_EMAIL || counts.by_ip >= PER_IP) return err('rate_limited', 429)
   if ((await spentToday()) >= DAILY_EUR) return err('daily_cap', 503)
+  // Double opt-in: without a confirmed address only the first CHECKS_BEFORE_DOI calls.
+  const verified = await isVerified(b.email)
+  if (!verified && (await checksByEmail(b.email)) >= CHECKS_BEFORE_DOI) {
+    await sendVerifyMail(new URL(req.url).origin, b.email, b.firstName ?? null, b.locale)
+    return err('doi_required', 403)
+  }
   const quota = await quotaFor(domain)
   if (quota.remaining <= 0) return err('quota', 402, { used: quota.used, limit: quota.limit })
 
@@ -104,7 +111,12 @@ export async function POST(req: Request) {
     : b.locale === 'es'
       ? `${hello}aquí está tu análisis: ${link}`
       : `${hello}hier ist Dein Gesprächs-Check: ${link}`
-  sendEmail({ to: b.email, subject, text: line, html: `<p>${line.replace(link, `<a href="${link}">${link}</a>`)}</p><p>Markus Eilers</p>` })
+  const confirm = verified ? null : confirmLine(base, b.email, b.locale)
+  sendEmail({
+    to: b.email, subject,
+    text: confirm ? `${line}\n\n${confirm.text}` : line,
+    html: `<p>${line.replace(link, `<a href="${link}">${link}</a>`)}</p>${confirm ? `<p>${confirm.html}</p>` : ''}<p>Markus Eilers</p>`,
+  })
     .catch((e: unknown) => console.error('[call-check] mail failed:', e))
 
   return NextResponse.json({ ok: true, id: publicId, url: `/${b.locale}/gespraechs-check/${publicId}` })
@@ -117,4 +129,22 @@ export async function GET(req: Request) {
   const c = await getCheck(id)
   if (!c) return err('not_found', 404)
   return NextResponse.json({ ok: true, status: c.status })
+}
+
+function confirmLine(origin: string, email: string, locale: string) {
+  const url = `${origin}/api/call-check/verify?t=${encodeURIComponent(verifyToken(email, locale))}`
+  const lead = locale === 'en'
+    ? 'Please confirm your address to analyse up to 10 calls for your company:'
+    : locale === 'es'
+      ? 'Confirma tu dirección para analizar hasta 10 conversaciones para tu empresa:'
+      : 'Bitte bestätige Deine Adresse, dann kannst Du bis zu 10 Gespräche für Euer Unternehmen auswerten:'
+  return { text: `${lead} ${url}`, html: `${lead} <a href="${url}">${url}</a>` }
+}
+
+async function sendVerifyMail(origin: string, email: string, firstName: string | null, locale: string) {
+  const c = confirmLine(origin, email, locale)
+  const subject = locale === 'en' ? 'Confirm your address' : locale === 'es' ? 'Confirma tu dirección' : 'Bitte bestätige Deine Adresse'
+  const hello = firstName ? `${firstName}, ` : ''
+  await sendEmail({ to: email, subject, text: `${hello}${c.text}`, html: `<p>${hello}${c.html}</p><p>Markus Eilers</p>` })
+    .catch((e: unknown) => console.error('[call-check] verify mail failed:', e))
 }

@@ -1986,7 +1986,8 @@
         "analysis_failed": "Die Auswertung ist fehlgeschlagen. Bitte versuch es noch einmal.",
         "network": "Keine Verbindung. Bitte versuch es noch einmal.",
         "freemail": "Der Gesprächs-Check ist für Unternehmen gebaut. Bitte nutz Deine Adresse auf der Domain Deines Unternehmens, nicht Gmail, GMX und Co.",
-        "payment_unavailable": "Die Zahlung ist gerade nicht erreichbar. Bitte versuch es gleich noch einmal."
+        "payment_unavailable": "Die Zahlung ist gerade nicht erreichbar. Bitte versuch es gleich noch einmal.",
+        "doi_required": "Bitte bestätige zuerst Deine E-Mail-Adresse. Wir haben Dir den Link gerade geschickt. Danach kannst Du bis zu 10 Gespräche für Euer Unternehmen auswerten."
       },
       "quota": {
         "title": "Eure 10 freien Gespräche sind ausgewertet.",
@@ -1995,6 +1996,10 @@
         "buy": "10 weitere für 37 € zzgl. USt.",
         "added": "Gebucht: 10 weitere Gespräche für Euer Unternehmen.",
         "pending": "Die Zahlung ist noch nicht bestätigt. Das Kontingent erscheint, sobald Stripe sie meldet."
+      },
+      "doi": {
+        "verified": "Danke, Deine Adresse ist bestätigt. Du kannst jetzt bis zu 10 Gespräche für Euer Unternehmen auswerten.",
+        "invalid": "Der Bestätigungslink ist abgelaufen. Lade ein Gespräch hoch, dann schicken wir Dir einen neuen."
       }
     },
     "what": {

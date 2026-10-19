@@ -1985,7 +1985,8 @@
         "analysis_failed": "El análisis ha fallado. Inténtalo de nuevo.",
         "network": "Sin conexión. Inténtalo de nuevo.",
         "freemail": "El análisis está pensado para empresas. Usa tu dirección con el dominio de tu empresa, no Gmail, GMX o similares.",
-        "payment_unavailable": "El pago no está disponible ahora mismo. Inténtalo de nuevo en un momento."
+        "payment_unavailable": "El pago no está disponible ahora mismo. Inténtalo de nuevo en un momento.",
+        "doi_required": "Confirma primero tu dirección de correo. Te acabamos de enviar el enlace. Después podrás analizar hasta 10 conversaciones para tu empresa."
       },
       "quota": {
         "title": "Ya se han analizado vuestras 10 conversaciones gratuitas.",
@@ -1994,6 +1995,10 @@
         "buy": "10 más por 37 € + IVA",
         "added": "Reservado: 10 conversaciones más para vuestra empresa.",
         "pending": "El pago aún no está confirmado. El saldo aparecerá en cuanto Stripe lo notifique."
+      },
+      "doi": {
+        "verified": "Gracias, tu dirección está confirmada. Ya puedes analizar hasta 10 conversaciones para tu empresa.",
+        "invalid": "El enlace de confirmación ha caducado. Sube una conversación y te enviaremos uno nuevo."
       }
     },
     "what": {

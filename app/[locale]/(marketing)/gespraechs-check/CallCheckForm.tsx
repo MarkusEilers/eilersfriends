@@ -32,6 +32,9 @@ export function CallCheckForm() {
     const c = new URLSearchParams(window.location.search).get('credits')
     if (c === 'added') setNotice(t('quota.added'))
     else if (c === 'pending') setNotice(t('quota.pending'))
+    const v = new URLSearchParams(window.location.search).get('verified')
+    if (v === '1') setNotice(t('doi.verified'))
+    else if (v === 'invalid') setNotice(t('doi.invalid'))
   }, [t])
 
   async function buyCredits() {
