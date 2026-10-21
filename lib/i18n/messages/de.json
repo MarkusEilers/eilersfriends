@@ -1987,7 +1987,8 @@
         "network": "Keine Verbindung. Bitte versuch es noch einmal.",
         "freemail": "Der Gesprächs-Check ist für Unternehmen gebaut. Bitte nutz Deine Adresse auf der Domain Deines Unternehmens, nicht Gmail, GMX und Co.",
         "payment_unavailable": "Die Zahlung ist gerade nicht erreichbar. Bitte versuch es gleich noch einmal.",
-        "doi_required": "Bitte bestätige zuerst Deine E-Mail-Adresse. Wir haben Dir den Link gerade geschickt. Danach kannst Du bis zu 10 Gespräche für Euer Unternehmen auswerten."
+        "doi_required": "Bitte bestätige zuerst Deine E-Mail-Adresse. Wir haben Dir den Link gerade geschickt. Danach kannst Du bis zu 10 Gespräche für Euer Unternehmen auswerten.",
+        "doi_mail_failed": "Wir konnten Dir den Bestätigungslink gerade nicht schicken. Wir kümmern uns darum, bitte versuch es später noch einmal."
       },
       "quota": {
         "title": "Eure 10 freien Gespräche sind ausgewertet.",

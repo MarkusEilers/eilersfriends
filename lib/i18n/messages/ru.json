@@ -1889,7 +1889,8 @@
         "network": "No connection. Please try again.",
         "freemail": "The Call Check is built for companies. Please use your address on your company's domain, not Gmail, GMX or similar.",
         "payment_unavailable": "Payment is not available right now. Please try again in a moment.",
-        "doi_required": "Please confirm your email address first. We have just sent you the link. After that you can analyse up to 10 calls for your company."
+        "doi_required": "Please confirm your email address first. We have just sent you the link. After that you can analyse up to 10 calls for your company.",
+        "doi_mail_failed": "We could not send you the confirmation link just now. We are on it, please try again later."
       },
       "quota": {
         "title": "Your 10 free calls have been analysed.",

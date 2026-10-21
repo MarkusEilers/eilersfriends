@@ -59,8 +59,8 @@ export async function POST(req: Request) {
   // Double opt-in: without a confirmed address only the first CHECKS_BEFORE_DOI calls.
   const verified = await isVerified(b.email)
   if (!verified && (await checksByEmail(b.email)) >= CHECKS_BEFORE_DOI) {
-    await sendVerifyMail(new URL(req.url).origin, b.email, b.firstName ?? null, b.locale)
-    return err('doi_required', 403)
+    const sent = await sendVerifyMail(new URL(req.url).origin, b.email, b.firstName ?? null, b.locale)
+    return err(sent ? 'doi_required' : 'doi_mail_failed', 403)
   }
   const quota = await quotaFor(domain)
   if (quota.remaining <= 0) return err('quota', 402, { used: quota.used, limit: quota.limit })
@@ -112,7 +112,8 @@ export async function POST(req: Request) {
       ? `${hello}aquí está tu análisis: ${link}`
       : `${hello}hier ist Dein Gesprächs-Check: ${link}`
   const confirm = verified ? null : confirmLine(base, b.email, b.locale)
-  sendEmail({
+  // Awaited: a serverless function is frozen after the response, a pending mail would never leave.
+  await sendEmail({
     to: b.email, subject,
     text: confirm ? `${line}\n\n${confirm.text}` : line,
     html: `<p>${line.replace(link, `<a href="${link}">${link}</a>`)}</p>${confirm ? `<p>${confirm.html}</p>` : ''}<p>Markus Eilers</p>`,
@@ -145,6 +146,11 @@ async function sendVerifyMail(origin: string, email: string, firstName: string |
   const c = confirmLine(origin, email, locale)
   const subject = locale === 'en' ? 'Confirm your address' : locale === 'es' ? 'Confirma tu dirección' : 'Bitte bestätige Deine Adresse'
   const hello = firstName ? `${firstName}, ` : ''
-  await sendEmail({ to: email, subject, text: `${hello}${c.text}`, html: `<p>${hello}${c.html}</p><p>Markus Eilers</p>` })
-    .catch((e: unknown) => console.error('[call-check] verify mail failed:', e))
+  try {
+    await sendEmail({ to: email, subject, text: `${hello}${c.text}`, html: `<p>${hello}${c.html}</p><p>Markus Eilers</p>` })
+    return true
+  } catch (e) {
+    console.error('[call-check] verify mail failed:', e)
+    return false
+  }
 }

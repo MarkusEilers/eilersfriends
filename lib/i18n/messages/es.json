@@ -1986,7 +1986,8 @@
         "network": "Sin conexión. Inténtalo de nuevo.",
         "freemail": "El análisis está pensado para empresas. Usa tu dirección con el dominio de tu empresa, no Gmail, GMX o similares.",
         "payment_unavailable": "El pago no está disponible ahora mismo. Inténtalo de nuevo en un momento.",
-        "doi_required": "Confirma primero tu dirección de correo. Te acabamos de enviar el enlace. Después podrás analizar hasta 10 conversaciones para tu empresa."
+        "doi_required": "Confirma primero tu dirección de correo. Te acabamos de enviar el enlace. Después podrás analizar hasta 10 conversaciones para tu empresa.",
+        "doi_mail_failed": "No hemos podido enviarte el enlace de confirmación. Lo estamos revisando, inténtalo de nuevo más tarde."
       },
       "quota": {
         "title": "Ya se han analizado vuestras 10 conversaciones gratuitas.",
