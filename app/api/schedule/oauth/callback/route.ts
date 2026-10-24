@@ -15,6 +15,8 @@ export async function GET(req: NextRequest) {
   const parts = state.split(':')
   const person = parts[0]
   const isAdd = parts[1] === 'add'
+  const viaInvite = parts[3] === 'invite'
+  const done = (adminPath: string) => NextResponse.redirect(new URL(viaInvite ? `/verbunden?person=${person}` : adminPath, req.url))
   try {
     const { refreshToken, email, tenantId } = await exchangeCode(code, isAdd ? ADD_AUTHORITY : undefined)
     if (!refreshToken) {
@@ -28,11 +30,11 @@ export async function GET(req: NextRequest) {
       }
       await saveExtraCalendar(person, email, tenantId, refreshToken)
       await invalidatePerson(person).catch(() => {})
-      return NextResponse.redirect(new URL(`/admin/schedule?added=${person}`, req.url))
+      return done(`/admin/schedule?added=${person}`)
     }
     await saveConnection(person, refreshToken, email)
     await invalidatePerson(person).catch(() => {})
-    return NextResponse.redirect(new URL(`/admin/schedule?connected=${person}`, req.url))
+    return done(`/admin/schedule?connected=${person}`)
   } catch (e) {
     await logError({ source: 'server', message: `OAuth-Callback fehlgeschlagen (${person}, add=${isAdd}): ${String((e as Error)?.message || e)}`, url: '/api/schedule/oauth/callback' })
     return NextResponse.redirect(new URL('/admin/schedule?error=exchange', req.url))
