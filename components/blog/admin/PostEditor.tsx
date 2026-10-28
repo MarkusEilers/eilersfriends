@@ -203,7 +203,6 @@ export function PostEditor({
         <input
           value={post.title} onChange={(e) => set('title', e.target.value)} placeholder="Titel"
           className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-2xl font-bold outline-none focus:border-gray-400"
-          style={{ fontFamily: "'DM Serif Display', serif" }}
         />
         <input
           value={post.subtitle ?? ''} onChange={(e) => set('subtitle', e.target.value)}

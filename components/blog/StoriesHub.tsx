@@ -60,7 +60,7 @@ export function StoriesHub({ items, filter, tags, preview }: {
       {/* Kopf */}
       <section className="px-6 pb-8 pt-16 sm:pt-20">
         <div className="mx-auto max-w-6xl">
-          <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl lg:text-6xl" style={{ fontFamily: "'DM Serif Display', serif" }}>
+          <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl lg:text-6xl">
             Winning Team <span style={{ color: AUTHORS.markus.accent }}>Stories</span>
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-gray-600">
@@ -94,7 +94,7 @@ export function StoriesHub({ items, filter, tags, preview }: {
       <main className="mx-auto max-w-6xl px-6 pb-6">
         {items.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-gray-300 bg-white p-14 text-center">
-            <h2 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'DM Serif Display', serif" }}>Hier ist noch nichts erschienen.</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Hier ist noch nichts erschienen.</h2>
             <p className="mt-2 text-gray-600">{filtered ? 'Für diesen Filter gibt es noch keinen Beitrag.' : 'Die ersten Stories sind in Arbeit.'}</p>
             {filtered && <Link href={'/blog' as '/'} className="mt-5 inline-flex text-sm font-bold" style={{ color: AUTHORS.markus.accent }}>Alle Stories zeigen</Link>}
           </div>
@@ -114,7 +114,7 @@ export function StoriesHub({ items, filter, tags, preview }: {
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6">
             <div className="max-w-2xl">
               <p className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: GOLD }}>Die Serie</p>
-              <h2 className="mt-2 text-3xl font-bold text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>Gekippt bei Minute …</h2>
+              <h2 className="mt-2 text-3xl font-bold text-white">Gekippt bei Minute …</h2>
               <p className="mt-3 text-white/75">
                 Ein echtes Erstgespräch, anonymisiert. Wir zeigen die Fragekette, die Stelle, an der es kippt, und drei Sätze, die es gerettet hätten.
               </p>
@@ -144,7 +144,7 @@ export function StoriesHub({ items, filter, tags, preview }: {
         <div className="flex flex-wrap items-center justify-between gap-6 rounded-3xl p-8 sm:p-10" style={{ background: AUTHORS.markus.tint }}>
           <div className="max-w-xl">
             <p className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: AUTHORS.markus.accent }}>Pretrained AI-Agenten · gratis</p>
-            <h2 className="mt-2 text-2xl font-bold text-gray-900" style={{ fontFamily: "'DM Serif Display', serif" }}>Klau Dir unsere Frameworks. Inklusive AI-Agenten.</h2>
+            <h2 className="mt-2 text-2xl font-bold text-gray-900">Klau Dir unsere Frameworks. Inklusive AI-Agenten.</h2>
             <p className="mt-2 text-sm text-gray-600">Jedes Framework kommt mit Bauplan und dem Agenten, den wir dafür trainiert haben.</p>
           </div>
           <Link href={'/frameworks' as '/'} className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-bold text-white" style={{ background: AUTHORS.markus.accent }}>
@@ -235,7 +235,7 @@ function LeadCard({ item }: { item: HubItem }) {
     <Link href={item.href as '/'} className="group flex flex-col overflow-hidden rounded-3xl border border-gray-200 bg-white transition-shadow hover:shadow-xl">
       <Visual it={item} className="h-64 sm:h-80" />
       <div className="p-7">
-        <h2 className="text-2xl font-bold leading-snug text-gray-900 sm:text-3xl" style={{ fontFamily: "'DM Serif Display', serif" }}>{item.title}</h2>
+        <h2 className="text-2xl font-bold leading-snug text-gray-900 sm:text-3xl">{item.title}</h2>
         {item.excerpt && <p className="mt-3 text-base leading-relaxed text-gray-600">{item.excerpt}</p>}
         <div className="mt-4"><Meta it={item} /></div>
       </div>

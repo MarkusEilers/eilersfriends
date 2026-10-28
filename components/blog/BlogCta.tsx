@@ -48,7 +48,7 @@ export function BlogCta({ author }: { author: Author }) {
             >
               <Mail size={18} />
             </div>
-            <h3 className="mt-4 text-xl font-bold text-gray-900" style={{ fontFamily: "'DM Serif Display', serif" }}>
+            <h3 className="mt-4 text-xl font-bold text-gray-900">
               Donnerstags eine Lehre aus der Woche
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-gray-600">
@@ -98,7 +98,7 @@ export function BlogCta({ author }: { author: Author }) {
                 <div className="text-xs text-gray-500">{author.role}</div>
               </div>
             </div>
-            <h3 className="mt-4 text-xl font-bold text-gray-900" style={{ fontFamily: "'DM Serif Display', serif" }}>
+            <h3 className="mt-4 text-xl font-bold text-gray-900">
               Oder wir reden eine halbe Stunde darüber
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-gray-600">

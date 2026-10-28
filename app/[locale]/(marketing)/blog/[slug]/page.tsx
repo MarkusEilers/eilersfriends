@@ -71,7 +71,6 @@ export default async function PostPage({
 
           <h1
             className="mt-5 text-4xl font-bold leading-[1.1] text-white sm:text-5xl"
-            style={{ fontFamily: "'DM Serif Display', serif" }}
           >
             {post.title}
           </h1>
@@ -117,7 +116,7 @@ export default async function PostPage({
         <Prose content={post.content} accent={a.accent} />
         {post.story?.quote ? (
           <figure className="mt-12 border-l-4 pl-6" style={{ borderColor: a.accent }}>
-            <blockquote className="text-2xl leading-snug text-gray-900" style={{ fontFamily: "'DM Serif Display', serif" }}>„{post.story.quote}“</blockquote>
+            <blockquote className="text-2xl leading-snug text-gray-900">„{post.story.quote}“</blockquote>
             {post.story.quote_by ? <figcaption className="mt-3 text-sm text-gray-500">{post.story.quote_by}</figcaption> : null}
           </figure>
         ) : null}
@@ -236,7 +235,7 @@ function RelatedCard({ post }: { post: Post }) {
       <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: a.accent }}>
         {a.name.split(' ')[0]} · {dt(post.published_at)}
       </div>
-      <h3 className="mt-2 text-base font-bold leading-snug text-gray-900" style={{ fontFamily: "'DM Serif Display', serif" }}>
+      <h3 className="mt-2 text-base font-bold leading-snug text-gray-900">
         {post.title}
       </h3>
       {post.excerpt && <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-gray-500">{post.excerpt}</p>}
@@ -260,7 +259,7 @@ function Prose({ content, accent }: { content: string | null; accent: string }) 
         const b = raw.trim()
         if (b.startsWith('## ')) {
           return (
-            <h2 key={i} className="pt-4 text-2xl font-bold text-gray-900" style={{ fontFamily: "'DM Serif Display', serif" }}>
+            <h2 key={i} className="pt-4 text-2xl font-bold text-gray-900">
               {b.slice(3)}
             </h2>
           )

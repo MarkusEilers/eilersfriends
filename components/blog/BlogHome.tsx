@@ -38,7 +38,6 @@ export function BlogHome({
           </p>
           <h1
             className="mt-4 text-4xl font-bold text-white sm:text-5xl lg:text-6xl"
-            style={{ fontFamily: "'DM Serif Display', serif" }}
           >
             {author ? headlineFor(author) : 'Was wir diese Woche gelernt haben.'}
           </h1>

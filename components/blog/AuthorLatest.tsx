@@ -28,7 +28,7 @@ export async function AuthorLatest({ slug }: { slug: Author['slug'] }) {
             >
               <PenLine size={12} /> Aus dem Briefing
             </span>
-            <h2 className="mt-2 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B', fontFamily: "'DM Serif Display', serif" }}>
+            <h2 className="mt-2 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B', }}>
               Zuletzt geschrieben
             </h2>
           </div>
@@ -52,7 +52,7 @@ export async function AuthorLatest({ slug }: { slug: Author['slug'] }) {
                 {dt(p.published_at)}
                 {p.reading_minutes ? <span>· {p.reading_minutes} Min</span> : null}
               </div>
-              <h3 className="mt-2.5 text-lg font-bold leading-snug text-gray-900" style={{ fontFamily: "'DM Serif Display', serif" }}>
+              <h3 className="mt-2.5 text-lg font-bold leading-snug text-gray-900">
                 {p.title}
               </h3>
               {p.excerpt && <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-600">{p.excerpt}</p>}

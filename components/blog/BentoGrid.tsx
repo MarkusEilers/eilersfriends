@@ -68,7 +68,6 @@ function Card({
 
         <h3
           className={`mt-3 font-bold leading-snug text-gray-900 ${lead ? 'text-2xl sm:text-3xl' : size === 'mid' ? 'text-lg' : 'text-base'}`}
-          style={{ fontFamily: "'DM Serif Display', serif" }}
         >
           {post.title}
         </h3>
