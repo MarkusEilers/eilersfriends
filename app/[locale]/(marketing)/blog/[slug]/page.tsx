@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { auth } from '@/lib/auth'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { sql } from 'drizzle-orm'
@@ -45,7 +46,7 @@ export default async function PostPage({
   params, searchParams,
 }: { params: Promise<{ slug: string }>; searchParams: Promise<{ preview?: string }> }) {
   const [{ slug }, sp] = await Promise.all([params, searchParams])
-  const post = await getPost(slug, sp.preview === '1')
+  const post = await getPost(slug, (sp.preview === '1' && await isEditor()))
   if (!post) notFound()
 
   const a = authorOf(post.author_slug)
@@ -308,4 +309,10 @@ function inline(s: string) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
     .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+}
+
+/** Entwürfe nur für Admin und Coach — sonst wäre ?preview=1 eine offene Tür. */
+async function isEditor() {
+  const s = await auth().catch(() => null)
+  return s?.user?.role === 'admin' || s?.user?.role === 'coach'
 }

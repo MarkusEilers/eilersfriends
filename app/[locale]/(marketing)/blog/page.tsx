@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { auth } from '@/lib/auth'
 import { StoriesHub, postToItem, type HubItem } from '@/components/blog/StoriesHub'
 import { listPosts, topTags, frameworkCards } from '@/lib/blog/posts'
 import { AUTHORS } from '@/lib/blog/authors'
@@ -17,7 +18,7 @@ export default async function BlogIndexPage({
   params, searchParams,
 }: { params: Promise<{ locale: string }>; searchParams: Promise<{ preview?: string; format?: string; d?: string; thema?: string; coach?: string; n?: string }> }) {
   const [{ locale }, sp] = await Promise.all([params, searchParams])
-  const preview = sp.preview === '1'
+  const preview = (sp.preview === '1' && await isEditor())
   const coach = sp.coach === 'markus' || sp.coach === 'aljona' ? sp.coach : null
   const filter = {
     format: sp.format || null, d: sp.d && DISCIPLINE[sp.d] ? sp.d : null, thema: sp.thema || null, coach,
@@ -41,4 +42,10 @@ export default async function BlogIndexPage({
     })
   }
   return <StoriesHub items={items} filter={filter} tags={tags} preview={preview} hasMore={hasMore} />
+}
+
+/** Entwürfe nur für Admin und Coach — sonst wäre ?preview=1 eine offene Tür. */
+async function isEditor() {
+  const s = await auth().catch(() => null)
+  return s?.user?.role === 'admin' || s?.user?.role === 'coach'
 }
