@@ -25,6 +25,7 @@ export default async function AdminBlogEditPage({ params }: { params: Promise<{ 
         status: post.status as EditorPost['status'], published_at: post.published_at,
         comments_open: post.comments_open ?? true, slug: post.slug,
         locale: post.locale ?? 'de', translation_of: post.translation_of ?? null,
+        format: post.format ?? 'artikel', story: post.story ?? null,
       }
     : null
 

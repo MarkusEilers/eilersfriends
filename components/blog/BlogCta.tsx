@@ -52,8 +52,9 @@ export function BlogCta({ author }: { author: Author }) {
               Donnerstags eine Lehre aus der Woche
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-gray-600">
-              Kein Newsletter über Neuigkeiten. Eine Sache, die {author.name.split(' ')[0]} diese Woche
-              gelernt hat — und woran sie sich gezeigt hat.
+              {author.slug === 'team'
+                ? 'Kein Newsletter über Neuigkeiten. Eine Sache, die wir diese Woche gelernt haben — und woran sie sich gezeigt hat.'
+                : `Kein Newsletter über Neuigkeiten. Eine Sache, die ${author.name.split(' ')[0]} diese Woche gelernt hat — und woran sie sich gezeigt hat.`}
             </p>
 
             {state === 'done' ? (
@@ -85,9 +86,13 @@ export function BlogCta({ author }: { author: Author }) {
           {/* Termin */}
           <div className="p-8 sm:p-10" style={{ background: '#fff' }}>
             <div className="flex items-center gap-3">
-              <span className="relative h-12 w-12 overflow-hidden rounded-full">
-                <Image src={author.avatar} alt={author.name} fill sizes="48px" className="object-cover" />
-              </span>
+              {author.avatar ? (
+                <span className="relative h-12 w-12 overflow-hidden rounded-full">
+                  <Image src={author.avatar} alt={author.name} fill sizes="48px" className="object-cover" />
+                </span>
+              ) : (
+                <span className="flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold" style={{ background: author.deep, color: author.onDeep }}>E+F</span>
+              )}
               <div>
                 <div className="text-sm font-bold text-gray-900">{author.name}</div>
                 <div className="text-xs text-gray-500">{author.role}</div>
@@ -104,7 +109,7 @@ export function BlogCta({ author }: { author: Author }) {
               className="mt-5 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white"
               style={{ background: author.deep }}
             >
-              <Calendar size={14} /> Termin mit {author.name.split(' ')[0]}
+              <Calendar size={14} /> {author.slug === 'team' ? 'Termin mit uns' : `Termin mit ${author.name.split(' ')[0]}`}
             </Link>
           </div>
         </div>

@@ -3,7 +3,8 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Link } from '@/lib/i18n/navigation'
 import { ArrowLeft, Clock, Calendar, ArrowUpRight } from 'lucide-react'
-import { getPost, listPosts, relatedPosts, type Post } from '@/lib/blog/posts'
+import { getPost, relatedPosts, type Post } from '@/lib/blog/posts'
+import { FORMAT_LABEL, type StoryData } from '@/lib/blog/formats'
 import { authorOf } from '@/lib/blog/authors'
 import { BlogCta } from '@/components/blog/BlogCta'
 import { Comments } from '@/components/blog/Comments'
@@ -51,13 +52,16 @@ export default async function PostPage({
       <header className="relative overflow-hidden px-6 pb-16 pt-16 sm:pb-20 sm:pt-20" style={{ background: a.deep }}>
         <div className="relative mx-auto max-w-3xl">
           <Link
-            href={`/blog/${a.slug}` as '/'}
+            href={(a.slug === 'team' ? '/blog' : `/blog/${a.slug}`) as '/'}
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-white/55 transition-colors hover:text-white"
           >
-            <ArrowLeft size={13} /> Alle Beiträge von {a.name.split(' ')[0]}
+            <ArrowLeft size={13} /> {a.slug === 'team' ? 'Alle Winning Team Stories' : `Alle Beiträge von ${a.name.split(' ')[0]}`}
           </Link>
 
           <div className="mt-6 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em]">
+            {post.format && post.format !== 'artikel' && (
+              <span className="rounded-full px-2.5 py-1" style={{ background: a.onDeep, color: a.deep }}>{FORMAT_LABEL[post.format] ?? post.format}</span>
+            )}
             {(post.tags ?? []).slice(0, 3).map((t) => (
               <span key={t} className="rounded-full px-2.5 py-1" style={{ background: 'rgba(255,255,255,0.12)', color: a.onDeep }}>
                 {t}
@@ -77,9 +81,11 @@ export default async function PostPage({
 
           <div className="mt-8 flex flex-wrap items-center gap-4 text-xs text-white/55">
             <span className="inline-flex items-center gap-2">
-              <span className="relative h-8 w-8 overflow-hidden rounded-full ring-2 ring-white/20">
-                <Image src={a.avatar} alt={a.name} fill sizes="32px" className="object-cover" />
-              </span>
+              {a.avatar ? (
+                <span className="relative h-8 w-8 overflow-hidden rounded-full ring-2 ring-white/20">
+                  <Image src={a.avatar} alt={a.name} fill sizes="32px" className="object-cover" />
+                </span>
+              ) : null}
               <span className="font-semibold text-white/85">{a.name}</span>
             </span>
             {post.published_at && (
@@ -105,16 +111,28 @@ export default async function PostPage({
 
       {/* Fliesstext. Schmale Spalte, grosse Zeilenhoehe, Serifen — ein Text, den
           man liest, und keiner, den man ueberfliegt. */}
+      {post.story && post.format === 'kundenstory' ? <StoryFacts post={post} accent={a.accent} tint={a.tint} /> : null}
+
       <div className="mx-auto max-w-[680px] px-6 py-14">
         <Prose content={post.content} accent={a.accent} />
+        {post.story?.quote ? (
+          <figure className="mt-12 border-l-4 pl-6" style={{ borderColor: a.accent }}>
+            <blockquote className="text-2xl leading-snug text-gray-900" style={{ fontFamily: "'DM Serif Display', serif" }}>„{post.story.quote}“</blockquote>
+            {post.story.quote_by ? <figcaption className="mt-3 text-sm text-gray-500">{post.story.quote_by}</figcaption> : null}
+          </figure>
+        ) : null}
 
         {/* Kurzbio direkt unter dem Text: wer das gelesen hat, will jetzt wissen,
             von wem es kam. */}
         <aside className="mt-14 rounded-2xl border border-gray-200 bg-white p-6">
           <div className="flex items-start gap-4">
-            <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full">
-              <Image src={a.avatar} alt={a.name} fill sizes="64px" className="object-cover" />
-            </span>
+            {a.avatar ? (
+              <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full">
+                <Image src={a.avatar} alt={a.name} fill sizes="64px" className="object-cover" />
+              </span>
+            ) : (
+              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-lg font-bold" style={{ background: a.deep, color: a.onDeep }}>E+F</span>
+            )}
             <div>
               <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: a.accent }}>
                 {a.tagline}
@@ -122,13 +140,13 @@ export default async function PostPage({
               <div className="mt-0.5 text-lg font-bold text-gray-900">{a.name}</div>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">{a.bio}</p>
               <div className="mt-4 flex flex-wrap gap-2">
-                <Link
+                {a.slug !== 'team' && <Link
                   href={a.page as '/'}
                   className="inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors"
                   style={{ color: a.accent, borderColor: `${a.accent}44` }}
                 >
                   Mehr über {a.name.split(' ')[0]} <ArrowUpRight size={12} />
-                </Link>
+                </Link>}
                 <Link
                   href={a.booking as '/'}
                   className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold text-white"
@@ -159,6 +177,52 @@ export default async function PostPage({
         <BlogCta author={a} />
       </div>
     </article>
+  )
+}
+
+/** Faktenleiste, drei Kennzahlen, Vorher/Nachher — der Kopf einer Kundenstory. */
+function StoryFacts({ post, accent, tint }: { post: Post; accent: string; tint: string }) {
+  const st: StoryData = post.story ?? {}
+  const facts = [
+    ['Unternehmen', st.facts?.company], ['Phase / Team', st.facts?.phase],
+    ['Programm', st.facts?.program], ['Coach', st.facts?.coach],
+  ].filter(([, v]) => v) as [string, string][]
+  const metrics = (st.metrics ?? []).filter((m) => m.value)
+  return (
+    <section className="mx-auto mt-10 max-w-4xl space-y-4 px-6">
+      {facts.length > 0 && (
+        <dl className="grid gap-4 rounded-2xl border border-gray-200 bg-white p-5 sm:grid-cols-4">
+          {facts.map(([k, v]) => (
+            <div key={k}>
+              <dt className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{k}</dt>
+              <dd className="mt-1 text-sm font-semibold text-gray-900">{v}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {metrics.length > 0 && (
+        <div className="grid gap-4 sm:grid-cols-3">
+          {metrics.map((m, i) => (
+            <div key={i} className="rounded-2xl p-5" style={{ background: tint }}>
+              <div className="text-3xl font-bold" style={{ color: accent }}>{m.value}</div>
+              <div className="mt-1 text-sm text-gray-600">{m.label}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      {(st.before || st.after) && (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+            <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Vorher</div>
+            <p className="mt-2 text-sm leading-relaxed text-gray-700">{st.before}</p>
+          </div>
+          <div className="rounded-2xl border p-5" style={{ borderColor: `${accent}44`, background: tint }}>
+            <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: accent }}>Nachher</div>
+            <p className="mt-2 text-sm leading-relaxed text-gray-800">{st.after}</p>
+          </div>
+        </div>
+      )}
+    </section>
   )
 }
 

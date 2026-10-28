@@ -4,7 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Save, Wand2, Image as ImageIcon, Loader2, Upload, Eye, Trash2, Check, X, AlertTriangle, Scissors, Tags,
 } from 'lucide-react'
-import { AUTHOR_LIST, AUTHORS } from '@/lib/blog/authors'
+import { ALL_AUTHORS, AUTHORS, type AuthorSlug } from '@/lib/blog/authors'
+import { FORMATS, type StoryData } from '@/lib/blog/formats'
 
 const LOCALES = ['de', 'en', 'es'] as const
 const LOCALE_LABEL: Record<string, string> = { de: 'Deutsch', en: 'English', es: 'Español' }
@@ -14,7 +15,9 @@ type Status = 'draft' | 'review' | 'scheduled' | 'published'
 export interface EditorPost {
   id?: string | null
   title: string; subtitle: string; excerpt: string; content: string
-  author_slug: 'markus' | 'aljona'
+  author_slug: AuthorSlug
+  format: string
+  story: StoryData | null
   tags: string[]
   hero_image: string | null; hero_alt: string | null; image_prompt: string | null
   status: Status; published_at: string | null; comments_open: boolean
@@ -25,7 +28,7 @@ export interface EditorPost {
 export interface Sibling { id: string; locale: string; slug: string; status: string; title: string }
 
 const EMPTY: EditorPost = {
-  title: '', subtitle: '', excerpt: '', content: '', author_slug: 'markus', tags: [],
+  title: '', subtitle: '', excerpt: '', content: '', author_slug: 'markus', tags: [], format: 'artikel', story: null,
   hero_image: null, hero_alt: null, image_prompt: null,
   status: 'draft', published_at: null, comments_open: true,
   locale: 'de', translation_of: null,
@@ -69,6 +72,7 @@ export function PostEditor({
           heroImage: post.hero_image, heroAlt: post.hero_alt, imagePrompt: post.image_prompt,
           status: post.status, publishedAt: post.published_at, commentsOpen: post.comments_open,
           locale: post.locale, translationOf: post.translation_of,
+          format: post.format, story: post.story,
         }),
       })
       const d = await res.json()
@@ -324,7 +328,7 @@ export function PostEditor({
 
           <div className="mt-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">Autor</div>
           <div className="mt-1.5 flex gap-1.5">
-            {AUTHOR_LIST.map((au) => (
+            {ALL_AUTHORS.map((au) => (
               <button
                 key={au.slug} onClick={() => set('author_slug', au.slug)}
                 className="flex-1 rounded-lg border px-2 py-1.5 text-xs font-semibold"
@@ -332,16 +336,28 @@ export function PostEditor({
                   ? { borderColor: au.accent, background: au.tint, color: au.accent }
                   : { borderColor: '#E5E7EB', color: '#6B7280' }}
               >
-                {au.name.split(' ')[0]}
+                {au.slug === 'team' ? 'Team' : au.name.split(' ')[0]}
               </button>
             ))}
           </div>
+
+          <div className="mt-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">Format</div>
+          <select
+            value={post.format} onChange={(e) => set('format', e.target.value)}
+            className="mt-1.5 w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs"
+          >
+            {FORMATS.map((f) => <option key={f.key} value={f.key}>{f.label}</option>)}
+          </select>
 
           <label className="mt-4 flex items-center gap-2 text-xs text-gray-600">
             <input type="checkbox" checked={post.comments_open} onChange={(e) => set('comments_open', e.target.checked)} />
             Kommentare offen
           </label>
         </div>
+
+        {post.format === 'kundenstory' && (
+          <StoryFields story={post.story ?? {}} onChange={(s) => set('story', s)} />
+        )}
 
         <div className="rounded-xl border border-gray-200 bg-white p-4">
           <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Titelbild</div>
@@ -542,6 +558,41 @@ function AssistPanel({
           )}
         </div>
       )}
+    </div>
+  )
+}
+
+
+/** Die Bausteine einer Kundenstory: Faktenleiste, drei Kennzahlen, Vorher/Nachher, Zitat. */
+function StoryFields({ story, onChange }: { story: StoryData; onChange: (s: StoryData) => void }) {
+  const facts = story.facts ?? {}
+  const metrics = [0, 1, 2].map((i) => story.metrics?.[i] ?? { value: '', label: '' })
+  const inp = 'w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs'
+  const setFact = (k: keyof NonNullable<StoryData['facts']>, v: string) => onChange({ ...story, facts: { ...facts, [k]: v } })
+  const setMetric = (i: number, k: 'value' | 'label', v: string) =>
+    onChange({ ...story, metrics: metrics.map((m, j) => (j === i ? { ...m, [k]: v } : m)) })
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-4">
+      <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Kundenstory</div>
+      <div className="mt-2 grid grid-cols-2 gap-1.5">
+        <input className={inp} placeholder="Unternehmen" value={facts.company ?? ''} onChange={(e) => setFact('company', e.target.value)} />
+        <input className={inp} placeholder="Phase / Teamgröße" value={facts.phase ?? ''} onChange={(e) => setFact('phase', e.target.value)} />
+        <input className={inp} placeholder="Programm" value={facts.program ?? ''} onChange={(e) => setFact('program', e.target.value)} />
+        <input className={inp} placeholder="Coach" value={facts.coach ?? ''} onChange={(e) => setFact('coach', e.target.value)} />
+      </div>
+      <div className="mt-3 text-[10px] font-semibold text-gray-400">Kennzahlen</div>
+      {metrics.map((m, i) => (
+        <div key={i} className="mt-1.5 grid grid-cols-[80px_1fr] gap-1.5">
+          <input className={inp} placeholder="48 %" value={m.value} onChange={(e) => setMetric(i, 'value', e.target.value)} />
+          <input className={inp} placeholder="mehr Umsatz" value={m.label} onChange={(e) => setMetric(i, 'label', e.target.value)} />
+        </div>
+      ))}
+      <div className="mt-3 text-[10px] font-semibold text-gray-400">Vorher → Nachher</div>
+      <textarea className={`${inp} mt-1.5`} rows={2} placeholder="Vorher" value={story.before ?? ''} onChange={(e) => onChange({ ...story, before: e.target.value })} />
+      <textarea className={`${inp} mt-1.5`} rows={2} placeholder="Nachher" value={story.after ?? ''} onChange={(e) => onChange({ ...story, after: e.target.value })} />
+      <div className="mt-3 text-[10px] font-semibold text-gray-400">Zitat</div>
+      <textarea className={`${inp} mt-1.5`} rows={2} placeholder="Zitat des Kunden" value={story.quote ?? ''} onChange={(e) => onChange({ ...story, quote: e.target.value })} />
+      <input className={`${inp} mt-1.5`} placeholder="Name, Rolle, Firma" value={story.quote_by ?? ''} onChange={(e) => onChange({ ...story, quote_by: e.target.value })} />
     </div>
   )
 }

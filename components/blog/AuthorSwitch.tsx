@@ -9,7 +9,7 @@ import { AUTHOR_LIST } from '@/lib/blog/authors'
  */
 export function AuthorSwitch({
   active, counts,
-}: { active?: 'markus' | 'aljona' | null; counts?: Record<string, number> }) {
+}: { active?: 'markus' | 'aljona' | 'team' | null; counts?: Record<string, number> }) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-2">
       <Link

@@ -1,6 +1,9 @@
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { ensureBlogSchema, type Post } from './posts'
+import { authorOf, type AuthorSlug } from './authors'
+import type { StoryData } from './formats'
+
 
 /**
  * Der Redaktionsbereich.
@@ -79,7 +82,9 @@ export const readingMinutes = (text: string) =>
 export interface SaveInput {
   id?: string | null
   title: string; subtitle?: string | null; excerpt?: string | null; content?: string | null
-  authorSlug: 'markus' | 'aljona'
+  authorSlug: AuthorSlug
+  format?: string | null
+  story?: StoryData | null
   tags?: string[]
   heroImage?: string | null; heroAlt?: string | null; imagePrompt?: string | null
   status?: PostStatus
@@ -132,7 +137,9 @@ export async function savePost(input: SaveInput): Promise<AdminPost> {
         excerpt = ${input.excerpt ?? null},
         content = ${input.content ?? null},
         author_slug = ${input.authorSlug},
-        author = ${input.authorSlug === 'markus' ? 'Markus Eilers' : 'Aljona Eilers'},
+        author = ${authorOf(input.authorSlug).name},
+        format = COALESCE(${input.format ?? null}, format),
+        story = COALESCE(${input.story === undefined ? null : JSON.stringify(input.story)}::jsonb, story),
         tags = ${JSON.stringify(input.tags ?? [])}::jsonb,
         hero_image = ${input.heroImage ?? null},
         hero_alt = ${input.heroAlt ?? null},
@@ -154,14 +161,14 @@ export async function savePost(input: SaveInput): Promise<AdminPost> {
   const rows = await db.execute(sql`
     INSERT INTO blog_posts (slug, title, subtitle, excerpt, content, author, author_slug, tags,
       hero_image, hero_alt, image_prompt, reading_minutes, status, published_at, comments_open,
-      locale, translation_of, updated_by)
+      locale, translation_of, updated_by, format, story)
     VALUES (${await uniqueSlug(input.title)}, ${input.title}, ${input.subtitle ?? null},
             ${input.excerpt ?? null}, ${input.content ?? null},
-            ${input.authorSlug === 'markus' ? 'Markus Eilers' : 'Aljona Eilers'}, ${input.authorSlug},
+            ${authorOf(input.authorSlug).name}, ${input.authorSlug},
             ${JSON.stringify(input.tags ?? [])}::jsonb, ${input.heroImage ?? null}, ${input.heroAlt ?? null},
             ${input.imagePrompt ?? null}, ${minutes}, ${status}, ${publishedAt},
             ${input.commentsOpen ?? true}, ${input.locale ?? 'de'}, ${input.translationOf ?? null},
-            ${input.userId ?? null})
+            ${input.userId ?? null}, ${input.format ?? 'artikel'}, ${input.story ? JSON.stringify(input.story) : null}::jsonb)
     RETURNING *, COALESCE(tags,'[]'::jsonb) AS tags`)
   const saved = (rows as unknown as AdminPost[])[0]
   await harvestIfPublished(null, saved)

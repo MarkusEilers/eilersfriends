@@ -1,4 +1,4 @@
-import { AUTHORS, type Author } from './authors'
+import { AUTHORS, type Author, type AuthorSlug } from './authors'
 
 /**
  * Die vier Helfer neben dem Text.
@@ -44,7 +44,7 @@ Regeln, die ueber allem stehen:
 const SPRACHE: Record<string, string> = { en: 'Englisch', es: 'Spanisch', de: 'Deutsch' }
 
 export async function assist(kind: AssistKind, input: {
-  authorSlug: 'markus' | 'aljona'
+  authorSlug: AuthorSlug
   title?: string; subtitle?: string; content?: string; tags?: string[]
   targetLocale?: string; excerpt?: string
 }) {

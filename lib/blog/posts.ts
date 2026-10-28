@@ -1,5 +1,9 @@
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
+import type { AuthorSlug } from './authors'
+
+export { FORMATS, FORMAT_LABEL, type FormatKey, type StoryData } from './formats'
+import type { StoryData } from './formats'
 
 export interface Post {
   id: string
@@ -12,12 +16,15 @@ export interface Post {
   content: string | null
   hero_image: string | null
   og_image: string | null
-  author_slug: 'markus' | 'aljona'
+  author_slug: AuthorSlug
+  format?: string | null
+  story?: StoryData | null
   tags: string[]
   reading_minutes: number | null
   status: string
   published_at: string | null
 }
+
 
 let ready = false
 
@@ -50,6 +57,8 @@ export async function ensureBlogSchema() {
     sql`ALTER TABLE blog_posts ADD COLUMN IF NOT EXISTS tags JSONB NOT NULL DEFAULT '[]'::jsonb`,
     sql`ALTER TABLE blog_posts ADD COLUMN IF NOT EXISTS locale VARCHAR(5) NOT NULL DEFAULT 'de'`,
     sql`ALTER TABLE blog_posts ADD COLUMN IF NOT EXISTS translation_of UUID`,
+    sql`ALTER TABLE blog_posts ADD COLUMN IF NOT EXISTS format VARCHAR(24) NOT NULL DEFAULT 'artikel'`,
+    sql`ALTER TABLE blog_posts ADD COLUMN IF NOT EXISTS story JSONB`,
     sql`CREATE INDEX IF NOT EXISTS blog_posts_author_idx ON blog_posts (author_slug, published_at DESC)`,
     sql`CREATE INDEX IF NOT EXISTS blog_posts_locale_idx ON blog_posts (locale, published_at DESC)`,
   ]) {
@@ -68,17 +77,22 @@ export async function ensureBlogSchema() {
 export async function listPosts(opts?: {
   author?: string | null; limit?: number; includeDrafts?: boolean; exclude?: string
   locale?: string
+  /** Hub-Filter */
+  format?: string | null; authors?: string[] | null; tag?: string | null
 }): Promise<Post[]> {
   await ensureBlogSchema()
   const locale = opts?.locale ?? 'de'
   const rows = await db.execute(sql`
     SELECT p.id, p.slug, p.title, p.subtitle, p.excerpt, p.hero_image, p.og_image, p.author_slug,
            COALESCE(p.tags, '[]'::jsonb) AS tags, p.reading_minutes, p.status, p.published_at,
-           p.locale, p.translation_of
+           p.locale, p.translation_of, p.format, p.story
     FROM blog_posts p
     WHERE ${opts?.includeDrafts ? sql`TRUE` : sql`p.status = 'published' AND p.published_at IS NOT NULL`}
       ${opts?.author ? sql`AND p.author_slug = ${opts.author}` : sql``}
       ${opts?.exclude ? sql`AND p.slug <> ${opts.exclude}` : sql``}
+      ${opts?.format ? sql`AND p.format = ${opts.format}` : sql``}
+      ${opts?.authors?.length ? sql`AND p.author_slug IN (${sql.join(opts.authors.map((a) => sql`${a}`), sql`, `)})` : sql``}
+      ${opts?.tag ? sql`AND COALESCE(p.tags, '[]'::jsonb) ? ${opts.tag}` : sql``}
       AND (
         p.locale = ${locale}
         OR (p.locale = 'de' AND NOT EXISTS (
@@ -118,7 +132,7 @@ export async function getPost(slug: string, includeDrafts = false): Promise<Post
 export async function relatedPosts(post: Post, limit = 3): Promise<Post[]> {
   await ensureBlogSchema()
   const rows = await db.execute(sql`
-    SELECT id, slug, title, subtitle, excerpt, hero_image, og_image, author_slug,
+    SELECT id, slug, title, subtitle, excerpt, hero_image, og_image, author_slug, format,
            COALESCE(tags,'[]'::jsonb) AS tags, reading_minutes, status, published_at,
            (SELECT COUNT(*) FROM jsonb_array_elements_text(COALESCE(tags,'[]'::jsonb)) t
               WHERE t IN (SELECT jsonb_array_elements_text(${JSON.stringify(post.tags ?? [])}::jsonb))) AS shared
@@ -137,4 +151,23 @@ export async function countsByAuthor(): Promise<Record<string, number>> {
   const out: Record<string, number> = {}
   for (const r of rows as unknown as { author_slug: string; n: number }[]) out[r.author_slug] = r.n
   return out
+}
+
+/** Die haeufigsten Schlagworte veroeffentlichter Beitraege — fuer den Themen-Filter. */
+export async function topTags(limit = 8): Promise<string[]> {
+  await ensureBlogSchema()
+  const rows = await db.execute(sql`
+    SELECT t AS tag, COUNT(*)::int AS n
+    FROM blog_posts, jsonb_array_elements_text(COALESCE(tags,'[]'::jsonb)) t
+    WHERE status = 'published' GROUP BY t ORDER BY n DESC, t LIMIT ${limit}`)
+  return (rows as unknown as { tag: string }[]).map((r) => r.tag)
+}
+
+/** Veroeffentlichte Frameworks als Karten im Hub. */
+export async function frameworkCards(limit = 8): Promise<Array<{ slug: string; title: string; excerpt: string | null; image: string | null }>> {
+  const rows = await db.execute(sql`
+    SELECT slug, title, meta_description AS excerpt, og_image_url AS image
+    FROM landing_pages WHERE template_key = 'framework-leadmagnet' AND status = 'published'
+    ORDER BY updated_at DESC LIMIT ${limit}`).catch(() => [])
+  return rows as unknown as Array<{ slug: string; title: string; excerpt: string | null; image: string | null }>
 }
