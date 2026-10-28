@@ -22,4 +22,10 @@ export interface StoryData {
   metrics?: Array<{ value: string; label: string }>
   before?: string; after?: string
   quote?: string; quote_by?: string
+  /** Kasten „Für Dich, wenn …“ in der Seitenleiste */
+  for_whom?: string
+  /** Framework, das hinter der Story steht (Slug der Framework-Seite) */
+  framework_slug?: string
+  /** Audiofassung zum Anhören */
+  audio_url?: string
 }

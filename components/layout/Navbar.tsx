@@ -104,7 +104,7 @@ const NAV_ITEMS: NavItem[] = [
       { key: 'about',  descKey: 'aboutDesc',  href: '/#coaches', icon: BookOpen, accent: '#0F1E3A' },
     ],
   },
-  { kind: 'link', key: 'results', href: '/#ergebnisse' },
+  { kind: 'link', key: 'stories', href: '/blog' },
   { kind: 'link', key: 'contact', href: '/kontakt' },
 ]
 

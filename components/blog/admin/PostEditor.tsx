@@ -354,7 +354,7 @@ export function PostEditor({
           </label>
         </div>
 
-        {post.format === 'kundenstory' && (
+        {(
           <StoryFields story={post.story ?? {}} onChange={(s) => set('story', s)} />
         )}
 
@@ -572,7 +572,7 @@ function StoryFields({ story, onChange }: { story: StoryData; onChange: (s: Stor
     onChange({ ...story, metrics: metrics.map((m, j) => (j === i ? { ...m, [k]: v } : m)) })
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4">
-      <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Kundenstory</div>
+      <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Story-Bausteine (optional)</div>
       <div className="mt-2 grid grid-cols-2 gap-1.5">
         <input className={inp} placeholder="Unternehmen" value={facts.company ?? ''} onChange={(e) => setFact('company', e.target.value)} />
         <input className={inp} placeholder="Phase / Teamgröße" value={facts.phase ?? ''} onChange={(e) => setFact('phase', e.target.value)} />
@@ -589,6 +589,11 @@ function StoryFields({ story, onChange }: { story: StoryData; onChange: (s: Stor
       <div className="mt-3 text-[10px] font-semibold text-gray-400">Vorher → Nachher</div>
       <textarea className={`${inp} mt-1.5`} rows={2} placeholder="Vorher" value={story.before ?? ''} onChange={(e) => onChange({ ...story, before: e.target.value })} />
       <textarea className={`${inp} mt-1.5`} rows={2} placeholder="Nachher" value={story.after ?? ''} onChange={(e) => onChange({ ...story, after: e.target.value })} />
+      <div className="mt-3 text-[10px] font-semibold text-gray-400">Für Dich, wenn …</div>
+      <textarea className={`${inp} mt-1.5`} rows={2} placeholder="du als Gründer:in noch die meisten Deals selbst abschließt" value={story.for_whom ?? ''} onChange={(e) => onChange({ ...story, for_whom: e.target.value })} />
+      <div className="mt-3 text-[10px] font-semibold text-gray-400">Framework dahinter (Slug) · Audio-URL</div>
+      <input className={`${inp} mt-1.5`} placeholder="instant-influence" value={story.framework_slug ?? ''} onChange={(e) => onChange({ ...story, framework_slug: e.target.value })} />
+      <input className={`${inp} mt-1.5`} placeholder="https://…/audio.mp3" value={story.audio_url ?? ''} onChange={(e) => onChange({ ...story, audio_url: e.target.value })} />
       <div className="mt-3 text-[10px] font-semibold text-gray-400">Zitat</div>
       <textarea className={`${inp} mt-1.5`} rows={2} placeholder="Zitat des Kunden" value={story.quote ?? ''} onChange={(e) => onChange({ ...story, quote: e.target.value })} />
       <input className={`${inp} mt-1.5`} placeholder="Name, Rolle, Firma" value={story.quote_by ?? ''} onChange={(e) => onChange({ ...story, quote_by: e.target.value })} />
