@@ -364,7 +364,11 @@ export async function saveStepData(stateId: string, data: unknown, progress?: nu
   `)
   await db.execute(sql`
     UPDATE strategy_step_states
-    SET data = ${JSON.stringify(data)}::jsonb,
+    SET data = CASE
+          -- Der Funnel-Rechner speichert unter data.planner; das Arbeitsblatt darf ihn nicht ueberschreiben.
+          WHEN data ? 'planner' AND NOT (${JSON.stringify(data)}::jsonb ? 'planner')
+            THEN ${JSON.stringify(data)}::jsonb || jsonb_build_object('planner', data->'planner')
+          ELSE ${JSON.stringify(data)}::jsonb END,
         progress = COALESCE(${progress ?? null}, progress),
         status = CASE WHEN status = 'available' THEN 'in_progress'::strategy_step_status ELSE status END,
         started_at = COALESCE(started_at, now()),
@@ -468,4 +472,18 @@ export async function logAiRun(input: {
     RETURNING id
   `)
   return (res as unknown as Array<{ id: string }>)[0]?.id
+}
+
+
+/** Nur den Funnel-Rechner speichern — der Rest des Arbeitsstands bleibt, wie er ist. */
+export async function saveStepPlanner(stateId: string, planner: unknown) {
+  await ensureStrategySchema()
+  await db.execute(sql`
+    UPDATE strategy_step_states
+    SET data = COALESCE(data, '{}'::jsonb) || jsonb_build_object('planner', ${JSON.stringify(planner)}::jsonb),
+        status = CASE WHEN status = 'available' THEN 'in_progress'::strategy_step_status ELSE status END,
+        started_at = COALESCE(started_at, now()),
+        updated_at = now()
+    WHERE id = ${stateId}
+  `)
 }

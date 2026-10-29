@@ -9,7 +9,7 @@ import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
 import {
   ensureStrategySchema, listProducts, createProduct, listStepStates,
-  ensureStepState, saveStepData, transitionStep, listBlocks,
+  ensureStepState, saveStepData, saveStepPlanner, transitionStep, listBlocks,
   addComment, listComments, type StepStatus,
 } from '@/lib/db/queries/strategy'
 
@@ -89,6 +89,12 @@ export async function saveStepAction(stateId: string, data: unknown, progress?: 
   const ctx = await currentContext()
   await saveStepData(stateId, data, progress, ctx.userId)
   revalidatePath('/dashboard/strategie')
+  return { ok: true }
+}
+
+export async function savePlannerAction(stateId: string, planner: unknown) {
+  await currentContext()
+  await saveStepPlanner(stateId, planner)
   return { ok: true }
 }
 

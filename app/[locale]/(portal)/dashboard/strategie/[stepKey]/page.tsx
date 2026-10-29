@@ -11,6 +11,7 @@ import { CommentPanel } from '@/components/strategy/CommentPanel'
 import { fieldsForStep } from '@/lib/strategy/step-fields'
 import { getStepIOAction } from '@/lib/actions/strategy-agents'
 import { StepIOBanner, StepInputs, StepOutputs } from '@/components/strategy/StepIO'
+import { FunnelPlanner } from '@/components/strategy/FunnelPlanner'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -105,9 +106,15 @@ export default async function StrategieStepPage({ params, searchParams }:
           <section className="rounded-2xl border border-gray-200 bg-white p-6">
             <h2 className="text-sm font-bold text-gray-900">Work <span className="font-normal text-gray-400">· Eure Arbeit</span></h2>
             <p className="mt-0.5 text-xs text-gray-500">Kurz und konkret — lieber ein präziser Satz als drei vage.</p>
+            {step.key === 'funnel-math' && (
+              <div className="mt-5">
+                <FunnelPlanner stateId={String(state.id)} readOnly={readOnly}
+                  initial={((state.data ?? {}) as Record<string, unknown>).planner as Record<string, never> | null ?? null} />
+              </div>
+            )}
             <div className="mt-5">
               <StepEditor stateId={String(state.id)} fields={fields}
-                initial={(state.data ?? {}) as Record<string, unknown>} readOnly={readOnly} />
+                initial={withoutPlanner((state.data ?? {}) as Record<string, unknown>)} readOnly={readOnly} />
             </div>
           </section>
 
@@ -143,4 +150,11 @@ export default async function StrategieStepPage({ params, searchParams }:
       </div>
     </div>
   )
+}
+
+/** Das Arbeitsblatt bekommt den Rechner nicht mit — sonst ueberschriebe es ihn mit einem alten Stand. */
+function withoutPlanner(d: Record<string, unknown>) {
+  const { planner: _planner, ...rest } = d
+  void _planner
+  return rest
 }
