@@ -7,6 +7,9 @@ import { ensureRolloutSchema } from '@/lib/rollouts/schema'
 import { decideChange } from '@/lib/actions/rollouts-admin'
 import { InviteButton } from '@/components/admin/InviteButton'
 import { setViewAs } from '@/lib/actions/view-as'
+import { listGoals, goalHistory, GOAL_TEMPLATES } from '@/lib/goals/schema'
+import { GoalsBoard } from '@/components/goals/GoalsBoard'
+import { GoalsEditor } from '@/components/goals/GoalsEditor'
 
 const ROLE_LABEL: Record<string, string> = { owner: 'Owner', admin: 'PowerUser', lead: 'Lead', member: 'Member', viewer: 'Viewer' }
 const PROGRAM_ROLE_LABEL: Record<string, string> = { marketing: 'Marketing', sales: 'Sales', programm: 'Programm' }
@@ -17,7 +20,8 @@ export default async function CompanyTeamPage({ params }: { params: Promise<{ id
   await ensureRolloutSchema()
   const [co] = (await db.execute(sql`SELECT id, name, domain FROM companies WHERE id=${id}`)) as unknown as { id: string; name: string; domain: string | null }[]
   if (!co) notFound()
-  const [teams, members] = await Promise.all([listTeams(id), listMembers(id)])
+  const [teams, members, goals] = await Promise.all([listTeams(id), listMembers(id), listGoals(id)])
+  const goalHist = await goalHistory(goals.map((g) => g.id))
   const rollouts = (await db.execute(sql`
     SELECT r.id, r.title, r.code_prefix, r.color, r.start_date::text AS start_date, r.end_date::text AS end_date, r.cadence, r.locale, r.phase, r.created_from, v.version,
       (SELECT count(*)::int FROM rollout_steps s WHERE s.rollout_id=r.id) AS steps,
@@ -36,6 +40,17 @@ export default async function CompanyTeamPage({ params }: { params: Promise<{ id
     <div className="mx-auto max-w-4xl">
       <h1 className="text-2xl font-bold text-gray-900">{co.name}</h1>
       <p className="mt-1 text-sm text-gray-500">{co.domain} · {teams.length} Teams · {new Set(members.map((m) => m.user_id)).size} Mitglieder</p>
+
+      <section id="ziele" className="mt-6">
+        <h2 className="text-sm font-bold uppercase tracking-widest text-gray-400">Zielsetzung</h2>
+        <div className="mt-3"><GoalsBoard goals={goals} history={goalHist} compact /></div>
+        <details className="mt-3 rounded-xl border border-gray-200 bg-gray-50 p-3">
+          <summary className="cursor-pointer text-xs font-semibold text-gray-700">Ziele bearbeiten</summary>
+          <div className="mt-3">
+            <GoalsEditor companyId={id} goals={goals} templates={GOAL_TEMPLATES.map((t) => ({ key: t.key, team: t.team, title: t.title }))} />
+          </div>
+        </details>
+      </section>
 
       <div className="mt-6 flex items-baseline justify-between">
         <h2 className="text-sm font-bold uppercase tracking-widest text-gray-400">Programme (Rollouts)</h2>

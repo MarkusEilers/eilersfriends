@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { signOutAdminAction } from '@/lib/actions/offers'
 import {
   LayoutDashboard, Mail, LayoutTemplate, ListOrdered, Users, FileText, Settings,
-  BookOpen, Image as ImageIcon, FileSignature, LogOut, Menu, X, Webhook, UserCircle, CalendarClock, AlertTriangle, PhoneCall, ShoppingCart, PenLine, CalendarDays, Cpu, Radar, Building2 } from 'lucide-react'
+  BookOpen, Image as ImageIcon, FileSignature, LogOut, Menu, X, Webhook, UserCircle, CalendarClock, AlertTriangle, PhoneCall, ShoppingCart, PenLine, CalendarDays, Cpu, Radar, Building2, Target } from 'lucide-react'
 
 type NavGroup = {
   label: string
@@ -32,6 +32,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Angebote',  href: '/admin/offers', icon: FileSignature },
       { label: 'Kunden & Teams', href: '/admin/companies', icon: Building2 },
+      { label: 'Ziele der Kunden', href: '/admin/ziele', icon: Target },
       { label: 'Signal-Mails', href: '/admin/signals', icon: Mail },
       { label: 'Checkouts', href: '/admin/checkout', icon: ShoppingCart },
       { label: 'Terminbuchung', href: '/admin/schedule', icon: CalendarClock },
