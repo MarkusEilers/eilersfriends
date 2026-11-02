@@ -172,6 +172,23 @@ async function busyFor(slug: string, startISO: string, endISO: string): Promise<
 }
 
 export type SlotOpts = { durationMin: number; bufferBeforeMin?: number; bufferAfterMin?: number; blockedDayKeys?: Set<string>; horizonDays?: number }
+
+/**
+ * Termine in Berliner Ortszeit anlegen, nicht in UTC.
+ *
+ * Mit timeZone 'UTC' stimmt der Zeitpunkt, aber Outlook fuehrt den Termin als
+ * „(UTC) Koordinierte Weltzeit" — in der Einladung an den Gast steht dann z. B.
+ * 11:00 statt 12:00, seit der Zeitumstellung eine Stunde, im Sommer zwei
+ * Stunden daneben. Mit Ortszeit + Windows-Zeitzonenname rechnet Outlook die
+ * Sommer-/Winterzeit selbst und zeigt jedem Empfaenger seine eigene Zeit.
+ */
+const GRAPH_TZ = 'W. Europe Standard Time'
+function berlinWall(d: Date): { dateTime: string; timeZone: string } {
+  const p: Record<string, string> = {}
+  for (const x of new Intl.DateTimeFormat('en-CA', { timeZone: WORK.tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).formatToParts(d)) p[x.type] = x.value
+  return { dateTime: `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}`, timeZone: GRAPH_TZ }
+}
+
 function pad2(n: number) { return String(n).padStart(2, '0') }
 
 export async function freeSlots(slug: string, opts: SlotOpts): Promise<{ slots: string[]; connected: boolean }> {
@@ -225,8 +242,8 @@ export async function createBooking(slug: string, startISO: string, durationMin:
     body: JSON.stringify({
       subject: opts.subject,
       body: { contentType: 'html', content: opts.bodyHtml },
-      start: { dateTime: start.toISOString(), timeZone: 'UTC' },
-      end: { dateTime: end.toISOString(), timeZone: 'UTC' },
+      start: berlinWall(start),
+      end: berlinWall(end),
       attendees, isOnlineMeeting: true, onlineMeetingProvider: 'teamsForBusiness',
     }),
   })
@@ -243,7 +260,7 @@ export async function updateEventTime(slug: string, eventId: string, startISO: s
   const end = new Date(start.getTime() + durationMin * 60000)
   const res = await fetch(`https://graph.microsoft.com/v1.0/me/events/${encodeURIComponent(eventId)}`, {
     method: 'PATCH', headers: { Authorization: `Bearer ${at}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ start: { dateTime: start.toISOString(), timeZone: 'UTC' }, end: { dateTime: end.toISOString(), timeZone: 'UTC' } }),
+    body: JSON.stringify({ start: berlinWall(start), end: berlinWall(end) }),
   })
   const data = await res.json().catch(() => ({} as Record<string, unknown>))
   if (!res.ok) { const e = (data as { error?: { message?: string } }).error; return { ok: false, error: e?.message || 'update_failed' } }
