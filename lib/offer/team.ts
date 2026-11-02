@@ -13,7 +13,7 @@ export const TEAM: TeamMember[] = [
     photo: '/aljona-photo.jpg', accent: '#D4192B', calendly: '/schedule/aljona' },
   { key: 'cosima', name: 'Cosima Bär', role: 'Head of Academy',
     bio: 'Begleitet Kunden durch Onboarding und Umsetzung — damit aus Plänen messbare Ergebnisse im Alltag werden.',
-    accent: '#0E9DDD', calendly: '/schedule/cosima' },
+    photo: '/cosima-photo.jpg', accent: '#0E9DDD', calendly: '/schedule/cosima' },
   { key: 'daniel', name: 'Daniel', role: 'Sales Development',
     bio: 'Verantwortet die systematische Erstansprache und Qualifizierung — der Motor für eine planbare Pipeline.',
     photo: '/daniel-photo.jpg', accent: '#7C3AED', calendly: '/schedule/daniel' },
