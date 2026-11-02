@@ -11,7 +11,7 @@ export const TEAM: TeamMember[] = [
   { key: 'aljona', name: 'Aljona Eilers', role: 'Liquid Leadership',
     bio: 'TEDx Speaker, WSJ Bestseller-Autorin und ehemalige Bolshoi-Ballerina. Hat 500+ Führungskräfte als Leadership & Culture Coach begleitet — Transformational Leadership für Gründer:innen, die ihre nächste Stufe erreichen wollen.',
     photo: '/aljona-photo.jpg', accent: '#D4192B', calendly: '/schedule/aljona' },
-  { key: 'cosima', name: 'Cosima Bär', role: 'Customer Success',
+  { key: 'cosima', name: 'Cosima Bär', role: 'Head of Academy',
     bio: 'Begleitet Kunden durch Onboarding und Umsetzung — damit aus Plänen messbare Ergebnisse im Alltag werden.',
     accent: '#0E9DDD', calendly: '/schedule/cosima' },
   { key: 'daniel', name: 'Daniel', role: 'Sales Development',
