@@ -221,7 +221,7 @@ export async function analyseTranscript(input: {
     user: `## Kennzahlen (gezählt)\n${facts}\n\n## Transkript\n${renderForModel(parsed, seller)}`,
     schema: outputSchema(),
     temperature: 0.2,
-    maxTokens: 8000,
+    maxTokens: 14000,
     anlass: { agentKey: 'call-check', stepKey: input.checkId },
   })
 

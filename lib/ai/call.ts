@@ -187,9 +187,13 @@ export async function callModel(c: ModelCall): Promise<ModelResult> {
   const fehlend = missingRequired(c.schema, erste.value)
   if (!fehlend.length) return erste
 
-  const nach = await callOnce({
+  // Die Nachfrage darf nie das schon vorhandene Ergebnis kosten: Bricht sie ab
+  // (z. B. abgeschnittenes JSON), gilt die erste Antwort, so unvollstaendig sie ist.
+  let nach: ModelResult
+  try {
+    nach = await callOnce({
     ...c,
-    maxTokens: Math.min(c.maxTokens ?? 4000, 2000),
+    maxTokens: c.maxTokens ?? 4000,
     user: `${c.user}
 
 ────────────────────────────────────────
@@ -197,7 +201,11 @@ Du hast bereits geantwortet, aber ${fehlend.length === 1 ? 'ein Pflichtfeld fehl
 
 Das hier hast Du schon geliefert — uebernimm es unveraendert und ergaenze nur das Fehlende:
 ${JSON.stringify(erste.value, null, 2).slice(0, 6000)}`,
-  })
+    })
+  } catch (e) {
+    console.error('[callModel] Nachfrage fuer fehlende Felder gescheitert, erste Antwort bleibt:', e instanceof Error ? e.message : e)
+    return erste
+  }
 
   // Zusammenfuehren: Was schon dastand, gewinnt — der zweite Aufruf soll
   // ergaenzen, nicht ueberschreiben.
