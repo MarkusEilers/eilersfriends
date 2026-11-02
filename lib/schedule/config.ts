@@ -26,6 +26,7 @@ export type Team = { slug: string; name: string; members: string[]; sub?: string
 export const TEAMS: Team[] = [
   { slug: 'team', name: 'Aljona & Markus', members: ['markus', 'aljona'] },
   { slug: 'daniel-markus', name: 'Daniel & Markus', members: ['markus', 'daniel'] },
+  { slug: 'cosima-markus', name: 'Cosima & Markus', members: ['markus', 'cosima'], sub: 'SalesMade Academy' },
 ]
 
 /** Bleibt als Name fuer das erste Team — aeltere Aufrufer erwarten ihn. */
