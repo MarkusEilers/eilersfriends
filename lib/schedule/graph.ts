@@ -205,7 +205,8 @@ export async function freeSlots(slug: string, opts: SlotOpts): Promise<{ slots: 
   const earliest = now + WORK.leadHours * 3600e3
   const week = await intervalsForOwner(slug)
   const out: string[] = []
-  const maxOut = horizon > WORK.horizonDays ? 5000 : 300
+  // Obergrenze nur als Notbremse: 300 Slots reichten bei 15-Min-Raster fuer gut zwei Wochen.
+  const maxOut = horizon > WORK.horizonDays ? 5000 : 4000
   for (let dd = 0; dd <= horizon && out.length < maxOut; dd++) {
     const probe = new Date(now + dd * 864e5)
     const bp = berlinParts(probe, WORK.tz)
