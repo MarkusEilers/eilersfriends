@@ -3,7 +3,8 @@ import { refreshAllCaches } from '@/lib/schedule/availability-cache'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 60
+// Neun Typen à ~4 s bei 3 Monaten Horizont — Luft nach oben, wenn Typen dazukommen.
+export const maxDuration = 300
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization')
