@@ -12,6 +12,7 @@ import { getLead } from '@/lib/mystery-shopping/slots'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+export const metadata = { title: 'Mystery Shopping buchen · Eilers+Friends', robots: { index: false } }
 
 const SLUG = 'mystery-shopping'
 const PRICE = 1

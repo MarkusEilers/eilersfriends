@@ -1,12 +1,14 @@
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
 import { Sparkles, GraduationCap, Rocket, BookOpen, ArrowRight } from 'lucide-react'
+import { getAvailability } from '@/lib/mystery-shopping/slots'
 
 /** Promo-/„Ads"-Block auf der Startseite — eigene Services/Aktionen + Quiz-Teaser. */
 export async function PromoSection() {
   const t = await getTranslations('promo')
+  const ms = await getAvailability().catch(() => null)
   const cards = [
-    { key: 'academy', href: '/salesmade', icon: GraduationCap },
+    { key: 'academy', href: '/academy', icon: GraduationCap },
     { key: 'jumpstart', href: '/kontakt', icon: Rocket },
     { key: 'frameworks', href: '/frameworks', icon: BookOpen },
   ] as const
@@ -19,11 +21,32 @@ export async function PromoSection() {
           <h2 className="mt-2 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>{t('heading')}</h2>
         </div>
 
+        {/* Werbebanner Mystery Shopping — 1-€-Einstieg, Plätze live aus der Buchung. */}
+        <Link href={'/mystery-shopping' as '/'} className="group mt-10 block overflow-hidden rounded-3xl" style={{ backgroundColor: '#0E1733' }}>
+          <div className="grid items-stretch md:grid-cols-[1.4fr_1fr]">
+            <div className="p-8 sm:p-10">
+              <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#6FA3FF' }}>{t('msTag')}</span>
+              <h3 className="mt-3 text-2xl font-bold text-white sm:text-3xl">{t('msTitle')}</h3>
+              <p className="mt-3 text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>{t('msDesc')}</p>
+              <div className="mt-6 flex flex-wrap items-center gap-4">
+                <span className="inline-flex items-center gap-2 rounded-[10px] px-6 py-3 text-sm font-bold text-white transition-transform group-hover:translate-x-0.5" style={{ backgroundColor: '#2563FF' }}>
+                  {t('msCta')} <ArrowRight size={16} />
+                </span>
+                {ms && <span className="text-sm font-semibold text-white/80">{ms.soldOut ? t('msSoldOut') : t('msFree', { free: ms.free, capacity: ms.capacity })}</span>}
+              </div>
+            </div>
+            <div className="relative min-h-[220px] bg-cover bg-center" style={{ backgroundImage: 'url(/mystery/hero.jpg)' }}>
+              <span className="absolute left-5 top-5 flex h-[84px] w-[84px] -rotate-12 items-center justify-center rounded-full bg-white text-lg font-bold text-[#EB0028] shadow-lg line-through decoration-[3px]">997 €</span>
+              <span className="absolute left-[70px] top-[30px] flex h-[104px] w-[104px] rotate-[8deg] flex-col items-center justify-center rounded-full text-3xl font-bold text-white shadow-lg" style={{ backgroundColor: '#16A34A' }}>1 €</span>
+            </div>
+          </div>
+        </Link>
+
         {/* Teaser — Hero der Promo-Sektion.
             Übergang: zeigt auf den Gesprächs-Check, bis die Quiz-Engine steht.
             Vorher führte er zur Newsletter-Anmeldung und versprach eine Analyse,
             die es nicht gab. Die Quiz-Texte bleiben in promo.quiz*. */}
-        <Link href={'/gespraechs-check' as '/'} className="group mt-10 block overflow-hidden rounded-3xl p-8 sm:p-10"
+        <Link href={'/gespraechs-check' as '/'} className="group mt-6 block overflow-hidden rounded-3xl p-8 sm:p-10"
           style={{ background: 'linear-gradient(135deg, #0F1E3A 0%, #15315E 100%)' }}>
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-2xl">

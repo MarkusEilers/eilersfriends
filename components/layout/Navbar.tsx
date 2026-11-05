@@ -43,6 +43,7 @@ interface MegaItem {
   headingKey: string
   links: MegaLink[]
   featured?: {
+    badgeKey?: string
     titleKey: string
     bodyKey: string
     ctaKey: string
@@ -92,6 +93,15 @@ const NAV_ITEMS: NavItem[] = [
       { key: 'discoveryScorecard', descKey: 'discoveryScorecardDesc', href: '/frameworks',          icon: ClipboardCheck, accent: '#0F1E3A' },
       { key: 'blog',               descKey: 'blogDesc',               href: '/blog',               icon: Newspaper,     accent: '#6B5CE7' },
     ],
+    featured: {
+      badgeKey: 'featuredMysteryBadge',
+      titleKey: 'featuredMysteryTitle',
+      bodyKey:  'featuredMysteryBody',
+      ctaKey:   'featuredMysteryCta',
+      href: '/mystery-shopping',
+      accent: '#EB0028',
+      bg: 'linear-gradient(135deg, #FFEBEE 0%, #F7C9CF 100%)',
+    },
   },
   {
     kind: 'mega',
@@ -320,7 +330,7 @@ export function Navbar() {
                             <div>
                               <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest"
                                 style={{ backgroundColor: 'rgba(255,255,255,0.5)', color: item.featured.accent }}>
-                                <Sparkles size={10} /> {t("firstThirtyBadge")}
+                                <Sparkles size={10} /> {t(item.featured.badgeKey ?? "firstThirtyBadge")}
                               </span>
                               <h4 className="mt-3 text-lg font-bold" style={{ color: '#0D0D0B' }}>
                                 {t(item.featured.titleKey)}

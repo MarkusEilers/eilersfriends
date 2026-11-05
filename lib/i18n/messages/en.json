@@ -40,15 +40,19 @@
     "markusDesc": "Revenue Systems · B2B sales · SalesMade",
     "about": "About Eilers+Friends",
     "aboutDesc": "Our story and our promise",
-    "featuredProgrammesTitle": "Academy soft-launch.",
+    "featuredProgrammesTitle": "Next Academy flight: 20 November.",
     "featuredProgrammesBody": "30 founding seats, lifetime price lock. A few slots remaining.",
     "featuredProgrammesCta": "Get on the list of the first 30",
     "firstThirtyBadge": "The first 30",
-    "stories": "Stories"
+    "stories": "Stories",
+    "featuredMysteryTitle": "Mystery Shopping · €1 instead of €997",
+    "featuredMysteryBody": "We hold a first call with your team as an imaginary customer. A 14-page report and a training session.",
+    "featuredMysteryCta": "Book Mystery Shopping",
+    "featuredMysteryBadge": "Only 16 per quarter"
   },
   "topbar": {
-    "message": "We launch in 2026 — only 30 founding seats · 90-day money-back",
-    "link": "To the SalesMade Academy"
+    "message": "The next Academy flight starts on 20 November.",
+    "link": "Secure your seat now"
   },
   "hero": {
     "pill1": "For ambitious B2B founders and leaders",
@@ -157,7 +161,7 @@
     }
   },
   "academy": {
-    "pill": "Soft-Launch 2026 · Only 30 Spots",
+    "pill": "Next flight: 20 November",
     "eyebrow": "",
     "headline": "SalesMade Academy",
     "tagline": "Bridging the sales education gap.",
@@ -1936,7 +1940,13 @@
     "checkTag": "Call check · free",
     "checkTitle": "Where did your last first call tip over?",
     "checkDesc": "Upload the transcript and get the same analysis as in a mystery shopping: your chain of questions, the objections, the moment it tipped — and three sentences for your next call.",
-    "checkCta": "Analyse a call"
+    "checkCta": "Analyse a call",
+    "msTag": "Mystery Shopping · only 16 per quarter",
+    "msTitle": "Which league is your sales team playing in?",
+    "msDesc": "We hold a first call with your team as an imaginary customer. You get 14 pages of clarity and a free training session on the most important skill.",
+    "msCta": "Book Mystery Shopping",
+    "msFree": "Only {free} of {capacity} left",
+    "msSoldOut": "Sold out this quarter"
   },
   "callCheck": {
     "meta": {

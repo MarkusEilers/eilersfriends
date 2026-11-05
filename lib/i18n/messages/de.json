@@ -40,15 +40,19 @@
     "markusDesc": "Revenue Systems · B2B-Vertrieb · SalesMade",
     "about": "Über Eilers+Friends",
     "aboutDesc": "Unsere Geschichte und unser Versprechen",
-    "featuredProgrammesTitle": "Academy Soft-Launch.",
+    "featuredProgrammesTitle": "Nächster Academy-Flight: 20. November.",
     "featuredProgrammesBody": "30 Founding-Plätze, Lifetime-Preis-Lock. Wenige Slots noch frei.",
     "featuredProgrammesCta": "Bei den ersten 30 dabei sein",
     "firstThirtyBadge": "Die ersten 30",
-    "stories": "Stories"
+    "stories": "Stories",
+    "featuredMysteryTitle": "Mystery Shopping · 1 € statt 997 €",
+    "featuredMysteryBody": "Wir führen ein Erstgespräch mit Eurem Team als imaginärer Kunde. 14 Seiten Report, eine Trainingssession.",
+    "featuredMysteryCta": "Jetzt Mystery Shopping buchen",
+    "featuredMysteryBadge": "Nur 16 pro Quartal"
   },
   "topbar": {
-    "message": "Wir starten 2026 — nur 30 Founding-Plätze · 90 Tage Geld-zurück",
-    "link": "Zur SalesMade Academy"
+    "message": "Der nächste Academy-Flight startet am 20. November.",
+    "link": "Jetzt noch Plätze sichern"
   },
   "hero": {
     "pill1": "Für ambitionierte B2B-Gründer und Gründerinnen",
@@ -157,7 +161,7 @@
     }
   },
   "academy": {
-    "pill": "Soft-Launch 2026 · Nur 30 Plätze",
+    "pill": "Nächster Flight: 20. November",
     "eyebrow": "",
     "headline": "SalesMade Academy",
     "tagline": "Die Lücke in der Vertriebsausbildung schließen.",
@@ -1937,7 +1941,13 @@
     "checkTag": "Gesprächs-Check · kostenlos",
     "checkTitle": "Wo ist Dein letztes Erstgespräch gekippt?",
     "checkDesc": "Lade das Transkript hoch und bekomm dieselbe Auswertung wie in einem Mystery Shopping: Deine Fragekette, die Einwände, die Stelle, an der es gekippt ist — und drei Sätze für das nächste Gespräch.",
-    "checkCta": "Gespräch auswerten"
+    "checkCta": "Gespräch auswerten",
+    "msTag": "Mystery Shopping · nur 16 pro Quartal",
+    "msTitle": "In welcher Liga spielt Euer Vertriebsteam?",
+    "msDesc": "Wir führen ein Erstgespräch mit Eurem Team, als imaginärer Kunde. Ihr bekommt 14 Seiten Klarheit und eine kostenfreie Trainingssession für den wichtigsten Skill.",
+    "msCta": "Jetzt Mystery Shopping buchen",
+    "msFree": "Nur noch {free} von {capacity} frei",
+    "msSoldOut": "Dieses Quartal ausgebucht"
   },
   "callCheck": {
     "meta": {

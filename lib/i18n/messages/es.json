@@ -40,15 +40,19 @@
     "markusDesc": "Revenue Systems · ventas B2B · SalesMade",
     "about": "Sobre Eilers+Friends",
     "aboutDesc": "Nuestra historia y nuestra promesa",
-    "featuredProgrammesTitle": "Soft-launch de la Academy.",
+    "featuredProgrammesTitle": "Próximo flight de la Academy: 20 de noviembre.",
     "featuredProgrammesBody": "30 plazas Founding, precio bloqueado de por vida. Quedan pocas.",
     "featuredProgrammesCta": "Reservar tu plaza entre los primeros 30",
     "firstThirtyBadge": "Los primeros 30",
-    "stories": "Stories"
+    "stories": "Stories",
+    "featuredMysteryTitle": "Mystery Shopping · 1 € en vez de 997 €",
+    "featuredMysteryBody": "Hacemos una primera llamada con tu equipo como cliente imaginario. Informe de 14 páginas y una sesión de entrenamiento.",
+    "featuredMysteryCta": "Reservar Mystery Shopping",
+    "featuredMysteryBadge": "Solo 16 por trimestre"
   },
   "topbar": {
-    "message": "Arrancamos en 2026 — solo 30 plazas founding · 90 días de devolución",
-    "link": "A la SalesMade Academy"
+    "message": "El próximo flight de la Academy empieza el 20 de noviembre.",
+    "link": "Asegura tu plaza ahora"
   },
   "hero": {
     "pill1": "Para founders B2B ambiciosos",
@@ -157,7 +161,7 @@
     }
   },
   "academy": {
-    "pill": "Soft-Launch 2026 · Solo 30 plazas",
+    "pill": "Próximo flight: 20 de noviembre",
     "eyebrow": "",
     "headline": "SalesMade Academy",
     "tagline": "Cerrando la brecha en la formación de ventas.",
@@ -1936,7 +1940,13 @@
     "checkTag": "Análisis de conversación · gratis",
     "checkTitle": "¿Dónde se torció tu última primera reunión?",
     "checkDesc": "Sube la transcripción y recibe el mismo análisis que en un mystery shopping: tu cadena de preguntas, las objeciones, el momento en que se torció — y tres frases para tu próxima conversación.",
-    "checkCta": "Analizar una conversación"
+    "checkCta": "Analizar una conversación",
+    "msTag": "Mystery Shopping · solo 16 por trimestre",
+    "msTitle": "¿En qué liga juega tu equipo de ventas?",
+    "msDesc": "Hacemos una primera llamada con tu equipo como cliente imaginario. Recibes 14 páginas de claridad y una sesión de entrenamiento gratuita sobre la habilidad más importante.",
+    "msCta": "Reservar Mystery Shopping",
+    "msFree": "Solo quedan {free} de {capacity}",
+    "msSoldOut": "Agotado este trimestre"
   },
   "callCheck": {
     "meta": {
