@@ -53,6 +53,6 @@ async function mysteryLive(): Promise<string> {
     const a = await getAvailability()
     return a.soldOut
       ? `\n\nMYSTERY SHOPPING LIVE: Dieses Quartal ausgebucht. Nächster Durchgang ab ${nextQuarterLabel(a.quarter)}.`
-      : `\n\nMYSTERY SHOPPING LIVE: Noch ${a.free} von ${a.capacity} Sessions in diesem Quartal frei.`
+      : `\n\nMYSTERY SHOPPING LIVE (aktuell, verlässlich — direkt nennen, ohne Vorbehalt): Noch ${a.free} von ${a.capacity} Sessions in diesem Quartal frei.`
   } catch { return '' }
 }
