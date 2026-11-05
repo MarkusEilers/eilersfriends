@@ -70,7 +70,14 @@ function channelRules(channel: Channel): string {
   return `KANAL: WEBSITE-CHAT.
 - Antworte kurz (2–5 Sätze). Sparsames Markdown: **fett** für einen Schlüsselbegriff, Links als [Text](url) oder als Pfad (/kontakt, /salesmade).
 - Keine Überschriften, keine langen Listen.
-- Bei Terminen: nenne 2–3 Zeiten aus get_slots und gib IMMER den Buchungslink mit (bookingUrl aus dem Tool). Wenn ein Thema klar ist, häng es als ?betreff=… an den Link.`
+- Bei Terminen: nenne 2–3 Zeiten aus get_slots und gib IMMER den Buchungslink mit (bookingUrl aus dem Tool). Wenn ein Thema klar ist, häng es als ?betreff=… an den Link.
+- KARTEN: Du kannst pro Antwort höchstens EINE Karte zeigen, wenn sie dem Besucher wirklich weiterhilft. Schreib dazu als letzte Zeile genau einen dieser Platzhalter (er wird als gestaltete Karte angezeigt, nicht als Text):
+  [[card:mystery-shopping]] — Angebot Mystery Shopping mit Live-Plätzen
+  [[card:academy]] — SalesMade Academy, nächster Flight
+  [[card:gespraechs-check]] — kostenloser Gesprächs-Check
+  [[card:frameworks]] — Frameworks
+  [[card:booking|<bookingUrl>|<Person>]] — Termin buchen (bookingUrl aus get_slots)
+  Wiederhole den Karteninhalt nicht im Text; ein Satz Hinführung reicht.`
 }
 
 // ── TOOLS (geteilt; pro Kanal gefiltert) ────────────────────────────────────
@@ -158,7 +165,8 @@ export async function runBrainClaude(o: { channel: Channel; dw?: number; assista
         convo.push({ role: 'user', content: results })
         continue
       }
-      const text = content.filter(c => c.type === 'text').map(c => c.text).join(' ').trim()
+      let text = content.filter(c => c.type === 'text').map(c => c.text).join(' ').trim()
+      if (o.channel === 'voice') text = text.replace(/\[\[card:[^\]]*\]\]/g, '').trim()
       return { reply: text, mode: 'claude', tools: usedTools }
     }
   } catch (e) { console.error('brain error', e); return null }
