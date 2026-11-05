@@ -18,9 +18,9 @@ export function NavbarSlim({
           <Image
             src="/ef-logo.png"
             alt="Eilers+Friends"
-            width={140}
-            height={36}
-            className="h-8 w-auto"
+            width={200}
+            height={56}
+            className="h-14 md:h-16 w-auto object-contain"
             priority
           />
         </Link>

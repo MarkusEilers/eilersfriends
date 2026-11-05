@@ -69,7 +69,7 @@ export function StoryTopnav({ c }: { c: C }) {
     <>
       {c.topbar && <div className="top" dangerouslySetInnerHTML={{ __html: String(c.topbar) }} />}
       <div className="nav"><div className="wrap">
-        <a href="/" className="logo"><img src="/ef-logo.png" alt="Eilers+Friends" style={{ height: 40, width: 'auto' }} /></a>
+        <a href="/" className="logo"><img src="/ef-logo.png" alt="Eilers+Friends" className="logo-img" /></a>
         <a className="btn blue sm" href={c.ctaHref ?? '#optin'}>{c.cta ?? 'Jetzt buchen'}</a>
       </div></div>
     </>

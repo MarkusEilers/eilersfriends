@@ -1,6 +1,7 @@
 // app/[locale]/checkout/salesmade-ai-intensive/page.tsx
 import { CheckoutForm } from '@/components/checkout/CheckoutForm'
 import Image from 'next/image'
+import { Footer } from '@/components/layout/Footer'
 import { LocaleSwitcher } from '@/components/layout/LocaleSwitcher'
 import { getTranslations } from 'next-intl/server'
 import { Check, MapPin } from 'lucide-react'
@@ -26,7 +27,7 @@ export default async function AiIntensiveCheckout({ searchParams }: { params: Pr
       <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           <a href="/" className="flex items-center gap-2">
-            <Image src="/ef-logo.png" alt="Eilers+Friends" width={200} height={56} className="h-12 md:h-14 w-auto object-contain" priority />
+            <Image src="/ef-logo.png" alt="Eilers+Friends" width={200} height={56} className="h-14 md:h-16 w-auto object-contain" priority />
             <span className="text-xs font-medium text-muted">{c('checkoutBadge')}</span>
           </a>
           <div className="flex items-center gap-3"><span className="hidden text-xs text-muted sm:inline">{c('securePayment')}</span><LocaleSwitcher /></div>
@@ -85,19 +86,7 @@ export default async function AiIntensiveCheckout({ searchParams }: { params: Pr
         </div>
       </div>
 
-      <footer style={{ backgroundColor: '#0A0D14' }} className="px-6 py-10 text-white">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-xs sm:flex-row" style={{ color: 'rgba(255,255,255,0.6)' }}>
-          <div className="flex items-center gap-3">
-            <Image src="/wing-white.png" alt="Eilers+Friends" width={64} height={64} className="h-16 w-auto" />
-            <span className="font-medium">© 2026</span>
-          </div>
-          <div className="flex gap-4">
-            <a href="/impressum" className="hover:text-white">{c('imprint')}</a>
-            <a href="/datenschutz" className="hover:text-white">{c('privacy')}</a>
-            <a href="/agb" className="hover:text-white">{c('terms')}</a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
