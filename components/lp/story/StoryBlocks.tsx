@@ -115,8 +115,10 @@ export async function StoryLogoMarquee({ c }: { c: C }) {
   return (
     <div className="wrap">
       <div className="logos"><span className="eb">{c.eyebrow ?? 'Unternehmen, die uns vertrauen'}</span></div>
-      <LogoScrollbar className="mt-6" speed="normal"
-        logos={logos.map((l) => ({ name: l.name, src: l.src ?? undefined, srcBw: l.srcBw ?? undefined, displayScale: l.displayScale }))} />
+      <div style={{ marginTop: 24 }}>
+        <LogoScrollbar speed="normal"
+          logos={logos.map((l) => ({ name: l.name, src: l.src ?? undefined, srcBw: l.srcBw ?? undefined, displayScale: l.displayScale }))} />
+      </div>
     </div>
   )
 }
