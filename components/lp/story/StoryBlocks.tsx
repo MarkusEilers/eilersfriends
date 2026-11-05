@@ -3,6 +3,7 @@ import { STORY_CSS } from './story-css'
 import { OptinForm } from './OptinForm'
 import { CheckoutBox } from './CheckoutBox'
 import { getVisibleTrustLogos } from '@/lib/db/queries/trust-logos'
+import { LogoScrollbar } from '@/components/blocks/LogoScrollbar'
 import { getAvailability, nextQuarterLabel } from '@/lib/mystery-shopping/slots'
 
 /**
@@ -105,17 +106,17 @@ export function StoryHeroOptin({ c, ctx }: { c: C; ctx: StoryCtx }) {
   )
 }
 
+/** Logoleiste: dasselbe Modul wie auf der Startseite (Logos, Größen und Reihenfolge aus /admin/logos). */
 export async function StoryLogoMarquee({ c }: { c: C }) {
   const all = await getVisibleTrustLogos().catch(() => [])
   const names: string[] | undefined = c.names
-  const logos = all.filter((l) => l.src && (!names || names.includes(l.name)))
+  const logos = all.filter((l) => !names || names.includes(l.name))
   if (!logos.length) return null
-  const row = logos.map((l, i) => <img key={i} src={l.srcBw ?? l.src!} alt={l.alt ?? l.name} />)
   return (
     <div className="wrap">
-      <div className="logos"><span className="eb">{c.eyebrow ?? 'Unternehmen, die uns vertrauen'}</span>
-        <div className="marquee"><div className="track">{row}{row}{row}{row}</div></div>
-      </div>
+      <div className="logos"><span className="eb">{c.eyebrow ?? 'Unternehmen, die uns vertrauen'}</span></div>
+      <LogoScrollbar className="mt-6" speed="normal"
+        logos={logos.map((l) => ({ name: l.name, src: l.src ?? undefined, srcBw: l.srcBw ?? undefined, displayScale: l.displayScale }))} />
     </div>
   )
 }
