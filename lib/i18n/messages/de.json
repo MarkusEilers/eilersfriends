@@ -42,8 +42,8 @@
     "aboutDesc": "Unsere Geschichte und unser Versprechen",
     "featuredProgrammesTitle": "Nächster Academy-Flight: 20. November.",
     "featuredProgrammesBody": "30 Founding-Plätze, Lifetime-Preis-Lock. Wenige Slots noch frei.",
-    "featuredProgrammesCta": "Bei den ersten 30 dabei sein",
-    "firstThirtyBadge": "Die ersten 30",
+    "featuredProgrammesCta": "Einen der 30 Plätze sichern",
+    "firstThirtyBadge": "Nur 30 Plätze",
     "stories": "Stories",
     "featuredMysteryTitle": "Mystery Shopping · 1 € statt 997 €",
     "featuredMysteryBody": "Wir führen ein Erstgespräch mit Eurem Team als imaginärer Kunde. 14 Seiten Report, eine Trainingssession.",
@@ -1634,7 +1634,7 @@
       "softLaunchHeadline": "Nur für die ersten 30 Teilnehmer",
       "softLaunchBody": "Lifetime-Lock auf den Founding-Preis — für die ersten 30.",
       "seatsLeft": "begrenzt auf 30 Plätze",
-      "firstThirtyBadge": "Die ersten 30"
+      "firstThirtyBadge": "Nur 30 Plätze"
     }
   },
   "scorecard": {

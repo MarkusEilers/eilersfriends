@@ -42,8 +42,8 @@
     "aboutDesc": "Our story and our promise",
     "featuredProgrammesTitle": "Next Academy flight: 20 November.",
     "featuredProgrammesBody": "30 founding seats, lifetime price lock. A few slots remaining.",
-    "featuredProgrammesCta": "Get on the list of the first 30",
-    "firstThirtyBadge": "The first 30",
+    "featuredProgrammesCta": "Secure one of the 30 seats",
+    "firstThirtyBadge": "Only 30 seats",
     "stories": "Stories",
     "featuredMysteryTitle": "Mystery Shopping · €1 instead of €997",
     "featuredMysteryBody": "We hold a first call with your team as an imaginary customer. A 14-page report and a training session.",
@@ -1633,7 +1633,7 @@
       "softLaunchHeadline": "Only for the first 30 participants",
       "softLaunchBody": "Lifetime-lock on the founding price — for the first 30.",
       "seatsLeft": "limited to 30 seats",
-      "firstThirtyBadge": "The first 30"
+      "firstThirtyBadge": "Only 30 seats"
     }
   },
   "scorecard": {

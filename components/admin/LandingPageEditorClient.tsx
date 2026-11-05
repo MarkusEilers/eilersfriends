@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useMemo } from 'react'
+import { useState, useTransition, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import {
   ArrowLeft, Plus, GripVertical, Trash2, Eye, EyeOff,
@@ -20,6 +20,8 @@ import { overlay } from '@/lib/lp/overlay'
 import { pageUrl } from '@/lib/lp/public-path'
 import { saveSectionTranslation, translatePageAction } from '@/lib/actions/landing-pages'
 import { AiChatPanel } from './AiChatPanel'
+import { ModuleBoard, type LibraryInfo } from './ModuleBoard'
+import { getModuleLibraryAction } from '@/lib/actions/landing-pages'
 
 type LandingPage = {
   id: string
@@ -100,6 +102,9 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
   const [lang, setLang] = useState<'de' | 'en' | 'es'>('de')
   const [translating, setTranslating] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const [view, setView] = useState<'edit' | 'board'>('edit')
+  const [library, setLibrary] = useState<LibraryInfo[]>([])
+  useEffect(() => { getModuleLibraryAction().then((l) => setLibrary(l as LibraryInfo[])).catch(() => {}) }, [])
 
   const selected = sections.find((s) => s.id === selectedId)
 
@@ -152,6 +157,7 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
           content: s.content,
         })
         patchSection(s.id, { dirty: false })
+        setLibrary((prev) => [...prev.filter((l) => l.type !== s.type), { type: s.type, content: s.content, page_slug: page.slug, updated_at: new Date().toISOString() }])
       } catch (e) {
         console.error(e)
       }
@@ -218,6 +224,33 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
       try {
         await reorderSections(next.map((s, i) => ({ id: s.id, order: i * 10 })))
       } catch {}
+    })
+  }
+
+  /** Modulübersicht: neue Reihenfolge übernehmen und speichern. */
+  function reorderTo(ids: string[]) {
+    const byId = new Map(sections.map((s) => [s.id, s]))
+    const next = ids.map((id, i) => ({ ...byId.get(id)!, order: i * 10 }))
+    setSections(next)
+    startTransition(async () => {
+      try { await reorderSections(next.map((s) => ({ id: s.id, order: s.order }))) } catch {}
+    })
+  }
+
+  /** Modul an Position einfügen — mit der zuletzt gespeicherten Fassung dieses Typs — und sofort speichern. */
+  function insertAt(type: string, index: number) {
+    const last = library.find((l) => l.type === type)
+    const fresh: EditorSection = { id: crypto.randomUUID(), type, order: 0, isVisible: true, content: last ? structuredClone(last.content) : {}, dirty: false }
+    const next = [...sections]
+    next.splice(index, 0, fresh)
+    next.forEach((s, i) => (s.order = i * 10))
+    setSections(next)
+    setSelectedId(fresh.id)
+    startTransition(async () => {
+      try {
+        await upsertSection({ id: fresh.id, landingPageId: page.id, type, order: fresh.order, isVisible: true, content: fresh.content })
+        await reorderSections(next.map((s) => ({ id: s.id, order: s.order })))
+      } catch (e) { console.error(e) }
     })
   }
 
@@ -380,8 +413,29 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
         </div>
       </aside>
 
+      {/* ─── Umschalter Bearbeiten / Modulübersicht ─────────────────────── */}
+      <div className="fixed left-1/2 top-3 z-40 -translate-x-1/2 flex gap-1 rounded-full border border-gray-200 bg-white p-1 shadow-sm">
+        <button type="button" onClick={() => setView('edit')} className={`rounded-full px-3 py-1 text-xs font-semibold ${view === 'edit' ? 'bg-gray-900 text-white' : 'text-gray-600'}`}>Bearbeiten + Vorschau</button>
+        <button type="button" onClick={() => setView('board')} className={`rounded-full px-3 py-1 text-xs font-semibold ${view === 'board' ? 'bg-gray-900 text-white' : 'text-gray-600'}`}>Modulübersicht</button>
+      </div>
+
+      {view === 'board' && (
+        <section className="col-span-9 overflow-y-auto max-h-[calc(100vh-3rem)] bg-[#F7F7F5] pt-10">
+          <ModuleBoard
+            sections={sections}
+            types={SECTION_TYPES}
+            library={library}
+            onReorder={reorderTo}
+            onToggle={(id) => { const s = sections.find((x) => x.id === id); if (s) toggleVisibility(s) }}
+            onDelete={removeSection}
+            onSelect={(id) => { setSelectedId(id); setView('edit') }}
+            onInsert={insertAt}
+          />
+        </section>
+      )}
+
       {/* ─── MIDDLE: Field editor for selected section ─────────────────── */}
-      <section className="col-span-4 border-r border-gray-200 bg-gray-50 overflow-y-auto max-h-[calc(100vh-3rem)]">
+      <section className={`col-span-4 border-r border-gray-200 bg-gray-50 overflow-y-auto max-h-[calc(100vh-3rem)] ${view === 'board' ? 'hidden' : ''}`}>
         <div className="p-5">
           {!selected ? (
             <div className="text-center text-sm text-gray-500 py-20">
@@ -465,7 +519,7 @@ export function LandingPageEditorClient({ page: initialPage, sections: initialSe
       </section>
 
       {/* ─── RIGHT: Live Preview ───────────────────────────────────────── */}
-      <section className="col-span-5 bg-white overflow-y-auto max-h-[calc(100vh-3rem)] border-l border-gray-200">
+      <section className={`col-span-5 bg-white overflow-y-auto max-h-[calc(100vh-3rem)] border-l border-gray-200 ${view === 'board' ? 'hidden' : ''}`}>
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white/90 backdrop-blur px-4 py-2 text-xs">
           <span className="font-semibold text-gray-500">LIVE PREVIEW</span>
           <div className="flex items-center gap-2">

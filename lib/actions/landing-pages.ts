@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { rememberModule, listModuleLibrary } from '@/lib/lp/module-library'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
@@ -116,6 +117,10 @@ export async function upsertSection(input: {
 }): Promise<typeof landingPageSections.$inferSelect> {
   await requireAdmin()
 
+  // Letzte Fassung je Modultyp für die Wiederverwendung merken
+  const pageRow = await db.select({ slug: landingPages.slug }).from(landingPages).where(eq(landingPages.id, input.landingPageId)).limit(1).catch(() => [])
+  await rememberModule(input.type, input.content, pageRow[0]?.slug ?? null).catch(() => {})
+
   if (input.id) {
     const updated = await db.update(landingPageSections).set({
       type: input.type as typeof landingPageSections.$inferSelect['type'],
@@ -124,10 +129,12 @@ export async function upsertSection(input: {
       content: input.content,
       updatedAt: new Date(),
     }).where(eq(landingPageSections.id, input.id)).returning()
-    return updated[0]
+    if (updated[0]) return updated[0]
   }
 
+  // Neu (auch mit im Editor vergebener ID)
   const inserted = await db.insert(landingPageSections).values({
+    ...(input.id ? { id: input.id } : {}),
     landingPageId: input.landingPageId,
     type: input.type as typeof landingPageSections.$inferSelect['type'],
     order: input.order,
@@ -264,4 +271,10 @@ export async function translatePageAction(landingPageId: string, locale: 'en' | 
   }
   revalidatePath(`/admin/landing-pages/${landingPageId}`)
   return { ok: true, translated: done, sections: out }
+}
+
+// ── Baustein-Bibliothek ───────────────────────────────────────────────────────
+export async function getModuleLibraryAction() {
+  await requireAdmin()
+  return listModuleLibrary()
 }
