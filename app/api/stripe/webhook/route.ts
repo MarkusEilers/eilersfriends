@@ -5,6 +5,7 @@ import { getStripe, getStripeWebhookSecret } from '@/lib/stripe'
 import { recordOfferEvent } from '@/lib/db/queries/offers'
 import type Stripe from 'stripe'
 import { addCredits } from '@/lib/call-check/store'
+import { markPaid, releaseHold } from '@/lib/mystery-shopping/slots'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -56,6 +57,11 @@ export async function POST(req: NextRequest) {
           })
           break
         }
+        // Mystery Shopping: Platz endgültig vergeben → Zähler sinkt
+        if (session.metadata?.program_slug === 'mystery-shopping' && session.payment_status === 'paid') {
+          await markPaid(session.id)
+          break
+        }
         const offerId = session.client_reference_id ?? session.metadata?.offerId
         if (offerId) {
           await db.execute(sql`
@@ -72,6 +78,7 @@ export async function POST(req: NextRequest) {
       }
       case 'checkout.session.expired': {
         const session = event.data.object as Stripe.Checkout.Session
+        if (session.metadata?.program_slug === 'mystery-shopping') await releaseHold(session.id)
         const offerId = session.client_reference_id ?? session.metadata?.offerId
         if (offerId) {
           await recordOfferEvent(offerId, 'checkout_expired', session.customer_email ?? null, { sessionId: session.id })

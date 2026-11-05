@@ -5,6 +5,8 @@ import { sql } from 'drizzle-orm'
 import Stripe from 'stripe'
 import { ensureProgramsTables } from '@/lib/db/self-heal-programs'
 import { auth } from '@/lib/auth'
+import { workDomain } from '@/lib/util/email'
+import { getAvailability, hasCompanyBooked, holdSlot, nextQuarterLabel } from '@/lib/mystery-shopping/slots'
 
 export const runtime = 'nodejs'
 export const maxDuration = 15
@@ -56,6 +58,22 @@ export async function POST(
   }
   if (!acceptTerms) {
     return NextResponse.json({ error: 'Bitte AGB akzeptieren' }, { status: 400 })
+  }
+
+  // Mystery Shopping: begrenzte Plätze je Quartal, eine Buchung pro Firma.
+  const isMystery = slug === 'mystery-shopping'
+  const mysteryDomain = isMystery ? workDomain(customerEmail) : ''
+  if (isMystery) {
+    if (!mysteryDomain) {
+      return NextResponse.json({ error: 'Bitte bucht mit Eurer Firmen-E-Mail-Adresse. Das Mystery Shopping gibt es einmal pro Firma.' }, { status: 400 })
+    }
+    if (await hasCompanyBooked(mysteryDomain)) {
+      return NextResponse.json({ error: 'Eure Firma hat das Mystery Shopping bereits gebucht. Es gibt es einmal pro Firma. Schreibt uns gern an team@eilersfriends.com.' }, { status: 409 })
+    }
+    const avail = await getAvailability()
+    if (avail.soldOut) {
+      return NextResponse.json({ error: `Dieses Quartal ist ausgebucht. Der nächste Durchgang startet im ${nextQuarterLabel(avail.quarter)}.` }, { status: 409 })
+    }
   }
 
   // Server-seitige Fallback-Angebote ohne DB-Row (Preis bleibt autoritativ).
@@ -138,6 +156,7 @@ export async function POST(
       automatic_tax: { enabled: true },
       tax_id_collection: { enabled: true },
       billing_address_collection: 'required',
+      expires_at: isMystery ? Math.floor(Date.now() / 1000) + 31 * 60 : undefined,
       metadata: {
         kind: 'program-purchase',
         program_slug: slug,
@@ -151,6 +170,7 @@ export async function POST(
         paid_seats: String(paidSeats),
         free_seats: String(freeSeats),
         event_city: eventCity,
+        company_domain: mysteryDomain,
       },
       subscription_data: mode === 'subscription' ? {
         metadata: {
@@ -160,6 +180,10 @@ export async function POST(
         },
       } : undefined,
     })
+
+    if (isMystery) {
+      await holdSlot({ domain: mysteryDomain, company, email: customerEmail, name: customerName, sessionId: stripeSession.id })
+    }
 
     // Store pending session in DB for audit / recovery
     await db.execute(sql`

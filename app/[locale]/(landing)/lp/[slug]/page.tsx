@@ -4,6 +4,7 @@ import { landingPages, landingPageSections } from '@/lib/db/schema'
 import { eq, asc, and } from 'drizzle-orm'
 import type { Metadata } from 'next'
 import { LpRender } from '@/components/lp/LpRender'
+import { StoryBlockAuto } from '@/components/lp/story/StoryBlocks'
 import { PreviewBanner } from '@/components/lp/PreviewBanner'
 import { auth } from '@/lib/auth'
 import { localize, sectionI18n } from '@/lib/lp/i18n'
@@ -64,7 +65,7 @@ export default async function LandingPageRoute({ params, searchParams }: PagePro
   return (
     <div className="min-h-screen" style={{ '--accent' : accent } as React.CSSProperties}>
       {page!.status !== 'published' && <PreviewBanner status={page!.status} editHref={`/admin/landing-pages/${page!.id}`} slug={page!.slug} templateKey={page!.templateKey} locale={locale} />}
-      <LpRender sections={sections.map(s => ({ id: s.id, type: s.type, isVisible: s.isVisible, content: localize(s.content as Record<string, unknown>, i18n.get(s.id), locale) }))} accent={accent} emailList={page!.emailList ?? 'general'} />
+      <LpRender sections={sections.map(s => ({ id: s.id, type: s.type, isVisible: s.isVisible, content: localize(s.content as Record<string, unknown>, i18n.get(s.id), locale) }))} accent={accent} emailList={page!.emailList ?? 'general'} storyRenderer={(t, c, id) => <StoryBlockAuto key={id} type={t} c={c as Record<string, any>} />} />
     </div>
   )
 }

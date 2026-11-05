@@ -35,6 +35,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Ziele der Kunden', href: '/admin/ziele', icon: Target },
       { label: 'Signal-Mails', href: '/admin/signals', icon: Mail },
       { label: 'Checkouts', href: '/admin/checkout', icon: ShoppingCart },
+      { label: 'Mystery Shopping', href: '/admin/mystery-shopping', icon: ShoppingCart },
       { label: 'Terminbuchung', href: '/admin/schedule', icon: CalendarClock },
       { label: 'Logoleiste',href: '/admin/logos',  icon: ImageIcon },
     ],

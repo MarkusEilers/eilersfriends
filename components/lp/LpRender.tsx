@@ -31,10 +31,13 @@ export function LpRender({
   sections,
   accent = '#1A5FD4',
   emailList = 'general',
+  storyRenderer,
 }: {
   sections: SimpleSection[]
   accent?: string
   emailList?: string
+  /** Server-Seiten reichen hier die Story-Bausteine durch (Squeeze/Checkout-Design). Ohne: Platzhalter, z. B. in der Editor-Vorschau. */
+  storyRenderer?: (type: string, content: Record<string, unknown>, id: string) => React.ReactNode
 }) {
   return (
     <>
@@ -89,6 +92,15 @@ export function LpRender({
             case 'spacer':
               return <div key={s.id} style={{ height: 64 }} />
             default:
+              if (s.type.startsWith('story_')) {
+                if (storyRenderer) return storyRenderer(s.type, content, s.id)
+                return (
+                  <div key={s.id} className="mx-auto my-4 max-w-5xl rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-sm text-gray-600">
+                    <b>{s.type.replace('story_', 'Story · ')}</b> · {String(content.headline ?? content.eyebrow ?? '')}
+                    <span className="block text-xs text-gray-400">Wird auf der Seite im Stories-Design gerendert.</span>
+                  </div>
+                )
+              }
               return <LpGeneric key={s.id} content={content} />
           }
         })}

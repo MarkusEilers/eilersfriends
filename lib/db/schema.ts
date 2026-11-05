@@ -65,6 +65,19 @@ export const landingPageSectionTypeEnum = pgEnum('landing_page_section_type', [
   'cta',                 // Finaler Call-to-Action
   'coach_bio',           // Coach/Instructor-Vorstellung
   'spacer',              // Abstandhalter
+  'call_check',          // Gesprächs-Check (Formular)
+  'story_topnav',
+  'story_hero_optin',
+  'story_logos',
+  'story_findings',
+  'story_tiles',
+  'story_quote_author',
+  'story_optin_close',
+  'story_checkout_vsl',
+  'story_bento_offer',
+  'story_dark_band',
+  'story_faq',
+  'story_mobile_cta',
 ])
 export const emailSequenceTriggerEnum = pgEnum('email_sequence_trigger', [
   'newsletter_signup',       // Nach Newsletter-Aneldung

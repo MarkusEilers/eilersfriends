@@ -4,6 +4,11 @@ import Image from 'next/image'
 import { LocaleSwitcher } from '@/components/layout/LocaleSwitcher'
 import { getTranslations } from 'next-intl/server'
 import { Check } from 'lucide-react'
+import { loadLpSections, canPreview } from '@/lib/lp/story-loader'
+import { StoryPage, loadStoryCtx } from '@/components/lp/story/StoryBlocks'
+import { PreviewBanner } from '@/components/lp/PreviewBanner'
+import { FooterSlim } from '@/components/layout/FooterSlim'
+import { getLead } from '@/lib/mystery-shopping/slots'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -11,8 +16,24 @@ export const dynamic = 'force-dynamic'
 const SLUG = 'mystery-shopping'
 const PRICE = 1
 
-export default async function MysteryShoppingCheckout({ searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ cancelled?: string }> }) {
+export default async function MysteryShoppingCheckout({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ cancelled?: string; lead?: string; preview?: string }> }) {
   const sp = await searchParams
+  const { locale } = await params
+
+  // Checkout mit Video aus dem Landingpage-System (Slug „mystery-shopping-checkout“), sonst die eingebaute Fassung.
+  const lp = await loadLpSections('mystery-shopping-checkout', locale, await canPreview(sp.preview)).catch(() => null)
+  if (lp && lp.sections.some((x) => x.type === 'story_checkout_vsl')) {
+    const lead = sp.lead ? await getLead(sp.lead).catch(() => null) : null
+    const ctx = await loadStoryCtx(lead ? { email: lead.email, firstName: lead.first_name ?? undefined, lead: sp.lead } : undefined)
+    return (
+      <>
+        {lp.status !== 'published' && <PreviewBanner status={lp.status} editHref={`/admin/landing-pages/${lp.pageId}`} slug="mystery-shopping-checkout" locale={locale} />}
+        {sp.cancelled && <div className="bg-amber-50 px-6 py-3 text-center text-sm text-amber-900">Die Zahlung wurde abgebrochen. Euer Platz ist noch kurz reserviert, Ihr könnt es direkt noch einmal versuchen.</div>}
+        <StoryPage sections={lp.sections} ctx={ctx} />
+        <FooterSlim />
+      </>
+    )
+  }
   const c = await getTranslations('checkout.common')
   const t = await getTranslations('checkout.mystery')
   const TIERS = [{ id: 'mystery-onetime', label: 'Mystery Shopping', price: PRICE, currency: 'EUR' as const, billing: 'one-time' as const, stripe_price_id: '', is_highlighted: true, is_available: true, note: t('badge') }]

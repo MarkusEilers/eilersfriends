@@ -73,6 +73,18 @@ const SECTION_TYPES = [
   { value: 'coach_bio', label: '👤 Coach-Bio' },
   { value: 'spacer', label: '⎯ Spacer' },
   { value: 'call_check', label: '🎙️ Gesprächs-Check (Formular)' },
+  { value: 'story_topnav', label: '◼︎ Story · Topbar + Navigation' },
+  { value: 'story_hero_optin', label: '◼︎ Story · Hero mit Opt-in' },
+  { value: 'story_logos', label: '◼︎ Story · Logo-Laufband' },
+  { value: 'story_findings', label: '◼︎ Story · Liste mit Intro-Box' },
+  { value: 'story_tiles', label: '◼︎ Story · 3 Kacheln' },
+  { value: 'story_quote_author', label: '◼︎ Story · Zitat + Autor' },
+  { value: 'story_optin_close', label: '◼︎ Story · Abschluss-Formular (dunkel)' },
+  { value: 'story_checkout_vsl', label: '◼︎ Story · Checkout mit Video' },
+  { value: 'story_bento_offer', label: '◼︎ Story · Bento-Angebot' },
+  { value: 'story_dark_band', label: '◼︎ Story · Dunkles Band' },
+  { value: 'story_faq', label: '◼︎ Story · FAQ' },
+  { value: 'story_mobile_cta', label: '◼︎ Story · Mobile CTA-Leiste' },
 ]
 
 interface Props {
