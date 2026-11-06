@@ -87,6 +87,8 @@ const SECTION_TYPES = [
   { value: 'story_dark_band', label: '◼︎ Story · Dunkles Band' },
   { value: 'story_faq', label: '◼︎ Story · FAQ' },
   { value: 'story_mobile_cta', label: '◼︎ Story · Mobile CTA-Leiste' },
+  { value: 'story_system', label: '◼︎ Story · Programm-System (dunkel)' },
+  { value: 'story_html', label: '◼︎ Story · Freies HTML (Design-Import)' },
 ]
 
 interface Props {

@@ -36,8 +36,8 @@ export async function PromoSection() {
               </div>
             </div>
             <div className="relative min-h-[220px] bg-cover bg-center" style={{ backgroundImage: 'url(/mystery/hero.jpg)' }}>
-              <span className="absolute left-5 top-5 flex h-[84px] w-[84px] -rotate-12 items-center justify-center rounded-full bg-white text-lg font-bold text-[#EB0028] shadow-lg line-through decoration-[3px]">997 €</span>
-              <span className="absolute left-[70px] top-[30px] flex h-[104px] w-[104px] rotate-[8deg] flex-col items-center justify-center rounded-full text-3xl font-bold text-white shadow-lg" style={{ backgroundColor: '#16A34A' }}>1 €</span>
+              <span className="absolute left-5 top-5 flex h-[84px] w-[84px] -rotate-12 items-center justify-center rounded-full text-lg font-bold text-white shadow-lg line-through decoration-[3px]" style={{ backgroundColor: '#EB0028', boxShadow: 'inset 0 0 0 4px #EB0028, inset 0 0 0 6px rgba(255,255,255,.45)' }}>997 €</span>
+              <span className="absolute left-[70px] top-[30px] flex h-[104px] w-[104px] rotate-[8deg] flex-col items-center justify-center rounded-full text-3xl font-bold text-white shadow-lg" style={{ backgroundColor: '#1A5FD4', boxShadow: 'inset 0 0 0 5px #1A5FD4, inset 0 0 0 7px rgba(255,255,255,.5)' }}>1 €</span>
             </div>
           </div>
         </Link>

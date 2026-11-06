@@ -5,6 +5,8 @@ import { CheckoutBox } from './CheckoutBox'
 import { getVisibleTrustLogos } from '@/lib/db/queries/trust-logos'
 import { LogoScrollbar } from '@/components/blocks/LogoScrollbar'
 import { getAvailability, nextQuarterLabel } from '@/lib/mystery-shopping/slots'
+import { ACADEMY_CSS } from './academy-assets'
+import { AcademyInit } from './AcademyInit'
 
 /**
  * „Story“-Bausteine für Landing- und Checkout-Seiten im Stories-Designsystem
@@ -316,6 +318,93 @@ export function StoryMobileCta({ c, ctx }: { c: C; ctx: StoryCtx }) {
 }
 
 /** Rendert einen „story_*“-Typ. */
+/**
+ * Freie HTML-Sektion (z. B. die Academy-Seite aus Claude Design). Inhalt: { label, theme, html }.
+ * theme „academy“ lädt das Academy-CSS und startet Quiz/Animationen einmal pro Seite.
+ */
+export function StoryHtml({ c }: { c: C }) {
+  const html = String(c.html ?? '')
+  if (c.theme === 'academy') {
+    return (
+      <div className="acd">
+        <style href="academy-css" precedence="default">{ACADEMY_CSS}</style>
+        <div dangerouslySetInnerHTML={{ __html: html }} />
+        <AcademyInit />
+      </div>
+    )
+  }
+  return <div dangerouslySetInnerHTML={{ __html: html }} />
+}
+
+/**
+ * „Das System“: dunkles Band mit Intro, zwei Schritten, Kennzahlen, Lernformaten und Begleitmaßnahmen.
+ * Ursprünglich die Sektion „Die SalesMade Academy ist kein Seminar.“ der alten Academy-Seite.
+ * Inhalt: { eyebrow, headline, subtext, steps:[{label,title,text}], stats:[{value,label}],
+ *           formats:{eyebrow,headline,items:[{title,body}]}, measures:{label,items:[]} }  — text darf <strong> enthalten.
+ */
+export function StoryProgramSystem({ c }: { c: C }) {
+  const steps = (c.steps ?? []) as { label?: string; title?: string; text?: string }[]
+  const stats = (c.stats ?? []) as { value: string; label: string }[]
+  const fm = (c.formats ?? {}) as { eyebrow?: string; headline?: string; items?: { title: string; body: string }[] }
+  const ms = (c.measures ?? {}) as { label?: string; items?: string[] }
+  const card: React.CSSProperties = { background: 'rgba(255,255,255,.05)', border: '1px solid rgba(147,184,245,.25)', borderRadius: 20, padding: 28 }
+  const pill: React.CSSProperties = { display: 'inline-block', borderRadius: 999, padding: '5px 12px', fontSize: 11, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', background: 'rgba(26,95,212,.4)', color: '#93B8F5' }
+  return (
+    <section style={{ background: '#0F1E3A', color: '#fff', padding: '96px 0' }}>
+      <div className="wrap">
+        <div style={{ textAlign: 'center', maxWidth: 760, margin: '0 auto' }}>
+          {c.eyebrow && <span className="eb" style={{ color: '#93B8F5' }}>{c.eyebrow}</span>}
+          {c.headline && <h2 style={{ marginTop: 12, color: '#fff' }}>{c.headline}</h2>}
+          {c.subtext && <p className="lead" style={{ marginTop: 14, color: 'rgba(255,255,255,.72)' }}>{c.subtext}</p>}
+        </div>
+        {steps.length > 0 && (
+          <div style={{ marginTop: 48, display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 24 }}>
+            {steps.map((st, i) => (
+              <div key={i} style={card}>
+                {st.label && <span style={pill}>{st.label}</span>}
+                {st.title && <h3 style={{ marginTop: 14, color: '#fff' }}>{st.title}</h3>}
+                {st.text && <p className="sm" style={{ marginTop: 10, color: 'rgba(255,255,255,.75)', lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: st.text }} />}
+              </div>
+            ))}
+          </div>
+        )}
+        {stats.length > 0 && (
+          <div style={{ marginTop: 48, display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 24, textAlign: 'center' }}>
+            {stats.map((x, i) => (
+              <div key={i}><div style={{ fontSize: 40, fontWeight: 700, color: '#1A5FD4', letterSpacing: '-.02em' }}>{x.value}</div>
+                <div style={{ marginTop: 4, fontSize: 12, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)' }}>{x.label}</div></div>
+            ))}
+          </div>
+        )}
+        {(fm.items?.length ?? 0) > 0 && (
+          <div style={{ ...card, marginTop: 56, padding: 32 }}>
+            <div style={{ textAlign: 'center' }}>
+              {fm.eyebrow && <span style={pill}>{fm.eyebrow}</span>}
+              {fm.headline && <h3 style={{ marginTop: 12, color: '#fff' }}>{fm.headline}</h3>}
+            </div>
+            <div style={{ marginTop: 28, display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 18 }}>
+              {fm.items!.map((f, i) => (
+                <div key={i} style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(147,184,245,.18)', borderRadius: 16, padding: 20 }}>
+                  <div style={{ fontSize: 15, fontWeight: 700 }}>{f.title}</div>
+                  <p className="sm" style={{ marginTop: 8, color: 'rgba(255,255,255,.7)', lineHeight: 1.55 }}>{f.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {(ms.items?.length ?? 0) > 0 && (
+          <div style={{ ...card, marginTop: 24, padding: 32 }}>
+            {ms.label && <div style={{ textAlign: 'center', fontSize: 13, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: '#93B8F5' }}>{ms.label}</div>}
+            <ul style={{ marginTop: 20, display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 12, listStyle: 'none' }}>
+              {ms.items!.map((m, i) => <li key={i} style={{ display: 'flex', gap: 10, fontSize: 15, color: 'rgba(255,255,255,.85)' }}><span style={{ color: '#1A5FD4', fontWeight: 700 }}>✓</span>{m}</li>)}
+            </ul>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
 export function StoryBlock({ type, c, ctx }: { type: string; c: C; ctx: StoryCtx }) {
   switch (type) {
     case 'story_topnav': return <StoryTopnav c={c} />
@@ -330,6 +419,8 @@ export function StoryBlock({ type, c, ctx }: { type: string; c: C; ctx: StoryCtx
     case 'story_dark_band': return <StoryDarkBand c={c} />
     case 'story_faq': return <StoryFaq c={c} />
     case 'story_mobile_cta': return <StoryMobileCta c={c} ctx={ctx} />
+    case 'story_html': return <StoryHtml c={c} />
+    case 'story_system': return <StoryProgramSystem c={c} />
     default: return null
   }
 }
@@ -346,6 +437,7 @@ export function StoryPage({ sections, ctx }: { sections: { id: string; type: str
 
 /** Für das allgemeine LpRender (/lp/…): lädt den Kontext selbst. */
 export async function StoryBlockAuto({ type, c }: { type: string; c: C }) {
+  if (type === 'story_html') return <StoryHtml c={c} />
   const ctx = await loadStoryCtx()
   return <div className="sb" style={{ paddingBottom: 0 }}><StoryStyles /><StoryBlock type={type} c={c} ctx={ctx} /></div>
 }

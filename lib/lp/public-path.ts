@@ -6,6 +6,7 @@
 export function publicPath(slug: string, templateKey?: string | null): string {
   if (slug === 'gespraechs-check') return '/gespraechs-check'
   if (slug === 'mystery-shopping') return '/mystery-shopping'
+  if (slug === 'academy') return '/academy'
   if (slug === 'mystery-shopping-checkout') return '/checkout/mystery-shopping'
   if (templateKey === 'framework-leadmagnet') return `/frameworks/${slug}`
   return `/lp/${slug}`

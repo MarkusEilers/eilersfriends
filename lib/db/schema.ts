@@ -78,6 +78,8 @@ export const landingPageSectionTypeEnum = pgEnum('landing_page_section_type', [
   'story_dark_band',
   'story_faq',
   'story_mobile_cta',
+  'story_html',
+  'story_system',
 ])
 export const emailSequenceTriggerEnum = pgEnum('email_sequence_trigger', [
   'newsletter_signup',       // Nach Newsletter-Aneldung
