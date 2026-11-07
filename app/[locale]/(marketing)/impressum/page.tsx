@@ -37,6 +37,9 @@ export default async function ImpressumPage({ params }: PageProps) {
               <p className="mt-4">
                 {t('sections.legalNotice.representedBy')}
               </p>
+              <p className="mt-1">
+                {t('sections.legalNotice.register')}
+              </p>
               <p className="mt-4 text-xs text-gray-500">
                 {t('sections.legalNotice.brands')}
               </p>
