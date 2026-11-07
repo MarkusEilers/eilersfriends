@@ -3,12 +3,10 @@ import '@/app/globals.css'
 import { StructuredData } from '@/components/seo/StructuredData'
 
 export const metadata: Metadata = {
-  title: {
-    template: '%s | Eilers+Friends',
-    default: 'Eilers+Friends — Systematisches Wachstum für Gründer',
-  },
-  description: 'Wir helfen Gründern und Vertriebsteams, aus Wissen echte Fähigkeit zu machen — messbar, reproduzierbar, skalierbar.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://eilersfriends.com'),
+  // Seitentitel tragen die Marke selbst (Sprachen und Texte: app/[locale]/layout.tsx)
+  title: { template: '%s', default: 'Eilers+Friends: Sales Academy & kostenlose Vertriebs-Frameworks' },
+  description: 'Mehr Abschlüsse für B2B-Teams: SalesMade Academy mit 12 Monaten Live-Training, kostenlose Frameworks, Mystery Shopping für Euer Vertriebsteam und Leadership-Coaching.',
+  metadataBase: new URL('https://www.eilersfriends.com'),
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
