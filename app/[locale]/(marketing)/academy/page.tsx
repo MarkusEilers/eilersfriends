@@ -4,12 +4,10 @@ import { loadLpSections, canPreview } from '@/lib/lp/story-loader'
 import { StoryBlock, loadStoryCtx } from '@/components/lp/story/StoryBlocks'
 import { STORY_CSS } from '@/components/lp/story/story-css'
 import { PreviewBanner } from '@/components/lp/PreviewBanner'
-import { FooterSlim } from '@/components/layout/FooterSlim'
-import { CookieBanner } from '@/components/layout/CookieBanner'
 
 export const dynamic = 'force-dynamic'
 
-/** SalesMade Academy — Inhalte aus dem Landingpage-System (Slug „academy“). */
+/** SalesMade Academy — Inhalte aus dem Landingpage-System (Slug „academy“). Globale Navigation und Footer kommen aus dem Marketing-Layout. */
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const lp = await loadLpSections('academy', locale).catch(() => null)
@@ -30,8 +28,6 @@ export default async function AcademyPage({ params, searchParams }: { params: Pr
       {lp.sections.map((s) => s.type === 'story_html'
         ? <StoryBlock key={s.id} type={s.type} c={s.content} ctx={ctx} />
         : <div key={s.id} className="sb"><StoryBlock type={s.type} c={s.content} ctx={ctx} /></div>)}
-      <FooterSlim />
-      <CookieBanner />
     </>
   )
 }
