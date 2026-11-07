@@ -105,7 +105,7 @@ export function SalesMadeAcademySection() {
         {/* Single CTA */}
         <div className="text-center">
           <Link
-            href={'/salesmade' as '/'}
+            href={'/academy' as '/'}
             className="inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90"
             style={{ backgroundColor: '#1A5FD4' }}
           >

@@ -68,7 +68,7 @@ const NAV_ITEMS: NavItem[] = [
     eyebrowKey: 'programmesEyebrow',
     headingKey: 'programmesHeading',
     links: [
-      { key: 'salesmade',        descKey: 'salesmadeDesc',        href: '/salesmade',  icon: Briefcase,      accent: '#1A5FD4' },
+      { key: 'salesmade',        descKey: 'salesmadeDesc',        href: '/academy',  icon: Briefcase,      accent: '#1A5FD4' },
       { key: 'liquidLeadership', descKey: 'liquidLeadershipDesc', href: '/aljona',     icon: Sparkles,       accent: '#D4192B' },
       { key: 'teamCoaching',     descKey: 'teamCoachingDesc',     href: '/kontakt',    icon: Users,          accent: '#6B5CE7' },
       { key: 'oneOnOne',         descKey: 'oneOnOneDesc',         href: '/kontakt',    icon: MessageCircle,  accent: '#B07C0A' },
@@ -77,7 +77,7 @@ const NAV_ITEMS: NavItem[] = [
       titleKey: 'featuredProgrammesTitle',
       bodyKey:  'featuredProgrammesBody',
       ctaKey:   'featuredProgrammesCta',
-      href: '/salesmade#pricing',
+      href: '/academy#start',
       accent: '#1A5FD4',
       bg: 'linear-gradient(135deg, #EBF1FF 0%, #BBCFF5 100%)',
     },

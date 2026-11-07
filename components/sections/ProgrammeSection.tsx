@@ -8,7 +8,7 @@ const PROGRAMS = [
     icon: TrendingUp,
     accent: '#1A5FD4',
     accentBg: '#EBF1FF',
-    href: '/salesmade',
+    href: '/academy',
     popular: true,
     features: ['card1F1', 'card1F2', 'card1F3', 'card1F4'],
   },

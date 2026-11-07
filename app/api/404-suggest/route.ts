@@ -9,7 +9,7 @@ type Sug = { title: string; href: string; why: string }
 const PAGES: { keys: RegExp; de: Sug; en: Sug }[] = [
   { keys: /(termin|anruf|anrufen|call|buch|slot|kalender|book)/i, de: { title: 'Termin buchen', href: '/schedule', why: 'Sprich direkt mit uns' }, en: { title: 'Book a call', href: '/schedule', why: 'Talk to us directly' } },
   { keys: /(framework|bauplan|b2b|angebot)/i, de: { title: 'Frameworks ansehen', href: '/frameworks', why: 'Unsere Baupläne' }, en: { title: 'Frameworks', href: '/frameworks', why: 'Our blueprints' } },
-  { keys: /(salesmade|academy|training|vertrieb|sales|verkauf)/i, de: { title: 'SalesMade Academy', href: '/salesmade', why: 'Vertriebs-Ausbildung' }, en: { title: 'SalesMade Academy', href: '/salesmade', why: 'Sales training' } },
+  { keys: /(salesmade|academy|training|vertrieb|sales|verkauf)/i, de: { title: 'SalesMade Academy', href: '/academy', why: 'Vertriebs-Ausbildung' }, en: { title: 'SalesMade Academy', href: '/academy', why: 'Sales training' } },
   { keys: /(kontakt|contact|erreichen|schreiben)/i, de: { title: 'Kontakt aufnehmen', href: '/kontakt', why: 'Wir melden uns' }, en: { title: 'Contact us', href: '/kontakt', why: 'We’ll get back to you' } },
   { keys: /(markus)/i, de: { title: 'Markus Eilers', href: '/markus', why: 'Vertrieb & AI im Sales' }, en: { title: 'Markus Eilers', href: '/markus', why: 'Sales & AI' } },
   { keys: /(aljona|leadership|führung)/i, de: { title: 'Aljona Eilers', href: '/aljona', why: 'Liquid Leadership' }, en: { title: 'Aljona Eilers', href: '/aljona', why: 'Liquid Leadership' } },

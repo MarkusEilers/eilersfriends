@@ -278,7 +278,7 @@ export default async function CallCheckResultPage({ params }: { params: Promise<
             </div>
             <p className="mt-4 text-lg font-bold text-[#1A5FD4]">{t(`skills.${r.learning.skill}`)}</p>
             <p className="mt-2 text-sm text-gray-700">{r.learning.reason}</p>
-            <Link href={`/${locale}${SKILL_LINK[r.learning.skill] ?? '/salesmade'}`}
+            <Link href={`/${locale}${SKILL_LINK[r.learning.skill] ?? '/academy'}`}
               className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#1A5FD4]">
               {t('result.learningCta')} <ArrowRight size={16} />
             </Link>

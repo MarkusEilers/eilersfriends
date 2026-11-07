@@ -50,12 +50,12 @@ export const MAX_GRADE = 5
 
 /** Where a learning recommendation points to. */
 export const SKILL_LINK: Record<SkillKey, string> = {
-  S01: '/salesmade', S02: '/salesmade', S03: '/salesmade',
+  S01: '/academy', S02: '/academy', S03: '/academy',
   S04: '/frameworks/instant-influence', S05: '/frameworks/instant-influence', S06: '/frameworks/instant-influence',
-  S07: '/frameworks/recommendation-pitch', S08: '/frameworks/b2b-angebote', S09: '/salesmade',
-  S10: '/salesmade', S11: '/frameworks/recommendation-pitch', S12: '/salesmade',
-  S13: '/frameworks/recommendation-pitch', S14: '/frameworks/beef-radar', S15: '/salesmade',
-  S16: '/salesmade', S17: '/salesmade', S18: '/salesmade', S19: '/salesmade',
+  S07: '/frameworks/recommendation-pitch', S08: '/frameworks/b2b-angebote', S09: '/academy',
+  S10: '/academy', S11: '/frameworks/recommendation-pitch', S12: '/academy',
+  S13: '/frameworks/recommendation-pitch', S14: '/frameworks/beef-radar', S15: '/academy',
+  S16: '/academy', S17: '/academy', S18: '/academy', S19: '/academy',
 }
 
 const LANG: Record<string, string> = { de: 'Deutsch', en: 'English', es: 'Español' }

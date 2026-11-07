@@ -50,7 +50,7 @@ export function BentoGrid() {
             </div>
 
             <Link
-              href="/salesmade"
+              href="/academy"
               className="relative mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white self-start transition-opacity hover:opacity-90"
               style={{ backgroundColor: '#1A5FD4' }}
             >

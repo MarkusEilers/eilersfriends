@@ -68,7 +68,7 @@ function SimulationBanner({ position }: { position: 'top' | 'bottom' }) {
         <span aria-hidden="true">⚠</span>
         <span>{SIMULATION_NOTICE}</span>
         <span style={{ opacity: 0.6 }}>·</span>
-        <Link href="/salesmade" className="underline underline-offset-2 hover:no-underline">
+        <Link href="/academy" className="underline underline-offset-2 hover:no-underline">
           Was ist das?
         </Link>
       </div>

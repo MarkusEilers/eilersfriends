@@ -197,7 +197,7 @@ export default async function MarkusPage({ params }: PageProps) {
             {t('crosslink.body')}
           </p>
           <Link
-            href="/salesmade"
+            href="/academy"
             className="mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors"
             style={{ backgroundColor: accent, color: 'white' }}
           >

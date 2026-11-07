@@ -82,7 +82,7 @@ export function Footer() {
 
           {/* Programme */}
           <FooterCol heading={t('programmes')}>
-            <FooterLink href="/salesmade">{t('salesmade')}</FooterLink>
+            <FooterLink href="/academy">{t('salesmade')}</FooterLink>
             <FooterLink href="/aljona#liquid">{t('liquidLeadership')}</FooterLink>
             <FooterLink href="/b2b-offers">{t('b2bFramework')}</FooterLink>
           </FooterCol>

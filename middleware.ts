@@ -5,8 +5,8 @@ import { routing } from '@/lib/i18n/routing'
 
 // Domain → internal path rewrites
 const DOMAIN_REWRITES: Record<string, string> = {
-  'salesmade.com': '/salesmade',
-  'www.salesmade.com': '/salesmade',
+  'salesmade.com': '/academy',
+  'www.salesmade.com': '/academy',
   'aljonaeilers.com': '/aljona',
   'www.aljonaeilers.com': '/aljona',
   'markuseilers.com': '/markus',

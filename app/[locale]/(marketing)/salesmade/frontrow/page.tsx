@@ -230,7 +230,7 @@ export default async function FrontRowPage({ params }: PageProps) {
                   <Youtube size={13} /> TEDx Darmstadt 2025
                 </a>
                 <Link
-                  href="/salesmade"
+                  href="/academy"
                   className="inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-colors hover:bg-gray-50"
                   style={{ color: accent, borderColor: '#BBCFF5' }}
                 >

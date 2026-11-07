@@ -27,7 +27,7 @@ export default async function MyProgramsPage() {
             Schau Dir SalesMade Academy oder Liquid Leadership an — oder buche ein 45-Min-Sparring, wenn Du noch unsicher bist.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Link href={'/salesmade' as '/'} className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:opacity-90">
+            <Link href={'/academy' as '/'} className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:opacity-90">
               <Sparkles size={14} /> SalesMade Academy
             </Link>
             <Link href={'/aljona' as '/'} className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-2.5 text-sm font-bold text-white hover:opacity-90">

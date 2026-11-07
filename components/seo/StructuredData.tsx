@@ -9,7 +9,7 @@
 const BASE = process.env.NEXT_PUBLIC_APP_URL ?? 'https://eilersfriends.com'
 
 const NAV: { name: string; path: string }[] = [
-  { name: 'SalesMade', path: '/salesmade' },
+  { name: 'SalesMade', path: '/academy' },
   { name: 'Frameworks', path: '/frameworks' },
   { name: 'Academy', path: '/academy' },
   { name: 'Blog', path: '/blog' },
