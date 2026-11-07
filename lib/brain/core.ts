@@ -13,7 +13,8 @@ import { logActivity } from '@/lib/voice/store'
 export type Msg = { role: 'user' | 'assistant'; content: string }
 export type Channel = 'voice' | 'chat'
 export type Assistant = { name?: string; gender?: 'f' | 'm' }
-export type BrainCtx = { callerId?: string; source?: string; assistant?: Assistant }
+export type PageCtx = { path?: string; section?: string | null; lang?: string; opener?: string | null }
+export type BrainCtx = { callerId?: string; source?: string; assistant?: Assistant; page?: PageCtx }
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.eilersfriends.com'
 
@@ -122,8 +123,21 @@ async function execBrainTool(name: string, input: Record<string, unknown>, extra
 }
 
 // System-Prompt für einen Kanal zusammenbauen (EINE Quelle).
-export async function buildSystem(channel: Channel, opts: { dw?: number; assistant?: Assistant; callerId?: string }): Promise<string> {
+export async function buildSystem(channel: Channel, opts: { dw?: number; assistant?: Assistant; callerId?: string; page?: PageCtx }): Promise<string> {
   const parts = [CORE_RULES, await knowledgeContext(), channelRules(channel)]
+  if (channel === 'chat') {
+    parts.push(`DEINE IDENTITÄT IM CHAT
+- Du heißt Eili und bist die KI-Assistentin von Eilers+Friends. Stell Dich als Eili vor, wenn es passt.
+- Du bist eine KI, kein Mensch. Wenn jemand fragt, sag das offen und freundlich — und biete an, mit Markus oder dem Team zu verbinden.
+- Antworte in der Sprache, in der Dir geschrieben wird (Deutsch, Englisch oder Spanisch).`)
+    const pg = opts.page
+    if (pg?.path) {
+      parts.push(`KONTEXT DER SEITE (nur zur Orientierung, nicht vorlesen)
+- Der Besucher ist gerade auf ${pg.path}${pg.section ? ` und sieht sich den Abschnitt „${String(pg.section).slice(0, 120)}“ an` : ''}.
+${pg.opener ? `- Das Gespräch hast Du mit diesem Satz eröffnet: „${String(pg.opener).slice(0, 300)}“` : ''}
+- Knüpfe an das an, was er sich ansieht, wenn es zur Frage passt.`)
+    }
+  }
   if (channel === 'voice' && opts.callerId && /\d{5,}/.test(opts.callerId)) {
     parts.push(`RÜCKRUFNUMMER LIEGT VOR: ${opts.callerId}. Nutze sie für Rückruf/Nachricht/Buchung und frag NICHT erneut nach der Telefonnummer.`)
   }
@@ -140,7 +154,7 @@ export async function runBrainClaude(o: { channel: Channel; dw?: number; assista
   const key = process.env.ANTHROPIC_API_KEY
   if (!key) return null
   const model = process.env.VOICE_AGENT_MODEL || 'claude-haiku-4-5'
-  const system = await buildSystem(o.channel, { dw: o.dw, assistant: o.assistant, callerId: o.ctx?.callerId })
+  const system = await buildSystem(o.channel, { dw: o.dw, assistant: o.assistant, callerId: o.ctx?.callerId, page: o.ctx?.page })
   const tools = toolsFor(o.channel)
   const dw = o.dw ?? 0
   const defaultPerson = o.channel === 'voice' ? persona(dw).person : undefined

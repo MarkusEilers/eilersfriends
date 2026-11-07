@@ -41,7 +41,7 @@ export async function ensureScoring() {
   ready = true
 }
 
-export const EVENT_KINDS = ['page_view', 'quiz_answer', 'quiz_text', 'quiz_complete', 'quiz_restart', 'cta_click', 'form_start', 'identified', 'booking', 'optin'] as const
+export const EVENT_KINDS = ['page_view', 'quiz_answer', 'quiz_text', 'quiz_complete', 'quiz_restart', 'cta_click', 'form_start', 'identified', 'booking', 'optin', 'chat_nudge', 'chat_message', 'page_dwell'] as const
 export type EventKind = (typeof EVENT_KINDS)[number]
 
 const PAGE_POINTS: [RegExp, number][] = [
@@ -68,6 +68,12 @@ export function pointsFor(kind: string, key: string, payload: Record<string, unk
     case 'quiz_complete': return 10
     case 'cta_click': return key.startsWith('quiz_rec:') ? 12 : 8
     case 'form_start': return 3
+    case 'chat_message': return key === 'first' ? 8 : 2
+    case 'chat_nudge': return key.startsWith('opened:') ? 2 : 0
+    case 'page_dwell': {
+      const secs = Array.isArray(payload.sections) ? (payload.sections as { sec?: number }[]).reduce((n, x) => n + (Number(x.sec) || 0), 0) : 0
+      return secs >= 120 ? 3 : secs >= 45 ? 1 : 0
+    }
     case 'optin': return 20
     case 'identified': return 15
     case 'booking': return 30
@@ -163,4 +169,33 @@ export async function knownFor(vid: string | null): Promise<{ email?: string; fi
   const ctx = [comp ? `Academy-Quiz: ${comp.stageLabel ?? comp.stage} → ${comp.recLabel ?? comp.rec}` : '', txt ?? ''].filter(Boolean).join('\n')
   if (!id && !ctx) return null
   return { email: (id?.email as string) || undefined, firstName: (id?.first_name as string) || undefined, context: ctx || undefined }
+}
+
+/** A/B-Auswertung der proaktiven Chat-Hinweise (Variante = Text + Wartezeit). */
+export async function nudgeStats(): Promise<{ variant: string; shown: number; opened: number; replied: number; dismissed: number }[]> {
+  await ensureScoring()
+  const r = rows(await db.execute(sql`
+    SELECT split_part(key, ':', 2) AS variant,
+      COUNT(DISTINCT vid) FILTER (WHERE key LIKE 'shown:%') AS shown,
+      COUNT(DISTINCT vid) FILTER (WHERE key LIKE 'opened:%') AS opened,
+      COUNT(DISTINCT vid) FILTER (WHERE key LIKE 'replied:%') AS replied,
+      COUNT(DISTINCT vid) FILTER (WHERE key LIKE 'dismissed:%') AS dismissed
+    FROM visitor_events WHERE kind = 'chat_nudge' GROUP BY 1 ORDER BY 1`))
+  return r.map((x) => ({ variant: String(x.variant), shown: Number(x.shown), opened: Number(x.opened), replied: Number(x.replied), dismissed: Number(x.dismissed) }))
+}
+
+/** Was sich jemand zuletzt am längsten angesehen hat (je Besucher-ID). */
+export async function lastDwell(vids: string[]): Promise<Map<string, { path: string; section: string; sec: number }>> {
+  await ensureScoring()
+  if (!vids.length) return new Map()
+  const r = rows(await db.execute(sql`
+    SELECT DISTINCT ON (vid) vid, key, payload FROM visitor_events
+    WHERE kind = 'page_dwell' AND vid IN (SELECT jsonb_array_elements_text(${JSON.stringify(vids)}::jsonb))
+    ORDER BY vid, created_at DESC`))
+  const m = new Map<string, { path: string; section: string; sec: number }>()
+  for (const x of r) {
+    const top = ((x.payload as { sections?: { s: string; sec: number }[] })?.sections ?? [])[0]
+    if (top) m.set(String(x.vid), { path: String(x.key), section: top.s, sec: top.sec })
+  }
+  return m
 }
