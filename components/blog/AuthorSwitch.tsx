@@ -1,6 +1,7 @@
 import { Link } from '@/lib/i18n/navigation'
 import Image from 'next/image'
 import { AUTHOR_LIST } from '@/lib/blog/authors'
+import { useTranslations } from 'next-intl'
 
 /**
  * Die Umschaltung zwischen den Autoren. Sie steht oben und nicht als Filter am
@@ -10,6 +11,7 @@ import { AUTHOR_LIST } from '@/lib/blog/authors'
 export function AuthorSwitch({
   active, counts,
 }: { active?: 'markus' | 'aljona' | 'team' | null; counts?: Record<string, number> }) {
+  const t = useTranslations('blogUi.authorSwitch')
   return (
     <div className="flex flex-wrap items-center justify-center gap-2">
       <Link
@@ -21,7 +23,7 @@ export function AuthorSwitch({
             : { borderColor: 'transparent', background: '#fff', color: '#0D0D0B' }
         }
       >
-        Alle Beiträge
+        {t('allPosts')}
       </Link>
       {AUTHOR_LIST.map((a) => {
         const on = active === a.slug

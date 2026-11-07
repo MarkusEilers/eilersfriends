@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Link } from '@/lib/i18n/navigation'
 import { Mail, Calendar, Loader2, CheckCircle2, ArrowRight } from 'lucide-react'
 import type { Author } from '@/lib/blog/authors'
+import { useTranslations } from 'next-intl'
 
 /**
  * Die Box am Fuss.
@@ -16,6 +17,7 @@ import type { Author } from '@/lib/blog/authors'
  * sammelt Adressen und fuehrt keine Gespraeche.
  */
 export function BlogCta({ author }: { author: Author }) {
+  const t = useTranslations('blogUi.cta')
   const [email, setEmail] = useState('')
   const [state, setState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
 
@@ -49,23 +51,23 @@ export function BlogCta({ author }: { author: Author }) {
               <Mail size={18} />
             </div>
             <h3 className="mt-4 text-xl font-bold text-gray-900">
-              Donnerstags eine Lehre aus der Woche
+              {t('newsletter.title')}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-gray-600">
               {author.slug === 'team'
-                ? 'Kein Newsletter über Neuigkeiten. Eine Sache, die wir diese Woche gelernt haben — und woran sie sich gezeigt hat.'
-                : `Kein Newsletter über Neuigkeiten. Eine Sache, die ${author.name.split(' ')[0]} diese Woche gelernt hat — und woran sie sich gezeigt hat.`}
+                ? t('newsletter.descTeam')
+                : t('newsletter.descAuthor', { name: author.name.split(' ')[0] })}
             </p>
 
             {state === 'done' ? (
               <div className="mt-5 flex items-center gap-2 text-sm font-semibold" style={{ color: author.accent }}>
-                <CheckCircle2 size={16} /> Prüf bitte Dein Postfach — dort liegt die Bestätigung.
+                <CheckCircle2 size={16} /> {t('newsletter.done')}
               </div>
             ) : (
               <form onSubmit={submit} className="mt-5 flex gap-2">
                 <input
                   type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                  placeholder="deine@firma.de"
+                  placeholder={t('newsletter.placeholder')}
                   className="min-w-0 flex-1 rounded-full border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-gray-400"
                 />
                 <button
@@ -74,12 +76,12 @@ export function BlogCta({ author }: { author: Author }) {
                   style={{ background: author.accent }}
                 >
                   {state === 'loading' ? <Loader2 size={14} className="animate-spin" /> : <ArrowRight size={14} />}
-                  Eintragen
+                  {t('newsletter.submit')}
                 </button>
               </form>
             )}
             {state === 'error' && (
-              <p className="mt-2 text-xs text-red-600">Das hat nicht geklappt. Versuch es bitte noch einmal.</p>
+              <p className="mt-2 text-xs text-red-600">{t('newsletter.error')}</p>
             )}
           </div>
 
@@ -99,17 +101,17 @@ export function BlogCta({ author }: { author: Author }) {
               </div>
             </div>
             <h3 className="mt-4 text-xl font-bold text-gray-900">
-              Oder wir reden eine halbe Stunde darüber
+              {t('meeting.title')}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-gray-600">
-              Kein Verkaufsgespräch mit Agenda. Du bringst die Situation mit, wir schauen sie uns gemeinsam an.
+              {t('meeting.desc')}
             </p>
             <Link
               href={author.booking as '/'}
               className="mt-5 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white"
               style={{ background: author.deep }}
             >
-              <Calendar size={14} /> {author.slug === 'team' ? 'Termin mit uns' : `Termin mit ${author.name.split(' ')[0]}`}
+              <Calendar size={14} /> {author.slug === 'team' ? t('meeting.ctaTeam') : t('meeting.ctaAuthor', { name: author.name.split(' ')[0] })}
             </Link>
           </div>
         </div>

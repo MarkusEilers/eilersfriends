@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import { Loader2, CheckCircle, ArrowRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const QUESTION_LIMIT = 280
 
 export function FrontRowForm() {
+  const t = useTranslations('frontRow.form')
   const [email, setEmail] = useState('')
   const [firstName, setFirstName] = useState('')
   const [question, setQuestion] = useState('')
@@ -49,14 +51,12 @@ export function FrontRowForm() {
         <div className="mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-white">
           <CheckCircle size={26} style={{ color: '#1A5FD4' }} />
         </div>
-        <h3 className="text-xl font-bold" style={{ color: '#0D0D0B' }}>Du bist auf der Liste.</h3>
+        <h3 className="text-xl font-bold" style={{ color: '#0D0D0B' }}>{t('success.title')}</h3>
         <p className="mt-2 text-sm leading-relaxed text-gray-700 max-w-md mx-auto">
-          Schau in dein Postfach und bestätige deine Email. Danach kommt die Welcome-Mail von
-          Markus mit dem ersten Bonus — dem Influence-Triangle-Poster.
+          {t('success.body')}
         </p>
         <p className="mt-3 text-xs text-gray-500">
-          Keine Bestätigungsmail? Check Spam, dann antworte direkt auf eine andere Mail an
-          markus@eilersfriends.com — ich trag dich manuell ein.
+          {t('success.noMail')}
         </p>
       </div>
     )
@@ -66,35 +66,35 @@ export function FrontRowForm() {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
         <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1.5">
-          Email *
+          {t('fields.email.label')}
         </label>
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="markus@beispiel.de"
+          placeholder={t('fields.email.placeholder')}
           className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-blue-300"
         />
       </div>
       <div>
         <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1.5">
-          Vorname (optional)
+          {t('fields.firstName.label')}
         </label>
         <input
           type="text"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
-          placeholder="Markus"
+          placeholder={t('fields.firstName.placeholder')}
           className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-blue-300"
         />
       </div>
       <div>
         <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1.5">
-          Optionale Frage
+          {t('fields.question.label')}
         </label>
         <p className="text-sm text-gray-700 mb-2">
-          Welche Frage zu ersten Gesprächen hat dir noch niemand beantwortet?
+          {t('fields.question.hint')}
         </p>
         <textarea
           value={question}
@@ -102,12 +102,12 @@ export function FrontRowForm() {
             if (e.target.value.length <= QUESTION_LIMIT) setQuestion(e.target.value)
           }}
           rows={4}
-          placeholder="Optional. Lass leer wenn du noch keine hast — kommt mit der Zeit."
+          placeholder={t('fields.question.placeholder')}
           className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-blue-300 resize-y"
         />
         <div className="mt-1 flex justify-end">
-          <span className={`text-xs ${charsLeft < 20 ? 'text-blue-600' : 'text-gray-400'}`}>
-            {charsLeft} / {QUESTION_LIMIT}
+          <span className={`text-xs ${charsLeft < 20 ? 'text-blue-600' : 'text-gray-400'}`}> 
+            {t('fields.question.charsLeft', { charsLeft, limit: QUESTION_LIMIT })}
           </span>
         </div>
       </div>
@@ -125,13 +125,12 @@ export function FrontRowForm() {
         style={{ backgroundColor: '#1A5FD4' }}
       >
         {status === 'loading'
-          ? <><Loader2 size={16} className="animate-spin" /> Trage dich ein…</>
-          : <>In die Front Row <ArrowRight size={14} /></>
+          ? <><Loader2 size={16} className="animate-spin" /> {t('submit.loading')}</>
+          : <>{t('submit.default')} <ArrowRight size={14} /></>
         }
       </button>
       <p className="text-xs text-center text-gray-500 leading-relaxed">
-        Deine Email geht nirgendwohin außer Kapitel-Drafts. Jederzeit abmelden. Kein Tracking-Pixel
-        außer einem Signup-Counter. Kein Upsell.
+        {t('privacy')}
       </p>
     </form>
   )

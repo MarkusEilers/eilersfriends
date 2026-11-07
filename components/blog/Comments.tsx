@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { MessageSquare, Loader2, Flag, CheckCircle2 } from 'lucide-react'
 import type { Author } from '@/lib/blog/authors'
+import { useTranslations } from 'next-intl'
 
 interface C { id: string; parent_id: string | null; author_name: string; body: string; created_at: string }
 
@@ -13,6 +14,7 @@ const initials = (n: string) =>
   n.trim().split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '').join('')
 
 export function Comments({ postId, author, open }: { postId: string; author: Author; open: boolean }) {
+  const t = useTranslations('blogUi.comments')
   const [list, setList] = useState<C[]>([])
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -55,7 +57,7 @@ export function Comments({ postId, author, open }: { postId: string; author: Aut
   return (
     <section className="mx-auto max-w-[680px] px-6 pb-10">
       <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
-        <MessageSquare size={13} /> {list.length > 0 ? `${list.length} Kommentare` : 'Kommentare'}
+        <MessageSquare size={13} /> {list.length > 0 ? t('headingWithCount', { count: list.length }) : t('heading')}
       </h2>
 
       <ul className="mt-5 space-y-5">
@@ -76,7 +78,7 @@ export function Comments({ postId, author, open }: { postId: string; author: Aut
                     method: 'PATCH', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: c.id }),
                   })}
-                  title="Melden"
+                  title={t('reportButtonTitle')}
                   className="ml-auto text-gray-300 transition-colors hover:text-gray-600"
                 >
                   <Flag size={11} />
@@ -87,13 +89,13 @@ export function Comments({ postId, author, open }: { postId: string; author: Aut
           </li>
         ))}
         {list.length === 0 && (
-          <li className="text-sm text-gray-400">Noch kein Kommentar. Der erste ist immer der schwerste.</li>
+          <li className="text-sm text-gray-400">{t('emptyState')}</li>
         )}
       </ul>
 
       {!open ? (
         <p className="mt-8 rounded-xl bg-gray-50 p-4 text-sm text-gray-500">
-          Zu diesem Beitrag sind Kommentare geschlossen.
+          {t('closed')}
         </p>
       ) : state === 'done' ? (
         <div className="mt-8 flex items-center gap-2 rounded-xl p-4 text-sm font-semibold"
@@ -102,15 +104,15 @@ export function Comments({ postId, author, open }: { postId: string; author: Aut
         </div>
       ) : (
         <form onSubmit={send} className="mt-8 rounded-2xl border border-gray-200 bg-white p-5">
-          <div className="text-sm font-bold text-gray-900">Etwas dazu zu sagen?</div>
+          <div className="text-sm font-bold text-gray-900">{t('form.title')}</div>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             <input
-              required value={name} onChange={(e) => setName(e.target.value)} placeholder="Dein Name"
+              required value={name} onChange={(e) => setName(e.target.value)} placeholder={t('form.namePlaceholder')}
               className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-gray-400"
             />
             <input
               required type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-              placeholder="E-Mail (wird nicht angezeigt)"
+              placeholder={t('form.emailPlaceholder')}
               className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-gray-400"
             />
           </div>
@@ -121,7 +123,7 @@ export function Comments({ postId, author, open }: { postId: string; author: Aut
           />
           <textarea
             required value={text} onChange={(e) => setText(e.target.value)} rows={4}
-            placeholder="Dein Kommentar"
+            placeholder={t('form.commentPlaceholder')}
             className="mt-2 w-full resize-y rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-gray-400"
           />
           <div className="mt-3 flex items-center gap-3">
@@ -130,10 +132,10 @@ export function Comments({ postId, author, open }: { postId: string; author: Aut
               className="inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-bold text-white disabled:opacity-60"
               style={{ background: author.accent }}
             >
-              {state === 'sending' && <Loader2 size={14} className="animate-spin" />} Abschicken
+              {state === 'sending' && <Loader2 size={14} className="animate-spin" />} {t('form.submit')}
             </button>
             <p className="text-[11px] leading-snug text-gray-400">
-              Name und Text werden öffentlich sichtbar. Die E-Mail-Adresse nicht — sie dient nur der Antwort.
+              {t('form.info')}
             </p>
           </div>
           {state === 'error' && <p className="mt-2 text-xs text-red-600">{message}</p>}

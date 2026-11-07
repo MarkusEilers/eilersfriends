@@ -3,13 +3,16 @@ import { auth } from '@/lib/auth'
 import { StoriesHub, postToItem, type HubItem } from '@/components/blog/StoriesHub'
 import { listPosts, topTags, frameworkCards } from '@/lib/blog/posts'
 import { AUTHORS } from '@/lib/blog/authors'
+import { getTranslations } from 'next-intl/server'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
-  title: 'Winning Team Stories · Eilers+Friends',
-  description:
-    'Was wir in 500+ Founder-Sparrings über Vertrieb und Führung lernen: Kundenstorys, die Serie „Gekippt bei Minute …", Frameworks, Podcast und Sparring-Notizen.',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('blogUi.index')
+  return {
+    title: t('meta.title'),
+    description: t('meta.description'),
+  }
 }
 
 const DISCIPLINE: Record<string, string[]> = { revenue: ['markus', 'team'], leadership: ['aljona', 'team'] }

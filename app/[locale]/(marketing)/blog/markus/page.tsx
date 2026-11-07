@@ -3,14 +3,18 @@ import { auth } from '@/lib/auth'
 import { BlogHome } from '@/components/blog/BlogHome'
 import { listPosts, countsByAuthor } from '@/lib/blog/posts'
 import { AUTHORS } from '@/lib/blog/authors'
+import { getTranslations } from 'next-intl/server'
 
 export const dynamic = 'force-dynamic'
 
 const author = AUTHORS.markus
 
-export const metadata: Metadata = {
-  title: `Blog von ${author.name}`,
-  description: author.bio,
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('blogUi.authorMarkus')
+  return {
+    title: t('metaTitle', { name: author.name }),
+    description: t('metaDescription', { bio: author.bio }),
+  }
 }
 
 export default async function AuthorBlogPage({

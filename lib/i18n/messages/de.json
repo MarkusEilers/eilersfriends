@@ -2191,5 +2191,531 @@
       "S18": "Audience einbinden",
       "S19": "Beziehungen ökologisch"
     }
+  },
+  "blogUi": {
+    "authorAljona": {
+      "meta": {
+        "title": "Blog von {name}",
+        "description": "{bio}"
+      }
+    },
+    "index": {
+      "meta": {
+        "title": "Winning Team Stories · Eilers+Friends",
+        "description": "Was wir in 500+ Founder-Sparrings über Vertrieb und Führung lernen: Kundenstorys, die Serie „Gekippt bei Minute …\", Frameworks, Podcast und Sparring-Notizen."
+      }
+    },
+    "authorMarkus": {
+      "metaTitle": "Blog von {name}",
+      "metaDescription": "{bio}"
+    },
+    "share": {
+      "listen": "Anhören",
+      "listenWithMinutes": "Anhören · {minutes} Min.",
+      "readingTime": "{minutes} Min. Lesezeit",
+      "linkedin": "LinkedIn",
+      "copyLink": "Link kopieren",
+      "copied": "Kopiert"
+    },
+    "authorSwitch": {
+      "allPosts": "Alle Beiträge"
+    },
+    "comments": {
+      "heading": "Kommentare",
+      "headingWithCount": "{count, plural, one {# Kommentar} other {# Kommentare}}",
+      "reportButtonTitle": "Melden",
+      "emptyState": "Noch kein Kommentar. Der erste ist immer der schwerste.",
+      "closed": "Zu diesem Beitrag sind Kommentare geschlossen.",
+      "form": {
+        "title": "Etwas dazu zu sagen?",
+        "namePlaceholder": "Dein Name",
+        "emailPlaceholder": "E-Mail (wird nicht angezeigt)",
+        "commentPlaceholder": "Dein Kommentar",
+        "submit": "Abschicken",
+        "info": "Name und Text werden öffentlich sichtbar. Die E-Mail-Adresse nicht — sie dient nur der Antwort."
+      }
+    },
+    "emailCapture": {
+      "confirmation": "Prüf bitte Dein Postfach, dort liegt die Bestätigung.",
+      "label": "E-Mail",
+      "placeholder": "du@firma.de",
+      "error": "Das hat nicht geklappt. Versuch es bitte noch einmal."
+    },
+    "bento": {
+      "date": "{date, date, long}",
+      "card": {
+        "readingMinutes": "{count, plural, one {# Min} other {# Min}}"
+      }
+    },
+    "home": {
+      "authorTagline": "{tagline} · Briefing",
+      "briefingTagline": "Eilers+Friends Briefing",
+      "mainHeadline": "Was wir diese Woche gelernt haben.",
+      "mainSubline": "Zwei Handschriften, ein Absender. Markus schreibt über Angebote, Pfade und Garantien. Aljona über Führung, Selbstführung und die Kultur dahinter.",
+      "headlineMarkus": "Was im Coaching passiert, bevor der Umsatz kommt.",
+      "headlineAljona": "Führung ist eine Fähigkeit. Keine Position.",
+      "emptyTitle": "Hier steht bald der erste Beitrag.",
+      "emptySubline": "Bis dahin geht das Briefing per E-Mail raus — die Anmeldung steht direkt darunter."
+    },
+    "cta": {
+      "newsletter": {
+        "title": "Donnerstags eine Lehre aus der Woche",
+        "descTeam": "Kein Newsletter über Neuigkeiten. Eine Sache, die wir diese Woche gelernt haben — und woran sie sich gezeigt hat.",
+        "descAuthor": "Kein Newsletter über Neuigkeiten. Eine Sache, die {name} diese Woche gelernt hat — und woran sie sich gezeigt hat.",
+        "done": "Prüf bitte Dein Postfach — dort liegt die Bestätigung.",
+        "placeholder": "deine@firma.de",
+        "submit": "Eintragen",
+        "error": "Das hat nicht geklappt. Versuch es bitte noch einmal."
+      },
+      "meeting": {
+        "title": "Oder wir reden eine halbe Stunde darüber",
+        "desc": "Kein Verkaufsgespräch mit Agenda. Du bringst die Situation mit, wir schauen sie uns gemeinsam an.",
+        "ctaTeam": "Termin mit uns",
+        "ctaAuthor": "Termin mit {name}"
+      }
+    },
+    "post": {
+      "notFoundTitle": "Beitrag nicht gefunden",
+      "breadcrumbs": {
+        "stories": "Stories"
+      },
+      "format": {
+        "article": "Artikel"
+      },
+      "discipline": {
+        "leadership": "Transformational Leadership",
+        "revenue": "Revenue Systems",
+        "both": "Revenue & Leadership"
+      },
+      "draft": "Entwurf",
+      "bookStrategy": "Strategie-Gespräch buchen",
+      "byline": {
+        "team": "Von Eilers+Friends",
+        "coachedBy": "Begleitet von",
+        "writtenBy": "Geschrieben von"
+      },
+      "facts": {
+        "company": "Unternehmen",
+        "phase": "Phase und Teamgröße",
+        "program": "Programm",
+        "coach": "Coach"
+      },
+      "toc": {
+        "title": "Inhalt"
+      },
+      "forWhom": {
+        "title": "Für Dich, wenn"
+      },
+      "beforeAfter": {
+        "title": "Vorher → Nachher",
+        "before": "Vorher",
+        "after": "Nachher"
+      },
+      "framework": {
+        "title": "Das Framework dahinter",
+        "desc": "Bauplan plus trainierter AI-Agent. Kostenlos.",
+        "cta": "Pack’s an"
+      },
+      "authorCard": {
+        "writtenBy": "Aufgeschrieben von",
+        "cta": "Mit {first} sprechen",
+        "us": "uns"
+      },
+      "together": {
+        "title": "Together: Winning Teams",
+        "subtitle": "Revenue Systems + Transformational Leadership = planbares Wachstum"
+      },
+      "related": {
+        "title": "Mehr aus {discipline}",
+        "readingMinutes": " · {minutes} Min."
+      },
+      "prose": {
+        "noText": "Für diesen Beitrag liegt noch kein Text vor."
+      }
+    },
+    "hub": {
+      "hero": {
+        "title": "Winning Team <b>Stories</b>",
+        "subtitle": "Was wir in 500+ Founder-Sparrings über Vertrieb und Führung lernen. Mit Frameworks zum Mitnehmen."
+      },
+      "preview": "Vorschau · Entwürfe sichtbar",
+      "tabs": {
+        "all": "Alle",
+        "allFormats": "Alle Formate"
+      },
+      "dropdowns": {
+        "discipline": {
+          "label": "Disziplin",
+          "both": "Beide"
+        },
+        "topic": {
+          "label": "Thema",
+          "all": "Alle Themen"
+        },
+        "coach": {
+          "label": "Coach",
+          "all": "Alle"
+        }
+      },
+      "discipline": {
+        "revenue": "Revenue",
+        "leadership": "Leadership",
+        "both": "Beide Disziplinen"
+      },
+      "empty": {
+        "title": "Hier ist noch nichts erschienen.",
+        "filtered": "Für diesen Filter gibt es noch keinen Beitrag.",
+        "unfiltered": "Die ersten Stories sind in Arbeit.",
+        "showAll": "Alle Stories zeigen"
+      },
+      "series": {
+        "label": "Die Serie",
+        "title": "Gekippt bei Minute …",
+        "desc": "Jede Woche ein echtes Erstgespräch, anonymisiert. Wir zeigen die Fragekette, die Stelle, an der es kippt, und drei Sätze, die es gerettet hätten.",
+        "cta": "Dein Gespräch auswerten lassen",
+        "ctaDesc": "Kostenlos über den Gesprächs-Check. Auf Wunsch anonym in der Serie."
+      },
+      "grid": {
+        "title": {
+          "filtered": "Ergebnis",
+          "unfiltered": "Neu"
+        }
+      },
+      "frameworks": {
+        "label": "Pretrained AI-Agenten · gratis",
+        "title": "Klau Dir unsere Frameworks. Inklusive AI-Agenten.",
+        "desc": "Jedes Framework kommt mit Bauplan und dem Agenten, den wir dafür trainiert haben.",
+        "cta": "Zugang holen"
+      },
+      "more": "Weitere laden",
+      "newsletter": {
+        "label": "Der Growth & Leadership Unternehmerletter",
+        "title": "Jeden Dienstag. 6.554 Unternehmer:innen lesen mit.",
+        "cta": "Anmelden"
+      },
+      "meta": {
+        "article": "Artikel",
+        "agent": " + AI-Agent",
+        "agentBadge": "mit AI-Agent",
+        "minutes": "{count, plural, one {· # Min.} other {· # Min.}}"
+      }
+    }
+  },
+  "legal": {
+    "impressum": {
+      "metaTitle": "Impressum — Eilers+Friends",
+      "title": "Impressum",
+      "sections": {
+        "legalNotice": {
+          "title": "Angaben gemäß § 5 TMG",
+          "address": "Eilers+Friends, uphill ventures GmbH<br>Blütenäcker 55/2<br>71332 Waiblingen<br>Deutschland",
+          "representedBy": "Vertreten durch die Geschäftsführer:innen Markus Eilers und Aljona Eilers.",
+          "brands": "Eilers+Friends, SalesMade & LeaderShe sind Marken der uphill ventures GmbH."
+        },
+        "contact": {
+          "title": "Kontakt",
+          "content": "E-Mail: <a1>team@eilersfriends.com</a1><br>Website: <a2>eilersfriends.com</a2>"
+        },
+        "vat": {
+          "title": "Umsatzsteuer-ID",
+          "content": "Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br>Wird nach Eintragung ergänzt."
+        },
+        "responsible": {
+          "title": "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV",
+          "content": "Markus Eilers<br>Blütenäcker 55/2<br>71332 Waiblingen"
+        },
+        "dispute": {
+          "title": "Streitschlichtung",
+          "platform": "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a>https://ec.europa.eu/consumers/odr/</a>",
+          "noParticipation": "Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+        },
+        "liabilityContent": {
+          "title": "Haftung für Inhalte",
+          "content": "Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen."
+        },
+        "liabilityLinks": {
+          "title": "Haftung für Links",
+          "content": "Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich."
+        },
+        "copyright": {
+          "title": "Urheberrecht",
+          "content": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers."
+        }
+      }
+    },
+    "agb": {
+      "metaTitle": "AGB — Eilers+Friends",
+      "title": "Allgemeine Geschäftsbedingungen",
+      "subtitle": "Für die Ausbildungs- und Coaching-Leistungen der SalesMade Academy. Stand: Juli 2026.",
+      "sections": {
+        "1": {
+          "title": "1. Geltungsbereich und Anbieter",
+          "text": "Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge über die Ausbildungs-, Coaching- und Trainingsleistungen der SalesMade Academy, angeboten von der Eilers+Friends, uphill ventures GmbH, Blütenäcker 55/2, 71332 Waiblingen (nachfolgend „Anbieter\"). Die Leistungen richten sich ausschließlich an Unternehmer im Sinne des § 14 BGB. Ein Verbrauchergeschäft liegt nicht vor."
+        },
+        "2": {
+          "title": "2. Vertragsgegenstand",
+          "text": "Der Anbieter bildet pro gebuchtem Ausbildungsplatz („Seat\") eine vom Kunden benannte Person über zwölf Monate aus. Enthalten sind insbesondere Assessment, ein individueller Entwicklungs-Fahrplan, eine monatliche 1:1-Coaching-Session, Zugang zu Frameworks und Playbook-Library, werktägliches Sparring sowie der Zugang zur Founding-Community im jeweils zum Buchungszeitpunkt beschriebenen Umfang. Der Kunde kann selbst einen der Plätze wahrnehmen. Mengen-Boni gelten in dem auf der Angebotsseite beschriebenen Umfang."
+        },
+        "3": {
+          "title": "3. Vertragsschluss",
+          "text": "Der Vertrag kommt mit Abschluss des Buchungsvorgangs und Bestätigung durch den Anbieter zustande. Die Darstellung der Leistungen auf der Website ist eine Aufforderung zur Abgabe eines Angebots; die Buchung des Kunden ist das Angebot."
+        },
+        "4": {
+          "title": "4. Laufzeit und Verlängerung",
+          "text": "Der Vertrag hat eine feste Laufzeit von zwölf Monaten ab Ausbildungsbeginn. Er verlängert sich um jeweils ein weiteres Jahr, sofern er nicht mit einer Frist von drei Monaten zum Ende der jeweiligen Laufzeit in Textform gekündigt wird."
+        },
+        "5": {
+          "title": "5. Preise, Zahlung und Reisekosten",
+          "text": "Es gelten die zum Buchungszeitpunkt ausgewiesenen Preise je Seat, zuzüglich der gesetzlichen Umsatzsteuer. Bei gültiger Umsatzsteuer-Identifikationsnummer außerhalb Deutschlands erfolgt die Abrechnung im Reverse-Charge-Verfahren. Reisekosten für Präsenztermine, die der Kunde wünscht, werden gesondert nach tatsächlichem Aufwand in Rechnung gestellt und sind im Seat-Preis nicht enthalten."
+        },
+        "6": {
+          "title": "6. Zufriedenheitsgarantie (90 Tage)",
+          "text": "Zeigt sich innerhalb von 90 Tagen nach Vertragsbeginn keine messbare Verbesserung in den Sales-KPIs des Kunden, erstattet der Anbieter die volle bis dahin geleistete Investition. Voraussetzung ist, dass die teilnehmende Person in diesem Zeitraum aktiv teilgenommen hat (Assessment durchlaufen, vereinbarte Sessions wahrgenommen). Die Mitteilung genügt in Textform an team@eilersfriends.com."
+        },
+        "7": {
+          "title": "7. Mitwirkung des Kunden",
+          "text": "Die Ausbildung setzt die aktive Teilnahme der benannten Person voraus. Termine, die der Kunde nicht wahrnimmt, verfallen, soweit sie nicht rechtzeitig (mindestens 24 Stunden vorher) verschoben werden. Eine Pflicht zur Nachholung besteht insoweit nicht."
+        },
+        "8": {
+          "title": "8. Kein Widerrufsrecht für Unternehmer",
+          "text": "Da sich das Angebot ausschließlich an Unternehmer richtet, besteht kein gesetzliches Widerrufsrecht für Verbraucher. Unabhängig davon gilt die in Ziffer 6 beschriebene freiwillige Zufriedenheitsgarantie."
+        },
+        "9": {
+          "title": "9. Haftung",
+          "text": "Der Anbieter erbringt eine Dienstleistung und schuldet keinen bestimmten wirtschaftlichen Erfolg. Die Haftung richtet sich nach den gesetzlichen Bestimmungen; für leichte Fahrlässigkeit haftet der Anbieter nur bei Verletzung wesentlicher Vertragspflichten und begrenzt auf den vertragstypischen, vorhersehbaren Schaden."
+        },
+        "10": {
+          "title": "10. Höhere Gewalt",
+          "text": "Wird eine Partei durch höhere Gewalt — etwa Naturereignisse, Ausfälle der Telekommunikations- oder Stromversorgung, behördliche Maßnahmen, Streik oder vergleichbare, nicht vorhersehbare und unabwendbare Ereignisse — an der Erfüllung ihrer Pflichten gehindert, ruhen diese für die Dauer der Behinderung. Vereinbarte Termine verschieben sich entsprechend; ein Verschulden liegt insoweit nicht vor."
+        },
+        "11": {
+          "title": "11. Vertraulichkeit",
+          "text": "Beide Parteien behandeln alle im Rahmen der Zusammenarbeit erhaltenen, nicht offenkundigen Informationen der anderen Partei — insbesondere Geschäfts-, Kunden-, Vertriebs- und Finanzdaten — vertraulich und nutzen sie ausschließlich zur Durchführung der Leistungen. Ausgenommen sind Informationen, die öffentlich bekannt sind, der empfangenden Partei bereits bekannt waren oder aufgrund gesetzlicher oder behördlicher Anordnung offengelegt werden müssen. Die Vertraulichkeit besteht auch nach Vertragsende fort."
+        },
+        "12": {
+          "title": "12. Datenschutz",
+          "text": "Beide Parteien halten die geltenden Datenschutzvorschriften ein. Verarbeitet der Anbieter im Auftrag des Kunden personenbezogene Daten, schließen die Parteien einen Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO. Einzelheiten zur Verarbeitung durch den Anbieter ergeben sich aus der <a>Datenschutzerklärung</a>."
+        },
+        "13": {
+          "title": "13. Nennung als Referenzkunde",
+          "text": "Der Anbieter ist berechtigt, den Kunden nach erfolgreicher Zusammenarbeit als Referenzkunden zu nennen — auch unter Nutzung des Firmennamens und -logos — auf seiner Website und in Marketingmaterialien. Der Kunde kann dem jederzeit in Textform (E-Mail genügt) widersprechen."
+        },
+        "14": {
+          "title": "14. Schlussbestimmungen",
+          "text": "Nebenabreden bedürfen der Schriftform; dies gilt auch für die Aufhebung des Schriftformerfordernisses. Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts. Sollte eine Bestimmung unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt."
+        }
+      }
+    },
+    "datenschutz": {
+      "metadata": {
+        "title": "Datenschutzerklärung — Eilers+Friends"
+      },
+      "hero": {
+        "title": "Datenschutzerklärung"
+      },
+      "sections": [
+        {
+          "title": "1. Datenschutz auf einen Blick",
+          "generalTitle": "Allgemeine Hinweise",
+          "generalText": "Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können."
+        },
+        {
+          "title": "2. Verantwortliche Stelle",
+          "text": "Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:<br/><br/>Eilers+Friends, uphill ventures GmbH<br/>Blütenäcker 55/2<br/>71332 Waiblingen<br/>Deutschland<br/>E-Mail: <a>team@eilersfriends.com</a>"
+        },
+        {
+          "title": "3. Datenerfassung auf dieser Website",
+          "cookiesTitle": "Cookies",
+          "cookiesText": "Unsere Internetseiten verwenden so genannte „Cookies\". Cookies sind kleine Datenpakete und richten auf Ihrem Endgerät keinen Schaden an. Sie werden entweder vorübergehend für die Dauer einer Sitzung (Session-Cookies) oder dauerhaft (permanente Cookies) auf Ihrem Endgerät gespeichert. Session-Cookies werden nach Ende Ihres Besuchs automatisch gelöscht. Permanente Cookies bleiben auf Ihrem Endgerät gespeichert, bis Sie diese selbst löschen oder eine automatische Löschung durch Ihren Webbrowser erfolgt.",
+          "serverLogTitle": "Server-Log-Dateien",
+          "serverLogText": "Der Provider der Seiten erhebt und speichert automatisch Informationen in so genannten Server-Log-Dateien, die Ihr Browser automatisch an uns übermittelt. Dies sind:",
+          "serverLogItems": [
+            "Browsertyp und Browserversion",
+            "verwendetes Betriebssystem",
+            "Referrer URL",
+            "Hostname des zugreifenden Rechners",
+            "Uhrzeit der Serveranfrage",
+            "IP-Adresse"
+          ]
+        },
+        {
+          "title": "4. Newsletter",
+          "text1": "Wenn Sie den auf der Website angebotenen Newsletter beziehen möchten, benötigen wir von Ihnen eine E-Mail-Adresse sowie Informationen, welche uns die Überprüfung gestatten, dass Sie der Inhaber der angegebenen E-Mail-Adresse sind und mit dem Empfang des Newsletters einverstanden sind. Weitere Daten werden nicht erhoben. Diese Daten verwenden wir ausschließlich für den Versand der angeforderten Informationen und geben sie nicht an Dritte weiter.",
+          "text2": "Die erteilte Einwilligung zur Speicherung der Daten, der E-Mail-Adresse sowie deren Nutzung zum Versand des Newsletters können Sie jederzeit widerrufen, etwa über den „Austragen\"-Link im Newsletter.",
+          "text3": "Wir Verwenden <b>Beehiiv</b> als Newsletter-Plattform. Weitere Informationen zur Datenverarbeitung durch Beehiiv finden Sie unter: <a>beehiiv.com/privacy</a>"
+        },
+        {
+          "title": "5. Ihre Rechte",
+          "rightsIntro": "Sie haben jederzeit das Recht:",
+          "rightsList": [
+            "unentgeltliche Auskunft über Herkunft, Empfänger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten",
+            "die Berichtigung oder Löschung dieser Daten zu verlangen",
+            "die Einschränkung der Verarbeitung zu verlangen",
+            "Ihrer Verarbeitung zu widersprechen",
+            "Datenübertragbarkeit zu verlangen"
+          ],
+          "complaint": "Außerdem steht Ihnen das Recht zu, sich bei einer Aufsichtsbehörde für Datenschutz zu beschweren."
+        },
+        {
+          "title": "6. Drittanbieter",
+          "vercelTitle": "Vercel",
+          "vercelText": "Diese Website wird auf der Plattform Vercel (Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA) gehostet. Beim Aufruf dieser Website werden automatisch Verbindungsdaten an Vercel übermittelt. Weitere Informationen: <a>vercel.com/legal/privacy-policy</a>",
+          "googleFontsTitle": "Google Fonts",
+          "googleFontsText": "Diese Seite nutzt zur einheitlichen Darstellung von Schriftarten Google Fonts (Anbieter: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA). Beim Aufruf einer Seite lädt Ihr Browser die benötigten Fonts in Ihren Browsercache, um Texte und Schriftarten korrekt anzuzeigen."
+        },
+        {
+          "title": "7. Kontakt bei Datenschutzfragen",
+          "text": "Bei Fragen zum Datenschutz wenden Sie sich bitte an: <a>team@eilersfriends.com</a>",
+          "stand": "Stand: März 2026"
+        }
+      ]
+    }
+  },
+  "frontRow": {
+    "form": {
+      "success": {
+        "title": "Du bist auf der Liste.",
+        "body": "Schau in dein Postfach und bestätige deine Email. Danach kommt die Welcome-Mail von Markus mit dem ersten Bonus — dem Influence-Triangle-Poster.",
+        "noMail": "Keine Bestätigungsmail? Check Spam, dann antworte direkt auf eine andere Mail an markus@eilersfriends.com — ich trag dich manuell ein."
+      },
+      "fields": {
+        "email": {
+          "label": "Email *",
+          "placeholder": "markus@beispiel.de"
+        },
+        "firstName": {
+          "label": "Vorname (optional)",
+          "placeholder": "Markus"
+        },
+        "question": {
+          "label": "Optionale Frage",
+          "hint": "Welche Frage zu ersten Gesprächen hat dir noch niemand beantwortet?",
+          "placeholder": "Optional. Lass leer wenn du noch keine hast — kommt mit der Zeit.",
+          "charsLeft": "{charsLeft} / {limit}"
+        }
+      },
+      "submit": {
+        "loading": "Trage dich ein…",
+        "default": "In die Front Row"
+      },
+      "privacy": "Deine Email geht nirgendwohin außer Kapitel-Drafts. Jederzeit abmelden. Kein Tracking-Pixel außer einem Signup-Counter. Kein Upsell."
+    },
+    "page": {
+      "meta": {
+        "title": "Front Row — Instant Influence",
+        "description": "Front Row für das Buch Instant Influence. Frühe Kapitel-Drafts in deine Inbox, ein direkter Draht zu Markus, dein Name in den Acknowledgements und ein signiertes Exemplar zum Launch."
+      },
+      "hero": {
+        "badge": "Instant Influence — Buch im Bau",
+        "title": "Front Row",
+        "subtitle": "Hilf mir, das Buch zu bauen, das B2B-Sales 2026 wirklich braucht.",
+        "body": "Ich habe versucht, dieses Buch dreimal zu schreiben. Keiner der Drafts ist je rausgegangen. Dann hat AI das Gespräch übernommen — und das Buch hat endlich seine Form gefunden. Dieses Mal schreibe ich es <em>mit</em> den Menschen, die diese Arbeit schon kennen — nicht <em>für</em> sie.",
+        "cta": "Platz nehmen"
+      },
+      "pullQuote": "„Ich starte keinen Launch. Ich starte einen Build.\"",
+      "perksSection": {
+        "badge": "Was die Front Row bekommt",
+        "title": "Vier Dinge — keine Marketing-Sequenz"
+      },
+      "perks": [
+        {
+          "title": "Frühe Kapitel-Drafts.",
+          "body": "Jedes Kapitel landet in deiner Inbox bevor es woanders auftaucht. Etwa alle 2–3 Wochen ein Draft."
+        },
+        {
+          "title": "Direkter Draht zum Pushback.",
+          "body": "Antworte auf jeden Draft. Hinterfrage das Framework, schlag eine Story vor, sag wo das Kapitel nicht landet. Ich lese jede Antwort."
+        },
+        {
+          "title": "Acknowledgements, wenn du willst.",
+          "body": "Dein Name auf den Danksagungs-Seiten. Kein Mindesteinsatz nötig."
+        },
+        {
+          "title": "Signiertes Exemplar zum Launch.",
+          "body": "An deine Adresse versendet, sobald das Buch live geht."
+        }
+      ],
+      "askBackSection": {
+        "badge": "Was ich zurück frage",
+        "title": "Eine Frage pro Kapitel — wenn du eine hast",
+        "body": "Eine Frage pro Kapitel, wenn du eine hast. Das ist die einzige Bitte. Wenn du keine hast, ignorier die Mail und lies in deinem Tempo. Die Front Row lebt von echten Reaktionen, nicht von performativem Engagement. Lurke, wenn du das brauchst. Schieb zurück, wenn du etwas hast. Beides funktioniert."
+      },
+      "signupSection": {
+        "badge": "Platz nehmen",
+        "title": "In die Front Row"
+      },
+      "talkFirstSection": {
+        "badge": "Lieber erst sprechen?",
+        "title": "Mussst du es vorher durchdenken?",
+        "body": "Manche von euch haben spezifische Fragen — ob dieses Buch zu eurem Team, eurer Karrierephase oder gerade jetzt passt. Zwanzig Minuten. Kein Pitch. Ich will hören, woran du arbeitest.",
+        "cta": "20 Minuten mit Markus"
+      },
+      "aboutSection": {
+        "badge": "Wer das schreibt",
+        "title": "Markus Eilers",
+        "photoAlt": "Markus Eilers",
+        "body": "Markus Eilers ist Sales-Coach, Ex-Founder und TEDx Speaker. Er hat 27 Jahre damit verbracht, herauszufinden, warum die meisten ersten B2B-Gespräche scheitern — und was die wenigen, die funktionieren, gemeinsam haben. Er führt SalesMade — eine Coaching-Praxis für B2B-Sales-Teams, die ohne Pitchen verkaufen wollen.",
+        "linkedin": "LinkedIn",
+        "tedx": "TEDx Darmstadt 2025",
+        "salesmade": "SalesMade"
+      }
+    }
+  },
+  "aiIntensive": {
+    "meta": {
+      "title": "SalesMade AI Intensive — Nur für Alumni | Eilers+Friends",
+      "description": "Zwei Tage mit Markus: Gesprächsführung auf den Punkt plus der komplette AI-Sales-Stack. Stuttgart & Berlin, max. 20 Teilnehmer pro Termin."
+    },
+    "hero": {
+      "badge": "Nur für Alumni · max. 20 Teilnehmer · Stuttgart & Berlin",
+      "title": "Wirksam Überzeugen auf den Punkt — plus mein kompletter <span>AI-Sales-Stack.</span>",
+      "desc": "Ein VIP-Wochenende für maximal 20 Alumni pro Termin. Zwei Tage mit Markus in Stuttgart oder Berlin: Gesprächsführung frisch geschärft und der komplette Werkzeugkasten, mit dem ich heute AI im Verkauf einsetze — Frameworks, Prompts, alles zum Mitnehmen.",
+      "cta": "Platz sichern",
+      "priceHint": "897 € für Alumni · Vorkasse · max. 20 pro Termin."
+    },
+    "blocks": {
+      "badge": "Zwei Tage, Fr + Sa",
+      "title": "Was Du mitnimmst.",
+      "block1": {
+        "badge": "Block 1",
+        "title": "Gesprächsführung, geschärft.",
+        "desc": "Die Grundlagen, die verkaufen — neu justiert. Kein Theorie-Refresh, sondern an Deinen Fällen."
+      },
+      "block2": {
+        "badge": "Block 2",
+        "title": "Mein AI-Sales-Stack.",
+        "desc": "Wie ich AI über den ganzen Prozess einsetze — von der Vorbereitung bis zum Abschluss. Alle neuen Frameworks und Prompts, sofort einsetzbar."
+      }
+    },
+    "datesTitle": "Zwei Städte. Zwei Termine.",
+    "dates": [
+      {
+        "city": "Stuttgart",
+        "when": "Fr 10. – Sa 11. Juli"
+      },
+      {
+        "city": "Berlin",
+        "when": "Fr 24. – Sa 25. Juli"
+      }
+    ],
+    "datesHint": "Je max. 20 Teilnehmer. Du wählst Deine Stadt beim Buchen.",
+    "offer": {
+      "badge": "Das Angebot",
+      "price": "897 €",
+      "strike": "1.897 €",
+      "priceHint": "Alumni-Preis",
+      "bullets": [
+        "Zwei Tage live mit Markus",
+        "Gesprächsführung + kompletter AI-Sales-Stack",
+        "Alle Frameworks und Prompts zum Mitnehmen",
+        "Vorkasse bei Buchung"
+      ],
+      "cta": "Platz sichern"
+    },
+    "scarcity": {
+      "title": "Maximal 20 Teilnehmer pro Termin.",
+      "desc": "Mehr nehmen wir nicht — das Format lebt vom kleinen Kreis. Ist Dein Termin voll, rückt der nächste nach.",
+      "cta": "Jetzt Platz sichern"
+    }
   }
 }

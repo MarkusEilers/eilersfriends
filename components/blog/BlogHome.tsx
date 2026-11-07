@@ -4,6 +4,7 @@ import { AuthorSwitch } from './AuthorSwitch'
 import { BlogCta } from './BlogCta'
 import type { Post } from '@/lib/blog/posts'
 import { AUTHORS, type Author } from '@/lib/blog/authors'
+import { useTranslations } from 'next-intl'
 
 /**
  * Eine Uebersicht, zwei Verwendungen: der Blog als Ganzes und die Seite eines
@@ -14,6 +15,7 @@ import { AUTHORS, type Author } from '@/lib/blog/authors'
 export function BlogHome({
   posts, author, counts,
 }: { posts: Post[]; author?: Author | null; counts?: Record<string, number> }) {
+  const t = useTranslations('blogUi.home')
   const deep = author?.deep ?? '#0F1E3A'
   const onDeep = author?.onDeep ?? '#5DDBF5'
   const accent = author?.accent
@@ -34,15 +36,15 @@ export function BlogHome({
 
         <div className="relative mx-auto max-w-4xl text-center">
           <p className="text-xs font-bold uppercase tracking-[0.25em]" style={{ color: onDeep }}>
-            {author ? `${author.tagline} · Briefing` : 'Eilers+Friends Briefing'}
+            {author ? t('authorTagline', { tagline: author.tagline }) : t('briefingTagline')}
           </p>
           <h1
             className="mt-4 text-4xl font-bold text-white sm:text-5xl lg:text-6xl"
           >
-            {author ? headlineFor(author) : 'Was wir diese Woche gelernt haben.'}
+            {author ? headlineFor(author, t) : t('mainHeadline')}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/75">
-            {author ? author.bio : 'Zwei Handschriften, ein Absender. Markus schreibt über Angebote, Pfade und Garantien. Aljona über Führung, Selbstführung und die Kultur dahinter.'}
+            {author ? author.bio : t('mainSubline')}
           </p>
           <div className="mt-9">
             <AuthorSwitch active={author?.slug ?? null} counts={counts} />
@@ -61,10 +63,10 @@ export function BlogHome({
   )
 }
 
-function headlineFor(a: Author) {
+function headlineFor(a: Author, t: ReturnType<typeof useTranslations>) {
   return a.slug === 'markus'
-    ? 'Was im Coaching passiert, bevor der Umsatz kommt.'
-    : 'Führung ist eine Fähigkeit. Keine Position.'
+    ? t('headlineMarkus')
+    : t('headlineAljona')
 }
 
 /** Etwas dunkler fuer den Verlauf — ohne eine zweite Farbe pflegen zu muessen. */
@@ -78,6 +80,7 @@ function shade(hex: string) {
 }
 
 function Empty({ accent }: { accent?: string }) {
+  const t = useTranslations('blogUi.home')
   return (
     <div className="rounded-3xl border border-dashed border-gray-300 bg-white p-16 text-center">
       <div
@@ -86,9 +89,9 @@ function Empty({ accent }: { accent?: string }) {
       >
         <BookOpen size={22} style={{ color: accent ?? '#1A5FD4' }} />
       </div>
-      <h2 className="text-2xl font-bold text-gray-900">Hier steht bald der erste Beitrag.</h2>
+      <h2 className="text-2xl font-bold text-gray-900">{t('emptyTitle')}</h2>
       <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-gray-600">
-        Bis dahin geht das Briefing per E-Mail raus — die Anmeldung steht direkt darunter.
+        {t('emptySubline')}
       </p>
     </div>
   )

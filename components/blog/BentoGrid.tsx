@@ -3,9 +3,10 @@ import { Link } from '@/lib/i18n/navigation'
 import { ArrowUpRight, Clock } from 'lucide-react'
 import type { Post } from '@/lib/blog/posts'
 import { authorOf } from '@/lib/blog/authors'
+import { useTranslations } from 'next-intl'
 
-const dt = (s: string | null) =>
-  s ? new Date(s).toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' }) : ''
+const dt = (s: string | null, t: ReturnType<typeof useTranslations>) =>
+  s ? t('date', { date: new Date(s) }) : ''
 
 /**
  * Das Bento-Raster.
@@ -16,6 +17,7 @@ const dt = (s: string | null) =>
  * Zwischenraum — es trifft keine Aussage darueber, was gerade zaehlt.
  */
 export function BentoGrid({ posts, accentFallback }: { posts: Post[]; accentFallback?: string }) {
+  const t = useTranslations('blogUi.bento')
   if (!posts.length) return null
   const [lead, ...rest] = posts
   const mid = rest.slice(0, 2)
@@ -23,16 +25,16 @@ export function BentoGrid({ posts, accentFallback }: { posts: Post[]; accentFall
 
   return (
     <div className="grid gap-4 lg:grid-cols-3">
-      <Card post={lead} size="lead" accentFallback={accentFallback} className="lg:col-span-2 lg:row-span-2" />
-      {mid.map((p) => <Card key={p.slug} post={p} size="mid" accentFallback={accentFallback} />)}
-      {small.map((p) => <Card key={p.slug} post={p} size="small" accentFallback={accentFallback} />)}
+      <Card post={lead} size="lead" accentFallback={accentFallback} className="lg:col-span-2 lg:row-span-2" t={t} />
+      {mid.map((p) => <Card key={p.slug} post={p} size="mid" accentFallback={accentFallback} t={t} />)}
+      {small.map((p) => <Card key={p.slug} post={p} size="small" accentFallback={accentFallback} t={t} />)}
     </div>
   )
 }
 
 function Card({
-  post, size, className, accentFallback,
-}: { post: Post; size: 'lead' | 'mid' | 'small'; className?: string; accentFallback?: string }) {
+  post, size, className, accentFallback, t
+}: { post: Post; size: 'lead' | 'mid' | 'small'; className?: string; accentFallback?: string; t: ReturnType<typeof useTranslations> }) {
   const a = authorOf(post.author_slug)
   const accent = accentFallback ?? a.accent
   const img = post.hero_image ?? post.og_image
@@ -58,10 +60,10 @@ function Card({
           <span className="rounded-full px-2 py-0.5" style={{ background: a.tint, color: accent }}>
             {a.name.split(' ')[0]}
           </span>
-          <span className="text-gray-400">{dt(post.published_at)}</span>
+          <span className="text-gray-400">{dt(post.published_at, t)}</span>
           {post.reading_minutes ? (
             <span className="ml-auto inline-flex items-center gap-1 text-gray-400">
-              <Clock size={10} /> {post.reading_minutes} Min
+              <Clock size={10} /> {t('card.readingMinutes', { count: post.reading_minutes })}
             </span>
           ) : null}
         </div>
@@ -82,9 +84,9 @@ function Card({
         )}
 
         <div className="mt-auto flex items-center gap-2 pt-4">
-          {(post.tags ?? []).slice(0, lead ? 3 : 2).map((t) => (
-            <span key={t} className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
-              {t}
+          {(post.tags ?? []).slice(0, lead ? 3 : 2).map((tTag) => (
+            <span key={tTag} className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
+              {tTag}
             </span>
           ))}
           <ArrowUpRight
