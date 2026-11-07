@@ -4,6 +4,7 @@ import { createHash } from 'crypto'
 import { db } from '@/lib/db'
 import { pageViews } from '@/lib/db/schema'
 import { ensureAnalyticsTables } from '@/lib/db/self-heal'
+import { trackEvent, VID_RE } from '@/lib/scoring/core'
 
 const schema = z.object({
   path: z.string().min(1).max(500),
@@ -13,6 +14,7 @@ const schema = z.object({
   utmSource: z.string().max(120).optional(),
   utmMedium: z.string().max(120).optional(),
   utmCampaign: z.string().max(120).optional(),
+  vid: z.string().regex(VID_RE).optional(),
 })
 
 function parseReferrerHost(ref?: string): string | null {
@@ -54,6 +56,7 @@ export async function POST(request: Request) {
       utmMedium: data.utmMedium ?? null,
       utmCampaign: data.utmCampaign ?? null,
     })
+    if (data.vid) await trackEvent({ vid: data.vid, kind: 'page_view', key: data.path, path: data.path, persistent: true }).catch(() => {})
     return NextResponse.json({ ok: true, recorded: true })
   } catch (err) {
     console.error('[/api/track] error:', err)

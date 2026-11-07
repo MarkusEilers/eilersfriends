@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { getVid, rememberContext } from '@/components/analytics/visitor'
 
 /**
  * Opt-in der Squeeze-Seite: Vorname + Firmen-E-Mail. Legt einen Lead an,
@@ -19,10 +20,11 @@ export function OptinForm({ button, next, source, soldOut = false, bare = false 
     try {
       const res = await fetch('/api/mystery-shopping/lead', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, email, source }),
+        body: JSON.stringify({ firstName, email, source, vid: getVid().vid }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok || !data.lead) { setError(data.error ?? 'Das hat nicht geklappt. Bitte versucht es noch einmal.'); return }
+      rememberContext({ firstName, email })
       const url = new URL(next, window.location.origin)
       url.searchParams.set('lead', data.lead)
       window.location.href = url.pathname + url.search

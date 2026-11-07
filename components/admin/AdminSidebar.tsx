@@ -18,8 +18,10 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'Content',
     items: [
       { label: 'Übersicht',     href: '/admin',                icon: LayoutDashboard },
+      { label: 'Page-Tree',     href: '/admin/pagetree',       icon: ListOrdered },
       { label: 'Landing Pages', href: '/admin/landing-pages',  icon: LayoutTemplate },
       { label: 'Frameworks',    href: '/admin/frameworks',     icon: BookOpen },
+      { label: 'Lead-Scoring',  href: '/admin/leadscoring',    icon: Target },
       { label: 'Blog',          href: '/admin/blog',           icon: PenLine },
       { label: 'Meetings',      href: '/admin/meetings',       icon: CalendarDays },
       { label: 'Agenten',       href: '/admin/agents',         icon: Cpu },

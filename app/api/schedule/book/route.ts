@@ -5,6 +5,7 @@ import { getEventType } from '@/lib/schedule/types-store'
 import { createBooking as storeBooking, bookingCountsByDay, makeManageToken } from '@/lib/schedule/bookings-store'
 import { removeSlotFromCache } from '@/lib/schedule/availability-cache'
 import { logError } from '@/lib/errors/store'
+import { identify, trackEvent, vidFrom } from '@/lib/scoring/core'
 
 export const runtime = 'nodejs'
 
@@ -81,5 +82,10 @@ export async function POST(req: NextRequest) {
   })
   await removeSlotFromCache(person, type, slot)
 
+  const vid = vidFrom(req, body.vid)
+  if (vid) {
+    await identify(vid, email, name.split(' ')[0], 'booking').catch(() => {})
+    await trackEvent({ vid, kind: 'booking', key: `${person}/${type}`, payload: { slot } }).catch(() => {})
+  }
   return NextResponse.json({ ok: true, start: slot, end, joinUrl: r.joinUrl || null, title: `${et.name} mit ${ent.name}`, manageUrl })
 }

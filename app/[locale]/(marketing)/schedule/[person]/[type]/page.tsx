@@ -6,23 +6,29 @@ import { entityFor, membersFor } from '@/lib/schedule/config'
 import { getEventType, getHostProfile, localizedType } from '@/lib/schedule/types-store'
 import { TEAM as OFFER_TEAM } from '@/lib/offer/team'
 import { BookingWidget } from '@/components/schedule/BookingWidget'
+import { cookies } from 'next/headers'
+import { knownFor } from '@/lib/scoring/core'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
-export default async function ScheduleBooking({ params, searchParams }: { params: Promise<{ person: string; type: string }>; searchParams: Promise<{ preview?: string; name?: string; offer?: string }> }) {
+export default async function ScheduleBooking({ params, searchParams }: { params: Promise<{ person: string; type: string }>; searchParams: Promise<{ preview?: string; name?: string; offer?: string; email?: string; context?: string }> }) {
   const { person, type } = await params
   const sp = await searchParams
   const isPreview = sp?.preview != null
-  const prefillName = sp?.name?.trim() || undefined
-  const prefillNote = sp?.offer?.trim() ? `Angebot: ${sp.offer.trim()}` : undefined
+  // Bekannte Angaben übernehmen: URL-Parameter > angemeldete Person > Besucher-ID (Cookie, Opt-in, Quiz)
+  const session = await auth().catch(() => null)
+  const vid = (await cookies()).get('ef_vid')?.value ?? null
+  const known = await knownFor(vid && /^[a-z0-9-]{8,64}$/.test(vid) ? vid : null).catch(() => null)
+  const prefillName = sp?.name?.trim() || session?.user?.name || known?.firstName || undefined
+  const prefillEmail = (sp?.email?.trim() && /.+@.+\..+/.test(sp.email.trim()) ? sp.email.trim() : undefined) || session?.user?.email || known?.email || undefined
+  const prefillNote = [sp?.offer?.trim() ? `Angebot: ${sp.offer.trim()}` : '', sp?.context?.trim().slice(0, 500) ?? '', known?.context ?? ''].filter(Boolean).join('\n') || undefined
 
   const ent = entityFor(person)
   const et = await getEventType(person, type)
   if (!ent || !et) notFound()
   if (et.visibility === 'offline') {
-    const session = isPreview ? await auth() : null
-    if (!session?.user || (session.user.role !== 'admin' && session.user.role !== 'coach')) notFound()
+    if (!isPreview || !session?.user || (session.user.role !== 'admin' && session.user.role !== 'coach')) notFound()
   }
 
   const t = await getTranslations('schedule')
@@ -49,7 +55,7 @@ export default async function ScheduleBooking({ params, searchParams }: { params
           <h1 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>{loc.name} {t('with')} {ent.name}</h1>
           <p className="mt-2 text-base text-gray-600">{et.durationMin} {t('minutes')}{loc.description ? ` · ${loc.description}` : ''}</p>
           <div className="mt-8">
-            <BookingWidget person={person} type={type} personName={ent.name} durationMin={et.durationMin} infoText={et.infoText} questions={et.questions} hosts={hosts} prefillName={prefillName} prefillNote={prefillNote} />
+            <BookingWidget person={person} type={type} personName={ent.name} durationMin={et.durationMin} infoText={et.infoText} questions={et.questions} hosts={hosts} prefillName={prefillName} prefillNote={prefillNote} prefillEmail={prefillEmail} />
           </div>
         </div>
       </section>

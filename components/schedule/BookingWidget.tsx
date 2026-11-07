@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { Loader2, Check, ChevronLeft, ChevronRight, Video, CalendarPlus, ArrowLeft, Globe } from 'lucide-react'
 import type { Question } from '@/lib/schedule/types-store'
 import { TZ_CITIES, tzOffsetLabel, cityFromTz, detectTz } from '@/lib/schedule/timezones'
+import { getVid, readContext } from '@/components/analytics/visitor'
 
 const ACCENT = '#1A5FD4'
 const INK = '#0D0D0B'
@@ -29,9 +30,9 @@ function firstWeekdayMon(y: number, m: number) { return (new Date(Date.UTC(y, m 
 function daysInMonth(y: number, m: number) { return new Date(Date.UTC(y, m, 0)).getUTCDate() }
 function initials(name: string) { return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase() }
 
-export function BookingWidget({ person, type, personName, durationMin, infoText, questions, hosts, prefillName, prefillNote }: {
+export function BookingWidget({ person, type, personName, durationMin, infoText, questions, hosts, prefillName, prefillNote, prefillEmail }: {
   person: string; type: string; personName: string; durationMin: number
-  infoText?: string; questions?: Question[]; hosts?: Host[]; prefillName?: string; prefillNote?: string
+  infoText?: string; questions?: Question[]; hosts?: Host[]; prefillName?: string; prefillNote?: string; prefillEmail?: string
 }) {
   const t = useTranslations('schedule')
   const locale = useLocale()
@@ -43,7 +44,7 @@ export function BookingWidget({ person, type, personName, durationMin, infoText,
   const [dayKey, setDayKey] = useState<string | null>(null)
   const [slot, setSlot] = useState<string | null>(null)
   const [cursor, setCursor] = useState<{ y: number; m: number } | null>(null)
-  const [name, setName] = useState(prefillName ?? ''); const [email, setEmail] = useState(''); const [note, setNote] = useState(prefillNote ?? '')
+  const [name, setName] = useState(prefillName ?? ''); const [email, setEmail] = useState(prefillEmail ?? ''); const [note, setNote] = useState(prefillNote ?? '')
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false); const [booked, setBooked] = useState<Booked | null>(null); const [err, setErr] = useState<string | null>(null)
 
@@ -52,6 +53,11 @@ export function BookingWidget({ person, type, personName, durationMin, infoText,
     const q = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '')
     const pre = q.get('betreff') || q.get('note')
     if (pre) setNote(pre.slice(0, 500))
+    // Was wir in dieser Sitzung schon wissen (Opt-in, Quiz) — nur ergänzen, nie überschreiben
+    const ctx = readContext()
+    if (ctx.firstName) setName((v) => v || ctx.firstName || '')
+    if (ctx.email) setEmail((v) => v || ctx.email || '')
+    if (ctx.note && !pre) setNote((v) => (v ? (v.includes(ctx.note!) ? v : `${v}\n${ctx.note}`) : ctx.note!).slice(0, 2000))
   }, [])
   useEffect(() => {
     let alive = true
@@ -101,7 +107,7 @@ export function BookingWidget({ person, type, personName, durationMin, infoText,
     for (const q of qs) if (q.required && !(answers[q.id] || '').trim()) { setErr(t('errRequired', { label: q.label })); return }
     setSubmitting(true); setErr(null)
     try {
-      const res = await fetch('/api/schedule/book', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ person, type, slot, name: name.trim(), email: email.trim(), note, answers }) })
+      const res = await fetch('/api/schedule/book', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ person, type, slot, name: name.trim(), email: email.trim(), note, answers, vid: getVid().vid }) })
       const d = await res.json()
       if (!res.ok) {
         if (d.error === 'slot_taken' || d.error === 'day_full') { setErr(t('errTaken')); setSlot(null); setSlots(prev => prev.filter(s => s !== slot)) }
@@ -117,7 +123,28 @@ export function BookingWidget({ person, type, personName, durationMin, infoText,
   if (!connected) return <Info amber>{t('notConnected')} <a href="mailto:team@eilersfriends.com" className="font-semibold underline">team@eilersfriends.com</a>.</Info>
   if (booked) return <Done booked={booked} email={email} personName={personName} durationMin={durationMin} tz={tz} />
 
-  const intro = (hosts && hosts.length) || infoText ? (
+  const hostCard = (h: Host) => (
+    <div key={h.name} className="flex items-start gap-3">
+      {h.avatarUrl
+        ? <img src={h.avatarUrl} alt={h.name} className="h-11 w-11 rounded-full object-cover" />
+        : <span className="flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold text-white" style={{ backgroundColor: ACCENT }}>{initials(h.name)}</span>}
+      <div>
+        <p className="text-sm font-bold" style={{ color: INK }}>{h.name}</p>
+        {h.role && <p className="text-xs text-gray-500">{h.role}</p>}
+        {h.intro && <p className="mt-1 max-w-md text-xs leading-relaxed text-gray-600">{h.intro}</p>}
+      </div>
+    </div>
+  )
+  // Zwei oder mehr Gastgeber: jede Person auf einer eigenen Karte, damit die Leiste nicht halb leer wirkt
+  const multi = (hosts?.length ?? 0) > 1
+  const intro = multi ? (
+    <div className="mb-5">
+      <div className="grid gap-3 sm:grid-cols-2">
+        {hosts!.map((h) => <div key={h.name} className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">{hostCard(h)}</div>)}
+      </div>
+      {infoText && <div className="mt-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"><p className="whitespace-pre-line text-sm leading-relaxed text-gray-700">{infoText}</p></div>}
+    </div>
+  ) : (hosts && hosts.length) || infoText ? (
     <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
       {hosts && hosts.length > 0 && (
         <div className="flex flex-wrap gap-4">

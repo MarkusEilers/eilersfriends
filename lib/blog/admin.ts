@@ -1,3 +1,4 @@
+import { logPageChange } from '@/lib/pagetree/log'
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { ensureBlogSchema, type Post } from './posts'
@@ -115,6 +116,12 @@ async function harvestIfPublished(before: string | null, after: AdminPost) {
 }
 
 export async function savePost(input: SaveInput): Promise<AdminPost> {
+  const post = await savePostInner(input)
+  await logPageChange('blog', (post as unknown as { id: string }).id, input.id ? `Gespeichert (${post.status ?? input.status ?? 'draft'})` : 'Angelegt')
+  return post
+}
+
+async function savePostInner(input: SaveInput): Promise<AdminPost> {
   await ensureAdminColumns()
   const before = input.id
     ? ((await db.execute(sql`SELECT status FROM blog_posts WHERE id = ${input.id}`)) as unknown as { status: string }[])[0]?.status ?? null

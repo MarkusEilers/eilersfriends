@@ -10,6 +10,7 @@ import { eq, sql } from 'drizzle-orm'
 import { lpTemplates, type LpTemplate } from '@/lib/templates/program-welsh'
 import { ensureLpI18n, translatable, LP_LOCALES } from '@/lib/lp/i18n'
 import { callModel } from '@/lib/ai/call'
+import { logPageChange, logLpSection } from '@/lib/pagetree/log'
 
 /** New enum values introduced for Welsh-style program templates. */
 const NEW_SECTION_TYPES = [
@@ -94,6 +95,7 @@ export async function updateLandingPageMeta(input: {
       updatedAt: new Date(),
     }).where(eq(landingPages.id, input.id))
 
+  await logPageChange('lp', input.id, 'Seitendaten')
   revalidatePath('/admin/landing-pages')
   revalidatePath(`/admin/landing-pages/${input.id}`)
 }
@@ -102,6 +104,7 @@ export async function updateLandingPageMeta(input: {
 export async function publishLandingPage(id: string, status: 'draft' | 'published' | 'archived') {
   await requireAdmin()
   await db.update(landingPages).set({ status, updatedAt: new Date() }).where(eq(landingPages.id, id))
+  await logPageChange('lp', id, `Status: ${status}`)
   revalidatePath('/admin/landing-pages')
   revalidatePath(`/admin/landing-pages/${id}`)
 }
@@ -120,6 +123,7 @@ export async function upsertSection(input: {
   // Letzte Fassung je Modultyp für die Wiederverwendung merken
   const pageRow = await db.select({ slug: landingPages.slug }).from(landingPages).where(eq(landingPages.id, input.landingPageId)).limit(1).catch(() => [])
   await rememberModule(input.type, input.content, pageRow[0]?.slug ?? null).catch(() => {})
+  await logPageChange('lp', input.landingPageId, 'Inhalt')
 
   if (input.id) {
     const updated = await db.update(landingPageSections).set({
@@ -149,12 +153,14 @@ export async function upsertSection(input: {
 // ── Sektion löschen ───────────────────────────────────────────────────────────
 export async function deleteSection(id: string) {
   await requireAdmin()
+  await logLpSection(id, 'Sektion gelöscht')
   await db.delete(landingPageSections).where(eq(landingPageSections.id, id))
 }
 
 // ── Sektionen neu sortieren ───────────────────────────────────────────────────
 export async function reorderSections(sections: { id: string; order: number }[]) {
   await requireAdmin()
+  if (sections[0]) await logLpSection(sections[0].id, 'Reihenfolge')
   await Promise.all(
     sections.map((s) =>
       db.update(landingPageSections).set({ order: s.order }).where(eq(landingPageSections.id, s.id))
@@ -166,6 +172,7 @@ export async function reorderSections(sections: { id: string; order: number }[])
 export async function toggleSectionVisibility(id: string, isVisible: boolean) {
   await requireAdmin()
   await db.update(landingPageSections).set({ isVisible, updatedAt: new Date() }).where(eq(landingPageSections.id, id))
+  await logLpSection(id, isVisible ? 'Sektion eingeblendet' : 'Sektion ausgeblendet')
 }
 
 /**
@@ -236,6 +243,7 @@ export async function saveSectionTranslation(sectionId: string, locale: string, 
   } else {
     await db.execute(sql`UPDATE landing_page_sections SET content_i18n = jsonb_set(COALESCE(content_i18n, '{}'::jsonb), ${'{' + locale + '}'}::text[], ${JSON.stringify(content)}::jsonb), updated_at=now() WHERE id=${sectionId}`)
   }
+  await logLpSection(sectionId, `Übersetzung ${locale.toUpperCase()}`)
   return { ok: true }
 }
 
@@ -269,6 +277,7 @@ export async function translatePageAction(landingPageId: string, locale: 'en' | 
     out[r.id] = val
     done++
   }
+  if (done) await logPageChange('lp', landingPageId, `KI-Übersetzung ${locale.toUpperCase()}`)
   revalidatePath(`/admin/landing-pages/${landingPageId}`)
   return { ok: true, translated: done, sections: out }
 }

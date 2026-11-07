@@ -1,0 +1,2325 @@
+{
+ "generatedAt": "2026-11-07T14:27:22Z",
+ "pages": [
+  {
+   "route": "/b2b-offers",
+   "file": "app/[locale]/(landing)/b2b-offers/page.tsx",
+   "group": "landing",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(landing)/b2b-offers/page.tsx"
+   ],
+   "lpBacked": true,
+   "version": 3,
+   "lastChange": "2026-05-04T12:54:49Z",
+   "history": [
+    {
+     "sha": "11500d3",
+     "date": "2026-05-04T12:54:49Z",
+     "msg": "fix(b2b-offers): smart redirect — fallback to /frameworks if not seeded yet"
+    },
+    {
+     "sha": "013a3ca",
+     "date": "2026-05-04T12:53:10Z",
+     "msg": "feat(admin): /admin/frameworks backend area + b2b-offers seeded as DB framework"
+    },
+    {
+     "sha": "9562cfa",
+     "date": "2026-03-17T09:57:25Z",
+     "msg": "feat: redesign homepage sections + add Academy/Programme/B2B pages"
+    }
+   ]
+  },
+  {
+   "route": "/lp/[slug]",
+   "file": "app/[locale]/(landing)/lp/[slug]/page.tsx",
+   "group": "landing",
+   "title": null,
+   "namespaces": [
+    "callCheck"
+   ],
+   "files": [
+    "app/[locale]/(landing)/lp/[slug]/page.tsx",
+    "components/blocks/LogoScrollbar.tsx",
+    "components/lp/LpBonusDeliverables.tsx",
+    "components/lp/LpCallCheck.tsx",
+    "components/lp/LpCoachBio.tsx",
+    "components/lp/LpCta.tsx",
+    "components/lp/LpCurriculum.tsx",
+    "components/lp/LpEmailCapture.tsx",
+    "components/lp/LpFaq.tsx",
+    "components/lp/LpFeatures.tsx",
+    "components/lp/LpFitCheck.tsx",
+    "components/lp/LpFrameworkSteps.tsx",
+    "components/lp/LpGeneric.tsx",
+    "components/lp/LpHero.tsx",
+    "components/lp/LpLeadMagnet.tsx",
+    "components/lp/LpOriginStory.tsx",
+    "components/lp/LpPricingCard.tsx",
+    "components/lp/LpProblem.tsx",
+    "components/lp/LpRender.tsx",
+    "components/lp/LpRiskReversal.tsx",
+    "components/lp/LpSocialProof.tsx",
+    "components/lp/LpTestimonials.tsx",
+    "components/lp/LpTweetWall.tsx",
+    "components/lp/LpVideo.tsx",
+    "components/lp/PreviewBanner.tsx",
+    "components/lp/story/AcademyInit.tsx",
+    "components/lp/story/CheckoutBox.tsx",
+    "components/lp/story/OptinForm.tsx",
+    "components/lp/story/StoryBlocks.tsx",
+    "components/lp/story/academy-assets.ts",
+    "components/lp/story/story-css.ts"
+   ],
+   "lpBacked": true,
+   "version": 44,
+   "lastChange": "2026-11-06T19:29:38Z",
+   "history": [
+    {
+     "sha": "7fdec61",
+     "date": "2026-11-06T19:29:38Z",
+     "msg": "Academy: Sticker in der Abschlusskarte oben rechts, Nav-Links neutral"
+    },
+    {
+     "sha": "39b5bf8",
+     "date": "2026-11-06T19:16:40Z",
+     "msg": "Academy: neue Seite aus dem Landingpage-System (/academy), story_html + story_system, Quiz-API, Preis-Sticker rot/blau; "
+    },
+    {
+     "sha": "bb11df5",
+     "date": "2026-11-05T22:52:18Z",
+     "msg": "Report-Prüfpunkte einspaltig, gleich ausgerichtet"
+    },
+    {
+     "sha": "33553fe",
+     "date": "2026-11-05T20:28:50Z",
+     "msg": "Story-Logoleiste: Abstand zur Überschrift"
+    },
+    {
+     "sha": "4957648",
+     "date": "2026-11-05T20:25:21Z",
+     "msg": "Story-Logoleiste nutzt das Startseiten-Modul (LogoScrollbar, Admin-Größen)"
+    },
+    {
+     "sha": "2b8dbae",
+     "date": "2026-11-05T20:22:09Z",
+     "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
+    },
+    {
+     "sha": "aea7758",
+     "date": "2026-11-05T20:00:42Z",
+     "msg": "Mystery Shopping: Plätze-Zähler je Quartal, eine Buchung pro Firma, Story-Bausteine im LP-System, Squeeze /mystery-shopp"
+    },
+    {
+     "sha": "118449e",
+     "date": "2026-10-17T22:23:04Z",
+     "msg": "Gesprächs-Check: Radar hell und seitenbreit, Verlaufsgrafik (Redeanteile, Etappen, Feedback-Stellen)"
+    }
+   ]
+  },
+  {
+   "route": "/academy",
+   "file": "app/[locale]/(marketing)/academy/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/academy/page.tsx",
+    "components/blocks/LogoScrollbar.tsx",
+    "components/lp/PreviewBanner.tsx",
+    "components/lp/story/AcademyInit.tsx",
+    "components/lp/story/CheckoutBox.tsx",
+    "components/lp/story/OptinForm.tsx",
+    "components/lp/story/StoryBlocks.tsx",
+    "components/lp/story/academy-assets.ts",
+    "components/lp/story/story-css.ts"
+   ],
+   "lpBacked": true,
+   "version": 25,
+   "lastChange": "2026-11-07T14:17:16Z",
+   "history": [
+    {
+     "sha": "b921a87",
+     "date": "2026-11-07T14:17:16Z",
+     "msg": "Academy: globale Navigation und Footer (Marketing-Layout) statt eigener"
+    },
+    {
+     "sha": "7fdec61",
+     "date": "2026-11-06T19:29:38Z",
+     "msg": "Academy: Sticker in der Abschlusskarte oben rechts, Nav-Links neutral"
+    },
+    {
+     "sha": "39b5bf8",
+     "date": "2026-11-06T19:16:40Z",
+     "msg": "Academy: neue Seite aus dem Landingpage-System (/academy), story_html + story_system, Quiz-API, Preis-Sticker rot/blau; "
+    },
+    {
+     "sha": "bb11df5",
+     "date": "2026-11-05T22:52:18Z",
+     "msg": "Report-Prüfpunkte einspaltig, gleich ausgerichtet"
+    },
+    {
+     "sha": "33553fe",
+     "date": "2026-11-05T20:28:50Z",
+     "msg": "Story-Logoleiste: Abstand zur Überschrift"
+    },
+    {
+     "sha": "4957648",
+     "date": "2026-11-05T20:25:21Z",
+     "msg": "Story-Logoleiste nutzt das Startseiten-Modul (LogoScrollbar, Admin-Größen)"
+    },
+    {
+     "sha": "2b8dbae",
+     "date": "2026-11-05T20:22:09Z",
+     "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
+    },
+    {
+     "sha": "aea7758",
+     "date": "2026-11-05T20:00:42Z",
+     "msg": "Mystery Shopping: Plätze-Zähler je Quartal, eine Buchung pro Firma, Story-Bausteine im LP-System, Squeeze /mystery-shopp"
+    }
+   ]
+  },
+  {
+   "route": "/agb",
+   "file": "app/[locale]/(marketing)/agb/page.tsx",
+   "group": "marketing",
+   "title": "AGB — Eilers+Friends",
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/agb/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 3,
+   "lastChange": "2026-07-17T11:39:58Z",
+   "history": [
+    {
+     "sha": "647ae4c",
+     "date": "2026-07-17T11:39:58Z",
+     "msg": "content(agb): Entwurf-Hinweis raus + Klauseln Höhere Gewalt/Vertraulichkeit/Datenschutz/Referenznennung (an masterplan-G"
+    },
+    {
+     "sha": "4a905c7",
+     "date": "2026-06-14T20:07:31Z",
+     "msg": "Checkout Academy: Copy-v2 live — Body neu (Problem→Neue Chance→Flywheel→Beweis→Coach→Angebot→Push→FAQ), 90-Tage-Garantie"
+    },
+    {
+     "sha": "8e4f2bc",
+     "date": "2026-06-13T23:16:47Z",
+     "msg": "Checkout: Legal-Footer (Logo+Impressum/Datenschutz, neutrale ©), AGB-Entwurfsseite, Markus-Coach-Block (Bio wortwörtlich"
+    }
+   ]
+  },
+  {
+   "route": "/aljona",
+   "file": "app/[locale]/(marketing)/aljona/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [
+    "aljonaPage",
+    "aljonaPage.meta"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/aljona/page.tsx",
+    "components/blog/AuthorLatest.tsx"
+   ],
+   "lpBacked": false,
+   "version": 15,
+   "lastChange": "2026-10-28T22:34:34Z",
+   "history": [
+    {
+     "sha": "0d5fff3",
+     "date": "2026-10-28T22:34:34Z",
+     "msg": "Blog/Hub: Überschriften in DM Sans wie auf der Website statt DM Serif Display"
+    },
+    {
+     "sha": "f9b8ba0",
+     "date": "2026-09-03T21:18:10Z",
+     "msg": "feat(blog): Autoren mit eigener Farbwelt — Bento-Uebersicht fuer alle und je Autor, journalistische Einzelseite mit Avat"
+    },
+    {
+     "sha": "1ac85a3",
+     "date": "2026-05-18T13:21:18Z",
+     "msg": "i18n(cookie + kontakt + aljona): DE/EN/ES vollständig übersetzbar"
+    },
+    {
+     "sha": "998c5f7",
+     "date": "2026-05-15T18:38:19Z",
+     "msg": "fix(i18n): forced /de redirect entfernt — /en + /es URLs funktionieren jetzt"
+    },
+    {
+     "sha": "0d04e6f",
+     "date": "2026-05-11T11:47:45Z",
+     "msg": "design(brand): orange → blue, current red → TEDx red #EB0028, drop CompoundGrid edges"
+    },
+    {
+     "sha": "1463a80",
+     "date": "2026-05-10T16:39:13Z",
+     "msg": "revert(aljona): roll back generated portrait — output didn't preserve identity, restoring /aljona-photo.jpg with graysca"
+    },
+    {
+     "sha": "e4c408f",
+     "date": "2026-05-10T16:31:28Z",
+     "msg": "feat(brand): new Aljona portrait (red shirt + industrial office) + Bento podcast card + image-based LogoStrip"
+    },
+    {
+     "sha": "0c0300e",
+     "date": "2026-05-05T19:44:09Z",
+     "msg": "fix(i18n): repair broken multi-line imports in 8 sub-pages"
+    }
+   ]
+  },
+  {
+   "route": "/blog/[slug]",
+   "file": "app/[locale]/(marketing)/blog/[slug]/page.tsx",
+   "group": "marketing",
+   "title": "Beitrag nicht gefunden",
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/blog/[slug]/page.tsx",
+    "components/blog/Comments.tsx",
+    "components/blog/ShareBar.tsx"
+   ],
+   "lpBacked": false,
+   "version": 8,
+   "lastChange": "2026-10-28T22:51:07Z",
+   "history": [
+    {
+     "sha": "4a8718b",
+     "date": "2026-10-28T22:51:07Z",
+     "msg": "Blog: Vorschau von Entwürfen nur für Admin/Coach"
+    },
+    {
+     "sha": "ca79baa",
+     "date": "2026-10-28T22:47:17Z",
+     "msg": "Stories-Hub und Einzelseite nach Designvorlage: helle Karten, Dropdown-Filter, Serie blau, Framework-Magnet mit E-Mail, "
+    },
+    {
+     "sha": "0d5fff3",
+     "date": "2026-10-28T22:34:34Z",
+     "msg": "Blog/Hub: Überschriften in DM Sans wie auf der Website statt DM Serif Display"
+    },
+    {
+     "sha": "8366e05",
+     "date": "2026-10-28T09:37:26Z",
+     "msg": "Blog → Hub „Winning Team Stories\": Formate, Filter, Serie, Frameworks; drei Farbwelten (Team/SalesMade/Aljona) mit getre"
+    },
+    {
+     "sha": "d9d7adc",
+     "date": "2026-09-03T22:05:43Z",
+     "msg": "fix(blog): Muster ohne Rueckblick und ohne Punkt-ueber-Zeilen — beides verlangt ein hoeheres Sprachziel als das Projekt "
+    },
+    {
+     "sha": "087d966",
+     "date": "2026-09-03T21:56:20Z",
+     "msg": "feat(blog): Redaktionsbereich und Kommentare — Liste und Editor unter /admin/blog mit Upload (Markdown, Word), Bildgener"
+    },
+    {
+     "sha": "f9b8ba0",
+     "date": "2026-09-03T21:18:10Z",
+     "msg": "feat(blog): Autoren mit eigener Farbwelt — Bento-Uebersicht fuer alle und je Autor, journalistische Einzelseite mit Avat"
+    },
+    {
+     "sha": "f8823bf",
+     "date": "2026-05-24T10:00:17Z",
+     "msg": "feat(blog): /blog Stub-Bereich + DB-Schema + Navbar-Link gefixt"
+    }
+   ]
+  },
+  {
+   "route": "/blog/aljona",
+   "file": "app/[locale]/(marketing)/blog/aljona/page.tsx",
+   "group": "marketing",
+   "title": "Blog von ${author.name}",
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/blog/aljona/page.tsx",
+    "components/blog/AuthorSwitch.tsx",
+    "components/blog/BentoGrid.tsx",
+    "components/blog/BlogCta.tsx",
+    "components/blog/BlogHome.tsx"
+   ],
+   "lpBacked": false,
+   "version": 5,
+   "lastChange": "2026-10-28T22:51:07Z",
+   "history": [
+    {
+     "sha": "4a8718b",
+     "date": "2026-10-28T22:51:07Z",
+     "msg": "Blog: Vorschau von Entwürfen nur für Admin/Coach"
+    },
+    {
+     "sha": "0d5fff3",
+     "date": "2026-10-28T22:34:34Z",
+     "msg": "Blog/Hub: Überschriften in DM Sans wie auf der Website statt DM Serif Display"
+    },
+    {
+     "sha": "8366e05",
+     "date": "2026-10-28T09:37:26Z",
+     "msg": "Blog → Hub „Winning Team Stories\": Formate, Filter, Serie, Frameworks; drei Farbwelten (Team/SalesMade/Aljona) mit getre"
+    },
+    {
+     "sha": "087d966",
+     "date": "2026-09-03T21:56:20Z",
+     "msg": "feat(blog): Redaktionsbereich und Kommentare — Liste und Editor unter /admin/blog mit Upload (Markdown, Word), Bildgener"
+    },
+    {
+     "sha": "f9b8ba0",
+     "date": "2026-09-03T21:18:10Z",
+     "msg": "feat(blog): Autoren mit eigener Farbwelt — Bento-Uebersicht fuer alle und je Autor, journalistische Einzelseite mit Avat"
+    }
+   ]
+  },
+  {
+   "route": "/blog/markus",
+   "file": "app/[locale]/(marketing)/blog/markus/page.tsx",
+   "group": "marketing",
+   "title": "Blog von ${author.name}",
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/blog/markus/page.tsx",
+    "components/blog/AuthorSwitch.tsx",
+    "components/blog/BentoGrid.tsx",
+    "components/blog/BlogCta.tsx",
+    "components/blog/BlogHome.tsx"
+   ],
+   "lpBacked": false,
+   "version": 5,
+   "lastChange": "2026-10-28T22:51:07Z",
+   "history": [
+    {
+     "sha": "4a8718b",
+     "date": "2026-10-28T22:51:07Z",
+     "msg": "Blog: Vorschau von Entwürfen nur für Admin/Coach"
+    },
+    {
+     "sha": "0d5fff3",
+     "date": "2026-10-28T22:34:34Z",
+     "msg": "Blog/Hub: Überschriften in DM Sans wie auf der Website statt DM Serif Display"
+    },
+    {
+     "sha": "8366e05",
+     "date": "2026-10-28T09:37:26Z",
+     "msg": "Blog → Hub „Winning Team Stories\": Formate, Filter, Serie, Frameworks; drei Farbwelten (Team/SalesMade/Aljona) mit getre"
+    },
+    {
+     "sha": "087d966",
+     "date": "2026-09-03T21:56:20Z",
+     "msg": "feat(blog): Redaktionsbereich und Kommentare — Liste und Editor unter /admin/blog mit Upload (Markdown, Word), Bildgener"
+    },
+    {
+     "sha": "f9b8ba0",
+     "date": "2026-09-03T21:18:10Z",
+     "msg": "feat(blog): Autoren mit eigener Farbwelt — Bento-Uebersicht fuer alle und je Autor, journalistische Einzelseite mit Avat"
+    }
+   ]
+  },
+  {
+   "route": "/blog/moderation",
+   "file": "app/[locale]/(marketing)/blog/moderation/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/blog/moderation/page.tsx",
+    "components/blog/admin/ModerationConfirm.tsx"
+   ],
+   "lpBacked": false,
+   "version": 1,
+   "lastChange": "2026-09-03T21:56:20Z",
+   "history": [
+    {
+     "sha": "087d966",
+     "date": "2026-09-03T21:56:20Z",
+     "msg": "feat(blog): Redaktionsbereich und Kommentare — Liste und Editor unter /admin/blog mit Upload (Markdown, Word), Bildgener"
+    }
+   ]
+  },
+  {
+   "route": "/blog",
+   "file": "app/[locale]/(marketing)/blog/page.tsx",
+   "group": "marketing",
+   "title": "Winning Team Stories · Eilers+Friends",
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/blog/page.tsx",
+    "components/blog/EmailCapture.tsx",
+    "components/blog/StoriesHub.tsx"
+   ],
+   "lpBacked": false,
+   "version": 7,
+   "lastChange": "2026-10-28T22:51:07Z",
+   "history": [
+    {
+     "sha": "4a8718b",
+     "date": "2026-10-28T22:51:07Z",
+     "msg": "Blog: Vorschau von Entwürfen nur für Admin/Coach"
+    },
+    {
+     "sha": "ca79baa",
+     "date": "2026-10-28T22:47:17Z",
+     "msg": "Stories-Hub und Einzelseite nach Designvorlage: helle Karten, Dropdown-Filter, Serie blau, Framework-Magnet mit E-Mail, "
+    },
+    {
+     "sha": "0d5fff3",
+     "date": "2026-10-28T22:34:34Z",
+     "msg": "Blog/Hub: Überschriften in DM Sans wie auf der Website statt DM Serif Display"
+    },
+    {
+     "sha": "8366e05",
+     "date": "2026-10-28T09:37:26Z",
+     "msg": "Blog → Hub „Winning Team Stories\": Formate, Filter, Serie, Frameworks; drei Farbwelten (Team/SalesMade/Aljona) mit getre"
+    },
+    {
+     "sha": "087d966",
+     "date": "2026-09-03T21:56:20Z",
+     "msg": "feat(blog): Redaktionsbereich und Kommentare — Liste und Editor unter /admin/blog mit Upload (Markdown, Word), Bildgener"
+    },
+    {
+     "sha": "f9b8ba0",
+     "date": "2026-09-03T21:18:10Z",
+     "msg": "feat(blog): Autoren mit eigener Farbwelt — Bento-Uebersicht fuer alle und je Autor, journalistische Einzelseite mit Avat"
+    },
+    {
+     "sha": "f8823bf",
+     "date": "2026-05-24T10:00:17Z",
+     "msg": "feat(blog): /blog Stub-Bereich + DB-Schema + Navbar-Link gefixt"
+    }
+   ]
+  },
+  {
+   "route": "/datenschutz",
+   "file": "app/[locale]/(marketing)/datenschutz/page.tsx",
+   "group": "marketing",
+   "title": "Datenschutzerklärung — Eilers+Friends",
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/datenschutz/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 10,
+   "lastChange": "2026-05-15T18:38:19Z",
+   "history": [
+    {
+     "sha": "998c5f7",
+     "date": "2026-05-15T18:38:19Z",
+     "msg": "fix(i18n): forced /de redirect entfernt — /en + /es URLs funktionieren jetzt"
+    },
+    {
+     "sha": "0d04e6f",
+     "date": "2026-05-11T11:47:45Z",
+     "msg": "design(brand): orange → blue, current red → TEDx red #EB0028, drop CompoundGrid edges"
+    },
+    {
+     "sha": "66370f8",
+     "date": "2026-05-05T19:39:21Z",
+     "msg": "fix(i18n): defaultLocale → 'de' + locale-aware metadata + redirect for DE-only sub-pages"
+    },
+    {
+     "sha": "f4e8fe8",
+     "date": "2026-04-26T21:30:34Z",
+     "msg": "fix(legal): correct address to Blütenäcker 55/2, 71332 Waiblingen"
+    },
+    {
+     "sha": "a59ccd8",
+     "date": "2026-04-26T20:50:30Z",
+     "msg": "fix(legal): unify address — c/o Markus Eilers + trademark notice"
+    },
+    {
+     "sha": "255e9a8",
+     "date": "2026-04-26T20:01:19Z",
+     "msg": "feat(salesmade): build full LP from mined eilersfriends.com content"
+    },
+    {
+     "sha": "cd5a15f",
+     "date": "2026-04-26T14:56:14Z",
+     "msg": "feat: add page.tsx page"
+    },
+    {
+     "sha": "c80d231",
+     "date": "2026-03-14T23:21:42Z",
+     "msg": "feat: Kompletter Neuaufbau — sauberes Fundament nach CLAUDE.md"
+    }
+   ]
+  },
+  {
+   "route": "/frameworks/[slug]",
+   "file": "app/[locale]/(marketing)/frameworks/[slug]/page.tsx",
+   "group": "marketing",
+   "title": "${page.title} — Eilers+Friends Frameworks",
+   "namespaces": [
+    "callCheck"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/frameworks/[slug]/page.tsx",
+    "components/lp/LpBonusDeliverables.tsx",
+    "components/lp/LpCallCheck.tsx",
+    "components/lp/LpCoachBio.tsx",
+    "components/lp/LpCta.tsx",
+    "components/lp/LpCurriculum.tsx",
+    "components/lp/LpEmailCapture.tsx",
+    "components/lp/LpFaq.tsx",
+    "components/lp/LpFeatures.tsx",
+    "components/lp/LpFitCheck.tsx",
+    "components/lp/LpFrameworkSteps.tsx",
+    "components/lp/LpGeneric.tsx",
+    "components/lp/LpHero.tsx",
+    "components/lp/LpLeadMagnet.tsx",
+    "components/lp/LpOriginStory.tsx",
+    "components/lp/LpPricingCard.tsx",
+    "components/lp/LpProblem.tsx",
+    "components/lp/LpRender.tsx",
+    "components/lp/LpRiskReversal.tsx",
+    "components/lp/LpSocialProof.tsx",
+    "components/lp/LpTestimonials.tsx",
+    "components/lp/LpTweetWall.tsx",
+    "components/lp/LpVideo.tsx",
+    "components/lp/PreviewBanner.tsx"
+   ],
+   "lpBacked": true,
+   "version": 31,
+   "lastChange": "2026-11-05T20:00:42Z",
+   "history": [
+    {
+     "sha": "aea7758",
+     "date": "2026-11-05T20:00:42Z",
+     "msg": "Mystery Shopping: Plätze-Zähler je Quartal, eine Buchung pro Firma, Story-Bausteine im LP-System, Squeeze /mystery-shopp"
+    },
+    {
+     "sha": "118449e",
+     "date": "2026-10-17T22:23:04Z",
+     "msg": "Gesprächs-Check: Radar hell und seitenbreit, Verlaufsgrafik (Redeanteile, Etappen, Feedback-Stellen)"
+    },
+    {
+     "sha": "cd84f7a",
+     "date": "2026-10-17T20:52:50Z",
+     "msg": "Backend: Vorschau/Live-Knöpfe je Sprache; Sprachumschaltung behält die Vorschau; Sprachwahl auch auf /lp-Seiten"
+    },
+    {
+     "sha": "a185ec5",
+     "date": "2026-10-17T20:45:26Z",
+     "msg": "Framework-Seite: Vorschau-Abfrage an der richtigen Stelle"
+    },
+    {
+     "sha": "541041f",
+     "date": "2026-10-17T20:42:32Z",
+     "msg": "Vorschau für unveröffentlichte Landingpages und Frameworks (?preview=1, nur Eilers+Friends) + Bild-Prompts Gesprächs-Che"
+    },
+    {
+     "sha": "59cbdf3",
+     "date": "2026-10-17T18:37:17Z",
+     "msg": "Landingpages: Übersetzungen je Sektion (DE/EN/ES, KI-Übersetzung im Editor), Sektion Gesprächs-Check, /gespraechs-check "
+    },
+    {
+     "sha": "32d9e28",
+     "date": "2026-05-24T15:06:52Z",
+     "msg": "feat(framework/b2b-angebote): Section-Rewrite + Hero-Pills + 3x3 Grid + Wizard-Stub"
+    },
+    {
+     "sha": "ee6708c",
+     "date": "2026-05-13T22:02:05Z",
+     "msg": "fix(lp): hero + bottom CTAs always scroll to lead-magnet form"
+    }
+   ]
+  },
+  {
+   "route": "/frameworks",
+   "file": "app/[locale]/(marketing)/frameworks/page.tsx",
+   "group": "marketing",
+   "title": "Frameworks — Eilers+Friends",
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/frameworks/page.tsx"
+   ],
+   "lpBacked": true,
+   "version": 9,
+   "lastChange": "2026-07-13T19:32:11Z",
+   "history": [
+    {
+     "sha": "52c1dcb",
+     "date": "2026-07-13T19:32:11Z",
+     "msg": "fix(frameworks-hub): featured-Karten nicht mehr 2-spaltig — einheitliche Boxgröße, Titel 24px"
+    },
+    {
+     "sha": "ad1a93f",
+     "date": "2026-05-15T17:29:50Z",
+     "msg": "feat(i18n): translate framework cards + HVCO section to EN + Hygiene checklist baked in"
+    },
+    {
+     "sha": "3a65482",
+     "date": "2026-05-15T17:19:49Z",
+     "msg": "fix(frameworks): run card_meta self-healing migration before HVCO + /frameworks SELECT"
+    },
+    {
+     "sha": "a7b580a",
+     "date": "2026-05-14T23:10:08Z",
+     "msg": "fix(build): simplify type casts on cardMeta + clean unused imports"
+    },
+    {
+     "sha": "3fad5d7",
+     "date": "2026-05-14T22:15:40Z",
+     "msg": "fix(calendly): zero hardcoded URLs — everything reads from site_settings"
+    },
+    {
+     "sha": "a0ee811",
+     "date": "2026-05-14T19:46:00Z",
+     "msg": "feat(admin): framework card meta editable in /admin/frameworks/[id] with image generator"
+    },
+    {
+     "sha": "8f7c7ca",
+     "date": "2026-05-13T21:39:54Z",
+     "msg": "feat(frameworks): page redesign + hero+card prompts + target-aware admin regen + arrows out"
+    },
+    {
+     "sha": "66370f8",
+     "date": "2026-05-05T19:39:21Z",
+     "msg": "fix(i18n): defaultLocale → 'de' + locale-aware metadata + redirect for DE-only sub-pages"
+    }
+   ]
+  },
+  {
+   "route": "/gespraechs-check/[id]",
+   "file": "app/[locale]/(marketing)/gespraechs-check/[id]/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [
+    "callCheck",
+    "callCheck.meta"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/gespraechs-check/[id]/AutoRefresh.tsx",
+    "app/[locale]/(marketing)/gespraechs-check/[id]/page.tsx",
+    "components/call-check/CallStand.tsx",
+    "components/call-check/CallTimeline.tsx",
+    "components/call-check/OfferDraftPanel.tsx",
+    "components/call-check/OutcomePicker.tsx",
+    "components/call-check/Radar.tsx",
+    "components/call-check/SkillMap.tsx"
+   ],
+   "lpBacked": false,
+   "version": 4,
+   "lastChange": "2026-10-17T22:23:04Z",
+   "history": [
+    {
+     "sha": "118449e",
+     "date": "2026-10-17T22:23:04Z",
+     "msg": "Gesprächs-Check: Radar hell und seitenbreit, Verlaufsgrafik (Redeanteile, Etappen, Feedback-Stellen)"
+    },
+    {
+     "sha": "dd75273",
+     "date": "2026-10-17T18:43:03Z",
+     "msg": "Gesprächs-Check: Kaufsignale + Kaufwahrscheinlichkeit, Gesprächstiefe, Ausgang festhalten, Angebot aus dem Gespräch (→ A"
+    },
+    {
+     "sha": "b51b565",
+     "date": "2026-09-30T07:25:16Z",
+     "msg": "Gesprächs-Check: strenger, und die Antwort auf die eigene Frage"
+    },
+    {
+     "sha": "57d62b9",
+     "date": "2026-09-29T16:11:33Z",
+     "msg": "Gesprächs-Check: Mystery Shopping zum Selbermachen"
+    }
+   ]
+  },
+  {
+   "route": "/gespraechs-check",
+   "file": "app/[locale]/(marketing)/gespraechs-check/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [
+    "callCheck",
+    "callCheck.form",
+    "callCheck.meta"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/gespraechs-check/CallCheckForm.tsx",
+    "app/[locale]/(marketing)/gespraechs-check/page.tsx",
+    "components/call-check/Radar.tsx",
+    "components/lp/LpBonusDeliverables.tsx",
+    "components/lp/LpCallCheck.tsx",
+    "components/lp/LpCoachBio.tsx",
+    "components/lp/LpCta.tsx",
+    "components/lp/LpCurriculum.tsx",
+    "components/lp/LpEmailCapture.tsx",
+    "components/lp/LpFaq.tsx",
+    "components/lp/LpFeatures.tsx",
+    "components/lp/LpFitCheck.tsx",
+    "components/lp/LpFrameworkSteps.tsx",
+    "components/lp/LpGeneric.tsx",
+    "components/lp/LpHero.tsx",
+    "components/lp/LpLeadMagnet.tsx",
+    "components/lp/LpOriginStory.tsx",
+    "components/lp/LpPricingCard.tsx",
+    "components/lp/LpProblem.tsx",
+    "components/lp/LpRender.tsx",
+    "components/lp/LpRiskReversal.tsx",
+    "components/lp/LpSocialProof.tsx",
+    "components/lp/LpTestimonials.tsx",
+    "components/lp/LpTweetWall.tsx",
+    "components/lp/LpVideo.tsx",
+    "components/lp/PreviewBanner.tsx"
+   ],
+   "lpBacked": false,
+   "version": 33,
+   "lastChange": "2026-11-05T20:00:42Z",
+   "history": [
+    {
+     "sha": "aea7758",
+     "date": "2026-11-05T20:00:42Z",
+     "msg": "Mystery Shopping: Plätze-Zähler je Quartal, eine Buchung pro Firma, Story-Bausteine im LP-System, Squeeze /mystery-shopp"
+    },
+    {
+     "sha": "3295641",
+     "date": "2026-10-19T11:13:01Z",
+     "msg": "Gesprächs-Check: ohne bestätigte Adresse (DOI) nur 2 Gespräche, Bestätigungslink in der Ergebnis-Mail"
+    },
+    {
+     "sha": "baa9e5d",
+     "date": "2026-10-18T18:44:19Z",
+     "msg": "Gesprächs-Check: Transkripte verschlüsselt im Verlauf, 10 Gespräche je Firma, 10er-Paket über Stripe, Freemail-Sperre, K"
+    },
+    {
+     "sha": "118449e",
+     "date": "2026-10-17T22:23:04Z",
+     "msg": "Gesprächs-Check: Radar hell und seitenbreit, Verlaufsgrafik (Redeanteile, Etappen, Feedback-Stellen)"
+    },
+    {
+     "sha": "cd84f7a",
+     "date": "2026-10-17T20:52:50Z",
+     "msg": "Backend: Vorschau/Live-Knöpfe je Sprache; Sprachumschaltung behält die Vorschau; Sprachwahl auch auf /lp-Seiten"
+    },
+    {
+     "sha": "541041f",
+     "date": "2026-10-17T20:42:32Z",
+     "msg": "Vorschau für unveröffentlichte Landingpages und Frameworks (?preview=1, nur Eilers+Friends) + Bild-Prompts Gesprächs-Che"
+    },
+    {
+     "sha": "59cbdf3",
+     "date": "2026-10-17T18:37:17Z",
+     "msg": "Landingpages: Übersetzungen je Sektion (DE/EN/ES, KI-Übersetzung im Editor), Sektion Gesprächs-Check, /gespraechs-check "
+    },
+    {
+     "sha": "57d62b9",
+     "date": "2026-09-29T16:11:33Z",
+     "msg": "Gesprächs-Check: Mystery Shopping zum Selbermachen"
+    }
+   ]
+  },
+  {
+   "route": "/impressum",
+   "file": "app/[locale]/(marketing)/impressum/page.tsx",
+   "group": "marketing",
+   "title": "Impressum — Eilers+Friends",
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/impressum/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 10,
+   "lastChange": "2026-05-15T18:38:19Z",
+   "history": [
+    {
+     "sha": "998c5f7",
+     "date": "2026-05-15T18:38:19Z",
+     "msg": "fix(i18n): forced /de redirect entfernt — /en + /es URLs funktionieren jetzt"
+    },
+    {
+     "sha": "0d04e6f",
+     "date": "2026-05-11T11:47:45Z",
+     "msg": "design(brand): orange → blue, current red → TEDx red #EB0028, drop CompoundGrid edges"
+    },
+    {
+     "sha": "66370f8",
+     "date": "2026-05-05T19:39:21Z",
+     "msg": "fix(i18n): defaultLocale → 'de' + locale-aware metadata + redirect for DE-only sub-pages"
+    },
+    {
+     "sha": "6c2b11a",
+     "date": "2026-04-26T21:30:55Z",
+     "msg": "fix(impressum): § 55 RStV section also uses Waiblingen address"
+    },
+    {
+     "sha": "f4e8fe8",
+     "date": "2026-04-26T21:30:34Z",
+     "msg": "fix(legal): correct address to Blütenäcker 55/2, 71332 Waiblingen"
+    },
+    {
+     "sha": "a59ccd8",
+     "date": "2026-04-26T20:50:30Z",
+     "msg": "fix(legal): unify address — c/o Markus Eilers + trademark notice"
+    },
+    {
+     "sha": "255e9a8",
+     "date": "2026-04-26T20:01:19Z",
+     "msg": "feat(salesmade): build full LP from mined eilersfriends.com content"
+    },
+    {
+     "sha": "b0ece43",
+     "date": "2026-04-26T14:56:13Z",
+     "msg": "feat: add page.tsx page"
+    }
+   ]
+  },
+  {
+   "route": "/kontakt",
+   "file": "app/[locale]/(marketing)/kontakt/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [
+    "kontaktPage",
+    "kontaktPage.meta"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/kontakt/ContactForm.tsx",
+    "app/[locale]/(marketing)/kontakt/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 10,
+   "lastChange": "2026-05-18T13:21:18Z",
+   "history": [
+    {
+     "sha": "1ac85a3",
+     "date": "2026-05-18T13:21:18Z",
+     "msg": "i18n(cookie + kontakt + aljona): DE/EN/ES vollständig übersetzbar"
+    },
+    {
+     "sha": "d6397f7",
+     "date": "2026-05-15T18:41:07Z",
+     "msg": "design(kontakt): Aljona zuerst + runde Avatare in Terminboxen + Socials neu geordnet"
+    },
+    {
+     "sha": "998c5f7",
+     "date": "2026-05-15T18:38:19Z",
+     "msg": "fix(i18n): forced /de redirect entfernt — /en + /es URLs funktionieren jetzt"
+    },
+    {
+     "sha": "0d04e6f",
+     "date": "2026-05-11T11:47:45Z",
+     "msg": "design(brand): orange → blue, current red → TEDx red #EB0028, drop CompoundGrid edges"
+    },
+    {
+     "sha": "abe30c9",
+     "date": "2026-05-10T15:59:44Z",
+     "msg": "feat(kontakt): split Strategie-Gespräch CTAs + admin-editable settings + form polish"
+    },
+    {
+     "sha": "66370f8",
+     "date": "2026-05-05T19:39:21Z",
+     "msg": "fix(i18n): defaultLocale → 'de' + locale-aware metadata + redirect for DE-only sub-pages"
+    },
+    {
+     "sha": "f4e8fe8",
+     "date": "2026-04-26T21:30:34Z",
+     "msg": "fix(legal): correct address to Blütenäcker 55/2, 71332 Waiblingen"
+    },
+    {
+     "sha": "3df3477",
+     "date": "2026-04-26T21:21:06Z",
+     "msg": "feat: rebuild /markus + /aljona, add contact form, fix broken links"
+    }
+   ]
+  },
+  {
+   "route": "/markus",
+   "file": "app/[locale]/(marketing)/markus/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [
+    "markusPage",
+    "markusPage.meta"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/markus/page.tsx",
+    "components/blog/AuthorLatest.tsx"
+   ],
+   "lpBacked": false,
+   "version": 9,
+   "lastChange": "2026-10-28T22:34:34Z",
+   "history": [
+    {
+     "sha": "0d5fff3",
+     "date": "2026-10-28T22:34:34Z",
+     "msg": "Blog/Hub: Überschriften in DM Sans wie auf der Website statt DM Serif Display"
+    },
+    {
+     "sha": "f9b8ba0",
+     "date": "2026-09-03T21:18:10Z",
+     "msg": "feat(blog): Autoren mit eigener Farbwelt — Bento-Uebersicht fuer alle und je Autor, journalistische Einzelseite mit Avat"
+    },
+    {
+     "sha": "6e1ddcc",
+     "date": "2026-05-18T17:26:33Z",
+     "msg": "i18n(markus + academy): /markus übersetzt + /academy → /salesmade redirect"
+    },
+    {
+     "sha": "998c5f7",
+     "date": "2026-05-15T18:38:19Z",
+     "msg": "fix(i18n): forced /de redirect entfernt — /en + /es URLs funktionieren jetzt"
+    },
+    {
+     "sha": "66370f8",
+     "date": "2026-05-05T19:39:21Z",
+     "msg": "fix(i18n): defaultLocale → 'de' + locale-aware metadata + redirect for DE-only sub-pages"
+    },
+    {
+     "sha": "3df3477",
+     "date": "2026-04-26T21:21:06Z",
+     "msg": "feat: rebuild /markus + /aljona, add contact form, fix broken links"
+    },
+    {
+     "sha": "c80d231",
+     "date": "2026-03-14T23:21:42Z",
+     "msg": "feat: Kompletter Neuaufbau — sauberes Fundament nach CLAUDE.md"
+    },
+    {
+     "sha": "6b77528",
+     "date": "2026-02-28T21:54:01Z",
+     "msg": "fix: match Markus page design 1:1 to original WebDev"
+    }
+   ]
+  },
+  {
+   "route": "/protokoll/[token]",
+   "file": "app/[locale]/(marketing)/protokoll/[token]/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/protokoll/[token]/page.tsx",
+    "components/meetings/Boards.tsx",
+    "components/meetings/Decisions.tsx",
+    "components/meetings/MeetingHeader.tsx"
+   ],
+   "lpBacked": false,
+   "version": 1,
+   "lastChange": "2026-09-09T07:26:28Z",
+   "history": [
+    {
+     "sha": "09a2aa1",
+     "date": "2026-09-09T07:26:28Z",
+     "msg": "feat(meetings): Besprechungen unter der Organisation — Reihe als Bezug mit zwei Brettern (Themen: Agenda, Prio 1-3 · Akt"
+    }
+   ]
+  },
+  {
+   "route": "/salesmade/ai-intensive",
+   "file": "app/[locale]/(marketing)/salesmade/ai-intensive/page.tsx",
+   "group": "marketing",
+   "title": "SalesMade AI Intensive — Nur für Alumni | Eilers+Friends",
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/salesmade/ai-intensive/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 2,
+   "lastChange": "2026-06-15T22:40:04Z",
+   "history": [
+    {
+     "sha": "85d6b8a",
+     "date": "2026-06-15T22:40:04Z",
+     "msg": "AI Intensive: Headline 'Gesprächsführung' -> 'Wirksam Überzeugen' (Checkout + Landing)"
+    },
+    {
+     "sha": "1fa29d9",
+     "date": "2026-06-15T08:52:25Z",
+     "msg": "AI Intensive: VIP-Landing /salesmade/ai-intensive (Headline C, Alumni-only, max. 20, Termine, 897 €-Angebot, Knappheit)"
+    }
+   ]
+  },
+  {
+   "route": "/salesmade/classic",
+   "file": "app/[locale]/(marketing)/salesmade/classic/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [
+    "salesmadeExt.beforeAfter",
+    "salesmadeExt.ceoMonologue",
+    "salesmadeExt.flywheel",
+    "salesmadeExt.marketStats",
+    "salesmadeExt.pricing",
+    "salesmadeExt.progressionLadder",
+    "salesmadeExt.skillInventory",
+    "salesmadeExt.triptych",
+    "salesmadePage",
+    "salesmadePage.meta",
+    "salesmadePage.roiCalculator",
+    "salesmadePage.selfId",
+    "salesmadePage.useCases"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/salesmade/RoiCalculator.tsx",
+    "app/[locale]/(marketing)/salesmade/classic/page.tsx",
+    "components/sections/salesmade/BeforeAfter.tsx",
+    "components/sections/salesmade/CeoMonologue.tsx",
+    "components/sections/salesmade/MarketRealityStats.tsx",
+    "components/sections/salesmade/MethodologyTriptych.tsx",
+    "components/sections/salesmade/ProgressionLadder.tsx",
+    "components/sections/salesmade/SalesFlywheel.tsx",
+    "components/sections/salesmade/SalesPricing.tsx",
+    "components/sections/salesmade/SelfIdentification.tsx",
+    "components/sections/salesmade/SkillInventory.tsx",
+    "components/sections/salesmade/UseCases.tsx"
+   ],
+   "lpBacked": false,
+   "version": 35,
+   "lastChange": "2026-11-06T19:16:40Z",
+   "history": [
+    {
+     "sha": "39b5bf8",
+     "date": "2026-11-06T19:16:40Z",
+     "msg": "Academy: neue Seite aus dem Landingpage-System (/academy), story_html + story_system, Quiz-API, Preis-Sticker rot/blau; "
+    },
+    {
+     "sha": "577b4e9",
+     "date": "2026-07-09T22:48:39Z",
+     "msg": "perf(salesmade): OnlyTheFew-Bild als WebP komprimiert (2,65 MB PNG -> ~90 KB, 1600px)"
+    },
+    {
+     "sha": "adecef2",
+     "date": "2026-07-09T20:53:41Z",
+     "msg": "chore(salesmade): Crowd-Bild der Crisis-Section gegen OnlyTheFew.png getauscht"
+    },
+    {
+     "sha": "4a905c7",
+     "date": "2026-06-14T20:07:31Z",
+     "msg": "Checkout Academy: Copy-v2 live — Body neu (Problem→Neue Chance→Flywheel→Beweis→Coach→Angebot→Push→FAQ), 90-Tage-Garantie"
+    },
+    {
+     "sha": "c639c25",
+     "date": "2026-05-25T16:43:14Z",
+     "msg": "feat(salesmade): remove Discovery Call Scorecard CTA from landing — focus on call booking"
+    },
+    {
+     "sha": "34d30fc",
+     "date": "2026-05-23T15:35:34Z",
+     "msg": "feat(salesmade): 3 Use-Cases ICP-Achsen (Hyrise-Move #2)"
+    },
+    {
+     "sha": "fad083a",
+     "date": "2026-05-23T15:32:08Z",
+     "msg": "feat(salesmade): Discovery Call Scorecard /salesmade/scorecard + Self-ID CTA-Link"
+    },
+    {
+     "sha": "a4bfe95",
+     "date": "2026-05-23T15:22:32Z",
+     "msg": "feat(salesmade): 'Bist Du das?' Self-Identification Section (Hyrise-Move)"
+    }
+   ]
+  },
+  {
+   "route": "/salesmade/frontrow",
+   "file": "app/[locale]/(marketing)/salesmade/frontrow/page.tsx",
+   "group": "marketing",
+   "title": "Front Row — Instant Influence",
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/salesmade/frontrow/FrontRowForm.tsx",
+    "app/[locale]/(marketing)/salesmade/frontrow/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 4,
+   "lastChange": "2026-05-15T16:51:20Z",
+   "history": [
+    {
+     "sha": "fa406a4",
+     "date": "2026-05-15T16:51:20Z",
+     "msg": "fix(build): syntax error in academy + frontrow page signatures (caused all post-a0ee811 build failures)"
+    },
+    {
+     "sha": "3fad5d7",
+     "date": "2026-05-14T22:15:40Z",
+     "msg": "fix(calendly): zero hardcoded URLs — everything reads from site_settings"
+    },
+    {
+     "sha": "0d04e6f",
+     "date": "2026-05-11T11:47:45Z",
+     "msg": "design(brand): orange → blue, current red → TEDx red #EB0028, drop CompoundGrid edges"
+    },
+    {
+     "sha": "606ec05",
+     "date": "2026-05-06T21:12:23Z",
+     "msg": "feat(frontrow): /salesmade/frontrow page + homepage launch box"
+    }
+   ]
+  },
+  {
+   "route": "/salesmade",
+   "file": "app/[locale]/(marketing)/salesmade/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/salesmade/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 25,
+   "lastChange": "2026-11-06T19:16:40Z",
+   "history": [
+    {
+     "sha": "39b5bf8",
+     "date": "2026-11-06T19:16:40Z",
+     "msg": "Academy: neue Seite aus dem Landingpage-System (/academy), story_html + story_system, Quiz-API, Preis-Sticker rot/blau; "
+    },
+    {
+     "sha": "cc0cbb3",
+     "date": "2026-06-14T13:20:22Z",
+     "msg": "Hero (Checkout + /salesmade): neue Headline 'Damit Dein Team... diese Skills.' + Subheadline 'Von Unsicherheit zu planba"
+    },
+    {
+     "sha": "34d30fc",
+     "date": "2026-05-23T15:35:34Z",
+     "msg": "feat(salesmade): 3 Use-Cases ICP-Achsen (Hyrise-Move #2)"
+    },
+    {
+     "sha": "a4bfe95",
+     "date": "2026-05-23T15:22:32Z",
+     "msg": "feat(salesmade): 'Bist Du das?' Self-Identification Section (Hyrise-Move)"
+    },
+    {
+     "sha": "960faa5",
+     "date": "2026-05-22T13:56:43Z",
+     "msg": "feat(salesmade): hero headline 'Closing the Sales Education Gap' + 3 research highlights"
+    },
+    {
+     "sha": "8f3faee",
+     "date": "2026-05-21T22:10:24Z",
+     "msg": "feat(salesmade): On-the-Job format strip + Soft-Launch Feuerwerk banner"
+    },
+    {
+     "sha": "0bd71b9",
+     "date": "2026-05-19T22:17:20Z",
+     "msg": "feat(salesmade): Competitor-Deductions umgesetzt — Hero-Pills, Permission-Stat, Anti-Myth, Format-Pill, Courses-vs-Skill"
+    },
+    {
+     "sha": "41623bd",
+     "date": "2026-05-17T20:29:59Z",
+     "msg": "copy(salesmade): 'Weil' aus Crisis-Headline raus + Kartenreihenfolge swap"
+    }
+   ]
+  },
+  {
+   "route": "/salesmade/scorecard",
+   "file": "app/[locale]/(marketing)/salesmade/scorecard/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [
+    "scorecard",
+    "scorecard.meta"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/salesmade/scorecard/ScorecardClient.tsx",
+    "app/[locale]/(marketing)/salesmade/scorecard/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 1,
+   "lastChange": "2026-05-23T15:32:08Z",
+   "history": [
+    {
+     "sha": "fad083a",
+     "date": "2026-05-23T15:32:08Z",
+     "msg": "feat(salesmade): Discovery Call Scorecard /salesmade/scorecard + Self-ID CTA-Link"
+    }
+   ]
+  },
+  {
+   "route": "/schedule/[person]/[type]",
+   "file": "app/[locale]/(marketing)/schedule/[person]/[type]/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [
+    "schedule"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/schedule/[person]/[type]/page.tsx",
+    "components/schedule/BookingWidget.tsx"
+   ],
+   "lpBacked": false,
+   "version": 11,
+   "lastChange": "2026-07-31T14:14:08Z",
+   "history": [
+    {
+     "sha": "a683ee0",
+     "date": "2026-07-31T14:14:08Z",
+     "msg": "feat(team): Daniel-Avatar (Foto) — Angebote/About-us via team.ts + Kalender-Fallback"
+    },
+    {
+     "sha": "6218fa0",
+     "date": "2026-07-13T19:21:42Z",
+     "msg": "feat(offer): AboutUs-Footer single blue + Direkt-Termin mit Name/Angebot als Parameter, markus@eilers.at entfernt, Impre"
+    },
+    {
+     "sha": "47ed3e1",
+     "date": "2026-07-12T22:07:58Z",
+     "msg": "feat(schedule): Event-Typen mehrsprachig (translations jsonb + localizedType); Person-/Typ-Seite rendern Name/Beschreibu"
+    },
+    {
+     "sha": "6404a3f",
+     "date": "2026-07-07T16:59:48Z",
+     "msg": "feat(chat): Markdown-Rendering + Termin-Tool (freie Slots/Buchungslink mit Betreff); voice: Markup nicht vorlesen; Booki"
+    },
+    {
+     "sha": "f11c42c",
+     "date": "2026-07-07T16:29:14Z",
+     "msg": "feat(schedule): interner Team-Modus (?internal=1, admin, kein Cache, bis 6 Monate) + themen-fokussierte Slug-Woerter"
+    },
+    {
+     "sha": "b4e58ed",
+     "date": "2026-07-04T18:44:34Z",
+     "msg": "Fix: BookingWidget Client-Crash — Null-Cursor-Guard vor Kalender-Render (Slots geladen, cursor noch nicht gesetzt)"
+    },
+    {
+     "sha": "e3c2d52",
+     "date": "2026-07-03T23:55:17Z",
+     "msg": "Buchungsseiten i18n (DE/EN/ES) + Besucher-Zeitzone (Auto-Detect, Anzeige über Kalender, Auswahl 24 Städte), lokalisierte"
+    },
+    {
+     "sha": "fee1349",
+     "date": "2026-07-03T23:32:53Z",
+     "msg": "Buchungslinks auf kennenlernen-30 (Kontakt/Book-a-call/Angebote), Editor: Vorschau+Live-Seite-Pillen & Slug-Warnhinweis,"
+    }
+   ]
+  },
+  {
+   "route": "/schedule/[person]",
+   "file": "app/[locale]/(marketing)/schedule/[person]/page.tsx",
+   "group": "marketing",
+   "title": null,
+   "namespaces": [
+    "schedule"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/schedule/[person]/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 5,
+   "lastChange": "2026-07-12T22:07:58Z",
+   "history": [
+    {
+     "sha": "47ed3e1",
+     "date": "2026-07-12T22:07:58Z",
+     "msg": "feat(schedule): Event-Typen mehrsprachig (translations jsonb + localizedType); Person-/Typ-Seite rendern Name/Beschreibu"
+    },
+    {
+     "sha": "e3c2d52",
+     "date": "2026-07-03T23:55:17Z",
+     "msg": "Buchungsseiten i18n (DE/EN/ES) + Besucher-Zeitzone (Auto-Detect, Anzeige über Kalender, Auswahl 24 Städte), lokalisierte"
+    },
+    {
+     "sha": "8daba12",
+     "date": "2026-07-03T23:16:37Z",
+     "msg": "Terminbuchung Ausbau: DB-Event-Typen + Admin-Editor (Fragen/Puffer/Tageslimit/Sichtbarkeit/Info+Avatar), Umbuchen/Absage"
+    },
+    {
+     "sha": "a475a99",
+     "date": "2026-07-01T19:21:41Z",
+     "msg": "Schedule: Monats-Kalender-UX, E+F-Layout-Fix (kein nested main), Bestätigungsmail + Add-to-Calendar + Teams-Link"
+    },
+    {
+     "sha": "e7ebdb1",
+     "date": "2026-06-30T18:45:25Z",
+     "msg": "Calendly-Nachbau Spur 1: /schedule (3 Ebenen + Buchungs-Widget), Admin /admin/schedule (Verbindungs-Status + Connect/Rec"
+    }
+   ]
+  },
+  {
+   "route": "/schedule",
+   "file": "app/[locale]/(marketing)/schedule/page.tsx",
+   "group": "marketing",
+   "title": "Termin buchen — Eilers+Friends",
+   "namespaces": [
+    "schedule"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/schedule/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 6,
+   "lastChange": "2026-09-21T16:28:01Z",
+   "history": [
+    {
+     "sha": "49cd32d",
+     "date": "2026-09-21T16:28:01Z",
+     "msg": "feat(schedule): zweites Buchungs-Team Daniel und Markus — aus dem fest verdrahteten einen Team wird eine Liste, damit di"
+    },
+    {
+     "sha": "29dc40c",
+     "date": "2026-07-06T13:43:56Z",
+     "msg": "Daniel (SDR, daniel@eilersfriends.com) als verbindbare Person ergänzt; /schedule-Übersicht zeigt nur Personen mit mind. "
+    },
+    {
+     "sha": "21ac3bc",
+     "date": "2026-07-03T23:58:02Z",
+     "msg": "Schedule-Übersicht: Avatare (Markus/Aljona-Fotos, Team-Icon, Initialen-Fallback) statt generischer Icons"
+    },
+    {
+     "sha": "e3c2d52",
+     "date": "2026-07-03T23:55:17Z",
+     "msg": "Buchungsseiten i18n (DE/EN/ES) + Besucher-Zeitzone (Auto-Detect, Anzeige über Kalender, Auswahl 24 Städte), lokalisierte"
+    },
+    {
+     "sha": "a475a99",
+     "date": "2026-07-01T19:21:41Z",
+     "msg": "Schedule: Monats-Kalender-UX, E+F-Layout-Fix (kein nested main), Bestätigungsmail + Add-to-Calendar + Teams-Link"
+    },
+    {
+     "sha": "e7ebdb1",
+     "date": "2026-06-30T18:45:25Z",
+     "msg": "Calendly-Nachbau Spur 1: /schedule (3 Ebenen + Buchungs-Widget), Admin /admin/schedule (Verbindungs-Status + Connect/Rec"
+    }
+   ]
+  },
+  {
+   "route": "/termin/[token]",
+   "file": "app/[locale]/(marketing)/termin/[token]/page.tsx",
+   "group": "marketing",
+   "title": "Termin verwalten — Eilers+Friends",
+   "namespaces": [
+    "schedule"
+   ],
+   "files": [
+    "app/[locale]/(marketing)/termin/[token]/page.tsx",
+    "components/schedule/ManageWidget.tsx"
+   ],
+   "lpBacked": false,
+   "version": 2,
+   "lastChange": "2026-07-03T23:55:17Z",
+   "history": [
+    {
+     "sha": "e3c2d52",
+     "date": "2026-07-03T23:55:17Z",
+     "msg": "Buchungsseiten i18n (DE/EN/ES) + Besucher-Zeitzone (Auto-Detect, Anzeige über Kalender, Auswahl 24 Städte), lokalisierte"
+    },
+    {
+     "sha": "8daba12",
+     "date": "2026-07-03T23:16:37Z",
+     "msg": "Terminbuchung Ausbau: DB-Event-Typen + Admin-Editor (Fragen/Puffer/Tageslimit/Sichtbarkeit/Info+Avatar), Umbuchen/Absage"
+    }
+   ]
+  },
+  {
+   "route": "/verbunden",
+   "file": "app/[locale]/(marketing)/verbunden/page.tsx",
+   "group": "marketing",
+   "title": "Postfach verbunden — Eilers+Friends",
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(marketing)/verbunden/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 1,
+   "lastChange": "2026-10-24T20:18:37Z",
+   "history": [
+    {
+     "sha": "acf23ed",
+     "date": "2026-10-24T20:18:37Z",
+     "msg": "Postfach verbinden per Einladungslink (ohne Admin-Login), Danke-Seite"
+    }
+   ]
+  },
+  {
+   "route": "/clients",
+   "file": "app/[locale]/(portal)/clients/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/clients/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 1,
+   "lastChange": "2026-05-22T15:56:48Z",
+   "history": [
+    {
+     "sha": "ed61a41",
+     "date": "2026-05-22T15:56:48Z",
+     "msg": "feat(wave2-foundation): Kundenbereich + Offers-Foundation"
+    }
+   ]
+  },
+  {
+   "route": "/dashboard/billing",
+   "file": "app/[locale]/(portal)/dashboard/billing/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/billing/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 1,
+   "lastChange": "2026-07-17T16:19:20Z",
+   "history": [
+    {
+     "sha": "a5fdfc4",
+     "date": "2026-07-17T16:19:20Z",
+     "msg": "feat(portal/billing): Kundenbereich 'Rechnungen' — Rechnungen mit PDF-Download + Bezahlt/Offen-Status + Abo-Uebersicht; "
+    }
+   ]
+  },
+  {
+   "route": "/dashboard/frameworks/[slug]",
+   "file": "app/[locale]/(portal)/dashboard/frameworks/[slug]/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/frameworks/[slug]/page.tsx",
+    "components/wizard/BeefRadarStep.tsx",
+    "components/wizard/StepCompanion.tsx",
+    "components/wizard/StepSummary.tsx",
+    "components/wizard/WasInDieBoxStep.tsx",
+    "components/wizard/WelcomeStep.tsx",
+    "components/wizard/WizardEditorial.tsx"
+   ],
+   "lpBacked": false,
+   "version": 20,
+   "lastChange": "2026-05-25T21:05:45Z",
+   "history": [
+    {
+     "sha": "2310a6b",
+     "date": "2026-05-25T21:05:45Z",
+     "msg": "feat(brand+wizard): SalesMade-Blau sweep + auto-suggest Step 01 + revalidate"
+    },
+    {
+     "sha": "08c71b4",
+     "date": "2026-05-25T18:52:18Z",
+     "msg": "fix(wizard/WasInDieBox): clean rewrite — remove offer-description leftovers"
+    },
+    {
+     "sha": "3452ddc",
+     "date": "2026-05-25T18:49:45Z",
+     "msg": "fix(wizard/BeefRadar): clean rewrite — remove offer-description leftovers"
+    },
+    {
+     "sha": "a0a379a",
+     "date": "2026-05-25T17:02:28Z",
+     "msg": "feat(wizard): anti-hallucination + dedicated 01-was-in-die-box companion + full-width"
+    },
+    {
+     "sha": "e4b790e",
+     "date": "2026-05-25T16:54:47Z",
+     "msg": "feat(wizard): Welcome-Context + observational voice rewrite"
+    },
+    {
+     "sha": "d12a33b",
+     "date": "2026-05-25T16:50:28Z",
+     "msg": "content(framework/b2b): Master Master + Logos + Typische Angebote + Umlaute"
+    },
+    {
+     "sha": "389ce45",
+     "date": "2026-05-25T16:18:41Z",
+     "msg": "feat(wizard): Step 01 · Was kommt in die Box (interaktiv)"
+    },
+    {
+     "sha": "e7eed59",
+     "date": "2026-05-24T23:36:19Z",
+     "msg": "fix(wizard/StepSummary): coerce unknown values via s() helper + ternaries"
+    }
+   ]
+  },
+  {
+   "route": "/dashboard/frameworks/b2b-angebote/wizard-v2-preview",
+   "file": "app/[locale]/(portal)/dashboard/frameworks/b2b-angebote/wizard-v2-preview/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/frameworks/b2b-angebote/wizard-v2-preview/page.tsx",
+    "components/wizard-v2/Step01BusinessProductBlocks.tsx",
+    "components/wizard-v2/Step02ICP.tsx",
+    "components/wizard-v2/Step03ChallengesOutcomes.tsx",
+    "components/wizard-v2/Step04BeefRadar.tsx",
+    "components/wizard-v2/Step05FutureProblems.tsx",
+    "components/wizard-v2/Step06EconomicCluster.tsx",
+    "components/wizard-v2/Steps07to12.tsx",
+    "components/wizard-v2/WelcomeStepV2.tsx",
+    "components/wizard-v2/WizardV2Layout.tsx"
+   ],
+   "lpBacked": false,
+   "version": 9,
+   "lastChange": "2026-05-31T15:09:50Z",
+   "history": [
+    {
+     "sha": "c48beb2",
+     "date": "2026-05-31T15:09:50Z",
+     "msg": "fix(wizard-v2): JSX quote bugs Step06 + Steps07-12 (5 placeholders mit „...\" → {'...'} expression form)"
+    },
+    {
+     "sha": "87a2e1b",
+     "date": "2026-05-26T23:48:36Z",
+     "msg": "feat(wizard-v2): Steps 05-12 alle live · Bauplan komplett"
+    },
+    {
+     "sha": "4a8898b",
+     "date": "2026-05-26T23:25:30Z",
+     "msg": "feat(wizard-v2): BOOM-Voice + Multi-Rollen + Topbar volle Breite"
+    },
+    {
+     "sha": "5f9065a",
+     "date": "2026-05-26T07:13:11Z",
+     "msg": "fix(wizard-v2): Step02 help-attribute inner quote"
+    },
+    {
+     "sha": "12353fd",
+     "date": "2026-05-26T07:10:51Z",
+     "msg": "fix(wizard-v2): JSX quote-Bug in Step02 + Step04 placeholders"
+    },
+    {
+     "sha": "5d5acf4",
+     "date": "2026-05-26T07:08:41Z",
+     "msg": "feat(wizard-v2): Step 02 ICP + Step 03 Challenges/Outcomes"
+    },
+    {
+     "sha": "6539d88",
+     "date": "2026-05-26T07:03:08Z",
+     "msg": "feat(wizard-v2): Step 04 Beef-Radar mit Markus-Lehre + Bullshit-Detector"
+    },
+    {
+     "sha": "fd8ae7a",
+     "date": "2026-05-26T06:41:17Z",
+     "msg": "feat(wizard-v2): Step 01 Business + Produkt + Bausteine"
+    }
+   ]
+  },
+  {
+   "route": "/dashboard/frameworks",
+   "file": "app/[locale]/(portal)/dashboard/frameworks/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/frameworks/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 4,
+   "lastChange": "2026-10-17T21:29:00Z",
+   "history": [
+    {
+     "sha": "470e08b",
+     "date": "2026-10-17T21:29:00Z",
+     "msg": "Frameworks (Admin-Preview): Entwürfe zeigen, Links auf Seite/Vorschau statt 404-Wizard"
+    },
+    {
+     "sha": "3c5e6b4",
+     "date": "2026-05-24T16:27:33Z",
+     "msg": "fix(wizard+enroll): Admin-Preview-Bypass + db.execute rowsOf fix"
+    },
+    {
+     "sha": "32d9e28",
+     "date": "2026-05-24T15:06:52Z",
+     "msg": "feat(framework/b2b-angebote): Section-Rewrite + Hero-Pills + 3x3 Grid + Wizard-Stub"
+    },
+    {
+     "sha": "89e3968",
+     "date": "2026-05-24T00:29:55Z",
+     "msg": "feat(portal+admin): Cross-Switch Sidebars + Meine Frameworks/Programme Stubs"
+    }
+   ]
+  },
+  {
+   "route": "/dashboard/gespraechs-checks/[id]",
+   "file": "app/[locale]/(portal)/dashboard/gespraechs-checks/[id]/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/gespraechs-checks/[id]/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 1,
+   "lastChange": "2026-10-18T18:44:19Z",
+   "history": [
+    {
+     "sha": "baa9e5d",
+     "date": "2026-10-18T18:44:19Z",
+     "msg": "Gesprächs-Check: Transkripte verschlüsselt im Verlauf, 10 Gespräche je Firma, 10er-Paket über Stripe, Freemail-Sperre, K"
+    }
+   ]
+  },
+  {
+   "route": "/dashboard/gespraechs-checks",
+   "file": "app/[locale]/(portal)/dashboard/gespraechs-checks/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/gespraechs-checks/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 1,
+   "lastChange": "2026-10-18T18:44:19Z",
+   "history": [
+    {
+     "sha": "baa9e5d",
+     "date": "2026-10-18T18:44:19Z",
+     "msg": "Gesprächs-Check: Transkripte verschlüsselt im Verlauf, 10 Gespräche je Firma, 10er-Paket über Stripe, Freemail-Sperre, K"
+    }
+   ]
+  },
+  {
+   "route": "/dashboard/guide",
+   "file": "app/[locale]/(portal)/dashboard/guide/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/guide/page.tsx",
+    "components/guide/GuideClient.tsx"
+   ],
+   "lpBacked": false,
+   "version": 2,
+   "lastChange": "2026-10-14T20:17:31Z",
+   "history": [
+    {
+     "sha": "8976852",
+     "date": "2026-10-14T20:17:31Z",
+     "msg": "Ansehen als (Firma/Team/Person, nur Ansicht) + Strategie: Produkte inline anlegen, bearbeiten, archivieren"
+    },
+    {
+     "sha": "13835b5",
+     "date": "2026-10-11T18:08:44Z",
+     "msg": "Programm Guide: Versionen, Rollouts, Häkchen, Änderungsvorschläge, Einladung, Material, Signal-Mails, Rollout aus Angebo"
+    }
+   ]
+  },
+  {
+   "route": "/dashboard/leadradar",
+   "file": "app/[locale]/(portal)/dashboard/leadradar/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/leadradar/page.tsx",
+    "components/leadradar/LeadRadar.tsx",
+    "components/leadradar/RadarMap.tsx",
+    "components/leadradar/palette.ts"
+   ],
+   "lpBacked": false,
+   "version": 6,
+   "lastChange": "2026-09-03T21:01:57Z",
+   "history": [
+    {
+     "sha": "08db9c5",
+     "date": "2026-09-03T21:01:57Z",
+     "msg": "fix(leadradar): Kartencontainer hatte Hoehe 0 — MapLibres eigenes Stylesheet ueberschreibt die Positionierungsklasse, di"
+    },
+    {
+     "sha": "7a7113d",
+     "date": "2026-09-03T20:58:59Z",
+     "msg": "fix(leadradar): Karte auf Groessenaenderungen reagieren lassen und eigene Grenzlinie aus der Datenquelle zeichnen — die "
+    },
+    {
+     "sha": "c11ba1c",
+     "date": "2026-09-03T20:56:02Z",
+     "msg": "fix(leadradar): Kartenquelle mit erreichbaren Kacheln — heller Stil, der zur Laufzeit dunkel eingefaerbt wird; die Kache"
+    },
+    {
+     "sha": "85f1be0",
+     "date": "2026-09-03T20:53:02Z",
+     "msg": "fix(leadradar): Kartenstil radarisieren — Laendergrenzen gruen und kraeftig, Rest gedaempft, Beschriftungen nur fuer Ort"
+    },
+    {
+     "sha": "c1913e1",
+     "date": "2026-09-03T20:49:50Z",
+     "msg": "fix(leadradar): dunkler Kartenstil, der auch existiert — der erste zeigte 404 und damit eine schwarze Flaeche ohne Laend"
+    },
+    {
+     "sha": "1d86299",
+     "date": "2026-09-03T20:46:15Z",
+     "msg": "feat(leadradar): Radar fuer smapOne — Signalquellen aus Stellenanzeigen, Register, Zuschlaegen, Audits und Bewertungen; "
+    }
+   ]
+  },
+  {
+   "route": "/dashboard",
+   "file": "app/[locale]/(portal)/dashboard/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/page.tsx",
+    "components/goals/GoalsBoard.tsx"
+   ],
+   "lpBacked": false,
+   "version": 2,
+   "lastChange": "2026-11-01T19:14:50Z",
+   "history": [
+    {
+     "sha": "600fe53",
+     "date": "2026-11-01T19:14:50Z",
+     "msg": "Zielsetzung je Kunde: KPIs (Marketing/Sales/GTM) mit Vorlagen, Messwerten und Plan-Status; Dashboard im Kundenbereich, A"
+    },
+    {
+     "sha": "c80d231",
+     "date": "2026-03-14T23:21:42Z",
+     "msg": "feat: Kompletter Neuaufbau — sauberes Fundament nach CLAUDE.md"
+    }
+   ]
+  },
+  {
+   "route": "/dashboard/programs",
+   "file": "app/[locale]/(portal)/dashboard/programs/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/programs/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 1,
+   "lastChange": "2026-05-24T00:29:55Z",
+   "history": [
+    {
+     "sha": "89e3968",
+     "date": "2026-05-24T00:29:55Z",
+     "msg": "feat(portal+admin): Cross-Switch Sidebars + Meine Frameworks/Programme Stubs"
+    }
+   ]
+  },
+  {
+   "route": "/dashboard/strategie/[stepKey]",
+   "file": "app/[locale]/(portal)/dashboard/strategie/[stepKey]/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/strategie/[stepKey]/page.tsx",
+    "components/strategy/CommentPanel.tsx",
+    "components/strategy/FunnelPlanner.tsx",
+    "components/strategy/StatusBadge.tsx",
+    "components/strategy/StepEditor.tsx",
+    "components/strategy/StepIO.tsx",
+    "components/strategy/StepWorkflow.tsx"
+   ],
+   "lpBacked": false,
+   "version": 5,
+   "lastChange": "2026-10-29T12:34:34Z",
+   "history": [
+    {
+     "sha": "270ddc5",
+     "date": "2026-10-29T12:34:34Z",
+     "msg": "Know Your Numbers: Funnel-Rechner aus dem Sales Activity Planner im Strategie-Schritt (Ziel/Kapazität, Cash-In, Funnel, "
+    },
+    {
+     "sha": "583d945",
+     "date": "2026-10-17T17:15:04Z",
+     "msg": "StepIO: Typen der Lauf-Meldung"
+    },
+    {
+     "sha": "8af70bd",
+     "date": "2026-10-17T17:12:08Z",
+     "msg": "Strategie-Schritt: Input · Work · Output, Agenten und Recherche direkt im Schritt, überholt behalten oder neu erzeugen"
+    },
+    {
+     "sha": "0cccdac",
+     "date": "2026-10-15T09:29:10Z",
+     "msg": "Strategie: 13 Programmschritte im Katalog, Hypothesen validieren, Strategie-Baum als zweite Navigation, Input/Work/Outpu"
+    },
+    {
+     "sha": "0428a18",
+     "date": "2026-08-14T22:38:27Z",
+     "msg": "feat(strategie): Kundenbereich-UI im Circle.so-Stil — Uebersicht mit Produkt-Umschalter und Fortschritt, Schritt-Detail "
+    }
+   ]
+  },
+  {
+   "route": "/dashboard/strategie",
+   "file": "app/[locale]/(portal)/dashboard/strategie/page.tsx",
+   "group": "portal",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/(portal)/dashboard/strategie/page.tsx",
+    "components/strategy/ProductsInline.tsx",
+    "components/strategy/ProgressRing.tsx",
+    "components/strategy/StatusBadge.tsx"
+   ],
+   "lpBacked": false,
+   "version": 2,
+   "lastChange": "2026-10-14T20:17:31Z",
+   "history": [
+    {
+     "sha": "8976852",
+     "date": "2026-10-14T20:17:31Z",
+     "msg": "Ansehen als (Firma/Team/Person, nur Ansicht) + Strategie: Produkte inline anlegen, bearbeiten, archivieren"
+    },
+    {
+     "sha": "0428a18",
+     "date": "2026-08-14T22:38:27Z",
+     "msg": "feat(strategie): Kundenbereich-UI im Circle.so-Stil — Uebersicht mit Produkt-Umschalter und Fortschritt, Schritt-Detail "
+    }
+   ]
+  },
+  {
+   "route": "/auth/invite/[token]",
+   "file": "app/[locale]/auth/invite/[token]/page.tsx",
+   "group": "root",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/auth/invite/[token]/InviteForm.tsx",
+    "app/[locale]/auth/invite/[token]/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 1,
+   "lastChange": "2026-10-11T18:08:44Z",
+   "history": [
+    {
+     "sha": "13835b5",
+     "date": "2026-10-11T18:08:44Z",
+     "msg": "Programm Guide: Versionen, Rollouts, Häkchen, Änderungsvorschläge, Einladung, Material, Signal-Mails, Rollout aus Angebo"
+    }
+   ]
+  },
+  {
+   "route": "/auth/login",
+   "file": "app/[locale]/auth/login/page.tsx",
+   "group": "root",
+   "title": null,
+   "namespaces": [
+    "auth"
+   ],
+   "files": [
+    "app/[locale]/auth/login/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 5,
+   "lastChange": "2026-10-11T16:39:05Z",
+   "history": [
+    {
+     "sha": "9a753cb",
+     "date": "2026-10-11T16:39:05Z",
+     "msg": "Login: Gruß nach Tageszeit, Hintergrund aus 10 Orten × 4 Lichtstimmungen, neuer Untertitel"
+    },
+    {
+     "sha": "77a5861",
+     "date": "2026-05-22T21:43:23Z",
+     "msg": "polish(auth): Login-Logo auf Navbar-Größe (h-14 md:h-16, 200x56)"
+    },
+    {
+     "sha": "0d04e6f",
+     "date": "2026-05-11T11:47:45Z",
+     "msg": "design(brand): orange → blue, current red → TEDx red #EB0028, drop CompoundGrid edges"
+    },
+    {
+     "sha": "c62710f",
+     "date": "2026-04-27T17:43:36Z",
+     "msg": "feat(auth): role-based redirect after login"
+    },
+    {
+     "sha": "c80d231",
+     "date": "2026-03-14T23:21:42Z",
+     "msg": "feat: Kompletter Neuaufbau — sauberes Fundament nach CLAUDE.md"
+    }
+   ]
+  },
+  {
+   "route": "/checkout/[slug]",
+   "file": "app/[locale]/checkout/[slug]/page.tsx",
+   "group": "root",
+   "title": null,
+   "namespaces": [
+    "checkout",
+    "checkout.common",
+    "checkout.program",
+    "salesmadeExt.flywheel",
+    "salesmadePage.coach",
+    "salesmadePage.hero"
+   ],
+   "files": [
+    "app/[locale]/checkout/[slug]/page.tsx",
+    "components/checkout/CheckoutForm.tsx",
+    "components/sections/salesmade/SalesFlywheel.tsx"
+   ],
+   "lpBacked": false,
+   "version": 29,
+   "lastChange": "2026-11-05T20:22:09Z",
+   "history": [
+    {
+     "sha": "2b8dbae",
+     "date": "2026-11-05T20:22:09Z",
+     "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
+    },
+    {
+     "sha": "3bb1b1c",
+     "date": "2026-08-17T12:53:15Z",
+     "msg": "fix(launch): rollierendes Launch-Fenster statt fixem 31.7.2026 — effectiveDeadline() zeigt nie ein Datum aus der Vergang"
+    },
+    {
+     "sha": "7b6599f",
+     "date": "2026-07-21T22:01:42Z",
+     "msg": "feat(i18n/checkout): Programm-Checkout [slug] uebersetzt (Problem/Chance/Founding/FAQ/Tiers/Boni) — Checkout-Seiten komp"
+    },
+    {
+     "sha": "ffa1177",
+     "date": "2026-07-21T21:55:08Z",
+     "msg": "feat(i18n/checkout): Sprach-Switcher (Flagge) in Checkout-Headern + Success-Seite uebersetzt (de/en/es)"
+    },
+    {
+     "sha": "45a8a86",
+     "date": "2026-07-21T17:21:21Z",
+     "msg": "feat(i18n): Checkout-Formular uebersetzt (de/en/es, ru=de-Fallback) — neuer checkout-Namespace"
+    },
+    {
+     "sha": "647ae4c",
+     "date": "2026-07-17T11:39:58Z",
+     "msg": "content(agb): Entwurf-Hinweis raus + Klauseln Höhere Gewalt/Vertraulichkeit/Datenschutz/Referenznennung (an masterplan-G"
+    },
+    {
+     "sha": "c5462e3",
+     "date": "2026-06-18T09:49:01Z",
+     "msg": "Mystery Shopping Angebot + 1-EUR-Testprodukt: Checkout /checkout/mystery-shopping (DB-frei, Stripe inline price), Checko"
+    },
+    {
+     "sha": "e23caf2",
+     "date": "2026-06-16T22:22:16Z",
+     "msg": "Checkout: Callout-Bar oben (Angebot nur wenige Tage verfügbar + 'sprich mit uns')"
+    }
+   ]
+  },
+  {
+   "route": "/checkout/mystery-shopping",
+   "file": "app/[locale]/checkout/mystery-shopping/page.tsx",
+   "group": "root",
+   "title": "Mystery Shopping buchen · Eilers+Friends",
+   "namespaces": [
+    "checkout",
+    "checkout.common",
+    "checkout.mystery"
+   ],
+   "files": [
+    "app/[locale]/checkout/mystery-shopping/page.tsx",
+    "components/blocks/LogoScrollbar.tsx",
+    "components/checkout/CheckoutForm.tsx",
+    "components/lp/PreviewBanner.tsx",
+    "components/lp/story/AcademyInit.tsx",
+    "components/lp/story/CheckoutBox.tsx",
+    "components/lp/story/OptinForm.tsx",
+    "components/lp/story/StoryBlocks.tsx",
+    "components/lp/story/academy-assets.ts",
+    "components/lp/story/story-css.ts"
+   ],
+   "lpBacked": true,
+   "version": 30,
+   "lastChange": "2026-11-06T19:29:38Z",
+   "history": [
+    {
+     "sha": "7fdec61",
+     "date": "2026-11-06T19:29:38Z",
+     "msg": "Academy: Sticker in der Abschlusskarte oben rechts, Nav-Links neutral"
+    },
+    {
+     "sha": "39b5bf8",
+     "date": "2026-11-06T19:16:40Z",
+     "msg": "Academy: neue Seite aus dem Landingpage-System (/academy), story_html + story_system, Quiz-API, Preis-Sticker rot/blau; "
+    },
+    {
+     "sha": "bb11df5",
+     "date": "2026-11-05T22:52:18Z",
+     "msg": "Report-Prüfpunkte einspaltig, gleich ausgerichtet"
+    },
+    {
+     "sha": "33553fe",
+     "date": "2026-11-05T20:28:50Z",
+     "msg": "Story-Logoleiste: Abstand zur Überschrift"
+    },
+    {
+     "sha": "4957648",
+     "date": "2026-11-05T20:25:21Z",
+     "msg": "Story-Logoleiste nutzt das Startseiten-Modul (LogoScrollbar, Admin-Größen)"
+    },
+    {
+     "sha": "2b8dbae",
+     "date": "2026-11-05T20:22:09Z",
+     "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
+    },
+    {
+     "sha": "e59b7c5",
+     "date": "2026-11-05T20:04:44Z",
+     "msg": "Startseite: Werbebanner Mystery Shopping (Promo + Navigation), Callout-Bar „Nächster Academy-Flight 20. November“"
+    },
+    {
+     "sha": "aea7758",
+     "date": "2026-11-05T20:00:42Z",
+     "msg": "Mystery Shopping: Plätze-Zähler je Quartal, eine Buchung pro Firma, Story-Bausteine im LP-System, Squeeze /mystery-shopp"
+    }
+   ]
+  },
+  {
+   "route": "/checkout",
+   "file": "app/[locale]/checkout/page.tsx",
+   "group": "root",
+   "title": "SalesMade Academy · Premium",
+   "namespaces": [
+    "checkout.overview"
+   ],
+   "files": [
+    "app/[locale]/checkout/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 4,
+   "lastChange": "2026-07-21T21:59:08Z",
+   "history": [
+    {
+     "sha": "f184b79",
+     "date": "2026-07-21T21:59:08Z",
+     "msg": "feat(i18n/checkout): Uebersicht + Mystery-Shopping + AI-Intensive uebersetzt (checkout.common/overview/mystery/aiIntensi"
+    },
+    {
+     "sha": "d2eed86",
+     "date": "2026-07-04T21:17:31Z",
+     "msg": "Nav-CTA 'Gespräch buchen' kontextabhängig: /aljona|leadership → /schedule/aljona, /markus|salesmade → /schedule/markus, "
+    },
+    {
+     "sha": "c5462e3",
+     "date": "2026-06-18T09:49:01Z",
+     "msg": "Mystery Shopping Angebot + 1-EUR-Testprodukt: Checkout /checkout/mystery-shopping (DB-frei, Stripe inline price), Checko"
+    },
+    {
+     "sha": "3a628f3",
+     "date": "2026-06-16T19:59:17Z",
+     "msg": "Checkout: /checkout Übersichtsseite (Standard-Header/Footer, 'Aktuell verfügbare Angebote' + Erklärtext, Vorschau-Kärtch"
+    }
+   ]
+  },
+  {
+   "route": "/checkout/salesmade-ai-intensive",
+   "file": "app/[locale]/checkout/salesmade-ai-intensive/page.tsx",
+   "group": "root",
+   "title": null,
+   "namespaces": [
+    "checkout",
+    "checkout.aiIntensive",
+    "checkout.common"
+   ],
+   "files": [
+    "app/[locale]/checkout/salesmade-ai-intensive/page.tsx",
+    "components/checkout/CheckoutForm.tsx"
+   ],
+   "lpBacked": false,
+   "version": 23,
+   "lastChange": "2026-11-05T20:22:09Z",
+   "history": [
+    {
+     "sha": "2b8dbae",
+     "date": "2026-11-05T20:22:09Z",
+     "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
+    },
+    {
+     "sha": "3bb1b1c",
+     "date": "2026-08-17T12:53:15Z",
+     "msg": "fix(launch): rollierendes Launch-Fenster statt fixem 31.7.2026 — effectiveDeadline() zeigt nie ein Datum aus der Vergang"
+    },
+    {
+     "sha": "f184b79",
+     "date": "2026-07-21T21:59:08Z",
+     "msg": "feat(i18n/checkout): Uebersicht + Mystery-Shopping + AI-Intensive uebersetzt (checkout.common/overview/mystery/aiIntensi"
+    },
+    {
+     "sha": "ffa1177",
+     "date": "2026-07-21T21:55:08Z",
+     "msg": "feat(i18n/checkout): Sprach-Switcher (Flagge) in Checkout-Headern + Success-Seite uebersetzt (de/en/es)"
+    },
+    {
+     "sha": "45a8a86",
+     "date": "2026-07-21T17:21:21Z",
+     "msg": "feat(i18n): Checkout-Formular uebersetzt (de/en/es, ru=de-Fallback) — neuer checkout-Namespace"
+    },
+    {
+     "sha": "647ae4c",
+     "date": "2026-07-17T11:39:58Z",
+     "msg": "content(agb): Entwurf-Hinweis raus + Klauseln Höhere Gewalt/Vertraulichkeit/Datenschutz/Referenznennung (an masterplan-G"
+    },
+    {
+     "sha": "c5462e3",
+     "date": "2026-06-18T09:49:01Z",
+     "msg": "Mystery Shopping Angebot + 1-EUR-Testprodukt: Checkout /checkout/mystery-shopping (DB-frei, Stripe inline price), Checko"
+    },
+    {
+     "sha": "e23caf2",
+     "date": "2026-06-16T22:22:16Z",
+     "msg": "Checkout: Callout-Bar oben (Angebot nur wenige Tage verfügbar + 'sprich mit uns')"
+    }
+   ]
+  },
+  {
+   "route": "/checkout/success",
+   "file": "app/[locale]/checkout/success/page.tsx",
+   "group": "root",
+   "title": null,
+   "namespaces": [
+    "checkout.success"
+   ],
+   "files": [
+    "app/[locale]/checkout/success/page.tsx"
+   ],
+   "lpBacked": false,
+   "version": 2,
+   "lastChange": "2026-07-21T21:55:08Z",
+   "history": [
+    {
+     "sha": "ffa1177",
+     "date": "2026-07-21T21:55:08Z",
+     "msg": "feat(i18n/checkout): Sprach-Switcher (Flagge) in Checkout-Headern + Success-Seite uebersetzt (de/en/es)"
+    },
+    {
+     "sha": "96be84b",
+     "date": "2026-05-31T14:06:18Z",
+     "msg": "feat(checkout): /checkout/[slug] architecture + Stripe Hosted Checkout"
+    }
+   ]
+  },
+  {
+   "route": "/mystery-shopping",
+   "file": "app/[locale]/mystery-shopping/page.tsx",
+   "group": "root",
+   "title": null,
+   "namespaces": [],
+   "files": [
+    "app/[locale]/mystery-shopping/page.tsx",
+    "components/blocks/LogoScrollbar.tsx",
+    "components/lp/PreviewBanner.tsx",
+    "components/lp/story/AcademyInit.tsx",
+    "components/lp/story/CheckoutBox.tsx",
+    "components/lp/story/OptinForm.tsx",
+    "components/lp/story/StoryBlocks.tsx",
+    "components/lp/story/academy-assets.ts",
+    "components/lp/story/story-css.ts"
+   ],
+   "lpBacked": true,
+   "version": 15,
+   "lastChange": "2026-11-06T19:29:38Z",
+   "history": [
+    {
+     "sha": "7fdec61",
+     "date": "2026-11-06T19:29:38Z",
+     "msg": "Academy: Sticker in der Abschlusskarte oben rechts, Nav-Links neutral"
+    },
+    {
+     "sha": "39b5bf8",
+     "date": "2026-11-06T19:16:40Z",
+     "msg": "Academy: neue Seite aus dem Landingpage-System (/academy), story_html + story_system, Quiz-API, Preis-Sticker rot/blau; "
+    },
+    {
+     "sha": "bb11df5",
+     "date": "2026-11-05T22:52:18Z",
+     "msg": "Report-Prüfpunkte einspaltig, gleich ausgerichtet"
+    },
+    {
+     "sha": "33553fe",
+     "date": "2026-11-05T20:28:50Z",
+     "msg": "Story-Logoleiste: Abstand zur Überschrift"
+    },
+    {
+     "sha": "4957648",
+     "date": "2026-11-05T20:25:21Z",
+     "msg": "Story-Logoleiste nutzt das Startseiten-Modul (LogoScrollbar, Admin-Größen)"
+    },
+    {
+     "sha": "2b8dbae",
+     "date": "2026-11-05T20:22:09Z",
+     "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
+    },
+    {
+     "sha": "aea7758",
+     "date": "2026-11-05T20:00:42Z",
+     "msg": "Mystery Shopping: Plätze-Zähler je Quartal, eine Buchung pro Firma, Story-Bausteine im LP-System, Squeeze /mystery-shopp"
+    },
+    {
+     "sha": "cd84f7a",
+     "date": "2026-10-17T20:52:50Z",
+     "msg": "Backend: Vorschau/Live-Knöpfe je Sprache; Sprachumschaltung behält die Vorschau; Sprachwahl auch auf /lp-Seiten"
+    }
+   ]
+  },
+  {
+   "route": "/",
+   "file": "app/[locale]/page.tsx",
+   "group": "root",
+   "title": null,
+   "namespaces": [
+    "academy",
+    "bento",
+    "coaches",
+    "cta",
+    "hero",
+    "hvco",
+    "logos",
+    "newsletter",
+    "problem",
+    "programme",
+    "promo",
+    "testimonials"
+   ],
+   "files": [
+    "app/[locale]/page.tsx",
+    "components/blocks/AnimatedNumber.tsx",
+    "components/blocks/KaroPattern.tsx",
+    "components/blocks/LogoScrollbar.tsx",
+    "components/blocks/SectionHeader.tsx",
+    "components/blocks/TestimonialCard.tsx",
+    "components/effects/CompoundGrid.tsx",
+    "components/sections/BentoGrid.tsx",
+    "components/sections/CoachesSection.tsx",
+    "components/sections/CtaBlock.tsx",
+    "components/sections/HVCOSection.tsx",
+    "components/sections/HeroSection.tsx",
+    "components/sections/LogoStripSection.tsx",
+    "components/sections/NewsletterForm.tsx",
+    "components/sections/NewsletterSection.tsx",
+    "components/sections/ProblemSection.tsx",
+    "components/sections/ProgrammeSection.tsx",
+    "components/sections/PromoSection.tsx",
+    "components/sections/SalesMadeAcademySection.tsx",
+    "components/sections/TestimonialsSection.tsx"
+   ],
+   "lpBacked": false,
+   "version": 59,
+   "lastChange": "2026-11-06T19:16:40Z",
+   "history": [
+    {
+     "sha": "39b5bf8",
+     "date": "2026-11-06T19:16:40Z",
+     "msg": "Academy: neue Seite aus dem Landingpage-System (/academy), story_html + story_system, Quiz-API, Preis-Sticker rot/blau; "
+    },
+    {
+     "sha": "e59b7c5",
+     "date": "2026-11-05T20:04:44Z",
+     "msg": "Startseite: Werbebanner Mystery Shopping (Promo + Navigation), Callout-Bar „Nächster Academy-Flight 20. November“"
+    },
+    {
+     "sha": "23aad92",
+     "date": "2026-10-06T09:35:29Z",
+     "msg": "Startseite: Analyse-Karte zeigt auf den Gesprächs-Check"
+    },
+    {
+     "sha": "84cc156",
+     "date": "2026-07-22T20:11:13Z",
+     "msg": "feat(homepage): Promo-/Ads-Block (Quiz-Teaser + Academy/JumpStart/Frameworks) mehrsprachig de/en/es; ASK-Funnel-Einstieg"
+    },
+    {
+     "sha": "d2eed86",
+     "date": "2026-07-04T21:17:31Z",
+     "msg": "Nav-CTA 'Gespräch buchen' kontextabhängig: /aljona|leadership → /schedule/aljona, /markus|salesmade → /schedule/markus, "
+    },
+    {
+     "sha": "ede6d49",
+     "date": "2026-05-23T18:50:54Z",
+     "msg": "feat(logos): Equal Visual Heights — fixe Bounding-Box + per-Logo Scale-Slider"
+    },
+    {
+     "sha": "dfdd6ed",
+     "date": "2026-05-23T12:10:39Z",
+     "msg": "feat(logos): Upload-Pipeline mit Progress, Auto-BW & deterministic Naming"
+    },
+    {
+     "sha": "5503c50",
+     "date": "2026-05-15T18:43:27Z",
+     "msg": "fix(build): locale guards an neue routing.locales ['de','en','es'] angepasst"
+    }
+   ]
+  }
+ ]
+}

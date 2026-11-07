@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { workDomain } from '@/lib/util/email'
+import { identify, trackEvent, vidFrom } from '@/lib/scoring/core'
 import { createLead, hasCompanyBooked, getAvailability, nextQuarterLabel } from '@/lib/mystery-shopping/slots'
 
 export const runtime = 'nodejs'
 
-const Body = z.object({ email: z.string().email().max(200), firstName: z.string().max(80).optional().default(''), source: z.string().max(60).optional().default('mystery-shopping') })
+const Body = z.object({ email: z.string().email().max(200), firstName: z.string().max(80).optional().default(''), source: z.string().max(60).optional().default('mystery-shopping'), vid: z.string().max(64).optional() })
 
 /** Opt-in der Squeeze-Seite: Firmenadresse prüfen, Doppelbuchung und Ausgebucht früh melden, Lead anlegen. */
 export async function POST(req: Request) {
@@ -17,5 +18,10 @@ export async function POST(req: Request) {
   const a = await getAvailability()
   if (a.soldOut) return NextResponse.json({ error: `Dieses Quartal ist ausgebucht. Der nächste Durchgang startet im ${nextQuarterLabel(a.quarter)}.` }, { status: 409 })
   const lead = await createLead({ email: p.data.email, firstName: p.data.firstName, domain, source: p.data.source })
+  const vid = vidFrom(req, p.data.vid)
+  if (vid) {
+    await identify(vid, p.data.email, p.data.firstName, 'mystery-shopping').catch(() => {})
+    await trackEvent({ vid, kind: 'optin', key: 'mystery-shopping', payload: { source: p.data.source } }).catch(() => {})
+  }
   return NextResponse.json({ ok: true, lead })
 }

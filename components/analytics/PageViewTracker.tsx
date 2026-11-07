@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { getCookieConsent } from '@/components/layout/CookieBanner'
+import { getVid } from './visitor'
 
 function classifyUa(ua: string): 'desktop' | 'mobile' | 'tablet' | 'bot' {
   const u = ua.toLowerCase()
@@ -42,6 +43,7 @@ export function PageViewTracker() {
         'X-EF-Analytics-Consent': '1',
       },
       body: JSON.stringify({
+        vid: getVid().vid,
         path,
         locale,
         referrer,
