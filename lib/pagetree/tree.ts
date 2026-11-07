@@ -49,9 +49,11 @@ function nsCoverage(ns: string[], lang: Lang): LangState {
   let ok = 0
   for (const k of keys) {
     const v = FLAT[lang][k], src = FLAT.de[k]
-    if (v === undefined || v === null || v === '') continue
-    // gleich wie Deutsch und erkennbar Text → gilt als nicht übersetzt
-    if (typeof src === 'string' && v === src && src.length > 14 && /[a-zäöüß]{4}/.test(src)) continue
+    if (src === '' || src === null) { ok++; continue }                          // auch im Deutschen leer
+    if (v === undefined || v === null) continue
+    if (v === '' && String(src).length > 6) continue                             // kurze Einheiten („Uhr“) dürfen leer sein
+    // gleich wie Deutsch und erkennbar deutscher Text → gilt als nicht übersetzt (Namen und Fachbegriffe zählen als übersetzt)
+    if (typeof src === 'string' && v === src && /[äöüß]|\b(und|der|die|das|mit|für|nicht|ist|zu|Sie|Du|Ihr|Euer)\b/.test(src)) continue
     ok++
   }
   const pct = Math.round((ok / keys.length) * 100)

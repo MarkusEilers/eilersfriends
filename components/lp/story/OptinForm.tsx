@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { useLocale } from 'next-intl'
+import { ST, storyLang } from '@/lib/lp/story-i18n'
 import { getVid, rememberContext } from '@/components/analytics/visitor'
 
 /**
@@ -13,6 +15,8 @@ export function OptinForm({ button, next, source, soldOut = false, bare = false 
   const [email, setEmail] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const lang = storyLang(useLocale())
+  const T = ST[lang]
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -20,28 +24,28 @@ export function OptinForm({ button, next, source, soldOut = false, bare = false 
     try {
       const res = await fetch('/api/mystery-shopping/lead', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, email, source, vid: getVid().vid }),
+        body: JSON.stringify({ firstName, email, source, vid: getVid().vid, locale: lang }),
       })
       const data = await res.json().catch(() => ({}))
-      if (!res.ok || !data.lead) { setError(data.error ?? 'Das hat nicht geklappt. Bitte versucht es noch einmal.'); return }
+      if (!res.ok || !data.lead) { setError(data.error ?? T.errGeneric); return }
       rememberContext({ firstName, email })
-      const url = new URL(next, window.location.origin)
+      const url = new URL(lang !== 'de' && next.startsWith('/') && !next.startsWith(`/${lang}/`) ? `/${lang}${next}` : next, window.location.origin)
       url.searchParams.set('lead', data.lead)
       window.location.href = url.pathname + url.search
     } catch {
-      setError('Das hat nicht geklappt. Bitte versucht es noch einmal.')
+      setError(T.errGeneric)
     } finally {
       setBusy(false)
     }
   }
 
-  if (soldOut) return <p className="opt-h" style={{ fontSize: 16, fontWeight: 500 }}>Dieses Quartal ist ausgebucht.</p>
+  if (soldOut) return <p className="opt-h" style={{ fontSize: 16, fontWeight: 500 }}>{T.quarterSoldOut}</p>
 
   const fields = (
     <>
-      <input className="in" name="firstName" placeholder="Vorname" autoComplete="given-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-      <input className="in" name="email" type="email" placeholder="Firmen-E-Mail" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      <button className="btn go" type="submit" disabled={busy}>{busy ? 'Einen Moment …' : button}</button>
+      <input className="in" name="firstName" placeholder={T.first} autoComplete="given-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+      <input className="in" name="email" type="email" placeholder={T.workEmail} autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      <button className="btn go" type="submit" disabled={busy}>{busy ? T.wait : button}</button>
     </>
   )
   return (

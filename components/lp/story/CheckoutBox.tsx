@@ -1,6 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocale } from 'next-intl'
+import { ST, storyLang } from '@/lib/lp/story-i18n'
+import { getVid, readContext } from '@/components/analytics/visitor'
 
 /**
  * Bestellformular der Checkout-Seite. Startet die Stripe-Checkout-Session
@@ -12,6 +15,8 @@ export function CheckoutBox({ slug, tierId, button, note, prefill, soldOut = fal
   prefill?: { email?: string; firstName?: string }
   soldOut?: boolean; nextOpens?: string
 }) {
+  const lang = storyLang(useLocale())
+  const T = ST[lang]
   const [firstName, setFirstName] = useState(prefill?.firstName ?? '')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState(prefill?.email ?? '')
@@ -19,25 +24,31 @@ export function CheckoutBox({ slug, tierId, button, note, prefill, soldOut = fal
   const [terms, setTerms] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Was in dieser Sitzung schon bekannt ist (Opt-in, Quiz) — nur leere Felder füllen
+  useEffect(() => {
+    const k = readContext()
+    if (k.firstName) setFirstName((v) => v || k.firstName || '')
+    if (k.email) setEmail((v) => v || k.email || '')
+  }, [])
 
   if (soldOut) {
-    return <div className="soldout"><b>Ausgebucht.</b> Der nächste Durchgang startet im {nextOpens}. Schreibt uns an <a href="mailto:team@eilersfriends.com">team@eilersfriends.com</a>, dann merken wir Euch vor.</div>
+    return <div className="soldout">{T.soldOutBox(nextOpens ?? '')}</div>
   }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
-    if (!terms) { setError('Bitte bestätigt die AGB und die Datenschutzerklärung.'); return }
+    if (!terms) { setError(T.errTerms); return }
     setBusy(true); setError(null)
     try {
       const res = await fetch(`/api/checkout/${slug}/create-session`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tierId, seats: 1, email, name: `${firstName} ${lastName}`.trim(), company, acceptTerms: terms }),
+        body: JSON.stringify({ tierId, seats: 1, vid: getVid().vid, email, name: `${firstName} ${lastName}`.trim(), company, acceptTerms: terms }),
       })
       const data = await res.json().catch(() => ({}))
-      if (!res.ok || !data.url) { setError(data.error ?? 'Die Zahlung konnte nicht gestartet werden.'); return }
+      if (!res.ok || !data.url) { setError(data.error ?? T.errPay); return }
       window.location.href = data.url
     } catch {
-      setError('Die Zahlung konnte nicht gestartet werden.')
+      setError(T.errPay)
     } finally {
       setBusy(false)
     }
@@ -46,13 +57,13 @@ export function CheckoutBox({ slug, tierId, button, note, prefill, soldOut = fal
   return (
     <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div className="two">
-        <label className="field"><span>Vorname</span><input className="in" value={firstName} onChange={(e) => setFirstName(e.target.value)} autoComplete="given-name" required /></label>
-        <label className="field"><span>Nachname</span><input className="in" value={lastName} onChange={(e) => setLastName(e.target.value)} autoComplete="family-name" required /></label>
+        <label className="field"><span>{T.first}</span><input className="in" value={firstName} onChange={(e) => setFirstName(e.target.value)} autoComplete="given-name" required /></label>
+        <label className="field"><span>{T.last}</span><input className="in" value={lastName} onChange={(e) => setLastName(e.target.value)} autoComplete="family-name" required /></label>
       </div>
-      <label className="field"><span>Firmen-E-Mail</span><input className="in" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required /></label>
-      <label className="field"><span>Firma</span><input className="in" value={company} onChange={(e) => setCompany(e.target.value)} autoComplete="organization" required /></label>
-      <label className="terms"><input type="checkbox" checked={terms} onChange={(e) => setTerms(e.target.checked)} /> <span>Ich akzeptiere die <a href="/agb" target="_blank">AGB</a> und habe die <a href="/datenschutz" target="_blank">Datenschutzerklärung</a> gelesen.</span></label>
-      <button className="btn blue full" type="submit" disabled={busy}>{busy ? 'Weiter zu Stripe …' : button}</button>
+      <label className="field"><span>{T.workEmail}</span><input className="in" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required /></label>
+      <label className="field"><span>{T.company}</span><input className="in" value={company} onChange={(e) => setCompany(e.target.value)} autoComplete="organization" required /></label>
+      <label className="terms"><input type="checkbox" checked={terms} onChange={(e) => setTerms(e.target.checked)} /> <span>{T.terms(<a href={lang === 'de' ? '/agb' : `/${lang}/agb`} target="_blank">{T.agb}</a>, <a href={lang === 'de' ? '/datenschutz' : `/${lang}/datenschutz`} target="_blank">{T.privacy}</a>)}</span></label>
+      <button className="btn blue full" type="submit" disabled={busy}>{busy ? T.toStripe : button}</button>
       {error && <p className="err">{error}</p>}
       {note && <small>{note}</small>}
     </form>

@@ -7,6 +7,8 @@ import { LogoScrollbar } from '@/components/blocks/LogoScrollbar'
 import { getAvailability, nextQuarterLabel } from '@/lib/mystery-shopping/slots'
 import { ACADEMY_CSS } from './academy-assets'
 import { AcademyInit } from './AcademyInit'
+import { getLocale } from 'next-intl/server'
+import { ST, storyLang, quarterLabel, type StoryLang } from '@/lib/lp/story-i18n'
 
 /**
  * „Story“-Bausteine für Landing- und Checkout-Seiten im Stories-Designsystem
@@ -18,15 +20,17 @@ type C = Record<string, any>
 
 export interface StoryCtx {
   slots: { capacity: number; free: number; nextOpens: string } | null
+  lang?: StoryLang
   prefill?: { email?: string; firstName?: string; lead?: string }
 }
 
 export async function loadStoryCtx(prefill?: StoryCtx['prefill']): Promise<StoryCtx> {
+  const lang = storyLang(await getLocale().catch(() => 'de'))
   try {
     const a = await getAvailability()
-    return { slots: { capacity: a.capacity, free: a.free, nextOpens: nextQuarterLabel(a.quarter) }, prefill }
+    return { slots: { capacity: a.capacity, free: a.free, nextOpens: quarterLabel(nextQuarterLabel(a.quarter), lang) }, prefill, lang }
   } catch {
-    return { slots: null, prefill }
+    return { slots: null, prefill, lang }
   }
 }
 
@@ -39,12 +43,13 @@ export function Slots({ ctx, dark = false, quarterHint = true, style }: { ctx: S
   if (!ctx.slots) return null
   const { capacity, free, nextOpens } = ctx.slots
   const sold = capacity - free
+  const T = ST[ctx.lang ?? 'de']
   return (
     <div className={`slots${dark ? ' on-dark' : ''}`} style={style}>
       <div className="lbl">
         {free === 0
-          ? <><b>Ausgebucht</b> · nächster Durchgang ab {nextOpens}</>
-          : <><b>Nur noch <em>{free}</em> von {capacity} Sessions frei</b>{quarterHint ? ' · in diesem Quartal' : ''}</>}
+          ? <><b>{T.soldOut}</b> · {T.nextFrom} {nextOpens}</>
+          : <><b>{T.onlyLeft(free, capacity)}</b>{quarterHint ? T.thisQuarter : ''}</>}
       </div>
       <div className="dots">
         {Array.from({ length: capacity }, (_, i) => <i key={i} className={i < sold ? '' : i === sold ? 'free next' : 'free'} />)}
@@ -56,7 +61,7 @@ export function Slots({ ctx, dark = false, quarterHint = true, style }: { ctx: S
 export function PriceTag({ c, ctx }: { c: C; ctx: StoryCtx }) {
   if (!c.priceNew) return null
   const free = ctx.slots?.free
-  const note = String(c.priceNote ?? 'nur für die nächsten {n}').replace('{n}', String(free ?? ''))
+  const note = String(c.priceNote ?? ST[ctx.lang ?? 'de'].priceNote).replace('{n}', String(free ?? ''))
   if (free === 0) return null
   return (
     <div className="ptag">
