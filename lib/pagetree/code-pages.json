@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-07T14:27:22Z",
+ "generatedAt": "2026-11-07T14:44:25Z",
  "pages": [
   {
    "route": "/b2b-offers",
@@ -73,9 +73,19 @@
     "components/lp/story/story-css.ts"
    ],
    "lpBacked": true,
-   "version": 44,
-   "lastChange": "2026-11-06T19:29:38Z",
+   "version": 46,
+   "lastChange": "2026-11-07T14:42:00Z",
    "history": [
+    {
+     "sha": "aada57e",
+     "date": "2026-11-07T14:42:00Z",
+     "msg": "Story-Bausteine DE/EN/ES (Zähler, Formulare, Fehlermeldungen), Opt-in-Weiterleitung mit Sprache, Checkout übernimmt beka"
+    },
+    {
+     "sha": "fac39f1",
+     "date": "2026-11-07T14:34:44Z",
+     "msg": "Page-Tree im Admin (Version, letzte Änderung, Sprachen, Änderungsprotokoll); Lead-Scoring-Schicht (Besucher-ID, Ereignis"
+    },
     {
      "sha": "7fdec61",
      "date": "2026-11-06T19:29:38Z",
@@ -105,16 +115,6 @@
      "sha": "2b8dbae",
      "date": "2026-11-05T20:22:09Z",
      "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
-    },
-    {
-     "sha": "aea7758",
-     "date": "2026-11-05T20:00:42Z",
-     "msg": "Mystery Shopping: Plätze-Zähler je Quartal, eine Buchung pro Firma, Story-Bausteine im LP-System, Squeeze /mystery-shopp"
-    },
-    {
-     "sha": "118449e",
-     "date": "2026-10-17T22:23:04Z",
-     "msg": "Gesprächs-Check: Radar hell und seitenbreit, Verlaufsgrafik (Redeanteile, Etappen, Feedback-Stellen)"
     }
    ]
   },
@@ -136,9 +136,19 @@
     "components/lp/story/story-css.ts"
    ],
    "lpBacked": true,
-   "version": 25,
-   "lastChange": "2026-11-07T14:17:16Z",
+   "version": 27,
+   "lastChange": "2026-11-07T14:42:00Z",
    "history": [
+    {
+     "sha": "aada57e",
+     "date": "2026-11-07T14:42:00Z",
+     "msg": "Story-Bausteine DE/EN/ES (Zähler, Formulare, Fehlermeldungen), Opt-in-Weiterleitung mit Sprache, Checkout übernimmt beka"
+    },
+    {
+     "sha": "fac39f1",
+     "date": "2026-11-07T14:34:44Z",
+     "msg": "Page-Tree im Admin (Version, letzte Änderung, Sprachen, Änderungsprotokoll); Lead-Scoring-Schicht (Besucher-ID, Ereignis"
+    },
     {
      "sha": "b921a87",
      "date": "2026-11-07T14:17:16Z",
@@ -168,16 +178,6 @@
      "sha": "4957648",
      "date": "2026-11-05T20:25:21Z",
      "msg": "Story-Logoleiste nutzt das Startseiten-Modul (LogoScrollbar, Admin-Größen)"
-    },
-    {
-     "sha": "2b8dbae",
-     "date": "2026-11-05T20:22:09Z",
-     "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
-    },
-    {
-     "sha": "aea7758",
-     "date": "2026-11-05T20:00:42Z",
-     "msg": "Mystery Shopping: Plätze-Zähler je Quartal, eine Buchung pro Firma, Story-Bausteine im LP-System, Squeeze /mystery-shopp"
     }
    ]
   },
@@ -1233,12 +1233,18 @@
    ],
    "files": [
     "app/[locale]/(marketing)/schedule/[person]/[type]/page.tsx",
+    "components/analytics/visitor.ts",
     "components/schedule/BookingWidget.tsx"
    ],
    "lpBacked": false,
-   "version": 11,
-   "lastChange": "2026-07-31T14:14:08Z",
+   "version": 12,
+   "lastChange": "2026-11-07T14:34:44Z",
    "history": [
+    {
+     "sha": "fac39f1",
+     "date": "2026-11-07T14:34:44Z",
+     "msg": "Page-Tree im Admin (Version, letzte Änderung, Sprachen, Änderungsprotokoll); Lead-Scoring-Schicht (Besucher-ID, Ereignis"
+    },
     {
      "sha": "a683ee0",
      "date": "2026-07-31T14:14:08Z",
@@ -1273,11 +1279,6 @@
      "sha": "e3c2d52",
      "date": "2026-07-03T23:55:17Z",
      "msg": "Buchungsseiten i18n (DE/EN/ES) + Besucher-Zeitzone (Auto-Detect, Anzeige über Kalender, Auswahl 24 Städte), lokalisierte"
-    },
-    {
-     "sha": "fee1349",
-     "date": "2026-07-03T23:32:53Z",
-     "msg": "Buchungslinks auf kennenlernen-30 (Kontakt/Book-a-call/Angebote), Editor: Vorschau+Live-Seite-Pillen & Slug-Warnhinweis,"
     }
    ]
   },
@@ -2002,9 +2003,19 @@
     "components/lp/story/story-css.ts"
    ],
    "lpBacked": true,
-   "version": 30,
-   "lastChange": "2026-11-06T19:29:38Z",
+   "version": 32,
+   "lastChange": "2026-11-07T14:42:00Z",
    "history": [
+    {
+     "sha": "aada57e",
+     "date": "2026-11-07T14:42:00Z",
+     "msg": "Story-Bausteine DE/EN/ES (Zähler, Formulare, Fehlermeldungen), Opt-in-Weiterleitung mit Sprache, Checkout übernimmt beka"
+    },
+    {
+     "sha": "fac39f1",
+     "date": "2026-11-07T14:34:44Z",
+     "msg": "Page-Tree im Admin (Version, letzte Änderung, Sprachen, Änderungsprotokoll); Lead-Scoring-Schicht (Besucher-ID, Ereignis"
+    },
     {
      "sha": "7fdec61",
      "date": "2026-11-06T19:29:38Z",
@@ -2034,16 +2045,6 @@
      "sha": "2b8dbae",
      "date": "2026-11-05T20:22:09Z",
      "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
-    },
-    {
-     "sha": "e59b7c5",
-     "date": "2026-11-05T20:04:44Z",
-     "msg": "Startseite: Werbebanner Mystery Shopping (Promo + Navigation), Callout-Bar „Nächster Academy-Flight 20. November“"
-    },
-    {
-     "sha": "aea7758",
-     "date": "2026-11-05T20:00:42Z",
-     "msg": "Mystery Shopping: Plätze-Zähler je Quartal, eine Buchung pro Firma, Story-Bausteine im LP-System, Squeeze /mystery-shopp"
     }
    ]
   },
@@ -2189,9 +2190,19 @@
     "components/lp/story/story-css.ts"
    ],
    "lpBacked": true,
-   "version": 15,
-   "lastChange": "2026-11-06T19:29:38Z",
+   "version": 17,
+   "lastChange": "2026-11-07T14:42:00Z",
    "history": [
+    {
+     "sha": "aada57e",
+     "date": "2026-11-07T14:42:00Z",
+     "msg": "Story-Bausteine DE/EN/ES (Zähler, Formulare, Fehlermeldungen), Opt-in-Weiterleitung mit Sprache, Checkout übernimmt beka"
+    },
+    {
+     "sha": "fac39f1",
+     "date": "2026-11-07T14:34:44Z",
+     "msg": "Page-Tree im Admin (Version, letzte Änderung, Sprachen, Änderungsprotokoll); Lead-Scoring-Schicht (Besucher-ID, Ereignis"
+    },
     {
      "sha": "7fdec61",
      "date": "2026-11-06T19:29:38Z",
@@ -2221,16 +2232,6 @@
      "sha": "2b8dbae",
      "date": "2026-11-05T20:22:09Z",
      "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
-    },
-    {
-     "sha": "aea7758",
-     "date": "2026-11-05T20:00:42Z",
-     "msg": "Mystery Shopping: Plätze-Zähler je Quartal, eine Buchung pro Firma, Story-Bausteine im LP-System, Squeeze /mystery-shopp"
-    },
-    {
-     "sha": "cd84f7a",
-     "date": "2026-10-17T20:52:50Z",
-     "msg": "Backend: Vorschau/Live-Knöpfe je Sprache; Sprachumschaltung behält die Vorschau; Sprachwahl auch auf /lp-Seiten"
     }
    ]
   },
