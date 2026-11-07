@@ -69,17 +69,22 @@ function useDwell(pathname: string) {
       const t = (h?.textContent ?? '').replace(/\s+/g, ' ').trim()
       return t ? t.slice(0, 90) : null
     }
-    const vis = new Map<Element, number>()
-    const io = new IntersectionObserver((es) => {
-      for (const e of es) vis.set(e.target, e.intersectionRatio * (e.boundingClientRect.height || 1))
+    // Jede Sekunde: welche Sektion nimmt gerade die meiste Fläche im Bildschirm ein?
+    const pick = () => {
+      const vh = window.innerHeight
       let best: Element | null = null, max = 0
-      for (const [el, v] of vis) if (v > max) { max = v; best = el }
+      document.querySelectorAll('main section, main [data-section], .acd section, .sb .wrap.sec').forEach((el) => {
+        const r = el.getBoundingClientRect()
+        const v = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0))
+        if (v > max && label(el)) { max = v; best = el }
+      })
       current.current = best ? label(best) : null
-    }, { threshold: [0, 0.25, 0.5, 0.75, 1] })
-    const attach = () => document.querySelectorAll('main section, main [data-section], .acd section, .sb .wrap.sec').forEach((el) => { if (label(el)) io.observe(el) })
-    attach()
+    }
+    pick()
     const tick = setInterval(() => {
-      if (document.visibilityState !== 'visible' || !current.current) return
+      if (document.visibilityState !== 'visible') return
+      pick()
+      if (!current.current) return
       dwell.current.set(current.current, (dwell.current.get(current.current) ?? 0) + 1)
     }, 1000)
     const flush = () => {
@@ -90,7 +95,7 @@ function useDwell(pathname: string) {
     const onHide = () => { if (document.visibilityState === 'hidden') flush() }
     document.addEventListener('visibilitychange', onHide)
     window.addEventListener('pagehide', flush)
-    return () => { flush(); clearInterval(tick); io.disconnect(); document.removeEventListener('visibilitychange', onHide); window.removeEventListener('pagehide', flush) }
+    return () => { flush(); clearInterval(tick); document.removeEventListener('visibilitychange', onHide); window.removeEventListener('pagehide', flush) }
   }, [pathname])
   return current
 }
