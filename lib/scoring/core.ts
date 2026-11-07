@@ -160,7 +160,7 @@ export async function knownFor(vid: string | null): Promise<{ email?: string; fi
   const q = rows(await db.execute(sql`SELECT kind, payload FROM visitor_events WHERE vid = ${vid} AND kind IN ('quiz_complete','quiz_text') ORDER BY created_at DESC LIMIT 4`))
   const comp = q.find((x) => x.kind === 'quiz_complete')?.payload as Record<string, unknown> | undefined
   const txt = (q.find((x) => x.kind === 'quiz_text')?.payload as Record<string, unknown> | undefined)?.text as string | undefined
-  const ctx = [comp ? `Academy-Quiz: Phase ${comp.stage}, Empfehlung ${comp.rec}` : '', txt ? `Größte Herausforderung: ${txt}` : ''].filter(Boolean).join('\n')
+  const ctx = [comp ? `Academy-Quiz: ${comp.stageLabel ?? comp.stage} → ${comp.recLabel ?? comp.rec}` : '', txt ?? ''].filter(Boolean).join('\n')
   if (!id && !ctx) return null
   return { email: (id?.email as string) || undefined, firstName: (id?.first_name as string) || undefined, context: ctx || undefined }
 }

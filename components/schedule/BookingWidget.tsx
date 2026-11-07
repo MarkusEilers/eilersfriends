@@ -57,7 +57,7 @@ export function BookingWidget({ person, type, personName, durationMin, infoText,
     const ctx = readContext()
     if (ctx.firstName) setName((v) => v || ctx.firstName || '')
     if (ctx.email) setEmail((v) => v || ctx.email || '')
-    if (ctx.note && !pre) setNote((v) => (v ? (v.includes(ctx.note!) ? v : `${v}\n${ctx.note}`) : ctx.note!).slice(0, 2000))
+    if (ctx.note && !pre) setNote((v) => (v ? v : ctx.note!).slice(0, 2000))  // Server kennt den Kontext schon → nicht doppeln
   }, [])
   useEffect(() => {
     let alive = true
