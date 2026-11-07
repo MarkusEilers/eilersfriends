@@ -42,7 +42,7 @@ export function StructuredData() {
           'https://linkedin.com/in/markuseilers',
           'https://linkedin.com/in/aljonaeilers',
           'https://youtube.com/@markuseilers',
-          'https://youtube.com/@aljonaeilers',
+          'https://www.youtube.com/@liquid.leadership',
           'https://instagram.com/aljonaeilers',
         ],
       },

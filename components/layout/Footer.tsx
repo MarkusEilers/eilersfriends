@@ -123,7 +123,7 @@ export function Footer() {
             <div className="flex gap-2">
               <SocialIcon href="https://linkedin.com/in/aljonaeilers" icon={Linkedin} label="Aljona auf LinkedIn" />
               <SocialIcon href="https://instagram.com/aljonaeilers" icon={Instagram} label="Aljona auf Instagram" />
-              <SocialIcon href="https://youtube.com/@aljonaeilers" icon={Youtube} label="Aljona auf YouTube" />
+              <SocialIcon href="https://www.youtube.com/@liquid.leadership" icon={Youtube} label="Aljona auf YouTube" />
             </div>
           </div>
 
