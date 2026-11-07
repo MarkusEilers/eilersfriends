@@ -67,7 +67,7 @@ function useDwell(pathname: string) {
     const label = (el: Element) => {
       const h = el.querySelector('h1,h2,h3')
       const t = (h?.textContent ?? '').replace(/\s+/g, ' ').trim()
-      return t ? t.slice(0, 90) : null
+      return t ? t.replace(/[.:!]+$/, '').slice(0, 90) : null
     }
     // Jede Sekunde: welche Sektion nimmt gerade die meiste Fläche im Bildschirm ein?
     const pick = () => {
