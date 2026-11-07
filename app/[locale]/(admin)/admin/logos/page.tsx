@@ -1,4 +1,5 @@
 import { getAllTrustLogos } from '@/lib/db/queries/trust-logos'
+import { LOGO_CATEGORIES } from '@/lib/logos/categories'
 import { saveTrustLogoAction, deleteTrustLogoAction } from '@/lib/actions/trust-logos'
 import { LogoSearchPanel } from '@/components/admin/LogoSearchPanel'
 import { LogoUploadDropzone } from '@/components/admin/LogoUploadDropzone'
@@ -118,6 +119,17 @@ export default async function AdminLogosPage() {
                     >
                       <Save size={12} />
                     </button>
+                  </div>
+                  <div className="col-span-12 flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1">
+                    <input type="hidden" name="categoriesSent" value="1" />
+                    <span className="text-[10px] uppercase tracking-widest text-gray-400">Zeigen auf</span>
+                    {LOGO_CATEGORIES.map((c) => (
+                      <label key={c.key} className="flex items-center gap-1.5 text-[11px] font-semibold text-gray-700 cursor-pointer">
+                        <input type="checkbox" name="categories" value={c.key} defaultChecked={(logo.categories ?? []).includes(c.key)} className="h-3.5 w-3.5 rounded border-gray-300" style={{ accentColor: '#1A5FD4' }} />
+                        {c.label}
+                      </label>
+                    ))}
+                    <span className="text-[10px] text-gray-400">· Startseite zeigt alle sichtbaren Logos</span>
                   </div>
                 </form>
                 <div className="mt-3">

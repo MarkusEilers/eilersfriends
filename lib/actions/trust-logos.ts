@@ -32,6 +32,8 @@ export async function saveTrustLogoAction(formData: FormData) {
   const displayScale = Math.max(50, Math.min(150, parseInt(displayScaleRaw, 10) || 100))
   const order = parseInt(String(formData.get('order') || '0'), 10) || 0
   const isVisible = formData.get('isVisible') === 'on' || formData.get('isVisible') === 'true'
+  // Kategorien nur übernehmen, wenn das Formular sie mitschickt (Marker-Feld), sonst bleiben sie unverändert
+  const categories = formData.has('categoriesSent') ? formData.getAll('categories').map(String).filter(Boolean) : undefined
   if (!name) throw new Error('name required')
   const finalSlug = slug || slugify(name)
 
@@ -65,6 +67,7 @@ export async function saveTrustLogoAction(formData: FormData) {
     alt: name,
     order,
     isVisible,
+    categories,
   })
   revalidatePath('/')
   revalidatePath('/admin/logos')

@@ -115,7 +115,8 @@ export function StoryHeroOptin({ c, ctx }: { c: C; ctx: StoryCtx }) {
 
 /** Logoleiste: dasselbe Modul wie auf der Startseite (Logos, Größen und Reihenfolge aus /admin/logos). */
 export async function StoryLogoMarquee({ c }: { c: C }) {
-  const all = await getVisibleTrustLogos().catch(() => [])
+  // Kategorie aus dem Inhalt (z. B. „academy“, „mystery“) — nur passende Logos; ohne Kategorie alle sichtbaren
+  const all = await getVisibleTrustLogos(c.category ?? null).catch(() => [])
   const names: string[] | undefined = c.names
   const logos = all.filter((l) => !names || names.includes(l.name))
   if (!logos.length) return null

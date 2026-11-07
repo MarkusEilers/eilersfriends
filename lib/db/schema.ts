@@ -493,6 +493,7 @@ export const trustLogos = pgTable('trust_logos', {
   alt: text('alt'),  // accessibility text
   order: integer('order').default(0).notNull(),
   isVisible: boolean('is_visible').default(true).notNull(),
+  categories: text('categories').array().notNull().default([]),  // Wo das Logo erscheint (lib/logos/categories.ts)
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })

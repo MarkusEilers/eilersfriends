@@ -18,6 +18,7 @@ export interface TrustLogo {
   alt: string | null
   order: number
   isVisible: boolean
+  categories: string[]
 }
 
 let tableEnsured = false
@@ -43,6 +44,9 @@ async function ensureTable() {
     `)
     await db.execute(sql`
       ALTER TABLE trust_logos ADD COLUMN IF NOT EXISTS display_scale integer NOT NULL DEFAULT 100
+    `)
+    await db.execute(sql`
+      ALTER TABLE trust_logos ADD COLUMN IF NOT EXISTS categories text[] NOT NULL DEFAULT '{}'
     `)
     tableEnsured = true
   } catch (err) {
@@ -85,13 +89,20 @@ export async function getAllTrustLogos(): Promise<TrustLogo[]> {
       alt: l.name,
       order: l.order,
       isVisible: true,
+      categories: [],
     }))
   }
 }
 
-export async function getVisibleTrustLogos(): Promise<TrustLogo[]> {
-  const all = await getAllTrustLogos()
-  return all.filter((l) => l.isVisible)
+/**
+ * Sichtbare Logos. Mit Kategorie(n): nur Logos, die mindestens einer davon zugeordnet sind
+ * (z. B. Academy-Seite → „academy“). Ohne Kategorie: alle sichtbaren (Startseite).
+ */
+export async function getVisibleTrustLogos(category?: string | string[] | null): Promise<TrustLogo[]> {
+  const all = (await getAllTrustLogos()).filter((l) => l.isVisible)
+  const want = (Array.isArray(category) ? category : category ? [category] : []).filter(Boolean)
+  if (!want.length) return all
+  return all.filter((l) => (l.categories ?? []).some((c) => want.includes(c)))
 }
 
 export async function upsertTrustLogo(input: {
@@ -104,6 +115,7 @@ export async function upsertTrustLogo(input: {
   alt?: string | null
   order?: number
   isVisible?: boolean
+  categories?: string[]
 }): Promise<void> {
   await ensureTable()
   await db.insert(trustLogos)
@@ -117,6 +129,7 @@ export async function upsertTrustLogo(input: {
       alt: input.alt ?? input.name,
       order: input.order ?? 0,
       isVisible: input.isVisible ?? true,
+      categories: input.categories ?? [],
     })
     .onConflictDoUpdate({
       target: trustLogos.slug,
@@ -129,6 +142,7 @@ export async function upsertTrustLogo(input: {
         alt: input.alt ?? input.name,
         order: input.order ?? 0,
         isVisible: input.isVisible ?? true,
+        ...(input.categories ? { categories: input.categories } : {}),
         updatedAt: new Date(),
       },
     })
