@@ -115,9 +115,9 @@ const SLUG_VISUALS: Record<
 const FEATURED_ORDER = ['instant-influence', 'b2b-angebote']
 
 export const metadata: Metadata = {
-  title: 'Frameworks — Eilers+Friends',
+  title: 'Kostenlose Frameworks für B2B-Vertrieb & Führung · Eilers+Friends',
   description:
-    'Praxiserprobte Bauplaene für B2B-Vertrieb, Leadership und Wachstum. Jeder kostenlos als PDF — direkt anwendbar.',
+    'Praxiserprobte Baupläne für B2B-Vertrieb, Angebote und Führung: Beef Radar, Instant Influence, B2B-Angebote und mehr. Jedes Framework kostenlos — direkt anwendbar.',
 }
 
 interface PageProps {

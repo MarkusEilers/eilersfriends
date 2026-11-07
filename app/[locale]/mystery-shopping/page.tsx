@@ -8,11 +8,17 @@ import { CookieBanner } from '@/components/layout/CookieBanner'
 
 export const dynamic = 'force-dynamic'
 
+const META = {
+  en: { title: 'Mystery Shopping: what league is your sales team playing in?', description: 'We hold a first call with your team as an imaginary customer. 14-page report and a training session on the skill that matters most.' },
+  es: { title: 'Mystery Shopping: ¿en qué liga juega tu equipo de ventas?', description: 'Hacemos una primera llamada con tu equipo como cliente imaginario. Informe de 14 páginas y una sesión de formación sobre la habilidad clave.' },
+}
+
 /** Squeeze-Seite Mystery Shopping — Inhalte aus dem Landingpage-System (Slug „mystery-shopping“). */
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const lp = await loadLpSections('mystery-shopping', locale).catch(() => null)
-  return { title: lp?.title ?? 'Mystery Shopping · Eilers+Friends', description: lp?.description ?? undefined }
+  const m = locale === 'en' || locale === 'es' ? META[locale] : null
+  return { title: m?.title ?? lp?.title ?? 'Mystery Shopping · Eilers+Friends', description: m?.description ?? lp?.description ?? undefined }
 }
 
 export default async function MysteryShoppingSqueeze({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ preview?: string }> }) {

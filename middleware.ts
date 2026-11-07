@@ -5,8 +5,8 @@ import { routing } from '@/lib/i18n/routing'
 
 // Domain → internal path rewrites
 const DOMAIN_REWRITES: Record<string, string> = {
-  'salesmade.com': '/academy',
-  'www.salesmade.com': '/academy',
+  'salesmade.com': '/salesmade',
+  'www.salesmade.com': '/salesmade',
   'aljonaeilers.com': '/aljona',
   'www.aljonaeilers.com': '/aljona',
   'markuseilers.com': '/markus',
@@ -45,7 +45,12 @@ export default async function middleware(request: NextRequest) {
   }
 
   // Standard next-intl middleware for eilersfriends.com
-  return intlMiddleware(request)
+  const res = intlMiddleware(request)
+  // Kanonische Adresse als HTTP-Header (www, ohne Query) — eine Quelle für alle Seiten
+  if (res.status < 300 && (hostname === 'www.eilersfriends.com' || hostname === 'eilersfriends.com')) {
+    res.headers.append('Link', `<https://www.eilersfriends.com${pathname === '/' ? '' : pathname}>; rel="canonical"`)
+  }
+  return res
 }
 
 export const config = {

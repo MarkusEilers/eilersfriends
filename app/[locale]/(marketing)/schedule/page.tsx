@@ -7,7 +7,7 @@ import { Users, ArrowRight } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
-export const metadata: Metadata = { title: 'Termin buchen — Eilers+Friends' }
+export const metadata: Metadata = { title: 'Termin buchen · Eilers+Friends', description: 'Kostenloses Strategiegespräch, Kennenlernen zur SalesMade Academy oder Sparring mit Markus Eilers und Team – direkt online buchen.' }
 
 function initials(name: string) { return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase() }
 

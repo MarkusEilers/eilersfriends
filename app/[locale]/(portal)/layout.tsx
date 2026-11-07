@@ -1,7 +1,11 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { PortalSidebar } from '@/components/portal/PortalSidebar'
 import { ViewAsBar } from '@/components/portal/ViewAsBar'
+
+/** Kundenbereich: nicht in die Suche. */
+export const metadata: Metadata = { robots: { index: false, follow: false } }
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()

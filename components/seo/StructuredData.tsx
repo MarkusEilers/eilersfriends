@@ -6,17 +6,17 @@
  *    als Sitelinks unter dem Hauptergebnis rendern kann.
  * Server-Komponente, rendert ein <script type="application/ld+json">.
  */
-const BASE = process.env.NEXT_PUBLIC_APP_URL ?? 'https://eilersfriends.com'
+import { SITE as BASE } from '@/lib/seo/site'
 
 const NAV: { name: string; path: string }[] = [
-  { name: 'SalesMade', path: '/academy' },
-  { name: 'Frameworks', path: '/frameworks' },
-  { name: 'Academy', path: '/academy' },
-  { name: 'Blog', path: '/blog' },
+  { name: 'SalesMade Academy', path: '/academy' },
+  { name: 'Kostenlose Frameworks', path: '/frameworks' },
+  { name: 'Mystery Shopping', path: '/mystery-shopping' },
+  { name: 'Gesprächs-Check', path: '/gespraechs-check' },
   { name: 'Markus Eilers', path: '/markus' },
   { name: 'Aljona Eilers', path: '/aljona' },
+  { name: 'Winning Team Stories', path: '/blog' },
   { name: 'Kontakt', path: '/kontakt' },
-  { name: 'Termin buchen', path: '/schedule' },
 ]
 
 export function StructuredData() {
@@ -37,7 +37,7 @@ export function StructuredData() {
         },
         image: `${BASE}/ef-logo.png`,
         description:
-          'Systematisches Wachstum für Gründer und Vertriebsteams — Revenue Systems & Leadership Training für planbares, reproduzierbares Wachstum.',
+          'Sales- und Leadership-Training für B2B-Teams: die SalesMade Academy, kostenlose Vertriebs-Frameworks, Mystery Shopping für Vertriebsteams und Leadership-Coaching mit Aljona Eilers.',
         sameAs: [
           'https://linkedin.com/in/markuseilers',
           'https://linkedin.com/in/aljonaeilers',
