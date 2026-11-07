@@ -2300,21 +2300,21 @@
       "sections": {
         "legalNotice": {
           "title": "Angaben gemäß § 5 TMG",
-          "address": "Eilers+Friends, uphill ventures GmbH<br>Blütenäcker 55/2<br>71332 Waiblingen<br>Deutschland",
+          "address": "Eilers+Friends, uphill ventures GmbH<br></br>Blütenäcker 55/2<br></br>71332 Waiblingen<br></br>Deutschland",
           "representedBy": "Vertreten durch die Geschäftsführer:innen Markus Eilers und Aljona Eilers.",
           "brands": "Eilers+Friends, SalesMade & LeaderShe sind Marken der uphill ventures GmbH."
         },
         "contact": {
           "title": "Kontakt",
-          "content": "E-Mail: <a1>team@eilersfriends.com</a1><br>Website: <a2>eilersfriends.com</a2>"
+          "content": "E-Mail: <a1>team@eilersfriends.com</a1><br></br>Website: <a2>eilersfriends.com</a2>"
         },
         "vat": {
           "title": "Umsatzsteuer-ID",
-          "content": "Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br>Wird nach Eintragung ergänzt."
+          "content": "Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br></br>Wird nach Eintragung ergänzt."
         },
         "responsible": {
           "title": "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV",
-          "content": "Markus Eilers<br>Blütenäcker 55/2<br>71332 Waiblingen"
+          "content": "Markus Eilers<br></br>Blütenäcker 55/2<br></br>71332 Waiblingen"
         },
         "dispute": {
           "title": "Streitschlichtung",
@@ -2413,7 +2413,7 @@
         },
         {
           "title": "2. Verantwortliche Stelle",
-          "text": "Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:<br/><br/>Eilers+Friends, uphill ventures GmbH<br/>Blütenäcker 55/2<br/>71332 Waiblingen<br/>Deutschland<br/>E-Mail: <a>team@eilersfriends.com</a>"
+          "text": "Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:<br></br><br></br>Eilers+Friends, uphill ventures GmbH<br></br>Blütenäcker 55/2<br></br>71332 Waiblingen<br></br>Deutschland<br></br>E-Mail: <a>team@eilersfriends.com</a>"
         },
         {
           "title": "3. Datenerfassung auf dieser Website",

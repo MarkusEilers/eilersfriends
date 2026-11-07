@@ -5,7 +5,8 @@ import Image from 'next/image'
 import { Link } from '@/lib/i18n/navigation'
 import { Mail, Calendar, Loader2, CheckCircle2, ArrowRight } from 'lucide-react'
 import type { Author } from '@/lib/blog/authors'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
+import { localizeAuthor } from '@/lib/blog/i18n-data'
 
 /**
  * Die Box am Fuss.
@@ -16,8 +17,9 @@ import { useTranslations } from 'next-intl'
  * verliert alle, die noch nicht so weit sind; wer nur den leichten anbietet,
  * sammelt Adressen und fuehrt keine Gespraeche.
  */
-export function BlogCta({ author }: { author: Author }) {
+export function BlogCta({ author: authorRaw }: { author: Author }) {
   const t = useTranslations('blogUi.cta')
+  const author = localizeAuthor(authorRaw, useLocale())
   const [email, setEmail] = useState('')
   const [state, setState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
 

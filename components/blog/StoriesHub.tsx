@@ -2,10 +2,11 @@ import Image from 'next/image'
 import { Link } from '@/lib/i18n/navigation'
 import { ChevronDown } from 'lucide-react'
 import type { Post } from '@/lib/blog/posts'
-import { FORMATS, FORMAT_LABEL } from '@/lib/blog/formats'
+import { formatTabs, formatLabel, localizeAuthor } from '@/lib/blog/i18n-data'
 import { authorOf, type Author } from '@/lib/blog/authors'
 import { EmailCapture } from './EmailCapture'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, getLocale } from 'next-intl/server'
+import { useLocale } from 'next-intl'
 
 /**
  * Der Hub „Winning Team Stories" — nach der Designvorlage.
@@ -55,12 +56,13 @@ export async function StoriesHub({ items, filter, tags, preview, hasMore }: {
   items: HubItem[]; filter: HubFilter; tags: string[]; preview?: boolean; hasMore?: boolean
 }) {
   const t = await getTranslations('blogUi.hub')
+  const locale = await getLocale()
   const filtered = !!(filter.format || filter.d || filter.thema || filter.coach)
   const [lead, ...rest] = items
   const side = filtered ? [] : rest.slice(0, 3)
   const grid = filtered ? items : rest.slice(3)
   const grid1 = grid.slice(0, 4), grid2 = grid.slice(4)
-  const sub = [filter.format ? FORMAT_LABEL[filter.format] : t('tabs.allFormats'), filter.d === 'revenue' ? t('discipline.revenue') : filter.d === 'leadership' ? t('discipline.leadership') : t('discipline.both')].join(' · ')
+  const sub = [filter.format ? formatLabel(filter.format, locale) : t('tabs.allFormats'), filter.d === 'revenue' ? t('discipline.revenue') : filter.d === 'leadership' ? t('discipline.leadership') : t('discipline.both')].join(' · ')
 
   return (
     <div className="min-h-screen bg-white">
@@ -79,7 +81,7 @@ export async function StoriesHub({ items, filter, tags, preview, hasMore }: {
           <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
               <Tab href={hrefWith(filter, { format: null })} active={!filter.format}>{t('tabs.all')}</Tab>
-              {FORMATS.filter((f) => !['artikel', 'video'].includes(f.key)).map((f) => (
+              {formatTabs(locale).filter((f) => !['artikel', 'video'].includes(f.key)).map((f) => (
                 <Tab key={f.key} href={hrefWith(filter, { format: f.key })} active={filter.format === f.key}>{f.label}</Tab>
               ))}
             </div>
@@ -219,11 +221,12 @@ function Dropdown({ label, value, options }: { label: string; value: string | nu
 }
 
 function Meta({ it, long, t }: { it: HubItem; long?: boolean; t: any }) {
+  const locale = useLocale()
   const a = it.author
   return (
     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-600">
-      <span className="font-bold" style={{ color: a.accent }}>{FORMAT_LABEL[it.format] ?? t('meta.article')}{it.agent ? t('meta.agent') : ''}</span>
-      <span>{long && a.slug !== 'team' ? a.tagline : discLabel(a, t)}{it.minutes ? t('meta.minutes', { count: it.minutes }) : ''}</span>
+      <span className="font-bold" style={{ color: a.accent }}>{formatLabel(it.format, locale) ?? t('meta.article')}{it.agent ? t('meta.agent') : ''}</span>
+      <span>{long && a.slug !== 'team' ? localizeAuthor(a, locale).tagline : discLabel(a, t)}{it.minutes ? t('meta.minutes', { count: it.minutes }) : ''}</span>
       <span className="inline-flex items-center gap-1.5">
         {a.avatar ? (
           <span className="relative inline-block h-5 w-5 overflow-hidden rounded-full"><Image src={a.avatar} alt="" fill sizes="20px" className="object-cover" /></span>

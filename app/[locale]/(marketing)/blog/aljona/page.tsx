@@ -3,7 +3,8 @@ import { auth } from '@/lib/auth'
 import { BlogHome } from '@/components/blog/BlogHome'
 import { listPosts, countsByAuthor } from '@/lib/blog/posts'
 import { AUTHORS } from '@/lib/blog/authors'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, getLocale } from 'next-intl/server'
+import { localizeAuthor } from '@/lib/blog/i18n-data'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('blogUi.authorAljona')
   return {
     title: t('meta.title', { name: author.name }),
-    description: t('meta.description', { bio: author.bio }),
+    description: t('meta.description', { bio: localizeAuthor(author, await getLocale()).bio }),
   }
 }
 

@@ -4,7 +4,8 @@ import { AuthorSwitch } from './AuthorSwitch'
 import { BlogCta } from './BlogCta'
 import type { Post } from '@/lib/blog/posts'
 import { AUTHORS, type Author } from '@/lib/blog/authors'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
+import { localizeAuthor } from '@/lib/blog/i18n-data'
 
 /**
  * Eine Uebersicht, zwei Verwendungen: der Blog als Ganzes und die Seite eines
@@ -13,9 +14,11 @@ import { useTranslations } from 'next-intl'
  * vergisst.
  */
 export function BlogHome({
-  posts, author, counts,
+  posts, author: authorRaw, counts,
 }: { posts: Post[]; author?: Author | null; counts?: Record<string, number> }) {
   const t = useTranslations('blogUi.home')
+  const locale = useLocale()
+  const author = authorRaw ? localizeAuthor(authorRaw, locale) : authorRaw
   const deep = author?.deep ?? '#0F1E3A'
   const onDeep = author?.onDeep ?? '#5DDBF5'
   const accent = author?.accent
