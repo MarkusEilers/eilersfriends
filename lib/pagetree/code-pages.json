@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-07T20:38:53Z",
+ "generatedAt": "2026-11-07T20:48:53Z",
  "pages": [
   {
    "route": "/b2b-offers",
@@ -293,9 +293,14 @@
     "components/blog/ShareBar.tsx"
    ],
    "lpBacked": false,
-   "version": 9,
-   "lastChange": "2026-11-07T20:36:58Z",
+   "version": 10,
+   "lastChange": "2026-11-07T20:43:51Z",
    "history": [
+    {
+     "sha": "26b01f7",
+     "date": "2026-11-07T20:43:51Z",
+     "msg": "Übersetzungen: Zeilenumbrüche im Impressum korrekt; Blog-Formate und Autoren-Texte in EN/ES"
+    },
     {
      "sha": "1bbbe99",
      "date": "2026-11-07T20:36:58Z",
@@ -330,11 +335,6 @@
      "sha": "087d966",
      "date": "2026-09-03T21:56:20Z",
      "msg": "feat(blog): Redaktionsbereich und Kommentare — Liste und Editor unter /admin/blog mit Upload (Markdown, Word), Bildgener"
-    },
-    {
-     "sha": "f9b8ba0",
-     "date": "2026-09-03T21:18:10Z",
-     "msg": "feat(blog): Autoren mit eigener Farbwelt — Bento-Uebersicht fuer alle und je Autor, journalistische Einzelseite mit Avat"
     }
    ]
   },
@@ -358,9 +358,14 @@
     "components/blog/BlogHome.tsx"
    ],
    "lpBacked": false,
-   "version": 6,
-   "lastChange": "2026-11-07T20:36:58Z",
+   "version": 7,
+   "lastChange": "2026-11-07T20:43:51Z",
    "history": [
+    {
+     "sha": "26b01f7",
+     "date": "2026-11-07T20:43:51Z",
+     "msg": "Übersetzungen: Zeilenumbrüche im Impressum korrekt; Blog-Formate und Autoren-Texte in EN/ES"
+    },
     {
      "sha": "1bbbe99",
      "date": "2026-11-07T20:36:58Z",
@@ -413,9 +418,14 @@
     "components/blog/BlogHome.tsx"
    ],
    "lpBacked": false,
-   "version": 6,
-   "lastChange": "2026-11-07T20:36:58Z",
+   "version": 7,
+   "lastChange": "2026-11-07T20:43:51Z",
    "history": [
+    {
+     "sha": "26b01f7",
+     "date": "2026-11-07T20:43:51Z",
+     "msg": "Übersetzungen: Zeilenumbrüche im Impressum korrekt; Blog-Formate und Autoren-Texte in EN/ES"
+    },
     {
      "sha": "1bbbe99",
      "date": "2026-11-07T20:36:58Z",
@@ -485,9 +495,14 @@
     "components/blog/StoriesHub.tsx"
    ],
    "lpBacked": false,
-   "version": 8,
-   "lastChange": "2026-11-07T20:36:58Z",
+   "version": 9,
+   "lastChange": "2026-11-07T20:43:51Z",
    "history": [
+    {
+     "sha": "26b01f7",
+     "date": "2026-11-07T20:43:51Z",
+     "msg": "Übersetzungen: Zeilenumbrüche im Impressum korrekt; Blog-Formate und Autoren-Texte in EN/ES"
+    },
     {
      "sha": "1bbbe99",
      "date": "2026-11-07T20:36:58Z",
@@ -522,11 +537,6 @@
      "sha": "f9b8ba0",
      "date": "2026-09-03T21:18:10Z",
      "msg": "feat(blog): Autoren mit eigener Farbwelt — Bento-Uebersicht fuer alle und je Autor, journalistische Einzelseite mit Avat"
-    },
-    {
-     "sha": "f8823bf",
-     "date": "2026-05-24T10:00:17Z",
-     "msg": "feat(blog): /blog Stub-Bereich + DB-Schema + Navbar-Link gefixt"
     }
    ]
   },
