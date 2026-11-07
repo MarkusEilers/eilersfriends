@@ -2,6 +2,8 @@ import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { publicPath } from '@/lib/lp/public-path'
 import { pageLogs, type LogEntry } from './log'
+import { ensureLpI18n } from '@/lib/lp/i18n'
+import { translationModes, defaultMode, type TranslateMode } from './settings'
 import manifest from './code-pages.json'
 import de from '@/lib/i18n/messages/de.json'
 import en from '@/lib/i18n/messages/en.json'
@@ -16,7 +18,7 @@ import ru from '@/lib/i18n/messages/ru.json'
 
 export const LANGS = ['de', 'en', 'es', 'ru'] as const
 export type Lang = (typeof LANGS)[number]
-export type LangState = { state: 'full' | 'partial' | 'missing' | 'code'; pct?: number }
+export type LangState = { state: 'full' | 'partial' | 'missing' | 'code' | 'stale'; pct?: number; stale?: number; missing?: number }
 
 export interface PageNode {
   path: string
@@ -28,6 +30,8 @@ export interface PageNode {
   lastChange: string | null
   langs: Record<Lang, LangState>
   editHref?: string
+  pageId?: string
+  mode?: TranslateMode
   viewHref?: string
   history: { version: number | string; date: string; who?: string | null; what: string }[]
   note?: string
@@ -75,14 +79,18 @@ export async function buildPageTree(): Promise<{ nodes: PageNode[]; generatedAt:
   const logs = await pageLogs().catch(() => new Map<string, LogEntry[]>())
   const nodes: PageNode[] = []
 
-  // Landingpages
+  // Landingpages — Übersetzung gilt je Sektion als aktuell, wenn sie nach der letzten Änderung des Grundtexts entstand
+  await ensureLpI18n()
+  const modes = await translationModes().catch(() => new Map<string, TranslateMode>())
+  const has = (l: string) => sql.raw(`(s.content_i18n ? '${l}' AND s.content_i18n->'${l}' <> '{}'::jsonb)`)
+  const fresh = (l: string) => sql.raw(`(COALESCE((s.i18n_changed_at->>'${l}')::timestamptz, 'epoch'::timestamptz) + interval '1 second' >= s.content_changed_at)`)
   const lp = rows(await db.execute(sql`
     SELECT p.id, p.slug, p.title, p.status, p.locale, p.template_key, greatest(p.updated_at, max(s.updated_at)) AS last,
       count(s.id) FILTER (WHERE s.is_visible) AS vis,
-      count(s.id) FILTER (WHERE s.is_visible AND s.content_i18n ? 'de' AND s.content_i18n->'de' <> '{}'::jsonb) AS de,
-      count(s.id) FILTER (WHERE s.is_visible AND s.content_i18n ? 'en' AND s.content_i18n->'en' <> '{}'::jsonb) AS en,
-      count(s.id) FILTER (WHERE s.is_visible AND s.content_i18n ? 'es' AND s.content_i18n->'es' <> '{}'::jsonb) AS es,
-      count(s.id) FILTER (WHERE s.is_visible AND s.content_i18n ? 'ru' AND s.content_i18n->'ru' <> '{}'::jsonb) AS ru
+      count(s.id) FILTER (WHERE s.is_visible AND ${has('de')}) AS de_has, count(s.id) FILTER (WHERE s.is_visible AND ${has('de')} AND ${fresh('de')}) AS de_ok,
+      count(s.id) FILTER (WHERE s.is_visible AND ${has('en')}) AS en_has, count(s.id) FILTER (WHERE s.is_visible AND ${has('en')} AND ${fresh('en')}) AS en_ok,
+      count(s.id) FILTER (WHERE s.is_visible AND ${has('es')}) AS es_has, count(s.id) FILTER (WHERE s.is_visible AND ${has('es')} AND ${fresh('es')}) AS es_ok,
+      count(s.id) FILTER (WHERE s.is_visible AND ${has('ru')}) AS ru_has, count(s.id) FILTER (WHERE s.is_visible AND ${has('ru')} AND ${fresh('ru')}) AS ru_ok
     FROM landing_pages p LEFT JOIN landing_page_sections s ON s.landing_page_id = p.id
     GROUP BY p.id ORDER BY p.slug`).catch(() => []))
   const lpPaths = new Set<string>()
@@ -93,14 +101,17 @@ export async function buildPageTree(): Promise<{ nodes: PageNode[]; generatedAt:
     const langs = {} as Record<Lang, LangState>
     for (const l of LANGS) {
       if (l === base) { langs[l] = { state: 'full', pct: 100 }; continue }
-      const n = Number(r[l]) || 0, pct = vis ? Math.round((n / vis) * 100) : 0
-      langs[l] = { state: pct >= 100 ? 'full' : pct === 0 ? 'missing' : 'partial', pct }
+      const hasN = Number(r[`${l}_has`]) || 0, ok = Number(r[`${l}_ok`]) || 0
+      const pct = vis ? Math.round((ok / vis) * 100) : 0
+      const stale = hasN - ok, missing = vis - hasN
+      langs[l] = { state: ok >= vis && vis > 0 ? 'full' : stale > 0 && missing === 0 ? 'stale' : ok === 0 && stale === 0 ? 'missing' : 'partial', pct, stale, missing }
     }
     const log = logs.get(`lp:${r.id}`)
     nodes.push({
       path, title: String(r.title), kind: 'lp', area: 'public', status: String(r.status),
       version: log?.[0]?.version ?? 1, lastChange: log?.[0]?.changedAt ?? (r.last ? String(r.last) : null), langs,
       editHref: `/admin/landing-pages/${r.id}`, viewHref: r.status === 'published' ? path : `${path}?preview=1`,
+      pageId: String(r.id), mode: modes.get(`lp:${r.id}`) ?? defaultMode(String(r.status)),
       history: fromLog(log), note: base !== 'de' ? `Grundtext ${base.toUpperCase()}` : undefined,
     })
   }

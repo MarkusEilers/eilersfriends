@@ -39,6 +39,14 @@
     {
       "path": "/api/cron/signals",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/link-check",
+      "schedule": "0 21 * * *"
+    },
+    {
+      "path": "/api/cron/translations",
+      "schedule": "0 5 * * 1"
     }
   ]
 }

@@ -2,6 +2,7 @@
 import { STORY_CSS } from './story-css'
 import { OptinForm } from './OptinForm'
 import { CheckoutBox } from './CheckoutBox'
+import { LocaleSwitcher } from '@/components/layout/LocaleSwitcher'
 import { getVisibleTrustLogos } from '@/lib/db/queries/trust-logos'
 import { LogoScrollbar } from '@/components/blocks/LogoScrollbar'
 import { getAvailability, nextQuarterLabel } from '@/lib/mystery-shopping/slots'
@@ -78,7 +79,10 @@ export function StoryTopnav({ c }: { c: C }) {
       {c.topbar && <div className="top" dangerouslySetInnerHTML={{ __html: String(c.topbar) }} />}
       <div className="nav"><div className="wrap">
         <a href="/" className="logo"><img src="/ef-logo.png" alt="Eilers+Friends" className="logo-img" /></a>
-        <a className="btn blue sm" href={c.ctaHref ?? '#optin'}>{c.cta ?? 'Jetzt buchen'}</a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <LocaleSwitcher />
+          <a className="btn blue sm" href={c.ctaHref ?? '#optin'}>{c.cta ?? 'Jetzt buchen'}</a>
+        </div>
       </div></div>
     </>
   )

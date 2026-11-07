@@ -19,9 +19,13 @@ export async function ensureLpI18n() {
   // Eigener Sektionstyp für eingebettete Werkzeuge (Gesprächs-Check)
   await db.execute(sql`ALTER TYPE landing_page_section_type ADD VALUE IF NOT EXISTS 'call_check'`)
   // Story-Bausteine (Squeeze/Checkout im Stories-Design)
-  for (const v of ["story_topnav", "story_hero_optin", "story_logos", "story_findings", "story_tiles", "story_quote_author", "story_optin_close", "story_checkout_vsl", "story_bento_offer", "story_dark_band", "story_faq", "story_mobile_cta"]) {
+  for (const v of ["story_topnav", "story_hero_optin", "story_logos", "story_findings", "story_tiles", "story_quote_author", "story_optin_close", "story_checkout_vsl", "story_bento_offer", "story_dark_band", "story_faq", "story_mobile_cta", "story_html", "story_system"]) {
     await db.execute(sql.raw(`ALTER TYPE landing_page_section_type ADD VALUE IF NOT EXISTS '${v}'`))
   }
+  // Versionsstand: wann der Grundtext zuletzt geändert wurde, wann je Sprache zuletzt übersetzt.
+  // Übersetzung gilt als veraltet, sobald der Grundtext danach geändert wurde.
+  await db.execute(sql`ALTER TABLE landing_page_sections ADD COLUMN IF NOT EXISTS content_changed_at TIMESTAMPTZ NOT NULL DEFAULT now()`)
+  await db.execute(sql`ALTER TABLE landing_page_sections ADD COLUMN IF NOT EXISTS i18n_changed_at JSONB NOT NULL DEFAULT '{}'::jsonb`)
   ready = true
 }
 

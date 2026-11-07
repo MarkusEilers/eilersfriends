@@ -8,8 +8,8 @@ import { db } from '@/lib/db'
 import { landingPages, landingPageSections } from '@/lib/db/schema'
 import { eq, sql } from 'drizzle-orm'
 import { lpTemplates, type LpTemplate } from '@/lib/templates/program-welsh'
-import { ensureLpI18n, translatable, LP_LOCALES } from '@/lib/lp/i18n'
-import { callModel } from '@/lib/ai/call'
+import { ensureLpI18n, LP_LOCALES } from '@/lib/lp/i18n'
+import { storeTranslation, translateStale } from '@/lib/lp/translate'
 import { logPageChange, logLpSection } from '@/lib/pagetree/log'
 
 /** New enum values introduced for Welsh-style program templates. */
@@ -126,6 +126,9 @@ export async function upsertSection(input: {
   await logPageChange('lp', input.landingPageId, 'Inhalt')
 
   if (input.id) {
+    // Grundtext geändert? Dann gelten bestehende Übersetzungen als veraltet.
+    await ensureLpI18n()
+    await db.execute(sql`UPDATE landing_page_sections SET content_changed_at = now() WHERE id = ${input.id} AND content IS DISTINCT FROM ${JSON.stringify(input.content)}::jsonb`)
     const updated = await db.update(landingPageSections).set({
       type: input.type as typeof landingPageSections.$inferSelect['type'],
       order: input.order,
@@ -238,11 +241,7 @@ export async function saveSectionTranslation(sectionId: string, locale: string, 
   await requireAdmin()
   await ensureLpI18n()
   if (!(LP_LOCALES as readonly string[]).includes(locale) || locale === 'de') throw new Error('Sprache nicht erlaubt')
-  if (content === null) {
-    await db.execute(sql`UPDATE landing_page_sections SET content_i18n = content_i18n - ${locale}, updated_at=now() WHERE id=${sectionId}`)
-  } else {
-    await db.execute(sql`UPDATE landing_page_sections SET content_i18n = jsonb_set(COALESCE(content_i18n, '{}'::jsonb), ${'{' + locale + '}'}::text[], ${JSON.stringify(content)}::jsonb), updated_at=now() WHERE id=${sectionId}`)
-  }
+  await storeTranslation(sectionId, locale, content)
   await logLpSection(sectionId, `Übersetzung ${locale.toUpperCase()}`)
   return { ok: true }
 }
@@ -255,31 +254,13 @@ export async function saveSectionTranslation(sectionId: string, locale: string, 
 export async function translatePageAction(landingPageId: string, locale: 'en' | 'es', overwrite = false) {
   await requireAdmin()
   await ensureLpI18n()
-  const rows = (await db.execute(sql`SELECT id, type, content, content_i18n FROM landing_page_sections WHERE landing_page_id=${landingPageId} ORDER BY "order"`)) as unknown as
-    { id: string; type: string; content: Record<string, unknown>; content_i18n: Record<string, unknown> | null }[]
-  const lang = locale === 'en' ? 'English' : 'Spanish (neutral, for business readers)'
-  let done = 0
+  // Fehlende und veraltete Sektionen (mit overwrite: alle) übersetzen
+  const r = await translateStale(landingPageId, [locale], overwrite)
   const out: Record<string, Record<string, unknown>> = {}
-  for (const r of rows) {
-    if (!overwrite && r.content_i18n?.[locale]) continue
-    const src = translatable(r.content)
-    if (!src || (typeof src === 'object' && !Object.keys(src as object).length)) continue
-    const res = await callModel({
-      model: process.env.LP_TRANSLATE_MODEL || 'gpt-4.1',
-      temperature: 0.2,
-      anlass: { agentKey: 'lp-translate', stepKey: locale },
-      system: `You translate German B2B landing page copy into ${lang}. Keep the JSON structure and keys exactly. Translate only the string values. Keep the tone: direct, concrete, no hype, no marketing clichés. Keep informal address (German "Du/Ihr" → English "you"; Spanish "tú/vosotros" style with "tú"). Keep product and framework names (SalesMade, Beef Radar, Gesprächs-Check → "Call Check" in English, "Análisis de conversación" in Spanish). Return only the JSON.`,
-      user: JSON.stringify(src),
-    })
-    const val = (res.value ?? null) as Record<string, unknown> | null
-    if (!val || typeof val !== 'object') continue
-    await db.execute(sql`UPDATE landing_page_sections SET content_i18n = jsonb_set(COALESCE(content_i18n, '{}'::jsonb), ${'{' + locale + '}'}::text[], ${JSON.stringify(val)}::jsonb), updated_at=now() WHERE id=${r.id}`)
-    out[r.id] = val
-    done++
-  }
-  if (done) await logPageChange('lp', landingPageId, `KI-Übersetzung ${locale.toUpperCase()}`)
+  for (const [id, v] of Object.entries(r.sections)) if (v[locale]) out[id] = v[locale]
+  if (r.translated) await logPageChange('lp', landingPageId, `KI-Übersetzung ${locale.toUpperCase()}`)
   revalidatePath(`/admin/landing-pages/${landingPageId}`)
-  return { ok: true, translated: done, sections: out }
+  return { ok: true, translated: r.translated, sections: out }
 }
 
 // ── Baustein-Bibliothek ───────────────────────────────────────────────────────
