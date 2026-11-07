@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -22,6 +22,8 @@ export default async function ImpressumPage({ params }: PageProps) {
         <div className="mx-auto max-w-2xl">
 
           <h1 className="text-3xl font-bold mb-10" style={{ color: '#0D0D0B' }}>{t('title')}</h1>
+          {/* Übersetzungen: Hinweis, dass die deutsche Fassung maßgeblich ist */}
+          {(await getLocale()) !== 'de' && <p className="mb-8 rounded-xl border border-gray-200 bg-white px-4 py-3 text-xs leading-relaxed text-gray-600">{t('languageNote')}</p>}
 
           <div className="space-y-8 text-sm leading-relaxed text-gray-700">
 

@@ -2299,7 +2299,7 @@
       "title": "Impressum",
       "sections": {
         "legalNotice": {
-          "title": "Angaben gemäß § 5 TMG",
+          "title": "Angaben gemäß § 5 DDG",
           "address": "Eilers+Friends, uphill ventures GmbH<br></br>Blütenäcker 55/2<br></br>71332 Waiblingen<br></br>Deutschland",
           "representedBy": "Vertreten durch die Geschäftsführer:innen Markus Eilers und Aljona Eilers.",
           "brands": "Eilers+Friends, SalesMade & LeaderShe sind Marken der uphill ventures GmbH."
@@ -2313,7 +2313,7 @@
           "content": "Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br></br>Wird nach Eintragung ergänzt."
         },
         "responsible": {
-          "title": "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV",
+          "title": "Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV",
           "content": "Markus Eilers<br></br>Blütenäcker 55/2<br></br>71332 Waiblingen"
         },
         "dispute": {
@@ -2323,7 +2323,7 @@
         },
         "liabilityContent": {
           "title": "Haftung für Inhalte",
-          "content": "Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen."
+          "content": "Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen."
         },
         "liabilityLinks": {
           "title": "Haftung für Links",
@@ -2333,7 +2333,8 @@
           "title": "Urheberrecht",
           "content": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers."
         }
-      }
+      },
+      "languageNote": ""
     },
     "agb": {
       "metaTitle": "AGB — Eilers+Friends",
@@ -2396,7 +2397,8 @@
           "title": "14. Schlussbestimmungen",
           "text": "Nebenabreden bedürfen der Schriftform; dies gilt auch für die Aufhebung des Schriftformerfordernisses. Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts. Sollte eine Bestimmung unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt."
         }
-      }
+      },
+      "languageNote": "Diese AGB gibt es zur Information auch auf Englisch und Spanisch. Maßgeblich ist die deutsche Fassung."
     },
     "datenschutz": {
       "metadata": {
@@ -2460,7 +2462,8 @@
           "text": "Bei Fragen zum Datenschutz wenden Sie sich bitte an: <a>team@eilersfriends.com</a>",
           "stand": "Stand: März 2026"
         }
-      ]
+      ],
+      "languageNote": ""
     }
   },
   "frontRow": {

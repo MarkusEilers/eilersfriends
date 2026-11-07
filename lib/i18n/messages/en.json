@@ -2403,172 +2403,175 @@
   },
   "legal": {
     "impressum": {
-      "metaTitle": "Impressum — Eilers+Friends",
-      "title": "Impressum",
+      "metaTitle": "Imprint — Eilers+Friends",
+      "title": "Imprint",
       "sections": {
         "legalNotice": {
-          "title": "Angaben gemäß § 5 TMG",
-          "address": "Eilers+Friends, uphill ventures GmbH<br></br>Blütenäcker 55/2<br></br>71332 Waiblingen<br></br>Deutschland",
-          "representedBy": "Vertreten durch die Geschäftsführer:innen Markus Eilers und Aljona Eilers.",
-          "brands": "Eilers+Friends, SalesMade & LeaderShe sind Marken der uphill ventures GmbH."
+          "title": "Information pursuant to Section 5 of the German Digital Services Act (DDG)",
+          "address": "Eilers+Friends, uphill ventures GmbH<br></br>Blütenäcker 55/2<br></br>71332 Waiblingen<br></br>Germany",
+          "representedBy": "Represented by the Managing Directors Markus Eilers and Aljona Eilers.",
+          "brands": "Eilers+Friends, SalesMade & LeaderShe are trademarks of uphill ventures GmbH."
         },
         "contact": {
-          "title": "Kontakt",
-          "content": "E-Mail: <a1>team@eilersfriends.com</a1><br></br>Website: <a2>eilersfriends.com</a2>"
+          "title": "Contact",
+          "content": "E-mail: <a1>team@eilersfriends.com</a1><br></br>Website: <a2>eilersfriends.com</a2>"
         },
         "vat": {
-          "title": "Umsatzsteuer-ID",
-          "content": "Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br></br>Wird nach Eintragung ergänzt."
+          "title": "VAT ID",
+          "content": "Value Added Tax Identification Number pursuant to Section 27 a of the German Value Added Tax Act:<br></br>To be added after registration."
         },
         "responsible": {
-          "title": "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV",
+          "title": "Responsible for content pursuant to Section 18 (2) of the German State Media Treaty (MStV)",
           "content": "Markus Eilers<br></br>Blütenäcker 55/2<br></br>71332 Waiblingen"
         },
         "dispute": {
-          "title": "Streitschlichtung",
-          "platform": "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a>https://ec.europa.eu/consumers/odr/</a>",
-          "noParticipation": "Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+          "title": "Dispute Resolution",
+          "platform": "The European Commission provides a platform for online dispute resolution (ODR): <a>https://ec.europa.eu/consumers/odr/</a>",
+          "noParticipation": "We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board."
         },
         "liabilityContent": {
-          "title": "Haftung für Inhalte",
-          "content": "Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen."
+          "title": "Liability for Content",
+          "content": "As a service provider, we are responsible for our own content on these pages in accordance with Section 7 (1) of the German Digital Services Act (DDG) and general legislation. However, pursuant to Sections 8 to 10 of the German Digital Services Act (DDG), we as a service provider are not obliged to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity."
         },
         "liabilityLinks": {
-          "title": "Haftung für Links",
-          "content": "Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich."
+          "title": "Liability for Links",
+          "content": "Our offer contains links to external third-party websites over whose content we have no influence. Therefore, we cannot assume any liability for such external content. The respective provider or operator of the linked pages is always responsible for the content of those pages."
         },
         "copyright": {
-          "title": "Urheberrecht",
-          "content": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers."
+          "title": "Copyright",
+          "content": "The content and works created by the site operators on these pages are subject to German copyright law. Duplication, processing, distribution, and any kind of exploitation outside the limits of copyright law require the written consent of the respective author or creator."
         }
-      }
-    },
-    "agb": {
-      "metaTitle": "AGB — Eilers+Friends",
-      "title": "Allgemeine Geschäftsbedingungen",
-      "subtitle": "Für die Ausbildungs- und Coaching-Leistungen der SalesMade Academy. Stand: Juli 2026.",
-      "sections": {
-        "1": {
-          "title": "1. Geltungsbereich und Anbieter",
-          "text": "Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge über die Ausbildungs-, Coaching- und Trainingsleistungen der SalesMade Academy, angeboten von der Eilers+Friends, uphill ventures GmbH, Blütenäcker 55/2, 71332 Waiblingen (nachfolgend „Anbieter\"). Die Leistungen richten sich ausschließlich an Unternehmer im Sinne des § 14 BGB. Ein Verbrauchergeschäft liegt nicht vor."
-        },
-        "2": {
-          "title": "2. Vertragsgegenstand",
-          "text": "Der Anbieter bildet pro gebuchtem Ausbildungsplatz („Seat\") eine vom Kunden benannte Person über zwölf Monate aus. Enthalten sind insbesondere Assessment, ein individueller Entwicklungs-Fahrplan, eine monatliche 1:1-Coaching-Session, Zugang zu Frameworks und Playbook-Library, werktägliches Sparring sowie der Zugang zur Founding-Community im jeweils zum Buchungszeitpunkt beschriebenen Umfang. Der Kunde kann selbst einen der Plätze wahrnehmen. Mengen-Boni gelten in dem auf der Angebotsseite beschriebenen Umfang."
-        },
-        "3": {
-          "title": "3. Vertragsschluss",
-          "text": "Der Vertrag kommt mit Abschluss des Buchungsvorgangs und Bestätigung durch den Anbieter zustande. Die Darstellung der Leistungen auf der Website ist eine Aufforderung zur Abgabe eines Angebots; die Buchung des Kunden ist das Angebot."
-        },
-        "4": {
-          "title": "4. Laufzeit und Verlängerung",
-          "text": "Der Vertrag hat eine feste Laufzeit von zwölf Monaten ab Ausbildungsbeginn. Er verlängert sich um jeweils ein weiteres Jahr, sofern er nicht mit einer Frist von drei Monaten zum Ende der jeweiligen Laufzeit in Textform gekündigt wird."
-        },
-        "5": {
-          "title": "5. Preise, Zahlung und Reisekosten",
-          "text": "Es gelten die zum Buchungszeitpunkt ausgewiesenen Preise je Seat, zuzüglich der gesetzlichen Umsatzsteuer. Bei gültiger Umsatzsteuer-Identifikationsnummer außerhalb Deutschlands erfolgt die Abrechnung im Reverse-Charge-Verfahren. Reisekosten für Präsenztermine, die der Kunde wünscht, werden gesondert nach tatsächlichem Aufwand in Rechnung gestellt und sind im Seat-Preis nicht enthalten."
-        },
-        "6": {
-          "title": "6. Zufriedenheitsgarantie (90 Tage)",
-          "text": "Zeigt sich innerhalb von 90 Tagen nach Vertragsbeginn keine messbare Verbesserung in den Sales-KPIs des Kunden, erstattet der Anbieter die volle bis dahin geleistete Investition. Voraussetzung ist, dass die teilnehmende Person in diesem Zeitraum aktiv teilgenommen hat (Assessment durchlaufen, vereinbarte Sessions wahrgenommen). Die Mitteilung genügt in Textform an team@eilersfriends.com."
-        },
-        "7": {
-          "title": "7. Mitwirkung des Kunden",
-          "text": "Die Ausbildung setzt die aktive Teilnahme der benannten Person voraus. Termine, die der Kunde nicht wahrnimmt, verfallen, soweit sie nicht rechtzeitig (mindestens 24 Stunden vorher) verschoben werden. Eine Pflicht zur Nachholung besteht insoweit nicht."
-        },
-        "8": {
-          "title": "8. Kein Widerrufsrecht für Unternehmer",
-          "text": "Da sich das Angebot ausschließlich an Unternehmer richtet, besteht kein gesetzliches Widerrufsrecht für Verbraucher. Unabhängig davon gilt die in Ziffer 6 beschriebene freiwillige Zufriedenheitsgarantie."
-        },
-        "9": {
-          "title": "9. Haftung",
-          "text": "Der Anbieter erbringt eine Dienstleistung und schuldet keinen bestimmten wirtschaftlichen Erfolg. Die Haftung richtet sich nach den gesetzlichen Bestimmungen; für leichte Fahrlässigkeit haftet der Anbieter nur bei Verletzung wesentlicher Vertragspflichten und begrenzt auf den vertragstypischen, vorhersehbaren Schaden."
-        },
-        "10": {
-          "title": "10. Höhere Gewalt",
-          "text": "Wird eine Partei durch höhere Gewalt — etwa Naturereignisse, Ausfälle der Telekommunikations- oder Stromversorgung, behördliche Maßnahmen, Streik oder vergleichbare, nicht vorhersehbare und unabwendbare Ereignisse — an der Erfüllung ihrer Pflichten gehindert, ruhen diese für die Dauer der Behinderung. Vereinbarte Termine verschieben sich entsprechend; ein Verschulden liegt insoweit nicht vor."
-        },
-        "11": {
-          "title": "11. Vertraulichkeit",
-          "text": "Beide Parteien behandeln alle im Rahmen der Zusammenarbeit erhaltenen, nicht offenkundigen Informationen der anderen Partei — insbesondere Geschäfts-, Kunden-, Vertriebs- und Finanzdaten — vertraulich und nutzen sie ausschließlich zur Durchführung der Leistungen. Ausgenommen sind Informationen, die öffentlich bekannt sind, der empfangenden Partei bereits bekannt waren oder aufgrund gesetzlicher oder behördlicher Anordnung offengelegt werden müssen. Die Vertraulichkeit besteht auch nach Vertragsende fort."
-        },
-        "12": {
-          "title": "12. Datenschutz",
-          "text": "Beide Parteien halten die geltenden Datenschutzvorschriften ein. Verarbeitet der Anbieter im Auftrag des Kunden personenbezogene Daten, schließen die Parteien einen Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO. Einzelheiten zur Verarbeitung durch den Anbieter ergeben sich aus der <a>Datenschutzerklärung</a>."
-        },
-        "13": {
-          "title": "13. Nennung als Referenzkunde",
-          "text": "Der Anbieter ist berechtigt, den Kunden nach erfolgreicher Zusammenarbeit als Referenzkunden zu nennen — auch unter Nutzung des Firmennamens und -logos — auf seiner Website und in Marketingmaterialien. Der Kunde kann dem jederzeit in Textform (E-Mail genügt) widersprechen."
-        },
-        "14": {
-          "title": "14. Schlussbestimmungen",
-          "text": "Nebenabreden bedürfen der Schriftform; dies gilt auch für die Aufhebung des Schriftformerfordernisses. Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts. Sollte eine Bestimmung unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt."
-        }
-      }
+      },
+      "languageNote": "This is a translation provided for your information. The German version is legally binding; in case of any discrepancy, the German version prevails."
     },
     "datenschutz": {
       "metadata": {
-        "title": "Datenschutzerklärung — Eilers+Friends"
+        "title": "Privacy Policy — Eilers+Friends"
       },
       "hero": {
-        "title": "Datenschutzerklärung"
+        "title": "Privacy Policy"
       },
       "sections": [
         {
-          "title": "1. Datenschutz auf einen Blick",
-          "generalTitle": "Allgemeine Hinweise",
-          "generalText": "Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können."
+          "title": "1. Data Protection at a Glance",
+          "generalTitle": "General Information",
+          "generalText": "The following information provides a simple overview of what happens to your personal data when you visit this website. Personal data is any data by which you can be personally identified."
         },
         {
-          "title": "2. Verantwortliche Stelle",
-          "text": "Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:<br></br><br></br>Eilers+Friends, uphill ventures GmbH<br></br>Blütenäcker 55/2<br></br>71332 Waiblingen<br></br>Deutschland<br></br>E-Mail: <a>team@eilersfriends.com</a>"
+          "title": "2. Controller",
+          "text": "The controller responsible for data processing on this website is:<br></br><br></br>Eilers+Friends, uphill ventures GmbH<br></br>Blütenäcker 55/2<br></br>71332 Waiblingen<br></br>Germany<br></br>E-mail: <a>team@eilersfriends.com</a>"
         },
         {
-          "title": "3. Datenerfassung auf dieser Website",
+          "title": "3. Data Collection on this Website",
           "cookiesTitle": "Cookies",
-          "cookiesText": "Unsere Internetseiten verwenden so genannte „Cookies\". Cookies sind kleine Datenpakete und richten auf Ihrem Endgerät keinen Schaden an. Sie werden entweder vorübergehend für die Dauer einer Sitzung (Session-Cookies) oder dauerhaft (permanente Cookies) auf Ihrem Endgerät gespeichert. Session-Cookies werden nach Ende Ihres Besuchs automatisch gelöscht. Permanente Cookies bleiben auf Ihrem Endgerät gespeichert, bis Sie diese selbst löschen oder eine automatische Löschung durch Ihren Webbrowser erfolgt.",
-          "serverLogTitle": "Server-Log-Dateien",
-          "serverLogText": "Der Provider der Seiten erhebt und speichert automatisch Informationen in so genannten Server-Log-Dateien, die Ihr Browser automatisch an uns übermittelt. Dies sind:",
+          "cookiesText": "Our websites use so-called \"cookies.\" Cookies are small data packets that do not cause any harm to your device. They are either stored temporarily for the duration of a session (session cookies) or permanently (persistent cookies) on your device. Session cookies are automatically deleted after your visit ends. Persistent cookies remain stored on your device until you delete them yourself or your web browser automatically deletes them.",
+          "serverLogTitle": "Server Log Files",
+          "serverLogText": "The provider of these pages automatically collects and stores information in so-called server log files, which your browser automatically transmits to us. These are:",
           "serverLogItems": [
-            "Browsertyp und Browserversion",
-            "verwendetes Betriebssystem",
+            "Browser type and browser version",
+            "Operating system used",
             "Referrer URL",
-            "Hostname des zugreifenden Rechners",
-            "Uhrzeit der Serveranfrage",
-            "IP-Adresse"
+            "Hostname of the accessing computer",
+            "Time of the server request",
+            "IP address"
           ]
         },
         {
           "title": "4. Newsletter",
-          "text1": "Wenn Sie den auf der Website angebotenen Newsletter beziehen möchten, benötigen wir von Ihnen eine E-Mail-Adresse sowie Informationen, welche uns die Überprüfung gestatten, dass Sie der Inhaber der angegebenen E-Mail-Adresse sind und mit dem Empfang des Newsletters einverstanden sind. Weitere Daten werden nicht erhoben. Diese Daten verwenden wir ausschließlich für den Versand der angeforderten Informationen und geben sie nicht an Dritte weiter.",
-          "text2": "Die erteilte Einwilligung zur Speicherung der Daten, der E-Mail-Adresse sowie deren Nutzung zum Versand des Newsletters können Sie jederzeit widerrufen, etwa über den „Austragen\"-Link im Newsletter.",
-          "text3": "Wir Verwenden <b>Beehiiv</b> als Newsletter-Plattform. Weitere Informationen zur Datenverarbeitung durch Beehiiv finden Sie unter: <a>beehiiv.com/privacy</a>"
+          "text1": "If you would like to receive the newsletter offered on the website, we require an e-mail address from you as well as information that allows us to verify that you are the owner of the e-mail address provided and that you agree to receive the newsletter. No further data is collected. We use this data exclusively for sending the requested information and do not pass it on to third parties.",
+          "text2": "You may revoke your consent to the storage of the data, the e-mail address, and its use for sending the newsletter at any time, for example via the \"Unsubscribe\" link in the newsletter.",
+          "text3": "We use <b>Beehiiv</b> as our newsletter platform. Further information on data processing by Beehiiv can be found at: <a>beehiiv.com/privacy</a>"
         },
         {
-          "title": "5. Ihre Rechte",
-          "rightsIntro": "Sie haben jederzeit das Recht:",
+          "title": "5. Your Rights",
+          "rightsIntro": "You have the right at any time to:",
           "rightsList": [
-            "unentgeltliche Auskunft über Herkunft, Empfänger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten",
-            "die Berichtigung oder Löschung dieser Daten zu verlangen",
-            "die Einschränkung der Verarbeitung zu verlangen",
-            "Ihrer Verarbeitung zu widersprechen",
-            "Datenübertragbarkeit zu verlangen"
+            "receive, free of charge, information about the origin, recipients, and purpose of your stored personal data",
+            "request the rectification or erasure of this data",
+            "request the restriction of processing",
+            "object to the processing of your data",
+            "request data portability"
           ],
-          "complaint": "Außerdem steht Ihnen das Recht zu, sich bei einer Aufsichtsbehörde für Datenschutz zu beschweren."
+          "complaint": "You also have the right to lodge a complaint with a data protection supervisory authority."
         },
         {
-          "title": "6. Drittanbieter",
+          "title": "6. Third-Party Providers",
           "vercelTitle": "Vercel",
-          "vercelText": "Diese Website wird auf der Plattform Vercel (Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA) gehostet. Beim Aufruf dieser Website werden automatisch Verbindungsdaten an Vercel übermittelt. Weitere Informationen: <a>vercel.com/legal/privacy-policy</a>",
+          "vercelText": "This website is hosted on the Vercel platform (Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA). When you access this website, connection data is automatically transmitted to Vercel. Further information: <a>vercel.com/legal/privacy-policy</a>",
           "googleFontsTitle": "Google Fonts",
-          "googleFontsText": "Diese Seite nutzt zur einheitlichen Darstellung von Schriftarten Google Fonts (Anbieter: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA). Beim Aufruf einer Seite lädt Ihr Browser die benötigten Fonts in Ihren Browsercache, um Texte und Schriftarten korrekt anzuzeigen."
+          "googleFontsText": "This site uses Google Fonts (provider: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) for the uniform display of fonts. When you access a page, your browser loads the required fonts into your browser cache to display texts and fonts correctly."
         },
         {
-          "title": "7. Kontakt bei Datenschutzfragen",
-          "text": "Bei Fragen zum Datenschutz wenden Sie sich bitte an: <a>team@eilersfriends.com</a>",
-          "stand": "Stand: März 2026"
+          "title": "7. Contact for Data Protection Matters",
+          "text": "If you have any questions regarding data protection, please contact: <a>team@eilersfriends.com</a>",
+          "stand": "Status: March 2026"
         }
-      ]
+      ],
+      "languageNote": "This is a translation provided for your information. The German version is legally binding; in case of any discrepancy, the German version prevails."
+    },
+    "agb": {
+      "metaTitle": "GTC — Eilers+Friends",
+      "title": "General Terms and Conditions",
+      "subtitle": "For the training and coaching services of the SalesMade Academy. Status: July 2026.",
+      "sections": {
+        "1": {
+          "title": "1. Scope and Provider",
+          "text": "These General Terms and Conditions (GTC) apply to all contracts for training, coaching, and workshop services of the SalesMade Academy, offered by Eilers+Friends, uphill ventures GmbH, Blütenäcker 55/2, 71332 Waiblingen (hereinafter referred to as the \"Provider\"). The services are directed exclusively at entrepreneurs within the meaning of Section 14 German Civil Code (BGB). No consumer transaction is present."
+        },
+        "2": {
+          "title": "2. Subject Matter of the Contract",
+          "text": "For each booked training place (\"Seat\"), the Provider trains a person designated by the Customer over twelve months. The services include, in particular, assessment, an individual development roadmap, a monthly 1:1 coaching session, access to frameworks and the playbook library, weekday sparring, as well as access to the founding community, all to the extent described at the time of booking. The Customer may also use one of the seats personally. Volume discounts apply as described on the offer page."
+        },
+        "3": {
+          "title": "3. Conclusion of Contract",
+          "text": "The contract is concluded upon completion of the booking process and confirmation by the Provider. The presentation of the services on the website constitutes an invitation to submit an offer; the Customer's booking is the offer."
+        },
+        "4": {
+          "title": "4. Term and Renewal",
+          "text": "The contract has a fixed term of twelve months from the start of the training. It is automatically renewed for a further year unless terminated in text form with three months' notice to the end of the respective term."
+        },
+        "5": {
+          "title": "5. Prices, Payment, and Travel Expenses",
+          "text": "The prices per seat as indicated at the time of booking apply, plus statutory VAT. If a valid VAT identification number outside Germany is provided, invoicing will be carried out under the reverse charge procedure. Travel expenses for on-site appointments requested by the Customer will be invoiced separately based on actual costs and are not included in the seat price."
+        },
+        "6": {
+          "title": "6. Satisfaction Guarantee (90 Days)",
+          "text": "If no measurable improvement in the Customer's sales KPIs is evident within 90 days of the start of the contract, the Provider will refund the full investment made up to that point. The prerequisite is that the participating person has actively participated during this period (completed the assessment, attended the agreed sessions). Notification in text form to team@eilersfriends.com is sufficient."
+        },
+        "7": {
+          "title": "7. Customer Cooperation",
+          "text": "The training requires the active participation of the designated person. Appointments not attended by the Customer will lapse unless rescheduled in good time (at least 24 hours in advance). There is no obligation to make up missed appointments."
+        },
+        "8": {
+          "title": "8. No Right of Withdrawal for Entrepreneurs",
+          "text": "As the offer is directed exclusively at entrepreneurs, there is no statutory right of withdrawal for consumers. Irrespective of this, the voluntary satisfaction guarantee described in Clause 6 applies."
+        },
+        "9": {
+          "title": "9. Liability",
+          "text": "The Provider renders a service and does not owe any specific economic success. Liability is governed by the statutory provisions; for slight negligence, the Provider is only liable for breaches of essential contractual obligations and limited to the typical, foreseeable damage."
+        },
+        "10": {
+          "title": "10. Force Majeure",
+          "text": "If a party is prevented from fulfilling its obligations due to force majeure — such as natural events, failures of telecommunications or power supply, official measures, strikes, or comparable, unforeseeable and unavoidable events — these obligations shall be suspended for the duration of the impediment. Agreed appointments will be postponed accordingly; no fault shall be attributed in this respect."
+        },
+        "11": {
+          "title": "11. Confidentiality",
+          "text": "Both parties shall treat as confidential all non-obvious information of the other party received in the course of cooperation — in particular, business, customer, sales, and financial data — and shall use such information exclusively for the performance of the services. Excluded are information that is publicly known, already known to the receiving party, or must be disclosed due to statutory or official requirements. The confidentiality obligation continues to apply after termination of the contract."
+        },
+        "12": {
+          "title": "12. Data Protection",
+          "text": "Both parties comply with the applicable data protection regulations. If the Provider processes personal data on behalf of the Customer, the parties shall conclude a data processing agreement pursuant to Art. 28 GDPR. Details regarding processing by the Provider can be found in the <a>Privacy Policy</a>."
+        },
+        "13": {
+          "title": "13. Reference Customer Naming",
+          "text": "The Provider is entitled to name the Customer as a reference customer after successful cooperation — including the use of the company name and logo — on its website and in marketing materials. The Customer may object to this at any time in text form (e-mail is sufficient)."
+        },
+        "14": {
+          "title": "14. Final Provisions",
+          "text": "Collateral agreements must be in writing; this also applies to any waiver of the written form requirement. The law of the Federal Republic of Germany applies, to the exclusion of the UN Convention on Contracts for the International Sale of Goods. Should any provision be invalid, the validity of the remaining provisions shall remain unaffected."
+        }
+      },
+      "languageNote": "These terms are provided in English for your information. The German version is legally binding; in case of any discrepancy, the German version prevails."
     }
   },
   "frontRow": {

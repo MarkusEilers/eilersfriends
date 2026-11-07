@@ -24,9 +24,11 @@ export default async function AgbPage({ params }: PageProps) {
           <h1 className="text-3xl font-bold mb-3" style={{ color: '#0D0D0B' }}>
             {t('title')}
           </h1>
-          <p className="mb-10 text-sm text-gray-500">
+          <p className="mb-6 text-sm text-gray-500">
             {t('subtitle')}
           </p>
+          {/* Sprachfassungen: maßgeblich ist die deutsche Fassung */}
+          <p className="mb-8 rounded-xl border border-gray-200 bg-white px-4 py-3 text-xs leading-relaxed text-gray-600">{t('languageNote')}</p>
 
           <div className="space-y-8 text-sm leading-relaxed text-gray-700">
             <div>
