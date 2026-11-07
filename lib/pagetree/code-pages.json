@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-07T14:44:25Z",
+ "generatedAt": "2026-11-07T20:38:53Z",
  "pages": [
   {
    "route": "/b2b-offers",
@@ -73,9 +73,24 @@
     "components/lp/story/story-css.ts"
    ],
    "lpBacked": true,
-   "version": 46,
-   "lastChange": "2026-11-07T14:42:00Z",
+   "version": 49,
+   "lastChange": "2026-11-07T20:18:37Z",
    "history": [
+    {
+     "sha": "497420a",
+     "date": "2026-11-07T20:18:37Z",
+     "msg": "Übersetzungs-Versionsstand je Sektion (veraltet nach neuer Version), Page-Tree: Modus je Seite + Jetzt übersetzen; wöche"
+    },
+    {
+     "sha": "2a8c071",
+     "date": "2026-11-07T18:25:22Z",
+     "msg": "Logoleiste: Kategorien je Logo (Admin), Story-Logoleiste filtert nach Kategorie; Academy nutzt die Haupt-Logoleiste"
+    },
+    {
+     "sha": "87b377e",
+     "date": "2026-11-07T14:47:43Z",
+     "msg": "Buchung: Quiz-Kontext lesbar und nicht doppelt"
+    },
     {
      "sha": "aada57e",
      "date": "2026-11-07T14:42:00Z",
@@ -100,21 +115,6 @@
      "sha": "bb11df5",
      "date": "2026-11-05T22:52:18Z",
      "msg": "Report-Prüfpunkte einspaltig, gleich ausgerichtet"
-    },
-    {
-     "sha": "33553fe",
-     "date": "2026-11-05T20:28:50Z",
-     "msg": "Story-Logoleiste: Abstand zur Überschrift"
-    },
-    {
-     "sha": "4957648",
-     "date": "2026-11-05T20:25:21Z",
-     "msg": "Story-Logoleiste nutzt das Startseiten-Modul (LogoScrollbar, Admin-Größen)"
-    },
-    {
-     "sha": "2b8dbae",
-     "date": "2026-11-05T20:22:09Z",
-     "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
     }
    ]
   },
@@ -122,7 +122,7 @@
    "route": "/academy",
    "file": "app/[locale]/(marketing)/academy/page.tsx",
    "group": "marketing",
-   "title": null,
+   "title": "SalesMade Academy: Sales-Training für B2B-Teams · Eilers+Friends",
    "namespaces": [],
    "files": [
     "app/[locale]/(marketing)/academy/page.tsx",
@@ -136,9 +136,29 @@
     "components/lp/story/story-css.ts"
    ],
    "lpBacked": true,
-   "version": 27,
-   "lastChange": "2026-11-07T14:42:00Z",
+   "version": 31,
+   "lastChange": "2026-11-07T20:18:37Z",
    "history": [
+    {
+     "sha": "497420a",
+     "date": "2026-11-07T20:18:37Z",
+     "msg": "Übersetzungs-Versionsstand je Sektion (veraltet nach neuer Version), Page-Tree: Modus je Seite + Jetzt übersetzen; wöche"
+    },
+    {
+     "sha": "2a8c071",
+     "date": "2026-11-07T18:25:22Z",
+     "msg": "Logoleiste: Kategorien je Logo (Admin), Story-Logoleiste filtert nach Kategorie; Academy nutzt die Haupt-Logoleiste"
+    },
+    {
+     "sha": "b5a4f92",
+     "date": "2026-11-07T15:03:51Z",
+     "msg": "SEO: www-Kanonik (Header, Sitemap, Robots), Sitemap mit Academy/Mystery/Frameworks/Blog, Login/Kundenbereich/Checkout no"
+    },
+    {
+     "sha": "87b377e",
+     "date": "2026-11-07T14:47:43Z",
+     "msg": "Buchung: Quiz-Kontext lesbar und nicht doppelt"
+    },
     {
      "sha": "aada57e",
      "date": "2026-11-07T14:42:00Z",
@@ -158,26 +178,6 @@
      "sha": "7fdec61",
      "date": "2026-11-06T19:29:38Z",
      "msg": "Academy: Sticker in der Abschlusskarte oben rechts, Nav-Links neutral"
-    },
-    {
-     "sha": "39b5bf8",
-     "date": "2026-11-06T19:16:40Z",
-     "msg": "Academy: neue Seite aus dem Landingpage-System (/academy), story_html + story_system, Quiz-API, Preis-Sticker rot/blau; "
-    },
-    {
-     "sha": "bb11df5",
-     "date": "2026-11-05T22:52:18Z",
-     "msg": "Report-Prüfpunkte einspaltig, gleich ausgerichtet"
-    },
-    {
-     "sha": "33553fe",
-     "date": "2026-11-05T20:28:50Z",
-     "msg": "Story-Logoleiste: Abstand zur Überschrift"
-    },
-    {
-     "sha": "4957648",
-     "date": "2026-11-05T20:25:21Z",
-     "msg": "Story-Logoleiste nutzt das Startseiten-Modul (LogoScrollbar, Admin-Größen)"
     }
    ]
   },
@@ -185,15 +185,22 @@
    "route": "/agb",
    "file": "app/[locale]/(marketing)/agb/page.tsx",
    "group": "marketing",
-   "title": "AGB — Eilers+Friends",
-   "namespaces": [],
+   "title": null,
+   "namespaces": [
+    "legal.agb"
+   ],
    "files": [
     "app/[locale]/(marketing)/agb/page.tsx"
    ],
    "lpBacked": false,
-   "version": 3,
-   "lastChange": "2026-07-17T11:39:58Z",
+   "version": 4,
+   "lastChange": "2026-11-07T20:36:58Z",
    "history": [
+    {
+     "sha": "1bbbe99",
+     "date": "2026-11-07T20:36:58Z",
+     "msg": "9 Seiten übersetzbar: Texte von AGB, Datenschutz, Impressum, Blog (Übersicht, Autoren, Beitrag, Kommentare, Teilen, CTA)"
+    },
     {
      "sha": "647ae4c",
      "date": "2026-07-17T11:39:58Z",
@@ -274,17 +281,26 @@
    "route": "/blog/[slug]",
    "file": "app/[locale]/(marketing)/blog/[slug]/page.tsx",
    "group": "marketing",
-   "title": "Beitrag nicht gefunden",
-   "namespaces": [],
+   "title": null,
+   "namespaces": [
+    "blogUi.comments",
+    "blogUi.post",
+    "blogUi.share"
+   ],
    "files": [
     "app/[locale]/(marketing)/blog/[slug]/page.tsx",
     "components/blog/Comments.tsx",
     "components/blog/ShareBar.tsx"
    ],
    "lpBacked": false,
-   "version": 8,
-   "lastChange": "2026-10-28T22:51:07Z",
+   "version": 9,
+   "lastChange": "2026-11-07T20:36:58Z",
    "history": [
+    {
+     "sha": "1bbbe99",
+     "date": "2026-11-07T20:36:58Z",
+     "msg": "9 Seiten übersetzbar: Texte von AGB, Datenschutz, Impressum, Blog (Übersicht, Autoren, Beitrag, Kommentare, Teilen, CTA)"
+    },
     {
      "sha": "4a8718b",
      "date": "2026-10-28T22:51:07Z",
@@ -319,11 +335,6 @@
      "sha": "f9b8ba0",
      "date": "2026-09-03T21:18:10Z",
      "msg": "feat(blog): Autoren mit eigener Farbwelt — Bento-Uebersicht fuer alle und je Autor, journalistische Einzelseite mit Avat"
-    },
-    {
-     "sha": "f8823bf",
-     "date": "2026-05-24T10:00:17Z",
-     "msg": "feat(blog): /blog Stub-Bereich + DB-Schema + Navbar-Link gefixt"
     }
    ]
   },
@@ -331,8 +342,14 @@
    "route": "/blog/aljona",
    "file": "app/[locale]/(marketing)/blog/aljona/page.tsx",
    "group": "marketing",
-   "title": "Blog von ${author.name}",
-   "namespaces": [],
+   "title": null,
+   "namespaces": [
+    "blogUi.authorAljona",
+    "blogUi.authorSwitch",
+    "blogUi.bento",
+    "blogUi.cta",
+    "blogUi.home"
+   ],
    "files": [
     "app/[locale]/(marketing)/blog/aljona/page.tsx",
     "components/blog/AuthorSwitch.tsx",
@@ -341,9 +358,14 @@
     "components/blog/BlogHome.tsx"
    ],
    "lpBacked": false,
-   "version": 5,
-   "lastChange": "2026-10-28T22:51:07Z",
+   "version": 6,
+   "lastChange": "2026-11-07T20:36:58Z",
    "history": [
+    {
+     "sha": "1bbbe99",
+     "date": "2026-11-07T20:36:58Z",
+     "msg": "9 Seiten übersetzbar: Texte von AGB, Datenschutz, Impressum, Blog (Übersicht, Autoren, Beitrag, Kommentare, Teilen, CTA)"
+    },
     {
      "sha": "4a8718b",
      "date": "2026-10-28T22:51:07Z",
@@ -375,8 +397,14 @@
    "route": "/blog/markus",
    "file": "app/[locale]/(marketing)/blog/markus/page.tsx",
    "group": "marketing",
-   "title": "Blog von ${author.name}",
-   "namespaces": [],
+   "title": null,
+   "namespaces": [
+    "blogUi.authorMarkus",
+    "blogUi.authorSwitch",
+    "blogUi.bento",
+    "blogUi.cta",
+    "blogUi.home"
+   ],
    "files": [
     "app/[locale]/(marketing)/blog/markus/page.tsx",
     "components/blog/AuthorSwitch.tsx",
@@ -385,9 +413,14 @@
     "components/blog/BlogHome.tsx"
    ],
    "lpBacked": false,
-   "version": 5,
-   "lastChange": "2026-10-28T22:51:07Z",
+   "version": 6,
+   "lastChange": "2026-11-07T20:36:58Z",
    "history": [
+    {
+     "sha": "1bbbe99",
+     "date": "2026-11-07T20:36:58Z",
+     "msg": "9 Seiten übersetzbar: Texte von AGB, Datenschutz, Impressum, Blog (Übersicht, Autoren, Beitrag, Kommentare, Teilen, CTA)"
+    },
     {
      "sha": "4a8718b",
      "date": "2026-10-28T22:51:07Z",
@@ -440,17 +473,26 @@
    "route": "/blog",
    "file": "app/[locale]/(marketing)/blog/page.tsx",
    "group": "marketing",
-   "title": "Winning Team Stories · Eilers+Friends",
-   "namespaces": [],
+   "title": null,
+   "namespaces": [
+    "blogUi.emailCapture",
+    "blogUi.hub",
+    "blogUi.index"
+   ],
    "files": [
     "app/[locale]/(marketing)/blog/page.tsx",
     "components/blog/EmailCapture.tsx",
     "components/blog/StoriesHub.tsx"
    ],
    "lpBacked": false,
-   "version": 7,
-   "lastChange": "2026-10-28T22:51:07Z",
+   "version": 8,
+   "lastChange": "2026-11-07T20:36:58Z",
    "history": [
+    {
+     "sha": "1bbbe99",
+     "date": "2026-11-07T20:36:58Z",
+     "msg": "9 Seiten übersetzbar: Texte von AGB, Datenschutz, Impressum, Blog (Übersicht, Autoren, Beitrag, Kommentare, Teilen, CTA)"
+    },
     {
      "sha": "4a8718b",
      "date": "2026-10-28T22:51:07Z",
@@ -492,15 +534,22 @@
    "route": "/datenschutz",
    "file": "app/[locale]/(marketing)/datenschutz/page.tsx",
    "group": "marketing",
-   "title": "Datenschutzerklärung — Eilers+Friends",
-   "namespaces": [],
+   "title": null,
+   "namespaces": [
+    "legal.datenschutz"
+   ],
    "files": [
     "app/[locale]/(marketing)/datenschutz/page.tsx"
    ],
    "lpBacked": false,
-   "version": 10,
-   "lastChange": "2026-05-15T18:38:19Z",
+   "version": 11,
+   "lastChange": "2026-11-07T20:36:58Z",
    "history": [
+    {
+     "sha": "1bbbe99",
+     "date": "2026-11-07T20:36:58Z",
+     "msg": "9 Seiten übersetzbar: Texte von AGB, Datenschutz, Impressum, Blog (Übersicht, Autoren, Beitrag, Kommentare, Teilen, CTA)"
+    },
     {
      "sha": "998c5f7",
      "date": "2026-05-15T18:38:19Z",
@@ -535,11 +584,6 @@
      "sha": "cd5a15f",
      "date": "2026-04-26T14:56:14Z",
      "msg": "feat: add page.tsx page"
-    },
-    {
-     "sha": "c80d231",
-     "date": "2026-03-14T23:21:42Z",
-     "msg": "feat: Kompletter Neuaufbau — sauberes Fundament nach CLAUDE.md"
     }
    ]
   },
@@ -627,15 +671,20 @@
    "route": "/frameworks",
    "file": "app/[locale]/(marketing)/frameworks/page.tsx",
    "group": "marketing",
-   "title": "Frameworks — Eilers+Friends",
+   "title": "Kostenlose Frameworks für B2B-Vertrieb & Führung · Eilers+Friends",
    "namespaces": [],
    "files": [
     "app/[locale]/(marketing)/frameworks/page.tsx"
    ],
    "lpBacked": true,
-   "version": 9,
-   "lastChange": "2026-07-13T19:32:11Z",
+   "version": 10,
+   "lastChange": "2026-11-07T15:03:51Z",
    "history": [
+    {
+     "sha": "b5a4f92",
+     "date": "2026-11-07T15:03:51Z",
+     "msg": "SEO: www-Kanonik (Header, Sitemap, Robots), Sitemap mit Academy/Mystery/Frameworks/Blog, Login/Kundenbereich/Checkout no"
+    },
     {
      "sha": "52c1dcb",
      "date": "2026-07-13T19:32:11Z",
@@ -670,11 +719,6 @@
      "sha": "8f7c7ca",
      "date": "2026-05-13T21:39:54Z",
      "msg": "feat(frameworks): page redesign + hero+card prompts + target-aware admin regen + arrows out"
-    },
-    {
-     "sha": "66370f8",
-     "date": "2026-05-05T19:39:21Z",
-     "msg": "fix(i18n): defaultLocale → 'de' + locale-aware metadata + redirect for DE-only sub-pages"
     }
    ]
   },
@@ -698,9 +742,14 @@
     "components/call-check/SkillMap.tsx"
    ],
    "lpBacked": false,
-   "version": 4,
-   "lastChange": "2026-10-17T22:23:04Z",
+   "version": 5,
+   "lastChange": "2026-11-07T14:58:10Z",
    "history": [
+    {
+     "sha": "e90551f",
+     "date": "2026-11-07T14:58:10Z",
+     "msg": "Navigation und Links direkt auf /academy statt über die /salesmade-Weiterleitung; salesmade.com zeigt die Academy"
+    },
     {
      "sha": "118449e",
      "date": "2026-10-17T22:23:04Z",
@@ -811,15 +860,22 @@
    "route": "/impressum",
    "file": "app/[locale]/(marketing)/impressum/page.tsx",
    "group": "marketing",
-   "title": "Impressum — Eilers+Friends",
-   "namespaces": [],
+   "title": null,
+   "namespaces": [
+    "legal.impressum"
+   ],
    "files": [
     "app/[locale]/(marketing)/impressum/page.tsx"
    ],
    "lpBacked": false,
-   "version": 10,
-   "lastChange": "2026-05-15T18:38:19Z",
+   "version": 11,
+   "lastChange": "2026-11-07T20:36:58Z",
    "history": [
+    {
+     "sha": "1bbbe99",
+     "date": "2026-11-07T20:36:58Z",
+     "msg": "9 Seiten übersetzbar: Texte von AGB, Datenschutz, Impressum, Blog (Übersicht, Autoren, Beitrag, Kommentare, Teilen, CTA)"
+    },
     {
      "sha": "998c5f7",
      "date": "2026-05-15T18:38:19Z",
@@ -854,11 +910,6 @@
      "sha": "255e9a8",
      "date": "2026-04-26T20:01:19Z",
      "msg": "feat(salesmade): build full LP from mined eilersfriends.com content"
-    },
-    {
-     "sha": "b0ece43",
-     "date": "2026-04-26T14:56:13Z",
-     "msg": "feat: add page.tsx page"
     }
    ]
   },
@@ -935,9 +986,14 @@
     "components/blog/AuthorLatest.tsx"
    ],
    "lpBacked": false,
-   "version": 9,
-   "lastChange": "2026-10-28T22:34:34Z",
+   "version": 10,
+   "lastChange": "2026-11-07T14:58:10Z",
    "history": [
+    {
+     "sha": "e90551f",
+     "date": "2026-11-07T14:58:10Z",
+     "msg": "Navigation und Links direkt auf /academy statt über die /salesmade-Weiterleitung; salesmade.com zeigt die Academy"
+    },
     {
      "sha": "0d5fff3",
      "date": "2026-10-28T22:34:34Z",
@@ -972,11 +1028,6 @@
      "sha": "c80d231",
      "date": "2026-03-14T23:21:42Z",
      "msg": "feat: Kompletter Neuaufbau — sauberes Fundament nach CLAUDE.md"
-    },
-    {
-     "sha": "6b77528",
-     "date": "2026-02-28T21:54:01Z",
-     "msg": "fix: match Markus page design 1:1 to original WebDev"
     }
    ]
   },
@@ -1007,15 +1058,22 @@
    "route": "/salesmade/ai-intensive",
    "file": "app/[locale]/(marketing)/salesmade/ai-intensive/page.tsx",
    "group": "marketing",
-   "title": "SalesMade AI Intensive — Nur für Alumni | Eilers+Friends",
-   "namespaces": [],
+   "title": null,
+   "namespaces": [
+    "aiIntensive"
+   ],
    "files": [
     "app/[locale]/(marketing)/salesmade/ai-intensive/page.tsx"
    ],
    "lpBacked": false,
-   "version": 2,
-   "lastChange": "2026-06-15T22:40:04Z",
+   "version": 3,
+   "lastChange": "2026-11-07T20:36:58Z",
    "history": [
+    {
+     "sha": "1bbbe99",
+     "date": "2026-11-07T20:36:58Z",
+     "msg": "9 Seiten übersetzbar: Texte von AGB, Datenschutz, Impressum, Blog (Übersicht, Autoren, Beitrag, Kommentare, Teilen, CTA)"
+    },
     {
      "sha": "85d6b8a",
      "date": "2026-06-15T22:40:04Z",
@@ -1112,16 +1170,29 @@
    "route": "/salesmade/frontrow",
    "file": "app/[locale]/(marketing)/salesmade/frontrow/page.tsx",
    "group": "marketing",
-   "title": "Front Row — Instant Influence",
-   "namespaces": [],
+   "title": null,
+   "namespaces": [
+    "frontRow.form",
+    "frontRow.page"
+   ],
    "files": [
     "app/[locale]/(marketing)/salesmade/frontrow/FrontRowForm.tsx",
     "app/[locale]/(marketing)/salesmade/frontrow/page.tsx"
    ],
    "lpBacked": false,
-   "version": 4,
-   "lastChange": "2026-05-15T16:51:20Z",
+   "version": 6,
+   "lastChange": "2026-11-07T20:36:58Z",
    "history": [
+    {
+     "sha": "1bbbe99",
+     "date": "2026-11-07T20:36:58Z",
+     "msg": "9 Seiten übersetzbar: Texte von AGB, Datenschutz, Impressum, Blog (Übersicht, Autoren, Beitrag, Kommentare, Teilen, CTA)"
+    },
+    {
+     "sha": "e90551f",
+     "date": "2026-11-07T14:58:10Z",
+     "msg": "Navigation und Links direkt auf /academy statt über die /salesmade-Weiterleitung; salesmade.com zeigt die Academy"
+    },
     {
      "sha": "fa406a4",
      "date": "2026-05-15T16:51:20Z",
@@ -1237,9 +1308,14 @@
     "components/schedule/BookingWidget.tsx"
    ],
    "lpBacked": false,
-   "version": 12,
-   "lastChange": "2026-11-07T14:34:44Z",
+   "version": 13,
+   "lastChange": "2026-11-07T14:47:43Z",
    "history": [
+    {
+     "sha": "87b377e",
+     "date": "2026-11-07T14:47:43Z",
+     "msg": "Buchung: Quiz-Kontext lesbar und nicht doppelt"
+    },
     {
      "sha": "fac39f1",
      "date": "2026-11-07T14:34:44Z",
@@ -1274,11 +1350,6 @@
      "sha": "b4e58ed",
      "date": "2026-07-04T18:44:34Z",
      "msg": "Fix: BookingWidget Client-Crash — Null-Cursor-Guard vor Kalender-Render (Slots geladen, cursor noch nicht gesetzt)"
-    },
-    {
-     "sha": "e3c2d52",
-     "date": "2026-07-03T23:55:17Z",
-     "msg": "Buchungsseiten i18n (DE/EN/ES) + Besucher-Zeitzone (Auto-Detect, Anzeige über Kalender, Auswahl 24 Städte), lokalisierte"
     }
    ]
   },
@@ -1328,7 +1399,7 @@
    "route": "/schedule",
    "file": "app/[locale]/(marketing)/schedule/page.tsx",
    "group": "marketing",
-   "title": "Termin buchen — Eilers+Friends",
+   "title": "Termin buchen · Eilers+Friends",
    "namespaces": [
     "schedule"
    ],
@@ -1336,9 +1407,14 @@
     "app/[locale]/(marketing)/schedule/page.tsx"
    ],
    "lpBacked": false,
-   "version": 6,
-   "lastChange": "2026-09-21T16:28:01Z",
+   "version": 7,
+   "lastChange": "2026-11-07T15:03:51Z",
    "history": [
+    {
+     "sha": "b5a4f92",
+     "date": "2026-11-07T15:03:51Z",
+     "msg": "SEO: www-Kanonik (Header, Sitemap, Robots), Sitemap mit Academy/Mystery/Frameworks/Blog, Login/Kundenbereich/Checkout no"
+    },
     {
      "sha": "49cd32d",
      "date": "2026-09-21T16:28:01Z",
@@ -1769,9 +1845,14 @@
     "app/[locale]/(portal)/dashboard/programs/page.tsx"
    ],
    "lpBacked": false,
-   "version": 1,
-   "lastChange": "2026-05-24T00:29:55Z",
+   "version": 2,
+   "lastChange": "2026-11-07T14:58:10Z",
    "history": [
+    {
+     "sha": "e90551f",
+     "date": "2026-11-07T14:58:10Z",
+     "msg": "Navigation und Links direkt auf /academy statt über die /salesmade-Weiterleitung; salesmade.com zeigt die Academy"
+    },
     {
      "sha": "89e3968",
      "date": "2026-05-24T00:29:55Z",
@@ -2003,9 +2084,24 @@
     "components/lp/story/story-css.ts"
    ],
    "lpBacked": true,
-   "version": 32,
-   "lastChange": "2026-11-07T14:42:00Z",
+   "version": 35,
+   "lastChange": "2026-11-07T20:18:37Z",
    "history": [
+    {
+     "sha": "497420a",
+     "date": "2026-11-07T20:18:37Z",
+     "msg": "Übersetzungs-Versionsstand je Sektion (veraltet nach neuer Version), Page-Tree: Modus je Seite + Jetzt übersetzen; wöche"
+    },
+    {
+     "sha": "2a8c071",
+     "date": "2026-11-07T18:25:22Z",
+     "msg": "Logoleiste: Kategorien je Logo (Admin), Story-Logoleiste filtert nach Kategorie; Academy nutzt die Haupt-Logoleiste"
+    },
+    {
+     "sha": "87b377e",
+     "date": "2026-11-07T14:47:43Z",
+     "msg": "Buchung: Quiz-Kontext lesbar und nicht doppelt"
+    },
     {
      "sha": "aada57e",
      "date": "2026-11-07T14:42:00Z",
@@ -2030,21 +2126,6 @@
      "sha": "bb11df5",
      "date": "2026-11-05T22:52:18Z",
      "msg": "Report-Prüfpunkte einspaltig, gleich ausgerichtet"
-    },
-    {
-     "sha": "33553fe",
-     "date": "2026-11-05T20:28:50Z",
-     "msg": "Story-Logoleiste: Abstand zur Überschrift"
-    },
-    {
-     "sha": "4957648",
-     "date": "2026-11-05T20:25:21Z",
-     "msg": "Story-Logoleiste nutzt das Startseiten-Modul (LogoScrollbar, Admin-Größen)"
-    },
-    {
-     "sha": "2b8dbae",
-     "date": "2026-11-05T20:22:09Z",
-     "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
     }
    ]
   },
@@ -2176,7 +2257,7 @@
    "route": "/mystery-shopping",
    "file": "app/[locale]/mystery-shopping/page.tsx",
    "group": "root",
-   "title": null,
+   "title": "Mystery Shopping: what league is your sales team playing in?",
    "namespaces": [],
    "files": [
     "app/[locale]/mystery-shopping/page.tsx",
@@ -2190,9 +2271,29 @@
     "components/lp/story/story-css.ts"
    ],
    "lpBacked": true,
-   "version": 17,
-   "lastChange": "2026-11-07T14:42:00Z",
+   "version": 21,
+   "lastChange": "2026-11-07T20:18:37Z",
    "history": [
+    {
+     "sha": "497420a",
+     "date": "2026-11-07T20:18:37Z",
+     "msg": "Übersetzungs-Versionsstand je Sektion (veraltet nach neuer Version), Page-Tree: Modus je Seite + Jetzt übersetzen; wöche"
+    },
+    {
+     "sha": "2a8c071",
+     "date": "2026-11-07T18:25:22Z",
+     "msg": "Logoleiste: Kategorien je Logo (Admin), Story-Logoleiste filtert nach Kategorie; Academy nutzt die Haupt-Logoleiste"
+    },
+    {
+     "sha": "b5a4f92",
+     "date": "2026-11-07T15:03:51Z",
+     "msg": "SEO: www-Kanonik (Header, Sitemap, Robots), Sitemap mit Academy/Mystery/Frameworks/Blog, Login/Kundenbereich/Checkout no"
+    },
+    {
+     "sha": "87b377e",
+     "date": "2026-11-07T14:47:43Z",
+     "msg": "Buchung: Quiz-Kontext lesbar und nicht doppelt"
+    },
     {
      "sha": "aada57e",
      "date": "2026-11-07T14:42:00Z",
@@ -2212,26 +2313,6 @@
      "sha": "39b5bf8",
      "date": "2026-11-06T19:16:40Z",
      "msg": "Academy: neue Seite aus dem Landingpage-System (/academy), story_html + story_system, Quiz-API, Preis-Sticker rot/blau; "
-    },
-    {
-     "sha": "bb11df5",
-     "date": "2026-11-05T22:52:18Z",
-     "msg": "Report-Prüfpunkte einspaltig, gleich ausgerichtet"
-    },
-    {
-     "sha": "33553fe",
-     "date": "2026-11-05T20:28:50Z",
-     "msg": "Story-Logoleiste: Abstand zur Überschrift"
-    },
-    {
-     "sha": "4957648",
-     "date": "2026-11-05T20:25:21Z",
-     "msg": "Story-Logoleiste nutzt das Startseiten-Modul (LogoScrollbar, Admin-Größen)"
-    },
-    {
-     "sha": "2b8dbae",
-     "date": "2026-11-05T20:22:09Z",
-     "msg": "Landing- und Checkoutseiten: dunkler Footer und Logo-Größe wie auf der Startseite"
     }
    ]
   },
@@ -2277,9 +2358,14 @@
     "components/sections/TestimonialsSection.tsx"
    ],
    "lpBacked": false,
-   "version": 59,
-   "lastChange": "2026-11-06T19:16:40Z",
+   "version": 60,
+   "lastChange": "2026-11-07T14:58:10Z",
    "history": [
+    {
+     "sha": "e90551f",
+     "date": "2026-11-07T14:58:10Z",
+     "msg": "Navigation und Links direkt auf /academy statt über die /salesmade-Weiterleitung; salesmade.com zeigt die Academy"
+    },
     {
      "sha": "39b5bf8",
      "date": "2026-11-06T19:16:40Z",
@@ -2314,11 +2400,6 @@
      "sha": "dfdd6ed",
      "date": "2026-05-23T12:10:39Z",
      "msg": "feat(logos): Upload-Pipeline mit Progress, Auto-BW & deterministic Naming"
-    },
-    {
-     "sha": "5503c50",
-     "date": "2026-05-15T18:43:27Z",
-     "msg": "fix(build): locale guards an neue routing.locales ['de','en','es'] angepasst"
     }
    ]
   }
