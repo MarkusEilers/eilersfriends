@@ -14,7 +14,7 @@ import { upsertTrustLogo } from '@/lib/db/queries/trust-logos'
  */
 
 export interface CompanySuggestion { name: string; domain: string; source: 'crm' | 'web'; logo?: string | null }
-export interface LogoCandidate { url: string; label: string; kind: 'svg' | 'img' | 'icon' }
+export interface LogoCandidate { url: string; label: string; kind: 'svg' | 'img' | 'icon'; score?: number }
 
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36'
 
@@ -81,6 +81,7 @@ export async function findLogoCandidatesAction(domain: string): Promise<LogoCand
   if (!d) return []
   const out: LogoCandidate[] = []
   const add = (c: LogoCandidate | null) => { if (c && !out.some((o) => o.url === c.url)) out.push(c) }
+  const stem = d.split('.')[0]
   let html = ''
   let base = `https://${d}/`
   for (const u of [`https://www.${d}/`, `https://${d}/`]) {
@@ -97,15 +98,17 @@ export async function findLogoCandidatesAction(domain: string): Promise<LogoCand
       const src = /\bsrc=["']([^"']+)["']/i.exec(tag)?.[1] || /\bdata-src=["']([^"']+)["']/i.exec(tag)?.[1]
       if (!src || src.startsWith('data:image/gif')) continue
       const u = abs(src, base)
-      if (u) add({ url: u, label: 'Logo auf der Website', kind: /\.svg(\?|$)/i.test(u) ? 'svg' : 'img' })
-      if (out.length >= 4) break
+      // Eigenes Logo (Name der Firma in Pfad/Alt) vor fremden Logos (Kunden, Partner, Siegel)
+      const own = stem && tag.toLowerCase().includes(stem)
+      if (u) add({ url: u, label: own ? 'Logo auf der Website' : 'Bild mit „logo“ (evtl. Partner)', kind: /\.svg(\?|$)/i.test(u) ? 'svg' : 'img', score: own ? 100 : 20 })
+      if (out.length >= 8) break
     }
     // 2) Inline-SVG in der Nähe von „logo“
     for (const m of html.matchAll(/<(a|div|span|figure|header)\b[^>]*logo[^>]*>\s*(<svg[\s\S]*?<\/svg>)/gi)) {
       const svg = m[2]
       if (svg.length > 400 && svg.length < 120000) {
         const withNs = svg.includes('xmlns=') ? svg : svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"')
-        add({ url: `data:image/svg+xml;base64,${Buffer.from(withNs).toString('base64')}`, label: 'Logo (SVG im Seitenkopf)', kind: 'svg' })
+        add({ url: `data:image/svg+xml;base64,${Buffer.from(withNs).toString('base64')}`, label: 'Logo (SVG im Seitenkopf)', kind: 'svg', score: 80 })
       }
       if (out.filter((o) => o.kind === 'svg').length >= 2) break
     }
@@ -115,12 +118,12 @@ export async function findLogoCandidatesAction(domain: string): Promise<LogoCand
       const rel = /\brel=["']([^"']+)["']/i.exec(tag)?.[1]?.toLowerCase() ?? ''
       const href = /\bhref=["']([^"']+)["']/i.exec(tag)?.[1]
       if (!href) continue
-      if (rel.includes('mask-icon') || (rel.includes('icon') && /\.svg(\?|$)/i.test(href))) add({ url: abs(href, base)!, label: 'Icon (SVG)', kind: 'icon' })
-      else if (rel.includes('apple-touch-icon')) add({ url: abs(href, base)!, label: 'App-Icon', kind: 'icon' })
+      if (rel.includes('mask-icon') || (rel.includes('icon') && /\.svg(\?|$)/i.test(href))) add({ url: abs(href, base)!, label: 'Icon (SVG)', kind: 'icon', score: 10 })
+      else if (rel.includes('apple-touch-icon')) add({ url: abs(href, base)!, label: 'App-Icon', kind: 'icon', score: 10 })
     }
   }
-  add({ url: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=128`, label: 'Favicon (Notlösung)', kind: 'icon' })
-  return out.filter((c) => c.url).slice(0, 8)
+  add({ url: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=128`, label: 'Favicon (Notlösung)', kind: 'icon', score: 1 })
+  return out.filter((c) => c.url).sort((a, b) => (b.score ?? 0) - (a.score ?? 0)).slice(0, 8)
 }
 
 export async function quickAddLogoAction(input: { name: string; domain: string; logoUrl: string; categories: string[] }): Promise<{ ok: boolean; error?: string }> {
