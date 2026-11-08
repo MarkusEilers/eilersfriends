@@ -9,7 +9,7 @@ import de from '@/lib/i18n/messages/de.json'
  */
 const PAGES: { slug: string; path: string; name: string; max: number }[] = [
   { slug: 'home', path: '/', name: 'Startseite', max: 6000 },
-  { slug: 'academy', path: '/academy', name: 'SalesMade Academy', max: 12000 },
+  { slug: 'academy', path: '/academy', name: 'SalesMade Academy', max: 9000 },
   { slug: 'markus', path: '/markus', name: 'Markus Eilers (Keynotes, 1:1-Coaching, Brief von Markus)', max: 8000 },
   { slug: 'mystery-shopping', path: '/mystery-shopping', name: 'Mystery Shopping', max: 2500 },
   { slug: 'mystery-shopping-checkout', path: '/checkout/mystery-shopping', name: 'Mystery Shopping Buchung', max: 2500 },
@@ -46,21 +46,25 @@ function sectionText(type: string, content: Record<string, unknown>): string {
   return out.join('\n')
 }
 
-let cache: { text: string; at: number } | null = null
+let cache: { rows: { slug: string; type: string; content: Record<string, unknown> }[]; at: number } | null = null
 
-export async function siteKnowledge(): Promise<string> {
-  if (cache && Date.now() - cache.at < 600000) return cache.text
+/** path = Seite, auf der der Besucher gerade ist — deren Inhalt kommt vollständig mit, alle anderen gekürzt. */
+export async function siteKnowledge(path?: string): Promise<string> {
   const blocks: string[] = []
+  const cur = (path ?? '').replace(/^\/(en|es)(?=\/|$)/, '') || '/'
   try {
+    if (!cache || Date.now() - cache.at > 600000) {
     const res = await db.execute(sql`
       SELECT p.slug, s.type, s.content
       FROM landing_pages p JOIN landing_page_sections s ON s.landing_page_id = p.id
       WHERE p.status = 'published' AND s.is_visible
       ORDER BY p.slug, s."order"`)
-    const rows = (Array.isArray(res) ? res : ((res as unknown as { rows?: unknown[] }).rows ?? [])) as { slug: string; type: string; content: Record<string, unknown> }[]
+    cache = { rows: (Array.isArray(res) ? res : ((res as unknown as { rows?: unknown[] }).rows ?? [])) as { slug: string; type: string; content: Record<string, unknown> }[], at: Date.now() }
+    }
+    const rows = cache.rows
     for (const pg of PAGES) {
       const text = rows.filter((r) => r.slug === pg.slug).map((r) => sectionText(r.type, r.content)).filter(Boolean).join('\n')
-      if (text) blocks.push(`### ${pg.name} (eilersfriends.com${pg.path})\n${text.slice(0, pg.max)}`)
+      if (text) blocks.push(`### ${pg.name} (eilersfriends.com${pg.path})${cur === pg.path ? ' — DIE SEITE, AUF DER DER BESUCHER GERADE IST' : ''}\n${text.slice(0, cur === pg.path ? 30000 : pg.max)}`)
     }
   } catch { /* Seiten-Wissen ist optional */ }
   try {
@@ -71,9 +75,7 @@ export async function siteKnowledge(): Promise<string> {
       blocks.push(`### Aljona Eilers (Leadership, Liquid Leadership, eilersfriends.com/aljona)\n${out.join('\n').slice(0, 5000)}`)
     }
   } catch { /* ignore */ }
-  const text = blocks.length
-    ? `WEBSITE-INHALTE (aktueller Stand der Seiten — nutze sie für Fragen zu Angeboten, Personen, Keynotes, Ablauf; verweise auf die passende Seite):\n\n${blocks.join('\n\n')}`
+  return blocks.length
+    ? `WEBSITE-INHALTE (aktueller Stand der Seiten — nutze sie für Fragen zu Angeboten, Personen, Keynotes, Ablauf, Kundenstimmen; verweise auf die passende Seite):\n\n${blocks.join('\n\n')}`
     : ''
-  cache = { text, at: Date.now() }
-  return text
 }

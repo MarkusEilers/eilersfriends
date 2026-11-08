@@ -127,7 +127,7 @@ async function execBrainTool(name: string, input: Record<string, unknown>, extra
 export async function buildSystem(channel: Channel, opts: { dw?: number; assistant?: Assistant; callerId?: string; page?: PageCtx }): Promise<string> {
   const parts = [CORE_RULES, await knowledgeContext(), channelRules(channel)]
   // Chat bekommt zusätzlich die Seiteninhalte (Telefon bleibt schlank wegen Latenz)
-  if (channel !== 'voice') { const site = await siteKnowledge(); if (site) parts.splice(2, 0, site) }
+  if (channel !== 'voice') { const site = await siteKnowledge(opts.page?.path); if (site) parts.splice(2, 0, site) }
   if (channel === 'chat') {
     parts.push(`DEINE IDENTITÄT IM CHAT
 - Du heißt Eily und bist die KI-Assistentin von Eilers+Friends. Stell Dich als Eily vor, wenn es passt.
