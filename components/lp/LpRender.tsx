@@ -19,6 +19,8 @@ import { LpFrameworkSteps } from './LpFrameworkSteps'
 import { LpLeadMagnet } from './LpLeadMagnet'
 import { LpGeneric } from './LpGeneric'
 import { LpCallCheck } from './LpCallCheck'
+import { HOME_CSS } from './story/home-assets'
+import { LPX_CSS } from './lpx-css'
 
 export interface SimpleSection {
   id: string
@@ -32,14 +34,17 @@ export function LpRender({
   accent = '#1A5FD4',
   emailList = 'general',
   storyRenderer,
+  theme,
 }: {
   sections: SimpleSection[]
   accent?: string
   emailList?: string
   /** Server-Seiten reichen hier die Story-Bausteine durch (Squeeze/Checkout-Design). Ohne: Platzhalter, z. B. in der Editor-Vorschau. */
   storyRenderer?: (type: string, content: Record<string, unknown>, id: string) => React.ReactNode
+  /** 'ef' = Stil der neuen Startseite (Framework-Seiten) */
+  theme?: 'ef'
 }) {
-  return (
+  const body = (
     <>
       {sections
         .filter((s) => s.isVisible)
@@ -105,5 +110,13 @@ export function LpRender({
           }
         })}
     </>
+  )
+  if (theme !== 'ef') return body
+  return (
+    <div className="hm lpx">
+      <style href="home-css" precedence="default">{HOME_CSS}</style>
+      <style href="lpx-css" precedence="lpx">{LPX_CSS}</style>
+      {body}
+    </div>
   )
 }

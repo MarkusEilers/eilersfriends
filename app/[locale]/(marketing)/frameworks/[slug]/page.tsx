@@ -87,6 +87,7 @@ export default async function FrameworkDetailPage({ params, searchParams }: Page
         }))}
         accent={accent}
         emailList={page!.emailList ?? `framework-${page!.slug}`}
+        theme="ef"
       />
     </div>
   )

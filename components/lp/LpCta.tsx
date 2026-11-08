@@ -1,6 +1,6 @@
 export function LpCta({ content, accent }: { content: Record<string, any>; accent: string }) {
   return (
-    <section className="px-6 py-20 bg-white">
+    <section className="lpx-c px-6 py-20 bg-white">
       <div className="mx-auto max-w-2xl text-center">
         {content.headline && (
           <h2 className="text-3xl font-bold sm:text-4xl" style={{ color: '#0D0D0B' }}>

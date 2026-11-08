@@ -55,7 +55,7 @@ export function LpCoachBio({ content }: { content: Record<string, any> }) {
   }
 
   return (
-    <section className="px-6 py-16" style={{ backgroundColor: '#FAFAF8' }}>
+    <section className="lpx-coach px-6 py-16" style={{ backgroundColor: '#FAFAF8' }}>
       <div className="mx-auto max-w-3xl">
         {content.eyebrow && (
           <p className="text-center text-xs font-bold uppercase tracking-widest mb-6" style={{ color: accent }}>

@@ -11,7 +11,7 @@ export function LpRiskReversal({
       : []
 
   return (
-    <section className="px-6 py-16 bg-white">
+    <section className="lpx-c px-6 py-16 bg-white">
       <div className="mx-auto max-w-3xl rounded-3xl p-8 sm:p-10" style={{ backgroundColor: `${accent}08`, border: `1px solid ${accent}25` }}>
         <div className="flex flex-col items-center text-center mb-6">
           <div

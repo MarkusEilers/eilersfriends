@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { KaroPatternCorner } from '@/components/blocks/KaroPattern'
+import { HeroBackdrop } from './story/HeroBackdrop'
 
 interface LpHeroProps {
   content: Record<string, any>
@@ -30,6 +31,53 @@ export function LpHero({ content, accent, emailList }: LpHeroProps) {
   }
 
   const showForm = !!(content.showEmailForm)
+
+  // Neuer Stil: vollflächiges S/W-Bild, Text links (Framework-Seiten)
+  if (content.backgroundImage && content.heroStyle !== 'overlay') {
+    return (
+      <section className="efh">
+        <HeroBackdrop src={content.backgroundImage as string} label={(content.backgroundAlt as string) || ''} />
+        <div className="wrap">
+          <div className="efh-copy" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {Array.isArray(content.pills) && content.pills.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {(content.pills as string[]).map((p, i) => (
+                  <span key={i} className="chip" style={{ background: i === 0 ? '#E8EFFB' : '#fff', color: i === 0 ? '#124293' : '#3A3633', border: i === 0 ? 0 : '1px solid #E8E2D9', fontSize: 12, padding: '6px 11px' }}>{p}</span>
+                ))}
+              </div>
+            )}
+            <h1 style={{ margin: 0, fontSize: 'clamp(42px,5.4vw,84px)', fontWeight: 600, letterSpacing: '-.045em', lineHeight: 0.98, textWrap: 'balance', color: '#0D0D0B' } as React.CSSProperties}>
+              {(content.headline as string) || 'Headline eintragen'}
+            </h1>
+            {content.subheadline && <p className="lead" style={{ maxWidth: 560 }}>{content.subheadline as string}</p>}
+            {showForm ? (
+              status === 'done' ? (
+                <div className="card" style={{ padding: 20, maxWidth: 480 }}>
+                  <p style={{ margin: 0, fontWeight: 600 }}>Du bist dabei.</p>
+                  <p className="body" style={{ margin: '6px 0 0' }}>Bitte bestätige Deine E-Mail-Adresse — schau in Dein Postfach.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexWrap: 'wrap', gap: 10, maxWidth: 560 }}>
+                  <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Dein Vorname"
+                    style={{ flex: '1 1 160px', minHeight: 52, borderRadius: 999, border: '1px solid #E8E2D9', padding: '0 20px', fontSize: 15, background: '#fff' }} />
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Deine E-Mail-Adresse"
+                    style={{ flex: '2 1 220px', minHeight: 52, borderRadius: 999, border: '1px solid #E8E2D9', padding: '0 20px', fontSize: 15, background: '#fff' }} />
+                  <button type="submit" disabled={status === 'loading'} className="btnb" style={{ flex: '1 1 100%' }}>
+                    {status === 'loading' ? 'Wird gesendet…' : ((content.ctaLabel as string) || 'Jetzt anmelden →')}
+                  </button>
+                  {status === 'error' && <p style={{ margin: 0, fontSize: 13, color: '#EB0028' }}>Fehler — bitte versuche es nochmal.</p>}
+                </form>
+              )
+            ) : (
+              <div style={{ paddingTop: 6 }}>
+                <a href={(content.ctaHref as string) || '#bauplan'} className="btnb">{(content.ctaLabel as string) || 'Jetzt starten →'}</a>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section
