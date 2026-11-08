@@ -6,6 +6,7 @@ import { ArrowRight, Mic, Award, Target, Lightbulb } from 'lucide-react'
 import { loadLpSections, canPreview } from '@/lib/lp/story-loader'
 import { StoryBlock, loadStoryCtx } from '@/components/lp/story/StoryBlocks'
 import { PreviewBanner } from '@/components/lp/PreviewBanner'
+import { STORY_CSS } from '@/components/lp/story/story-css'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -36,7 +37,10 @@ export default async function MarkusPage({ params, searchParams }: PageProps) {
     return (
       <main>
         {lp.status !== 'published' && <PreviewBanner status={lp.status} editHref={`/admin/landing-pages/${lp.pageId}`} slug="markus" locale={locale} />}
-        {lp.sections.map((s) => <StoryBlock key={s.id} type={s.type} c={s.content} ctx={ctx} />)}
+        {lp.sections.some((s) => s.type !== 'story_html') && <style href="story-css" precedence="default">{STORY_CSS}</style>}
+        {lp.sections.map((s) => s.type === 'story_html'
+          ? <StoryBlock key={s.id} type={s.type} c={s.content} ctx={ctx} />
+          : <div key={s.id} className="sb" style={{ paddingBottom: 24 }}><StoryBlock type={s.type} c={s.content} ctx={ctx} /></div>)}
         <AuthorLatest slug="markus" />
       </main>
     )
