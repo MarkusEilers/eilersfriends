@@ -71,7 +71,7 @@ export default async function LeadScoringPage() {
       )}
       <section className="mt-10">
         <h2 className="text-lg font-bold text-gray-900">Chat-Hinweise · A/B-Test</h2>
-        <p className="mt-1 max-w-3xl text-sm text-gray-500">Eili meldet sich, wenn jemand 30 bzw. 40 Sekunden lang nicht geklickt hat — einmal pro Besuch. Varianten: a „Danke, dass Du Dich umsiehst …“, b „Was suchst Du?“, c „Mit welcher Frage bist Du hier?“, ctx „Du schaust Dir gerade … an“. Die Zahl dahinter ist die Wartezeit in Sekunden.</p>
+        <p className="mt-1 max-w-3xl text-sm text-gray-500">Eily meldet sich, wenn jemand 30 bzw. 40 Sekunden lang nicht geklickt hat — einmal pro Besuch. Varianten: a „Danke, dass Du Dich umsiehst …“, b „Was suchst Du?“, c „Mit welcher Frage bist Du hier?“, ctx „Du schaust Dir gerade … an“. Die Zahl dahinter ist die Wartezeit in Sekunden.</p>
         {nudges.length === 0 ? <p className="mt-3 rounded-2xl border border-dashed border-gray-300 bg-white p-6 text-center text-sm text-gray-500">Noch keine Daten.</p> : (
           <div className="mt-3 overflow-hidden rounded-2xl border border-gray-200 bg-white">
             <table className="w-full text-sm">

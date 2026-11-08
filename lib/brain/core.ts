@@ -127,7 +127,7 @@ export async function buildSystem(channel: Channel, opts: { dw?: number; assista
   const parts = [CORE_RULES, await knowledgeContext(), channelRules(channel)]
   if (channel === 'chat') {
     parts.push(`DEINE IDENTITÄT IM CHAT
-- Du heißt Eili und bist die KI-Assistentin von Eilers+Friends. Stell Dich als Eili vor, wenn es passt.
+- Du heißt Eily und bist die KI-Assistentin von Eilers+Friends. Stell Dich als Eily vor, wenn es passt.
 - Du bist eine KI, kein Mensch. Wenn jemand fragt, sag das offen und freundlich — und biete an, mit Markus oder dem Team zu verbinden.
 - Antworte in der Sprache, in der Dir geschrieben wird (Deutsch, Englisch oder Spanisch).`)
     const pg = opts.page

@@ -12,43 +12,43 @@ type Msg = { role: 'user' | 'assistant'; content: string }
 type Lang = 'de' | 'en' | 'es'
 const AVATAR = '/eili/eili.jpg'
 
-/** Eili — die KI-Assistentin von Eilers+Friends. Texte je Sprache. */
+/** Eily — die KI-Assistentin von Eilers+Friends. Texte je Sprache. */
 const TX: Record<Lang, {
   greeting: string; role: string; open: string; close: string; placeholder: string; human: string; send: string
   error: string; offline: string; nudges: Record<string, string>; nudgeCtx: (s: string) => string; dismiss: string
 }> = {
   de: {
-    greeting: 'Hey, ich bin Eili, die KI-Assistentin von Eilers+Friends. Frag mich alles zum Mystery Shopping, zur SalesMade Academy oder dazu, wie Vertrieb planbar wird. Oder ich verbinde Dich direkt mit Markus und dem Team. Was beschäftigt Dich gerade?',
-    role: 'KI-Assistentin · Eilers+Friends', open: 'Chat mit Eili öffnen', close: 'Chat schließen', placeholder: 'Schreib Eili…',
+    greeting: 'Hey, ich bin Eily, die KI-Assistentin von Eilers+Friends. Frag mich alles zum Mystery Shopping, zur SalesMade Academy oder dazu, wie Vertrieb planbar wird. Oder ich verbinde Dich direkt mit Markus und dem Team. Was beschäftigt Dich gerade?',
+    role: 'KI-Assistentin · Eilers+Friends', open: 'Chat mit Eily öffnen', close: 'Chat schließen', placeholder: 'Schreib Eily…',
     human: 'Lieber direkt mit dem Team sprechen? →', send: 'Senden',
     error: 'Hm, da ging gerade etwas schief. Magst Du es nochmal versuchen?', offline: 'Verbindung gerade nicht möglich. Schreib uns sonst direkt: team@eilersfriends.com',
     nudges: {
       a: 'Hey, danke, dass Du Dich umsiehst. Wie kann ich Dich am besten unterstützen?',
-      b: 'Hey, ich bin Eili. Was suchst Du?',
+      b: 'Hey, ich bin Eily. Was suchst Du?',
       c: 'Hey! Mit welcher Frage bist Du hier?',
     },
     nudgeCtx: (s) => `Du schaust Dir gerade „${s}“ an. Soll ich Dir dazu etwas erklären?`, dismiss: 'Hinweis schließen',
   },
   en: {
-    greeting: "Hey, I'm Eili, the AI assistant at Eilers+Friends. Ask me anything about Mystery Shopping, the SalesMade Academy or how to make sales predictable. Or I'll connect you straight to Markus and the team. What's on your mind?",
-    role: 'AI assistant · Eilers+Friends', open: 'Open chat with Eili', close: 'Close chat', placeholder: 'Write to Eili…',
+    greeting: "Hey, I'm Eily, the AI assistant at Eilers+Friends. Ask me anything about Mystery Shopping, the SalesMade Academy or how to make sales predictable. Or I'll connect you straight to Markus and the team. What's on your mind?",
+    role: 'AI assistant · Eilers+Friends', open: 'Open chat with Eily', close: 'Close chat', placeholder: 'Write to Eily…',
     human: 'Rather talk to the team directly? →', send: 'Send',
     error: 'Hm, something went wrong. Would you try again?', offline: "Can't connect right now. Write to us directly: team@eilersfriends.com",
     nudges: {
       a: 'Hey, thanks for looking around. How can I best help you?',
-      b: "Hey, I'm Eili. What are you looking for?",
+      b: "Hey, I'm Eily. What are you looking for?",
       c: 'Hey! What question brought you here?',
     },
     nudgeCtx: (s) => `You're looking at "${s}". Want me to explain anything about it?`, dismiss: 'Close hint',
   },
   es: {
-    greeting: 'Hola, soy Eili, la asistente de IA de Eilers+Friends. Pregúntame lo que quieras sobre Mystery Shopping, la SalesMade Academy o cómo hacer las ventas previsibles. O te pongo en contacto directamente con Markus y el equipo. ¿Qué te preocupa ahora mismo?',
-    role: 'Asistente de IA · Eilers+Friends', open: 'Abrir chat con Eili', close: 'Cerrar chat', placeholder: 'Escribe a Eili…',
+    greeting: 'Hola, soy Eily, la asistente de IA de Eilers+Friends. Pregúntame lo que quieras sobre Mystery Shopping, la SalesMade Academy o cómo hacer las ventas previsibles. O te pongo en contacto directamente con Markus y el equipo. ¿Qué te preocupa ahora mismo?',
+    role: 'Asistente de IA · Eilers+Friends', open: 'Abrir chat con Eily', close: 'Cerrar chat', placeholder: 'Escribe a Eily…',
     human: '¿Prefieres hablar directamente con el equipo? →', send: 'Enviar',
     error: 'Vaya, algo ha fallado. ¿Lo intentas otra vez?', offline: 'Ahora mismo no hay conexión. Escríbenos directamente: team@eilersfriends.com',
     nudges: {
       a: 'Hola, gracias por echar un vistazo. ¿Cómo puedo ayudarte mejor?',
-      b: 'Hola, soy Eili. ¿Qué estás buscando?',
+      b: 'Hola, soy Eily. ¿Qué estás buscando?',
       c: '¡Hola! ¿Con qué pregunta has llegado aquí?',
     },
     nudgeCtx: (s) => `Estás viendo «${s}». ¿Quieres que te explique algo sobre esto?`, dismiss: 'Cerrar aviso',
@@ -291,7 +291,7 @@ export function ChatWidget() {
             </button>
             <button type="button" onClick={() => openChat(true)} className="flex items-start gap-2.5 text-left">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={AVATAR} alt="Eili" className="h-9 w-9 flex-shrink-0 rounded-full object-cover" />
+              <img src={AVATAR} alt="Eily" className="h-9 w-9 flex-shrink-0 rounded-full object-cover" />
               <span className="text-sm leading-snug text-gray-800">{nudge.text}</span>
             </button>
           </div>
@@ -308,7 +308,7 @@ export function ChatWidget() {
           style={{ backgroundColor: ACCENT }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={AVATAR} alt="Eili" className="h-full w-full object-cover" />
+          <img src={AVATAR} alt="Eily" className="h-full w-full object-cover" />
           <span className="absolute bottom-1 right-1 h-3 w-3 rounded-full border-2 border-white bg-emerald-500" />
         </button>
       )}
@@ -320,9 +320,9 @@ export function ChatWidget() {
           <div className="flex items-center justify-between px-4 py-3 text-white" style={{ backgroundColor: ACCENT }}>
             <div className="flex items-center gap-2.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={AVATAR} alt="Eili" className="h-9 w-9 rounded-full object-cover ring-2 ring-white/40" />
+              <img src={AVATAR} alt="Eily" className="h-9 w-9 rounded-full object-cover ring-2 ring-white/40" />
               <div className="leading-tight">
-                <p className="text-sm font-bold">Eili</p>
+                <p className="text-sm font-bold">Eily</p>
                 <p className="text-[10px] opacity-80">{T.role}</p>
               </div>
             </div>
