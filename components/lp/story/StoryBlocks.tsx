@@ -384,8 +384,8 @@ export async function StoryHtml({ c }: { c: C }) {
   if (c.theme === 'academy') {
     return (
       <div className="acd">
-        {efh}
         <style href="academy-css" precedence="default">{ACADEMY_CSS}</style>
+        {efh}
         <div dangerouslySetInnerHTML={{ __html: html }} />
         <AcademyInit />
       </div>
@@ -394,8 +394,8 @@ export async function StoryHtml({ c }: { c: C }) {
   if (c.theme === 'home') {
     return (
       <div className="hm">
-        {efh}
         <style href="home-css" precedence="default">{HOME_CSS}</style>
+        {efh}
         <div dangerouslySetInnerHTML={{ __html: html }} />
         <HomeInit />
       </div>

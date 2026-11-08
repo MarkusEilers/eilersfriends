@@ -23,7 +23,7 @@ export const EFH_CSS = `
 }`
 
 export function HeroStyles() {
-  return <style href="efh-css" precedence="default">{EFH_CSS}</style>
+  return <style href="efh-css" precedence="efh">{EFH_CSS}</style>
 }
 
 export function HeroBackdrop({ src, label, glow }: { src: string; label?: string; glow?: string }) {
