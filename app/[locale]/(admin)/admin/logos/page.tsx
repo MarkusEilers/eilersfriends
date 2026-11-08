@@ -3,6 +3,7 @@ import { LOGO_CATEGORIES } from '@/lib/logos/categories'
 import { saveTrustLogoAction, deleteTrustLogoAction } from '@/lib/actions/trust-logos'
 import { LogoSearchPanel } from '@/components/admin/LogoSearchPanel'
 import { LogoUploadDropzone } from '@/components/admin/LogoUploadDropzone'
+import { LogoQuickAdd } from '@/components/admin/LogoQuickAdd'
 import { Trash2, Save, Plus } from 'lucide-react'
 
 export default async function AdminLogosPage() {
@@ -18,6 +19,13 @@ export default async function AdminLogosPage() {
           CSS-Grayscale + Opacity uniform dargestellt.
         </p>
       </div>
+
+      {/* Schnell hinzufügen: nur Firmenname */}
+      <section className="mb-10">
+        <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-gray-500">Logo hinzufügen</h2>
+        <LogoQuickAdd />
+        <p className="mt-2 text-xs text-gray-400">Firmenname eingeben → Firma wählen (CRM oder Web) → das Logo wird von der Website geholt, als Farb- und S/W-Version gespeichert und eingetragen.</p>
+      </section>
 
       {/* Existing logos */}
       <section className="mb-10">
@@ -169,7 +177,7 @@ export default async function AdminLogosPage() {
       {/* Add new — fetch-based upload mit Progress + Auto-BW */}
       <section>
         <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-gray-500">
-          Neue Marke hinzufügen
+          Eigene Datei hochladen
         </h2>
         <div className="rounded-2xl border border-gray-200 bg-white p-5">
           <LogoUploadDropzone />
