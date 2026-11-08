@@ -13,6 +13,8 @@ export function LpTweetWall({
   accent,
 }: { content: Record<string, any>; accent: string }) {
   const tweets: Tweet[] = Array.isArray(content.tweets) ? content.tweets : []
+  // Kundenstimmen im Format { text, author, context } (Framework-Vorlage)
+  const quotes: { text: string; author?: string; context?: string }[] = Array.isArray(content.quotes) ? content.quotes : []
 
   return (
     <section className="px-6 py-20" style={{ backgroundColor: '#FAFAF8' }}>
@@ -33,6 +35,20 @@ export function LpTweetWall({
           <p className="mx-auto max-w-2xl text-center text-base text-gray-600 mb-12">
             {content.subheadline as string}
           </p>
+        )}
+
+        {quotes.length > 0 && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 16 }}>
+            {quotes.map((q, i) => (
+              <figure key={i} className="rounded-2xl border bg-white" style={{ margin: 0, padding: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <blockquote className="hand" style={{ margin: 0, fontSize: 26, lineHeight: 1.15, color: '#124293' }}>„{q.text}“</blockquote>
+                <figcaption style={{ marginTop: 'auto', fontSize: 14, lineHeight: 1.45, color: '#3A3633' }}>
+                  {q.author && <b style={{ display: 'block', fontWeight: 600 }}>{q.author}</b>}
+                  {q.context && <span style={{ color: '#7A746E' }}>{q.context}</span>}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         )}
 
         {/* Masonry-style columns */}

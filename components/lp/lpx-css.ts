@@ -24,5 +24,8 @@ export const LPX_CSS = `
 .lpx .lpx-coach p,.lpx .lpx-coach .text-gray-600,.lpx .lpx-coach .text-gray-500{color:#B5B2B0!important}
 .lpx .lpx-coach .uppercase.tracking-widest{color:#8FB0EC!important}
 .lpx .lpx-coach a{color:#8FB0EC!important}
+.lpx section.lpx-logos{padding-top:40px!important;padding-bottom:40px!important}
+.lpx a[class*="text-white"],.lpx a.rounded-full[style*="background"]{color:#fff!important}
+.lpx .text-white .uppercase.tracking-widest{color:rgba(255,255,255,.8)!important}
 @media(max-width:640px){.lpx section h2{font-size:clamp(30px,8vw,40px)!important}}
 `
