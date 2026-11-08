@@ -247,7 +247,13 @@
     "confirmationNote": "Вы получите письмо с подтверждением для верификации подписки.",
     "successTitle": "Почти готово!",
     "successNote": "Мы отправили вам письмо с подтверждением. Пожалуйста, подтвердите подписку.",
-    "errorNote": "Что-то пошло не так. Пожалуйста, попробуйте снова."
+    "errorNote": "Что-то пошло не так. Пожалуйста, попробуйте снова.",
+    "letter": {
+      "category": "Jeden Dienstag im Postfach",
+      "headline": "The Winning Team Letter",
+      "subtext": "Wachstum, Revenue Systems und Führung — jeden Dienstag. {count} Gründer:innen und Führungskräfte lesen mit.",
+      "body": "Kein aufgewärmtes LinkedIn-Wissen. Kein KI-Füllstoff. Echte Muster aus echten Teams. Eine Erkenntnis pro Ausgabe, die in Deinem nächsten Gespräch etwas verändert."
+    }
   },
   "footer": {
     "tagline": "Системный рост для основателей.",

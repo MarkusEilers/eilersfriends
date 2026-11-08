@@ -267,7 +267,13 @@
     "confirmationNote": "Recibirás un e-mail de confirmación para verificar tu suscripción.",
     "successTitle": "¡Casi listo!",
     "successNote": "Te hemos enviado un e-mail de confirmación. Por favor, confirma tu suscripción.",
-    "errorNote": "Algo ha salido mal. Por favor, inténtalo de nuevo."
+    "errorNote": "Algo ha salido mal. Por favor, inténtalo de nuevo.",
+    "letter": {
+      "category": "Cada martes en tu bandeja",
+      "headline": "The Winning Team Letter",
+      "subtext": "Crecimiento, sistemas de ingresos y liderazgo — cada martes. {count} fundadores y líderes lo leen.",
+      "body": "Sin frases recicladas de LinkedIn. Sin relleno generado por IA. Patrones reales de equipos reales. Un aprendizaje por edición que cambia algo en tu próxima conversación."
+    }
   },
   "footer": {
     "tagline": "Crecimiento sistemático para founders.",

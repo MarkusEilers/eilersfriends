@@ -38,6 +38,8 @@ export default async function HomePage({ params, searchParams }: { params: Promi
           {lp.sections.map((s) => s.type === 'story_html'
             ? <StoryBlock key={s.id} type={s.type} c={s.content} ctx={ctx} />
             : <div key={s.id} className="sb"><StoryBlock type={s.type} c={s.content} ctx={ctx} /></div>)}
+          {/* Newsletter: bewährtes Formular mit Einwilligung, Texte des Winning Team Letter */}
+          <NewsletterSection variant="letter" />
         </main>
         <Footer />
         <CookieBanner />

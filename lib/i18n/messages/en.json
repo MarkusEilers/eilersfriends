@@ -267,7 +267,13 @@
     "confirmationNote": "You'll receive a confirmation email to verify your subscription.",
     "successTitle": "Almost there!",
     "successNote": "We've sent you a confirmation email. Please confirm your subscription.",
-    "errorNote": "Something went wrong. Please try again."
+    "errorNote": "Something went wrong. Please try again.",
+    "letter": {
+      "category": "Every Tuesday in your inbox",
+      "headline": "The Winning Team Letter",
+      "subtext": "Growth, revenue systems, and leadership — every Tuesday. {count} founders and leaders read along.",
+      "body": "No recycled LinkedIn wisdom. No AI-generated filler. Real patterns from real teams. One insight per issue that changes something in your next conversation."
+    }
   },
   "footer": {
     "tagline": "Systematic growth for founders.",

@@ -267,7 +267,13 @@
     "confirmationNote": "Du erhältst eine Bestätigungs-E-Mail zur Verifizierung deiner Anmeldung.",
     "successTitle": "Fast geschafft!",
     "successNote": "Wir haben Dir eine Bestätigungs-E-Mail geschickt. Bitte bestätige Deine Anmeldung.",
-    "errorNote": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    "errorNote": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "letter": {
+      "category": "Jeden Dienstag im Postfach",
+      "headline": "The Winning Team Letter",
+      "subtext": "Wachstum, Revenue Systems und Führung — jeden Dienstag. {count} Gründer:innen und Führungskräfte lesen mit.",
+      "body": "Kein aufgewärmtes LinkedIn-Wissen. Kein KI-Füllstoff. Echte Muster aus echten Teams. Eine Erkenntnis pro Ausgabe, die in Deinem nächsten Gespräch etwas verändert."
+    }
   },
   "footer": {
     "tagline": "Systematisches Wachstum für Gründer:innen.",
