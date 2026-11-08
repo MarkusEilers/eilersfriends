@@ -8,6 +8,8 @@ import { LogoScrollbar } from '@/components/blocks/LogoScrollbar'
 import { getAvailability, nextQuarterLabel } from '@/lib/mystery-shopping/slots'
 import { ACADEMY_CSS } from './academy-assets'
 import { AcademyInit } from './AcademyInit'
+import { HOME_CSS } from './home-assets'
+import { HomeInit } from './HomeInit'
 import { getLocale } from 'next-intl/server'
 import { ST, storyLang, quarterLabel, type StoryLang } from '@/lib/lp/story-i18n'
 
@@ -332,14 +334,39 @@ export function StoryMobileCta({ c, ctx }: { c: C; ctx: StoryCtx }) {
  * Freie HTML-Sektion (z. B. die Academy-Seite aus Claude Design). Inhalt: { label, theme, html }.
  * theme „academy“ lädt das Academy-CSS und startet Quiz/Animationen einmal pro Seite.
  */
-export function StoryHtml({ c }: { c: C }) {
-  const html = String(c.html ?? '')
+export async function StoryHtml({ c }: { c: C }) {
+  let html = String(c.html ?? '')
+  // Live-Werte im HTML: {{ms.free}} / {{ms.capacity}} (Mystery-Shopping-Plätze)
+  if (html.includes('{{ms.')) {
+    const a = await getAvailability().catch(() => null)
+    html = html.replace(/\{\{ms\.free\}\}/g, String(a?.free ?? '')).replace(/\{\{ms\.capacity\}\}/g, String(a?.capacity ?? ''))
+  }
+  // Logo-Kacheln: Wortmarke durch das Logo aus der Logoleiste ersetzen, sobald es dort hinterlegt ist
+  if (html.includes('class="tlogo"')) {
+    const logos = await getVisibleTrustLogos().catch(() => [])
+    const norm = (x: string) => x.toLowerCase().replace(/^deutsche\s+/, '').replace(/[^a-z0-9]/g, '')
+    html = html.replace(/<div class="tlogo"><span>([^<]+)<\/span><\/div>/g, (m, name: string) => {
+      const l = logos.find((x) => x.src && norm(x.name) === norm(name))
+      if (!l) return m
+      const src = l.srcBw || l.src
+      return `<div class="tlogo"><img src="${src}" alt="${name}" style="max-height:30px;max-width:70%;object-fit:contain;filter:grayscale(1);opacity:.75;transform:scale(${(l.displayScale ?? 100) / 100})"></div>`
+    })
+  }
   if (c.theme === 'academy') {
     return (
       <div className="acd">
         <style href="academy-css" precedence="default">{ACADEMY_CSS}</style>
         <div dangerouslySetInnerHTML={{ __html: html }} />
         <AcademyInit />
+      </div>
+    )
+  }
+  if (c.theme === 'home') {
+    return (
+      <div className="hm">
+        <style href="home-css" precedence="default">{HOME_CSS}</style>
+        <div dangerouslySetInnerHTML={{ __html: html }} />
+        <HomeInit />
       </div>
     )
   }
