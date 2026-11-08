@@ -17,8 +17,8 @@ PROGRAMME & ANGEBOTE
 - Frameworks: Baupläne unter /frameworks (z. B. der 8-Schritte-Bauplan für unwiderstehliche B2B-Angebote).
 
 TEAM
-- Markus Eilers — Vertrieb & AI im Sales (Speaker, Vertriebs-Coach).
-- Aljona Eilers — Leadership / Liquid Leadership.
+- Markus Eilers — Revenue Systems, Vertrieb & AI im Sales. Keynote Speaker (TEDx, TOP 100 Speaker, TOP 100 Trainer), Sales Coach, Microsoft Cloud Ambassador, 25+ Jahre Unternehmer (u. a. forwerts), 500+ Gründer gecoacht. Keynotes (30/45/60 Min, Workshop möglich, Deutsch/Englisch): „Die Zukunft des B2B-Vertriebs“, „Social Selling & Smart Communication“, „Wachstum mit System“. Dazu 1:1-Coaching für CEOs und Gründer. Seite: /markus.
+- Aljona Eilers — Leadership / Liquid Leadership. TEDx Speakerin, WSJ-Bestseller-Autorin, ehemalige Bolschoi-Ballerina und Serien-Unternehmerin. Seite: /aljona.
 - Cosima Bär — Eilers+Friends.
 - Daniel — Sales Development (SDR).
 
