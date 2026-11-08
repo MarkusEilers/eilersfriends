@@ -10,6 +10,7 @@ import { ACADEMY_CSS } from './academy-assets'
 import { AcademyInit } from './AcademyInit'
 import { HOME_CSS } from './home-assets'
 import { HomeInit } from './HomeInit'
+import { HeroBackdrop, HeroStyles } from './HeroBackdrop'
 import { getLocale } from 'next-intl/server'
 import { ST, storyLang, quarterLabel, type StoryLang } from '@/lib/lp/story-i18n'
 
@@ -92,6 +93,33 @@ export function StoryTopnav({ c }: { c: C }) {
 
 /* ── Seite 1 ──────────────────────────────────────────────────────── */
 export function StoryHeroOptin({ c, ctx }: { c: C; ctx: StoryCtx }) {
+  // Variante mit vollflächigem Hintergrundbild (c.bg): Text links, Preis + Sprecher rechts unten
+  if (c.bg) {
+    return (
+      <section className="efh" id="optin">
+        <HeroBackdrop src={c.bg} label={c.bgLabel} />
+        <div className="wrap hero" style={{ width: '100%', paddingTop: 48, paddingBottom: 56 }}>
+          <div className="efh-copy">
+            {c.eyebrow && <span className="eb">{c.eyebrow}</span>}
+            <h1>{c.headline}</h1>
+            {c.lead && <p className="lead">{c.lead}</p>}
+            <div className="optbox">
+              {c.formEyebrow && <span className="eb">{c.formEyebrow}</span>}
+              {c.formTitle && <p className="opt-h">{c.formTitle}</p>}
+              <OptinForm button={c.button ?? 'Jetzt buchen'} next={c.next ?? '/checkout/mystery-shopping'} source={c.source ?? 'mystery-shopping'} soldOut={ctx.slots?.free === 0} />
+            </div>
+            <Slots ctx={ctx} style={{ marginTop: 20 }} />
+          </div>
+        </div>
+        <div className="efh-proof" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 12 }}>
+          <PriceTag c={c} ctx={ctx} />
+          {c.speaker?.name && (
+            <div className="speaker" style={{ position: 'static', maxWidth: 340 }}><i className="av" style={{ backgroundImage: `url(${c.speaker.photo ?? '/markus-photo.jpg'})` }} /><div><b>{c.speaker.name}</b><span>{c.speaker.text}</span></div></div>
+          )}
+        </div>
+      </section>
+    )
+  }
   return (
     <div className="wrap hero" id="optin">
       <div className="g12">
@@ -352,9 +380,11 @@ export async function StoryHtml({ c }: { c: C }) {
       return `<div class="tlogo"><img src="${src}" alt="${name}" style="max-height:30px;max-width:70%;object-fit:contain;filter:grayscale(1);opacity:.75;transform:scale(${(l.displayScale ?? 100) / 100})"></div>`
     })
   }
+  const efh = html.includes('efh') ? <HeroStyles /> : null
   if (c.theme === 'academy') {
     return (
       <div className="acd">
+        {efh}
         <style href="academy-css" precedence="default">{ACADEMY_CSS}</style>
         <div dangerouslySetInnerHTML={{ __html: html }} />
         <AcademyInit />
@@ -364,13 +394,14 @@ export async function StoryHtml({ c }: { c: C }) {
   if (c.theme === 'home') {
     return (
       <div className="hm">
+        {efh}
         <style href="home-css" precedence="default">{HOME_CSS}</style>
         <div dangerouslySetInnerHTML={{ __html: html }} />
         <HomeInit />
       </div>
     )
   }
-  return <div dangerouslySetInnerHTML={{ __html: html }} />
+  return <>{efh}<div dangerouslySetInnerHTML={{ __html: html }} /></>
 }
 
 /**

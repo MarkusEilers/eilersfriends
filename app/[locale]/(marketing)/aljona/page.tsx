@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
 import { AuthorLatest } from '@/components/blog/AuthorLatest'
+import { HeroBackdrop } from '@/components/lp/story/HeroBackdrop'
 import {
   Calendar, ArrowRight, Heart, MessageCircle, Shield, Sparkles,
   Mic, AlertTriangle, Check, Star,
@@ -46,29 +47,30 @@ export default async function AljonaPage({ params }: PageProps) {
   return (
     <main className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
 
-      {/* ─── HERO ─────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden px-6 py-20 sm:py-28" style={{ backgroundColor: burgundy }}>
-        <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1fr_320px]">
-          <div>
+      {/* ─── HERO (vollflächiges S/W-Bild mit Rot-Akzenten) ───────── */}
+      <section className="efh px-6 py-20 sm:py-24">
+        <HeroBackdrop src="/heroes/aljona.jpg" label="Aljona Eilers im Gespräch mit einem Führungsteam" glow="rgba(235,0,40,.10)" />
+        <div className="mx-auto w-full max-w-6xl">
+          <div className="efh-copy">
             <span
               className="inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest mb-6"
-              style={{ backgroundColor: 'rgba(212,25,43,0.25)', color: '#FFB3B8' }}
+              style={{ backgroundColor: 'rgba(235,0,40,0.08)', color: burgundy }}
             >
               {t('hero.badge')}
             </span>
-            <h1 className="text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl" style={{ color: '#0D0D0B', letterSpacing: '-0.035em' }}>
               {t('hero.headline1')}<br />
-              <span style={{ color: '#FFB3B8' }}>{t('hero.headlineAccent')}</span>
+              <span style={{ color: accent }}>{t('hero.headlineAccent')}</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed" style={{ color: '#3A3633' }}>
               {t('hero.subtext')}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               {heroPills.map((p) => (
                 <span
                   key={p}
-                  className="rounded-full border px-3 py-1 text-xs font-semibold"
-                  style={{ color: '#FFB3B8', borderColor: 'rgba(255,179,184,0.35)' }}
+                  className="rounded-full border bg-white/70 px-3 py-1 text-xs font-semibold"
+                  style={{ color: burgundy, borderColor: 'rgba(122,16,25,0.25)' }}
                 >
                   {p}
                 </span>
@@ -84,31 +86,16 @@ export default async function AljonaPage({ params }: PageProps) {
               </Link>
               <a
                 href="#programs"
-                className="inline-flex items-center gap-2 rounded-full border border-white/30 px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                className="inline-flex items-center gap-2 rounded-full border bg-white/60 px-8 py-4 text-sm font-semibold transition-colors hover:bg-white"
+                style={{ color: '#0D0D0B', borderColor: 'rgba(13,13,11,0.2)' }}
               >
                 {t('hero.ctaSecondary')}
               </a>
             </div>
-            <p className="mt-6 text-xs italic" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            <p className="mt-6 text-xs italic" style={{ color: '#605D5D' }}>
               {t('hero.quote')}
-              <span className="ml-2 not-italic" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('hero.quoteAuthor')}</span>
+              <span className="ml-2 not-italic" style={{ color: '#8A8784' }}>{t('hero.quoteAuthor')}</span>
             </p>
-          </div>
-
-          {/* Photo */}
-          <div className="mx-auto lg:mx-0">
-            <div
-              className="overflow-hidden rounded-3xl border-4"
-              style={{ width: 320, height: 400, borderColor: 'rgba(255,179,184,0.25)' }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/aljona-photo.jpg"
-                alt="Aljona Eilers"
-                className="h-full w-full object-cover"
-                style={{ filter: 'grayscale(20%)' }}
-              />
-            </div>
           </div>
         </div>
       </section>

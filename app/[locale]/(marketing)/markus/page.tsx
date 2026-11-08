@@ -3,14 +3,21 @@ import { getTranslations } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
 import { AuthorLatest } from '@/components/blog/AuthorLatest'
 import { ArrowRight, Mic, Award, Target, Lightbulb } from 'lucide-react'
+import { loadLpSections, canPreview } from '@/lib/lp/story-loader'
+import { StoryBlock, loadStoryCtx } from '@/components/lp/story/StoryBlocks'
+import { PreviewBanner } from '@/components/lp/PreviewBanner'
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const lp = await loadLpSections('markus', locale).catch(() => null)
   const t = await getTranslations('markusPage.meta')
-  return { title: t('title'), description: t('description') }
+  const de = locale === 'de'
+  return { title: (de && lp?.title) || t('title'), description: (de && lp?.description) || t('description') }
 }
 
 interface PageProps {
   params: Promise<{ locale: string }>
+  searchParams: Promise<{ preview?: string }>
 }
 
 interface TopicItem { title: string; subtitle: string; points: string[] }
@@ -19,8 +26,21 @@ interface TestimonialItem { text: string; author: string; role: string }
 
 const CREDENTIAL_ICONS = [Award, Target, Lightbulb, Mic]
 
-export default async function MarkusPage({ params }: PageProps) {
-  await params
+export default async function MarkusPage({ params, searchParams }: PageProps) {
+  const { locale } = await params
+  // Neue Markus-Seite aus dem Landingpage-System (Slug „markus“): live, sobald veröffentlicht; vorher mit ?preview=1 für Admins
+  const preview = await canPreview((await searchParams).preview)
+  const lp = await loadLpSections('markus', locale, preview).catch(() => null)
+  if (lp) {
+    const ctx = await loadStoryCtx()
+    return (
+      <main>
+        {lp.status !== 'published' && <PreviewBanner status={lp.status} editHref={`/admin/landing-pages/${lp.pageId}`} slug="markus" locale={locale} />}
+        {lp.sections.map((s) => <StoryBlock key={s.id} type={s.type} c={s.content} ctx={ctx} />)}
+        <AuthorLatest slug="markus" />
+      </main>
+    )
+  }
   const t = await getTranslations('markusPage')
 
   const accent = '#1A5FD4'
