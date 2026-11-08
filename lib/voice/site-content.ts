@@ -8,9 +8,9 @@ import de from '@/lib/i18n/messages/de.json'
  * spätestens 10 Minuten auch dem Bot bekannt. Code-Seiten (Aljona) kommen aus den Übersetzungsdateien.
  */
 const PAGES: { slug: string; path: string; name: string; max: number }[] = [
-  { slug: 'home', path: '/', name: 'Startseite', max: 4500 },
-  { slug: 'academy', path: '/academy', name: 'SalesMade Academy', max: 6500 },
-  { slug: 'markus', path: '/markus', name: 'Markus Eilers (Keynotes, 1:1-Coaching, Brief von Markus)', max: 6000 },
+  { slug: 'home', path: '/', name: 'Startseite', max: 6000 },
+  { slug: 'academy', path: '/academy', name: 'SalesMade Academy', max: 12000 },
+  { slug: 'markus', path: '/markus', name: 'Markus Eilers (Keynotes, 1:1-Coaching, Brief von Markus)', max: 8000 },
   { slug: 'mystery-shopping', path: '/mystery-shopping', name: 'Mystery Shopping', max: 2500 },
   { slug: 'mystery-shopping-checkout', path: '/checkout/mystery-shopping', name: 'Mystery Shopping Buchung', max: 2500 },
 ]
@@ -55,7 +55,7 @@ export async function siteKnowledge(): Promise<string> {
     const res = await db.execute(sql`
       SELECT p.slug, s.type, s.content
       FROM landing_pages p JOIN landing_page_sections s ON s.landing_page_id = p.id
-      WHERE p.status = 'published' AND s.is_visible AND p.slug = ANY(${PAGES.map((p) => p.slug)})
+      WHERE p.status = 'published' AND s.is_visible
       ORDER BY p.slug, s."order"`)
     const rows = (Array.isArray(res) ? res : ((res as unknown as { rows?: unknown[] }).rows ?? [])) as { slug: string; type: string; content: Record<string, unknown> }[]
     for (const pg of PAGES) {
