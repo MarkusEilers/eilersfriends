@@ -48,7 +48,9 @@
     "featuredMysteryTitle": "Mystery Shopping · €1 instead of €997",
     "featuredMysteryBody": "We hold a first call with your team as an imaginary customer. A 14-page report and a training session.",
     "featuredMysteryCta": "Book Mystery Shopping",
-    "featuredMysteryBadge": "Only 16 per quarter"
+    "featuredMysteryBadge": "Only 16 per quarter",
+    "programmesHub": "All programmes",
+    "programmesHubDesc": "Overview: Academy, leadership, AI Intensive, coaching"
   },
   "topbar": {
     "message": "The next Academy flight starts on 20 November.",
