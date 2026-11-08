@@ -3,14 +3,25 @@ import { getTranslations } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
 import { AuthorLatest } from '@/components/blog/AuthorLatest'
 import { HeroBackdrop } from '@/components/lp/story/HeroBackdrop'
+import { SITE } from '@/lib/seo/site'
+import { PersonJsonLd } from '@/components/seo/PersonJsonLd'
 import {
   Calendar, ArrowRight, Heart, MessageCircle, Shield, Sparkles,
   Mic, AlertTriangle, Check, Star,
 } from 'lucide-react'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('aljonaPage.meta')
-  return { title: t('title'), description: t('description') }
+const PHOTO = `${SITE}/aljona-photo.jpg`
+const JOB: Record<string, string> = { de: 'Leadership Coach & Keynote Speaker', en: 'Leadership Coach & Keynote Speaker', es: 'Leadership Coach y Keynote Speaker' }
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'aljonaPage.meta' })
+  return {
+    title: t('title'),
+    description: t('description'),
+    openGraph: { type: 'profile', firstName: 'Aljona', lastName: 'Eilers', title: t('title'), description: t('description'), images: [{ url: PHOTO, alt: 'Aljona Eilers' }] },
+    twitter: { card: 'summary_large_image', title: t('title'), description: t('description'), images: [PHOTO] },
+  }
 }
 
 interface PageProps {
@@ -30,7 +41,7 @@ const PROGRAM_ANCHORS = ['liquid', 'leadershe', 'bestseller'] as const
 const PROGRAM_PRIMARY = [true, false, false]
 
 export default async function AljonaPage({ params }: PageProps) {
-  await params
+  const { locale } = await params
   const t = await getTranslations('aljonaPage')
 
   const accent = '#EB0028'
@@ -46,6 +57,14 @@ export default async function AljonaPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: '#FAFAF8' }}>
+      <PersonJsonLd locale={locale} p={{
+        slug: 'aljona', name: 'Aljona Eilers', givenName: 'Aljona', familyName: 'Eilers', image: PHOTO,
+        jobTitle: JOB[locale] ?? JOB.de, description: t('meta.description'), title: t('meta.title'),
+        award: ['TEDx Speaker', 'Wall Street Journal Bestseller-Autorin'],
+        knowsAbout: ['Leadership', 'Selbstführung', 'Empathische Führung', 'Applied Neuroscience', 'Liquid Leadership', 'Führungskräfteentwicklung'],
+        knowsLanguage: ['de', 'en'],
+        sameAs: ['https://www.linkedin.com/in/aljonaeilers', 'https://www.youtube.com/@liquid.leadership', 'https://www.instagram.com/aljonaeilers'],
+      }} />
 
       {/* ─── HERO (vollflächiges S/W-Bild mit Rot-Akzenten) ───────── */}
       <section className="efh px-6 py-20 sm:py-24">

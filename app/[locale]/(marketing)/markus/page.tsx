@@ -8,6 +8,7 @@ import { StoryBlock, loadStoryCtx } from '@/components/lp/story/StoryBlocks'
 import { PreviewBanner } from '@/components/lp/PreviewBanner'
 import { STORY_CSS } from '@/components/lp/story/story-css'
 import { SITE } from '@/lib/seo/site'
+import { PersonJsonLd, type PersonProfile } from '@/components/seo/PersonJsonLd'
 
 const META: Record<string, { title: string; description: string; jobTitle: string }> = {
   de: { title: 'Markus Eilers · Keynote Speaker, Sales Coach & Revenue Systems', description: 'Keynotes, die etwas verändern, und 1:1-Coaching für B2B-Gründer und CEOs. TEDx Speaker, TOP 100 Speaker & Trainer, Microsoft Cloud Ambassador, 500+ Gründer gecoacht.', jobTitle: 'Keynote Speaker & Sales Coach' },
@@ -27,41 +28,21 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-/** Strukturdaten für das Personen-Suchergebnis: ProfilePage mit Person als Hauptentität. */
-function PersonJsonLd({ locale }: { locale: string }) {
+function markusProfile(locale: string): PersonProfile {
   const m = META[locale] ?? META.de
-  const url = `${SITE}${locale === 'de' ? '' : `/${locale}`}/markus`
-  const data = {
-    '@context': 'https://schema.org',
-    '@type': 'ProfilePage',
-    '@id': `${url}#profile`,
-    url,
-    name: m.title,
-    inLanguage: locale,
-    isPartOf: { '@id': `${SITE}/#website` },
-    mainEntity: {
-      '@type': 'Person',
-      '@id': `${SITE}/markus#person`,
-      name: 'Markus Eilers',
-      givenName: 'Markus',
-      familyName: 'Eilers',
-      url: `${SITE}/markus`,
-      image: PHOTO,
-      jobTitle: m.jobTitle,
-      description: m.description,
-      worksFor: { '@id': `${SITE}/#organization` },
-      award: ['TEDx Speaker', 'TOP 100 Speaker (Speakers Excellence)', 'TOP 100 Trainer (Speakers Excellence)', 'Microsoft Cloud Ambassador'],
-      knowsAbout: ['B2B-Vertrieb', 'Revenue Systems', 'Sales Training', 'Social Selling', 'Keynote Speaking', 'KI im Vertrieb', 'Angebotsgestaltung', 'Leadership'],
-      knowsLanguage: ['de', 'en'],
-      sameAs: [
-        'https://www.linkedin.com/in/markuseilers',
-        'https://www.youtube.com/@markuseilers',
-        'https://www.expert-marketplace.de/keynote-speaker/markus-eilers',
-      ],
-    },
+  return {
+    slug: 'markus', name: 'Markus Eilers', givenName: 'Markus', familyName: 'Eilers', image: PHOTO,
+    jobTitle: m.jobTitle, description: m.description, title: m.title,
+    award: ['TEDx Speaker', 'TOP 100 Speaker (Speakers Excellence)', 'TOP 100 Trainer (Speakers Excellence)', 'Microsoft Cloud Ambassador'],
+    knowsAbout: ['B2B-Vertrieb', 'Revenue Systems', 'Sales Training', 'Social Selling', 'Keynote Speaking', 'KI im Vertrieb', 'Angebotsgestaltung', 'Leadership'],
+    knowsLanguage: ['de', 'en'],
+    sameAs: [
+      'https://www.linkedin.com/in/markuseilers',
+      'https://www.youtube.com/@markuseilers',
+      'https://www.expert-marketplace.de/de/keynote-speaker/markus-eilers',
+    ],
+    videos: [{ name: 'Markus Eilers · TEDx Talk', url: 'https://www.youtube.com/watch?v=Tx4veAzr0SE' }],
   }
-  // eslint-disable-next-line react/no-danger
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, '\\u003c') }} />
 }
 
 interface PageProps {
@@ -84,7 +65,7 @@ export default async function MarkusPage({ params, searchParams }: PageProps) {
     const ctx = await loadStoryCtx()
     return (
       <main>
-        <PersonJsonLd locale={locale} />
+        <PersonJsonLd locale={locale} p={markusProfile(locale)} />
         {lp.status !== 'published' && <PreviewBanner status={lp.status} editHref={`/admin/landing-pages/${lp.pageId}`} slug="markus" locale={locale} />}
         {lp.sections.some((s) => s.type !== 'story_html') && <style href="story-css" precedence="default">{STORY_CSS}</style>}
         {lp.sections.map((s) => s.type === 'story_html'
