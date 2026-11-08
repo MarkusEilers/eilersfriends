@@ -39,6 +39,7 @@ export function LpHero({ content, accent, emailList }: LpHeroProps) {
         <HeroBackdrop src={content.backgroundImage as string} label={(content.backgroundAlt as string) || ''} />
         <div className="wrap">
           <div className="efh-copy" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {content.eyebrow && <span className="mono">{content.eyebrow as string}</span>}
             {Array.isArray(content.pills) && content.pills.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 {(content.pills as string[]).map((p, i) => (
