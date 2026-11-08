@@ -63,6 +63,9 @@ export async function suggestCompaniesAction(query: string): Promise<CompanySugg
       }
     }
   } catch { /* ignore */ }
+  // Gängige Endungen nach vorn (Clearbit liefert oft Länder-Domains zuerst)
+  const rank = (d: string) => { const i = ['.com', '.de', '.io', '.co', '.ai', '.eu', '.at', '.ch'].findIndex((t) => d.endsWith(t)); return i < 0 ? 99 : i }
+  out.sort((a, b) => (a.source === b.source ? rank(a.domain) - rank(b.domain) : a.source === 'crm' ? -1 : 1))
   // Fallback: Eingabe als Domain
   if (!out.length && q.includes('.')) out.push({ name: q, domain: cleanDomain(q), source: 'web' })
   return out.slice(0, 8)

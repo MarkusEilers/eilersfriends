@@ -62,7 +62,10 @@ export function LogoQuickAdd() {
             <button key={c.source + c.domain} type="button" onClick={() => pick(c)}
               className={`flex items-center gap-3 rounded-xl border bg-white p-3 text-left hover:border-blue-400 ${picked?.domain === c.domain ? 'border-blue-600 ring-2 ring-blue-100' : 'border-gray-200'}`}>
               <span className={`flex h-8 w-8 flex-none items-center justify-center rounded-lg ${c.source === 'crm' ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-500'}`}>
-                {c.source === 'crm' ? <Building2 size={15} /> : <Globe size={15} />}
+                {c.domain
+                  // eslint-disable-next-line @next/next/no-img-element
+                  ? <img src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(c.domain)}&sz=64`} alt="" className="h-5 w-5 object-contain" />
+                  : c.source === 'crm' ? <Building2 size={15} /> : <Globe size={15} />}
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-sm font-semibold text-gray-900">{c.name}</span>
