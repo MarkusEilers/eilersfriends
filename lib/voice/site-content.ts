@@ -76,6 +76,6 @@ export async function siteKnowledge(path?: string): Promise<string> {
     }
   } catch { /* ignore */ }
   return blocks.length
-    ? `WEBSITE-INHALTE (aktueller Stand der Seiten — nutze sie für Fragen zu Angeboten, Personen, Keynotes, Ablauf, Kundenstimmen; verweise auf die passende Seite):\n\n${blocks.join('\n\n')}`
+    ? `WEBSITE-INHALTE (aktueller Stand der Seiten — nutze sie für Fragen zu Angeboten, Personen, Keynotes, Ablauf, Kundenstimmen; verweise auf die passende Seite). WICHTIG: Kundenzitate, Namen und Zahlen nur WÖRTLICH so wiedergeben, wie sie hier stehen — nie umformulieren oder erfinden. Steht etwas nicht hier, sag offen, dass Du es nicht weißt:\n\n${blocks.join('\n\n')}`
     : ''
 }
