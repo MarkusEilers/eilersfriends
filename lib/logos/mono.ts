@@ -1,6 +1,6 @@
 /**
  * Macht aus einem beliebigen Logo eine einheitliche Monochrom-Fassung: schwarze Form auf transparentem Grund,
- * ohne Rand. Funktioniert für transparente Logos (dunkel ODER hell, z. B. weiße Logos für dunkle Header)
+ * ohne Rand (Zuschnitt auf die Form). Funktioniert für transparente Logos (dunkel ODER hell, z. B. weiße Logos für dunkle Header)
  * und für Logos mit eigenem Hintergrund (weiß, farbig). Darstellung danach überall gleich:
  *   heller Grund → so wie sie ist (per opacity grau),  dunkler Grund → filter: invert(1).
  */
