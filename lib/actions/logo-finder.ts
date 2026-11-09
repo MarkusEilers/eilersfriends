@@ -105,6 +105,10 @@ export async function findLogoCandidatesAction(domain: string, name?: string): P
           const pi = Object.values(((await r.json()) as { query?: { pages?: Record<string, { original?: { source: string } }> } }).query?.pages ?? {})[0]?.original?.source
           if (pi && /logo/i.test(pi)) src = pi
         }
+        // Nur übernehmen, wenn der Dateiname zur Firma passt (verhindert falsche Artikel, z. B. Weiterleitungen)
+        const plain = (x: string) => x.toLowerCase().replace(/[^a-z0-9]/g, '')
+        const fileName = decodeURIComponent((src ?? '').split('/').pop() ?? '')
+        if (src && !(plain(fileName).includes(plain(stem)) || plain(fileName).includes(plain(name.split(/\s+/).pop() ?? '')))) src = undefined
         if (src) { add({ url: src.split('?')[0], label: `Logo (Wikipedia ${lang.toUpperCase()})`, kind: /\.svg/i.test(src) ? 'svg' : 'img', score: 90 }); break }
       } catch { /* ignore */ }
     }
