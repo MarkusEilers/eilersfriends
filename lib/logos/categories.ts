@@ -1,5 +1,7 @@
 /** Wo ein Logo erscheinen darf. Seiten filtern ihre Logoleiste nach diesen Kategorien. */
 export const LOGO_CATEGORIES = [
+  { key: 'startseite', label: 'Startseite' },
+  { key: 'markus', label: 'Markus-Seite' },
   { key: 'academy', label: 'Academy / Sales-Training' },
   { key: 'mystery', label: 'Mystery Shopping' },
   { key: 'beratung', label: 'GTM-Beratung' },

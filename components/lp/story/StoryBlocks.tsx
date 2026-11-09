@@ -369,6 +369,24 @@ export async function StoryHtml({ c }: { c: C }) {
     const a = await getAvailability().catch(() => null)
     html = html.replace(/\{\{ms\.free\}\}/g, String(a?.free ?? '')).replace(/\{\{ms\.capacity\}\}/g, String(a?.capacity ?? ''))
   }
+  // Logo-Raster aus dem Backend: {{logos:<kategorie>:<spalten>}} → Kacheln aller sichtbaren Logos dieser Seite,
+  // sortiert wie in /admin/logos; leere Kacheln füllen die letzte Reihe auf
+  if (html.includes('{{logos:')) {
+    const all = await getVisibleTrustLogos().catch(() => [])
+    const esc = (x: string) => x.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
+    html = html.replace(/\{\{logos:([a-z0-9_-]+)(?::(\d+))?\}\}/g, (_m, cat: string, colsRaw?: string) => {
+      const list = all.filter((l) => (l.categories ?? []).includes(cat))
+      const cols = Number(colsRaw) || 4
+      const tiles = list.map((l) => {
+        const src = l.srcBw || l.src
+        return src
+          ? `<div class="tlogo"><img src="${esc(src)}" alt="${esc(l.name)}" style="max-height:30px;max-width:70%;object-fit:contain;filter:grayscale(1);opacity:.75;transform:scale(${(l.displayScale ?? 100) / 100})"></div>`
+          : `<div class="tlogo"><span>${esc(l.name)}</span></div>`
+      })
+      const fill = (cols - (tiles.length % cols)) % cols
+      return tiles.join('') + '<div class="tlogo" aria-hidden="true"></div>'.repeat(fill)
+    })
+  }
   // Logo-Kacheln: Wortmarke durch das Logo aus der Logoleiste ersetzen, sobald es dort hinterlegt ist
   if (html.includes('class="tlogo"')) {
     const logos = await getVisibleTrustLogos().catch(() => [])
