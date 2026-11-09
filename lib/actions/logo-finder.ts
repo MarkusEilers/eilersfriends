@@ -177,7 +177,13 @@ export async function quickAddLogoAction(input: { name: string; domain: string; 
     const mono = await makeMonoLogo(buf)
     srcBw = (await put(`trust-logos/${slug}-logo-mono.png`, mono, { access: 'public', contentType: 'image/png', token: blobToken, allowOverwrite: true })).url
   } catch (e) { return { ok: false, error: e instanceof Error ? e.message : 'Upload fehlgeschlagen' } }
-  await upsertTrustLogo({ slug, name, domain: cleanDomain(input.domain) || null, src, srcBw, alt: name, order: 99, isVisible: true, categories: input.categories })
+  // Bestehendes Logo ersetzen: Reihenfolge, Größe, Sichtbarkeit und (ohne neue Auswahl) die Seiten behalten
+  const existing = (await getAllTrustLogos()).find((l) => l.slug === slug || l.name.toLowerCase() === name.toLowerCase())
+  await upsertTrustLogo({
+    slug: existing?.slug ?? slug, name: existing?.name ?? name, domain: cleanDomain(input.domain) || existing?.domain || null, src, srcBw, alt: name,
+    order: existing?.order ?? 99, displayScale: existing?.displayScale ?? 100, isVisible: true,
+    categories: input.categories.length ? input.categories : existing?.categories,
+  })
   revalidatePath('/')
   revalidatePath('/admin/logos')
   return { ok: true }
