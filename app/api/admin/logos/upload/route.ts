@@ -90,26 +90,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'blob_put_color_failed', detail: msg }, { status: 500 })
   }
 
-  // 2) BW version (raster only — sharp can't sensibly desat SVGs)
+  // 2) Monochrom-Fassung (schwarz, transparent, ohne Rand) — für helle und dunkle Untergründe
   let bwUrl: string | null = null
-  if (ext !== 'svg') {
-    try {
-      const sharp = (await import('sharp')).default
-      const bwBuffer = await sharp(buffer)
-        .grayscale()
-        .toFormat(ext === 'webp' ? 'webp' : ext === 'png' ? 'png' : 'jpeg')
-        .toBuffer()
-      const blobBw = await put(`trust-logos/${finalSlug}-logo-bw.${ext}`, bwBuffer, {
-        access: 'public',
-        contentType,
-        token: blobToken,
-        allowOverwrite: true,
-      })
-      bwUrl = blobBw.url
-    } catch (err) {
-      // BW failure is non-fatal — log and continue with color only
-      console.error('[logos/upload] BW generation failed', err)
-    }
+  try {
+    const { makeMonoLogo } = await import('@/lib/logos/mono')
+    const mono = await makeMonoLogo(buffer)
+    const blobBw = await put(`trust-logos/${finalSlug}-logo-mono.png`, mono, {
+      access: 'public', contentType: 'image/png', token: blobToken, allowOverwrite: true,
+    })
+    bwUrl = blobBw.url
+  } catch (err) {
+    console.error('[logos/upload] mono generation failed', err)
   }
 
   // 3) Persist

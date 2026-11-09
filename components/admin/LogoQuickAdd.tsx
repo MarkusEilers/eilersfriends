@@ -26,7 +26,7 @@ export function LogoQuickAdd() {
   function pick(c: CompanySuggestion) {
     setPicked(c); setName(c.name); setLogos(null); setLogo(null); setMsg(null)
     start(async () => {
-      const found = await findLogoCandidatesAction(c.domain)
+      const found = await findLogoCandidatesAction(c.domain, c.name)
       const list = c.logo ? [{ url: c.logo, label: 'Logo aus dem CRM', kind: 'img' as const }, ...found] : found
       setLogos(list)
       setLogo(list[0]?.url ?? null)

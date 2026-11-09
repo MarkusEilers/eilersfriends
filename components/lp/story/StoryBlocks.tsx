@@ -372,9 +372,10 @@ export async function StoryHtml({ c }: { c: C }) {
   // Logo-Kacheln: Wortmarke durch das Logo aus der Logoleiste ersetzen, sobald es dort hinterlegt ist
   if (html.includes('class="tlogo"')) {
     const logos = await getVisibleTrustLogos().catch(() => [])
-    const norm = (x: string) => x.toLowerCase().replace(/^deutsche\s+/, '').replace(/[^a-z0-9]/g, '')
+    // Firmenname vergleichen ohne Rechtsform/Zusätze; alternativ über die Domain (z. B. „smapOne“ ↔ „smapOne AG“, smapone.com)
+    const norm = (x: string) => x.toLowerCase().replace(/^deutsche\s+/, '').replace(/\b(ag|gmbh|se|inc|ltd|llc|corp|corporation|co|kg|group|holding)\b\.?/g, '').replace(/\.(so|io|com|de|ai|co)$/, '').replace(/[^a-z0-9]/g, '')
     html = html.replace(/<div class="tlogo"><span>([^<]+)<\/span><\/div>/g, (m, name: string) => {
-      const l = logos.find((x) => x.src && norm(x.name) === norm(name))
+      const l = logos.find((x) => x.src && (norm(x.name) === norm(name) || (!!x.domain && norm(x.domain.split('.')[0]) === norm(name))))
       if (!l) return m
       const src = l.srcBw || l.src
       return `<div class="tlogo"><img src="${src}" alt="${name}" style="max-height:30px;max-width:70%;object-fit:contain;filter:grayscale(1);opacity:.75;transform:scale(${(l.displayScale ?? 100) / 100})"></div>`

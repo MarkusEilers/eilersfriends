@@ -4,7 +4,8 @@ import { revalidatePath } from 'next/cache'
 import { sql } from 'drizzle-orm'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { upsertTrustLogo } from '@/lib/db/queries/trust-logos'
+import { upsertTrustLogo, getAllTrustLogos } from '@/lib/db/queries/trust-logos'
+import { makeMonoLogo } from '@/lib/logos/mono'
 
 /**
  * Logo per Firmenname hinzufügen:
@@ -75,13 +76,25 @@ function abs(u: string, base: string): string | null {
   try { return new URL(u.replace(/&amp;/g, '&'), base).toString() } catch { return null }
 }
 
-export async function findLogoCandidatesAction(domain: string): Promise<LogoCandidate[]> {
+export async function findLogoCandidatesAction(domain: string, name?: string): Promise<LogoCandidate[]> {
   await requireAdmin()
   const d = cleanDomain(domain)
   if (!d) return []
   const out: LogoCandidate[] = []
   const add = (c: LogoCandidate | null) => { if (c && !out.some((o) => o.url === c.url)) out.push(c) }
   const stem = d.split('.')[0]
+  // Wikipedia: das Seitenbild eines Firmenartikels ist fast immer das offizielle Logo (oft als SVG)
+  if (name) {
+    for (const lang of ['en', 'de']) {
+      try {
+        const r = await fetch(`https://${lang}.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=original&titles=${encodeURIComponent(name)}`, { headers: { 'user-agent': 'EilersFriendsLogoFinder/1.0 (team@eilersfriends.com)' }, cache: 'no-store', signal: AbortSignal.timeout(6000) })
+        if (!r.ok) continue
+        const j = (await r.json()) as { query?: { pages?: Record<string, { original?: { source: string } }> } }
+        const src = Object.values(j.query?.pages ?? {})[0]?.original?.source
+        if (src && /logo|\.svg/i.test(src)) { add({ url: src, label: `Logo (Wikipedia ${lang.toUpperCase()})`, kind: /\.svg/i.test(src) ? 'svg' : 'img', score: 90 }); break }
+      } catch { /* ignore */ }
+    }
+  }
   let html = ''
   let base = `https://${d}/`
   for (const u of [`https://www.${d}/`, `https://${d}/`]) {
@@ -160,14 +173,38 @@ export async function quickAddLogoAction(input: { name: string; domain: string; 
       buf = await sharp(buf).png().toBuffer()
     }
     src = (await put(`trust-logos/${slug}-logo.${ext}`, buf, { access: 'public', contentType, token: blobToken, allowOverwrite: true })).url
-    if (!isSvg) {
-      const sharp = (await import('sharp')).default
-      const bw = await sharp(buf).grayscale().toFormat(ext === 'webp' ? 'webp' : ext === 'jpg' ? 'jpeg' : 'png').toBuffer()
-      srcBw = (await put(`trust-logos/${slug}-logo-bw.${ext}`, bw, { access: 'public', contentType, token: blobToken, allowOverwrite: true })).url
-    }
+    // Einheitliche Monochrom-Fassung (schwarz, transparent, ohne Rand) — wird je nach Untergrund per CSS invertiert
+    const mono = await makeMonoLogo(buf)
+    srcBw = (await put(`trust-logos/${slug}-logo-mono.png`, mono, { access: 'public', contentType: 'image/png', token: blobToken, allowOverwrite: true })).url
   } catch (e) { return { ok: false, error: e instanceof Error ? e.message : 'Upload fehlgeschlagen' } }
   await upsertTrustLogo({ slug, name, domain: cleanDomain(input.domain) || null, src, srcBw, alt: name, order: 99, isVisible: true, categories: input.categories })
   revalidatePath('/')
   revalidatePath('/admin/logos')
   return { ok: true }
+}
+
+/** Alle vorhandenen Logos einmal in die Monochrom-Fassung bringen (src_bw neu erzeugen). */
+export async function normalizeAllLogosAction(): Promise<{ ok: number; failed: string[] }> {
+  await requireAdmin()
+  const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+  if (!blobToken) return { ok: 0, failed: ['BLOB_READ_WRITE_TOKEN fehlt'] }
+  const { put } = await import('@vercel/blob')
+  const logos = await getAllTrustLogos()
+  let ok = 0
+  const failed: string[] = []
+  for (const l of logos) {
+    if (!l.src) continue
+    try {
+      const url = l.src.startsWith('/') ? `https://www.eilersfriends.com${l.src}` : l.src
+      const r = await fetch(url, { headers: { 'user-agent': UA }, cache: 'no-store', signal: AbortSignal.timeout(10000) })
+      if (!r.ok) throw new Error(String(r.status))
+      const mono = await makeMonoLogo(Buffer.from(await r.arrayBuffer()))
+      const srcBw = (await put(`trust-logos/${l.slug}-logo-mono.png`, mono, { access: 'public', contentType: 'image/png', token: blobToken, allowOverwrite: true })).url
+      await upsertTrustLogo({ slug: l.slug, name: l.name, domain: l.domain, src: l.src, srcBw, displayScale: l.displayScale ?? 100, alt: l.alt ?? l.name, order: l.order, isVisible: l.isVisible, categories: l.categories ?? undefined })
+      ok++
+    } catch (e) { failed.push(`${l.name}: ${e instanceof Error ? e.message : 'Fehler'}`) }
+  }
+  revalidatePath('/')
+  revalidatePath('/admin/logos')
+  return { ok, failed }
 }

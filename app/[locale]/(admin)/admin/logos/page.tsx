@@ -4,6 +4,7 @@ import { saveTrustLogoAction, deleteTrustLogoAction } from '@/lib/actions/trust-
 import { LogoSearchPanel } from '@/components/admin/LogoSearchPanel'
 import { LogoUploadDropzone } from '@/components/admin/LogoUploadDropzone'
 import { LogoQuickAdd } from '@/components/admin/LogoQuickAdd'
+import { LogoNormalizeButton } from '@/components/admin/LogoNormalizeButton'
 import { Trash2, Save, Plus } from 'lucide-react'
 
 export default async function AdminLogosPage() {
@@ -29,9 +30,10 @@ export default async function AdminLogosPage() {
 
       {/* Existing logos */}
       <section className="mb-10">
-        <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-gray-500">
-          Aktuelle Logos ({logos.length})
-        </h2>
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500">Aktuelle Logos ({logos.length})</h2>
+          <LogoNormalizeButton />
+        </div>
         <div className="space-y-3">
           {logos.map((logo) => (
             <div

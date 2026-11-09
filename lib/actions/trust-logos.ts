@@ -55,6 +55,11 @@ export async function saveTrustLogoAction(formData: FormData) {
       access: 'public', contentType, token: blobToken,
     })
     src = blob.url
+    try {
+      const { makeMonoLogo } = await import('@/lib/logos/mono')
+      const mono = await makeMonoLogo(buffer)
+      srcBw = (await put(`trust-logos/${finalSlug}-logo-mono.png`, mono, { access: 'public', contentType: 'image/png', token: blobToken, allowOverwrite: true })).url
+    } catch { /* Mono optional */ }
   }
 
   await upsertTrustLogo({
