@@ -83,15 +83,29 @@ export async function findLogoCandidatesAction(domain: string, name?: string): P
   const out: LogoCandidate[] = []
   const add = (c: LogoCandidate | null) => { if (c && !out.some((o) => o.url === c.url)) out.push(c) }
   const stem = d.split('.')[0]
-  // Wikipedia: das Seitenbild eines Firmenartikels ist fast immer das offizielle Logo (oft als SVG)
+  // Wikipedia: Logo aus der Infobox (Feld „logo“), sonst das Seitenbild, wenn es nach Logo aussieht
   if (name) {
+    const UAW = { 'user-agent': 'EilersFriendsLogoFinder/1.0 (team@eilersfriends.com)' }
     for (const lang of ['en', 'de']) {
       try {
-        const r = await fetch(`https://${lang}.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=original&titles=${encodeURIComponent(name)}`, { headers: { 'user-agent': 'EilersFriendsLogoFinder/1.0 (team@eilersfriends.com)' }, cache: 'no-store', signal: AbortSignal.timeout(6000) })
-        if (!r.ok) continue
-        const j = (await r.json()) as { query?: { pages?: Record<string, { original?: { source: string } }> } }
-        const src = Object.values(j.query?.pages ?? {})[0]?.original?.source
-        if (src && /logo|\.svg/i.test(src)) { add({ url: src, label: `Logo (Wikipedia ${lang.toUpperCase()})`, kind: /\.svg/i.test(src) ? 'svg' : 'img', score: 90 }); break }
+        const api = `https://${lang}.wikipedia.org/w/api.php?format=json&redirects=1`
+        let src: string | undefined
+        const p = await fetch(`${api}&action=parse&prop=wikitext&section=0&page=${encodeURIComponent(name)}`, { headers: UAW, cache: 'no-store', signal: AbortSignal.timeout(6000) })
+        if (p.ok) {
+          const wt = ((await p.json()) as { parse?: { wikitext?: { '*': string } } }).parse?.wikitext?.['*'] ?? ''
+          let file = /\|\s*logo\s*=\s*(?:\[\[(?:File|Datei|Image|Bild):)?([^\n|\]]+\.(?:svg|png|jpe?g|webp))/i.exec(wt)?.[1]?.trim()
+          if (file) {
+            const q = await fetch(`${api}&action=query&prop=imageinfo&iiprop=url&titles=${encodeURIComponent('File:' + file)}`, { headers: UAW, cache: 'no-store', signal: AbortSignal.timeout(6000) })
+            const pages = ((await q.json()) as { query?: { pages?: Record<string, { imageinfo?: { url: string }[] }> } }).query?.pages ?? {}
+            src = Object.values(pages)[0]?.imageinfo?.[0]?.url
+          }
+        }
+        if (!src) {
+          const r = await fetch(`${api}&action=query&prop=pageimages&piprop=original&titles=${encodeURIComponent(name)}`, { headers: UAW, cache: 'no-store', signal: AbortSignal.timeout(6000) })
+          const pi = Object.values(((await r.json()) as { query?: { pages?: Record<string, { original?: { source: string } }> } }).query?.pages ?? {})[0]?.original?.source
+          if (pi && /logo/i.test(pi)) src = pi
+        }
+        if (src) { add({ url: src.split('?')[0], label: `Logo (Wikipedia ${lang.toUpperCase()})`, kind: /\.svg/i.test(src) ? 'svg' : 'img', score: 90 }); break }
       } catch { /* ignore */ }
     }
   }
