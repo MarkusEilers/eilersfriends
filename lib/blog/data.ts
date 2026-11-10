@@ -99,7 +99,7 @@ export async function extractPostData(input: { title: string; subtitle?: string;
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) throw new Error('OPENAI_API_KEY fehlt')
   const system = `Du baust die Datenschicht eines Blogbeitrags von Eilers+Friends (B2B-Vertrieb, Leadership).
-Lies den Beitrag und gib strukturiert zurück, worüber er spricht. Nur was wörtlich im Text steht — nichts erfinden, keine Zahl ergänzen.
+Lies den Beitrag und gib strukturiert zurück, worüber er spricht. Nur was wörtlich im Text steht — nichts erfinden, keine Zahl ergänzen. Platzhalter-Firmen (z. B. „Kunde A GmbH“) und reine Grafik-Beschriftungen (Farben, Legenden, Beispielwerte in nachgebauten Tabellen) ignorieren.
 - companies: echte Firmen, die vorkommen (name, role: in welcher Rolle, z. B. „Kunde“, „Beispiel“, „eigene Firma von Markus“, domain wenn sicher bekannt)
 - people: Personen und Figuren (name, role, kind: "real" für echte Menschen, "figur" für erfundene Typen wie „Winfried Windt“)
 - metrics: Zahlen mit Bedeutung (value wörtlich, label: wofür, source wenn genannt)

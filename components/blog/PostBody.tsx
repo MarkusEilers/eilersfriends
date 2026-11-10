@@ -54,7 +54,7 @@ export function inline(s: string, opts?: { placeholders?: boolean }) {
     .replace(/\*\*(.+?)\*\*/g, `<strong style="color:${INK};font-weight:600">$1</strong>`)
     .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>')
     .replace(/\(\((.+?)\)\)/g, '<span style="background:#E8EFFB;color:#124293;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;white-space:nowrap">$1</span>')
-    .replace(/\{\{([^}|]+)\|([^}]*)\}\}/g, (_m, t: string, d: string) => `<span class="ef-term"${d ? ` title="${d.replace(/"/g, '&quot;')}"` : ''} style="color:${DEEP};font-weight:600;border-bottom:1px dotted ${BLUE};cursor:help">${t}</span>`)
+    .replace(/\{\{([^}¦]+)¦([^}]*)\}\}/g, (_m, t: string, d: string) => `<span class="ef-term"${d ? ` title="${d.replace(/"/g, '&quot;')}"` : ''} style="color:${DEEP};font-weight:600;border-bottom:1px dotted ${BLUE};cursor:help">${t}</span>`)
   if (opts?.placeholders) h = h.replace(/%([A-Za-z_]+)%/g, '<span style="background:#FFE3D3;color:#C2410C;padding:0 4px;border-radius:4px;font-family:ui-monospace,monospace">%$1%</span>')
   return h
 }
@@ -585,7 +585,7 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
   }
 }
 
-/** {{Begriff}} → {{Begriff|Erklärung}} aus den :::glossar-Kästen des Beitrags (Tooltip) */
+/** {{Begriff}} → {{Begriff¦Erklärung}} aus den :::glossar-Kästen des Beitrags (Tooltip) */
 export function glossaryOf(content: string) {
   const out: Array<{ term: string; def: string }> = []
   for (const b of parseBlocks(content)) {
@@ -598,7 +598,8 @@ export function glossaryOf(content: string) {
 }
 function withGlossary(content: string) {
   const map = new Map(glossaryOf(content).map((g) => [g.term.toLowerCase(), g.def]))
-  return content.replace(/\{\{([^}|]+)\}\}/g, (_m, t: string) => `{{${t}|${(map.get(t.trim().toLowerCase()) ?? '').replace(/[{}|]/g, '')}}}`)
+  // „¦“ statt „|“, damit Bausteine, die Zeilen an „|“ teilen, den Begriff nicht zerschneiden
+  return content.replace(/\{\{([^}|¦]+)\}\}/g, (_m, t: string) => `{{${t}¦${(map.get(t.trim().toLowerCase()) ?? '').replace(/[{}|¦]/g, '')}}}`)
 }
 
 /** Der Beitragstext */
