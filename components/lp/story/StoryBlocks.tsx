@@ -399,7 +399,7 @@ export async function StoryHtml({ c }: { c: C }) {
         if (k === 0) {
           return `<a href="${href}" style="grid-column:span 2;grid-row:span 2;background:#0D0D0B;color:#fff;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none">`
             + `<div class="ph" style="border-radius:0;flex:1;min-height:260px;position:relative">${img ? `<img src="${esc(img)}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;filter:grayscale(1)">` : ''}`
-            + `${m ? `<span class="chip" style="position:absolute;top:14px;left:14px;background:#1A5FD4;color:#fff;font-size:13px;padding:6px 12px">${esc(`${m.value} ${m.label}`.slice(0, 48))}</span>` : ''}</div>`
+            + `</div>`
             + `<div style="padding:24px;display:flex;flex-direction:column;gap:10px"><span class="mono" style="color:#8FB0EC">${meta}</span><span style="font-size:22px;font-weight:600;letter-spacing:-.01em;line-height:1.25">${esc(p.title)}</span></div></a>`
         }
         return `<a href="${href}" class="card" style="padding:22px;display:flex;flex-direction:column;gap:12px;text-decoration:none;color:#0D0D0B">`
