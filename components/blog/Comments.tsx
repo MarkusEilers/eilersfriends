@@ -55,7 +55,9 @@ export function Comments({ postId, author, open }: { postId: string; author: Aut
   }
 
   return (
-    <section className="mx-auto max-w-[680px] px-6 pb-10">
+    // Eigener Bereich unter dem Artikel: Abstand, graues Band, weiße Karte
+    <section className="mt-20 border-t border-[#EFEDEC] bg-[#F7F6F4] px-6 py-14 sm:py-16">
+      <div className="mx-auto max-w-[680px] rounded-2xl bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,.04)] sm:p-8">
       <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
         <MessageSquare size={13} /> {list.length > 0 ? t('headingWithCount', { count: list.length }) : t('heading')}
       </h2>
@@ -141,6 +143,7 @@ export function Comments({ postId, author, open }: { postId: string; author: Aut
           {state === 'error' && <p className="mt-2 text-xs text-red-600">{message}</p>}
         </form>
       )}
+    </div>
     </section>
   )
 }
