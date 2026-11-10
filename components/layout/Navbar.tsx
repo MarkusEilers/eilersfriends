@@ -70,7 +70,7 @@ const NAV_ITEMS: NavItem[] = [
     links: [
       { key: 'programmesHub',    descKey: 'programmesHubDesc',    href: '/programme', icon: LayoutGrid,    accent: '#0F1E3A' },
       { key: 'salesmade',        descKey: 'salesmadeDesc',        href: '/academy',  icon: Briefcase,      accent: '#1A5FD4' },
-      { key: 'liquidLeadership', descKey: 'liquidLeadershipDesc', href: '/aljona',     icon: Sparkles,       accent: '#D4192B' },
+      { key: 'liquidLeadership', descKey: 'liquidLeadershipDesc', href: '/liquidleadership',     icon: Sparkles,       accent: '#D4192B' },
       { key: 'teamCoaching',     descKey: 'teamCoachingDesc',     href: '/kontakt',    icon: Users,          accent: '#6B5CE7' },
       { key: 'oneOnOne',         descKey: 'oneOnOneDesc',         href: '/kontakt',    icon: MessageCircle,  accent: '#B07C0A' },
     ],

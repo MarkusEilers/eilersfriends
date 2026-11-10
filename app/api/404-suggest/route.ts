@@ -12,6 +12,7 @@ const PAGES: { keys: RegExp; de: Sug; en: Sug }[] = [
   { keys: /(salesmade|academy|training|vertrieb|sales|verkauf)/i, de: { title: 'SalesMade Academy', href: '/academy', why: 'Vertriebs-Ausbildung' }, en: { title: 'SalesMade Academy', href: '/academy', why: 'Sales training' } },
   { keys: /(kontakt|contact|erreichen|schreiben)/i, de: { title: 'Kontakt aufnehmen', href: '/kontakt', why: 'Wir melden uns' }, en: { title: 'Contact us', href: '/kontakt', why: 'We’ll get back to you' } },
   { keys: /(markus)/i, de: { title: 'Markus Eilers', href: '/markus', why: 'Vertrieb & AI im Sales' }, en: { title: 'Markus Eilers', href: '/markus', why: 'Sales & AI' } },
+  { keys: /(liquid|leadership-programm|fuehrungsprogramm|führungsprogramm)/i, de: { title: 'Liquid Leadership', href: '/liquidleadership', why: 'Das Führungsprogramm von Aljona' }, en: { title: 'Liquid Leadership', href: '/liquidleadership', why: 'Aljona’s leadership programme' } },
   { keys: /(aljona|leadership|führung)/i, de: { title: 'Aljona Eilers', href: '/aljona', why: 'Liquid Leadership' }, en: { title: 'Aljona Eilers', href: '/aljona', why: 'Liquid Leadership' } },
   { keys: /(login|portal|dashboard|konto|account)/i, de: { title: 'Login', href: '/auth/login', why: 'Zu Deinem Bereich' }, en: { title: 'Login', href: '/auth/login', why: 'Your area' } },
 ]

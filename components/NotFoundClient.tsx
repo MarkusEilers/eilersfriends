@@ -14,6 +14,7 @@ const SITE: SiteRoute[] = [
   { keywords: ['blog', 'newsletter', 'article'], href: '/blog', title: 'Blog' },
   { keywords: ['kontakt', 'contact', 'gespraech', 'meeting'], href: '/contact', title: 'Kontakt' },
   { keywords: ['salesmade', 'academy', 'sales', 'vertrieb'], href: '/academy', title: 'SalesMade Academy' },
+  { keywords: ['liquid', 'liquidleadership'], href: '/liquidleadership', title: 'Liquid Leadership' },
   { keywords: ['aljona', 'leadership', 'fuehrung'], href: '/aljona', title: 'Aljona & Liquid Leadership' },
   { keywords: ['markus', 'speaker', 'keynote'], href: '/markus', title: 'Markus Eilers' },
   { keywords: ['datenschutz', 'privacy', 'dsgvo'], href: '/datenschutz', title: 'Datenschutz' },

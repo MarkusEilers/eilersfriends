@@ -110,7 +110,7 @@ export function BentoGrid() {
                   <h3 className="mt-1 text-base font-bold" style={{ color: '#0D0D0B' }}>{t('liquid.title')}</h3>
                   <p className="mt-1 text-xs leading-relaxed text-gray-600">{t('liquid.text')}</p>
                 </div>
-                <Link href="/aljona#liquid" className="flex-shrink-0 inline-flex items-center gap-1 text-xs font-semibold self-start mt-1" style={{ color: '#EB0028' }}>
+                <Link href="/liquidleadership" className="flex-shrink-0 inline-flex items-center gap-1 text-xs font-semibold self-start mt-1" style={{ color: '#EB0028' }}>
                   {t('liquid.cta')} <ArrowRight size={12} />
                 </Link>
               </div>

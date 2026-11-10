@@ -10,6 +10,7 @@ import de from '@/lib/i18n/messages/de.json'
 const PAGES: { slug: string; path: string; name: string; max: number }[] = [
   { slug: 'home', path: '/', name: 'Startseite', max: 6000 },
   { slug: 'academy', path: '/academy', name: 'SalesMade Academy', max: 9000 },
+  { slug: 'liquidleadership', path: '/liquidleadership', name: 'Liquid Leadership (Führungsprogramm von Aljona)', max: 7000 },
   { slug: 'markus', path: '/markus', name: 'Markus Eilers (Keynotes, 1:1-Coaching, Brief von Markus)', max: 8000 },
   { slug: 'mystery-shopping', path: '/mystery-shopping', name: 'Mystery Shopping', max: 2500 },
   { slug: 'mystery-shopping-checkout', path: '/checkout/mystery-shopping', name: 'Mystery Shopping Buchung', max: 2500 },

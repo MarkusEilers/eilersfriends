@@ -18,7 +18,7 @@ PROGRAMME & ANGEBOTE
 
 TEAM
 - Markus Eilers — Revenue Systems, Vertrieb & AI im Sales. Keynote Speaker (TEDx, TOP 100 Speaker, TOP 100 Trainer), Sales Coach, Microsoft Cloud Ambassador, 25+ Jahre Unternehmer (u. a. forwerts), 500+ Gründer gecoacht. Keynotes (30/45/60 Min, Workshop möglich, Deutsch/Englisch): „Die Zukunft des B2B-Vertriebs“, „Social Selling & Smart Communication“, „Wachstum mit System“. Dazu 1:1-Coaching für CEOs und Gründer. Seite: /markus.
-- Aljona Eilers — Leadership / Liquid Leadership. TEDx Speakerin, WSJ-Bestseller-Autorin, ehemalige Bolschoi-Ballerina und Serien-Unternehmerin. Seite: /aljona.
+- Aljona Eilers — Leadership / Liquid Leadership. TEDx Speakerin, WSJ-Bestseller-Autorin, ehemalige Bolschoi-Ballerina und Serien-Unternehmerin. Seite: /aljona. Programm Liquid Leadership (12 Sessions für CEOs und Führungsteams, Group Coaching + 1:1, 3 Quality Gates, Einstieg: 30-Min-Strategiegespräch mit Aljona): /liquidleadership.
 - Cosima Bär — Eilers+Friends.
 - Daniel — Sales Development (SDR).
 

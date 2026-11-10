@@ -17,7 +17,7 @@ const PROGRAMS = [
     icon: Sparkles,
     accent: '#EB0028',
     accentBg: '#FFEBEC',
-    href: '/aljona#liquid',
+    href: '/liquidleadership',
     popular: false,
     features: ['card2F1', 'card2F2', 'card2F3', 'card2F4'],
   },

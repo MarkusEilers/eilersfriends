@@ -270,7 +270,7 @@ export default async function AljonaPage({ params }: PageProps) {
                     „{p.quote}"
                   </p>
                   <Link
-                    href="/kontakt"
+                    href={anchor === 'liquid' ? '/liquidleadership' : '/kontakt'}
                     className="mt-auto inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold mt-8 transition-opacity hover:opacity-90"
                     style={
                       primary
