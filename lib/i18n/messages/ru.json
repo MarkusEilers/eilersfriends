@@ -2111,6 +2111,7 @@
       "listen": "Anhören",
       "listenWithMinutes": "Anhören · {minutes} Min.",
       "aiVoice": "ИИ-голос",
+      "ownVoice": "голос {name}, создан ИИ",
       "readingTime": "{minutes} Min. Lesezeit",
       "videoTime": "{minutes} Min. Video",
       "linkedin": "LinkedIn",

@@ -13,6 +13,10 @@ import { parseBlocks } from '@/components/blog/PostBody'
  */
 
 const VOICE: Record<string, string> = { markus: 'onyx', aljona: 'coral' }
+/** Eigene Stimmprofile bei ElevenLabs (geklont). Wer hier steht, wird mit der eigenen Stimme vorgelesen. */
+const OWN_VOICE: Record<string, { id: string; model: string }> = {
+  markus: { id: '3NVf9mERXRShHjzLNrDE', model: 'eleven_v4' },
+}
 const LANG: Record<string, string> = { de: 'Deutsch', en: 'English', es: 'Español', ru: 'Русский' }
 const STYLE: Record<string, string> = {
   markus: 'a calm, warm, confident male business coach telling a true story to a founder; natural pace, short pauses between paragraphs, slight smile in the voice, never salesy',
@@ -85,6 +89,16 @@ function chunks(text: string, max = 1800) {
   return out
 }
 
+async function synthesizeOwn(text: string, own: { id: string; model: string }, lang: string, prev?: string, next?: string): Promise<Buffer> {
+  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${own.id}?output_format=mp3_44100_128`, {
+    method: 'POST',
+    headers: { 'xi-api-key': process.env.ELEVENLABS_API_KEY ?? '', 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
+    body: JSON.stringify({ text, model_id: own.model, language_code: lang, ...(prev ? { previous_text: prev.slice(-500) } : {}), ...(next ? { next_text: next.slice(0, 500) } : {}) }),
+  })
+  if (!res.ok) throw new Error(`ElevenLabs ${res.status}: ${(await res.text()).slice(0, 200)}`)
+  return Buffer.from(await res.arrayBuffer())
+}
+
 async function synthesize(text: string, voice: string, instructions: string): Promise<Buffer> {
   const res = await fetch('https://api.openai.com/v1/audio/speech', {
     method: 'POST',
@@ -101,16 +115,22 @@ export async function generatePostAudio(id: string, opts?: { force?: boolean }):
   const rows = (await db.execute(sql`SELECT id, slug, title, subtitle, content, author, author_slug, locale, status, audio_hash, audio_url FROM blog_posts WHERE id = ${id}`)) as unknown as Array<{ id: string; slug: string; title: string; subtitle: string | null; content: string | null; author: string | null; author_slug: string; locale: string; status: string; audio_hash: string | null; audio_url: string | null }>
   const p = rows[0]
   if (!p || p.status !== 'published' || !p.content?.trim()) return { url: null, skipped: true }
-  const voice = VOICE[p.author_slug] ?? 'onyx'
+  const own = process.env.ELEVENLABS_API_KEY ? OWN_VOICE[p.author_slug] : undefined
+  const voice = own ? `xi:${own.id}:${own.model}` : (VOICE[p.author_slug] ?? 'onyx')
   const text = narrationText(p, p.locale)
   const hash = createHash('sha256').update(`${voice}|${p.locale}|${text}`).digest('hex').slice(0, 24)
   if (!opts?.force && p.audio_hash === hash && p.audio_url) return { url: p.audio_url, skipped: true }
   const instructions = `Read in ${LANG[p.locale] ?? 'Deutsch'}. Voice: ${STYLE[p.author_slug] ?? STYLE.markus}. Pronounce English terms like "AI", "Leader", "Trial Close" naturally.`
   const parts: Buffer[] = []
-  const list = chunks(text)
-  for (let i = 0; i < list.length; i += 3) {
-    const batch = await Promise.all(list.slice(i, i + 3).map((c) => synthesize(c, voice, instructions)))
-    parts.push(...batch)
+  const list = chunks(text, own ? 2400 : 1800)
+  if (own) {
+    // Eigene Stimme: nacheinander, mit Vor- und Nachtext, damit die Betonung über die Stücke trägt
+    for (let i = 0; i < list.length; i++) parts.push(await synthesizeOwn(list[i], own, p.locale, list[i - 1], list[i + 1]))
+  } else {
+    for (let i = 0; i < list.length; i += 3) {
+      const batch = await Promise.all(list.slice(i, i + 3).map((c) => synthesize(c, voice, instructions)))
+      parts.push(...batch)
+    }
   }
   const mp3 = Buffer.concat(parts)
   const { put } = await import('@vercel/blob')

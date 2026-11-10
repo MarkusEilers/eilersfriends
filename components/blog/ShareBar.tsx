@@ -5,7 +5,7 @@ import { Play, Pause } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 /** Leiste unter dem Kopf: Anhören (wenn es eine Audiofassung gibt) und Teilen. */
-export function ShareBar({ audio, minutes, video }: { audio?: string | null; minutes?: number | null; video?: boolean }) {
+export function ShareBar({ audio, minutes, video, ownVoice }: { audio?: string | null; minutes?: number | null; video?: boolean; ownVoice?: string }) {
   const t = useTranslations('blogUi.share')
   const [copied, setCopied] = useState(false)
   const [playing, setPlaying] = useState(false)
@@ -21,7 +21,7 @@ export function ShareBar({ audio, minutes, video }: { audio?: string | null; min
         <button onClick={toggle} className="inline-flex items-center gap-2 font-semibold text-gray-800">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white">{playing ? <Pause size={13} /> : <Play size={13} />}</span>
           {minutes ? t('listenWithMinutes', { minutes }) : t('listen')}
-          <span className="font-normal text-gray-400">· {t('aiVoice')}</span>
+          <span className="font-normal text-gray-400">· {ownVoice ? t('ownVoice', { name: ownVoice }) : t('aiVoice')}</span>
         </button>
       ) : <span>{minutes ? t(video ? 'videoTime' : 'readingTime', { minutes }) : ''}</span>}
       <span className="flex items-center gap-2">

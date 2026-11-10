@@ -2221,6 +2221,7 @@
       "listen": "Escuchar",
       "listenWithMinutes": "Escuchar · {minutes} min",
       "aiVoice": "voz de IA",
+      "ownVoice": "voz de {name}, generada por IA",
       "readingTime": "{minutes} min de lectura",
       "videoTime": "Vídeo de {minutes} min",
       "linkedin": "LinkedIn",
