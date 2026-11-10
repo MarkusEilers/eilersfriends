@@ -99,12 +99,8 @@ export async function listPosts(opts?: {
       ${opts?.tag ? sql`AND COALESCE(p.tags, '[]'::jsonb) ? ${opts.tag}` : sql``}
       ${opts?.q ? sql`AND (to_tsvector('german', coalesce(p.search_text, p.title || ' ' || coalesce(p.excerpt, '') || ' ' || coalesce(p.content, ''))) @@ websearch_to_tsquery('german', ${opts.q})
                        OR p.title ILIKE ${'%' + opts.q + '%'} OR coalesce(p.search_text, p.content, '') ILIKE ${'%' + opts.q + '%'})` : sql``}
-      AND (
-        p.locale = ${locale}
-        OR (p.locale = 'de' AND NOT EXISTS (
-              SELECT 1 FROM blog_posts t
-              WHERE t.translation_of = p.id AND t.locale = ${locale} AND t.status = 'published'))
-      )
+      -- Nur Beiträge der Sprache der Seite: kein Sprachmix. Umschalten geht über den Sprachumschalter.
+      AND p.locale = ${locale}
     ORDER BY ${opts?.q ? sql`ts_rank(to_tsvector('german', coalesce(p.search_text, p.title)), websearch_to_tsquery('german', ${opts.q})) DESC,` : sql``} p.published_at DESC NULLS LAST, p.created_at DESC
     LIMIT ${opts?.limit ?? 30}`)
   return rows as unknown as Post[]
