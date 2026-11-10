@@ -2221,6 +2221,7 @@
       "listen": "Listen",
       "listenWithMinutes": "Listen · {minutes} min",
       "readingTime": "{minutes} min read",
+      "videoTime": "{minutes} min video",
       "linkedin": "LinkedIn",
       "copyLink": "Copy link",
       "copied": "Copied"
@@ -2335,7 +2336,8 @@
       },
       "related": {
         "title": "More from {discipline}",
-        "readingMinutes": " · {minutes} min."
+        "readingMinutes": " · {minutes} min.",
+        "videoMinutes": " · {minutes} min video"
       },
       "prose": {
         "noText": "There is no text available for this post yet."
@@ -2405,7 +2407,8 @@
         "article": "Article",
         "agent": " + AI agent",
         "agentBadge": "with AI agent",
-        "minutes": "{count, plural, one {· # min.} other {· # min.}}"
+        "minutes": "{count, plural, one {· # min.} other {· # min.}}",
+        "videoMinutes": "{count, plural, other {· # min video}}"
       }
     }
   },

@@ -393,7 +393,7 @@ export async function StoryHtml({ c }: { c: C }) {
         if (!p) return card
         const esc = (x: string) => x.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
         const href = `${loc === 'de' ? '' : `/${loc}`}/blog/${p.slug}`
-        const meta = `${esc(formatLabel(p.format ?? 'artikel', loc) ?? 'Artikel')}${p.reading_minutes ? ` · ${p.reading_minutes} Min.` : ''}`
+        const meta = `${esc(formatLabel(p.format ?? 'artikel', loc) ?? 'Artikel')}${p.reading_minutes ? ` · ${p.reading_minutes} ${loc === 'de' ? 'Min.' : 'min'}${p.format === 'video' ? ' Video' : ''}` : ''}`
         const m = p.story?.metrics?.find((x) => x.value) ?? p.story?.data?.metrics?.find((x) => x.value)
         const img = p.hero_image ?? p.og_image
         if (k === 0) {

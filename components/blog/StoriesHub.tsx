@@ -233,7 +233,7 @@ function Meta({ it, long, t }: { it: HubItem; long?: boolean; t: any }) {
   return (
     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-600">
       <span className="font-bold" style={{ color: a.accent }}>{formatLabel(it.format, locale) ?? t('meta.article')}{it.agent ? t('meta.agent') : ''}</span>
-      <span>{long && a.slug !== 'team' ? localizeAuthor(a, locale).tagline : discLabel(a, t)}{it.minutes ? t('meta.minutes', { count: it.minutes }) : ''}</span>
+      <span>{long && a.slug !== 'team' ? localizeAuthor(a, locale).tagline : discLabel(a, t)}{it.minutes ? t(it.format === 'video' ? 'meta.videoMinutes' : 'meta.minutes', { count: it.minutes }) : ''}</span>
       <span className="inline-flex items-center gap-1.5">
         {a.avatar ? (
           <span className="relative inline-block h-5 w-5 overflow-hidden rounded-full"><Image src={a.avatar} alt="" fill sizes="20px" className="object-cover" /></span>
