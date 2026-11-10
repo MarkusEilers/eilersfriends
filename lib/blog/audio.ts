@@ -124,8 +124,11 @@ export async function generatePostAudio(id: string, opts?: { force?: boolean }):
   const parts: Buffer[] = []
   const list = chunks(text, own ? 2400 : 1800)
   if (own) {
-    // Eigene Stimme: nacheinander, mit Vor- und Nachtext, damit die Betonung über die Stücke trägt
-    for (let i = 0; i < list.length; i++) parts.push(await synthesizeOwn(list[i], own, p.locale, list[i - 1], list[i + 1]))
+    // Eigene Stimme: mit Vor- und Nachtext je Stück, damit die Betonung über die Stücke trägt (je 3 gleichzeitig)
+    for (let i = 0; i < list.length; i += 3) {
+      const batch = await Promise.all(list.slice(i, i + 3).map((c, k) => synthesizeOwn(c, own, p.locale, list[i + k - 1], list[i + k + 1])))
+      parts.push(...batch)
+    }
   } else {
     for (let i = 0; i < list.length; i += 3) {
       const batch = await Promise.all(list.slice(i, i + 3).map((c) => synthesize(c, voice, instructions)))
