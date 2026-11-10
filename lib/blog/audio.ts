@@ -16,6 +16,7 @@ const VOICE: Record<string, string> = { markus: 'onyx', aljona: 'coral' }
 /** Eigene Stimmprofile bei ElevenLabs (geklont). Wer hier steht, wird mit der eigenen Stimme vorgelesen. */
 const OWN_VOICE: Record<string, { id: string; model: string }> = {
   markus: { id: '3NVf9mERXRShHjzLNrDE', model: 'eleven_v4' },
+  aljona: { id: 'DuyZASZjLMRlmBfc4Rxw', model: 'eleven_v4' },
 }
 const LANG: Record<string, string> = { de: 'Deutsch', en: 'English', es: 'Español', ru: 'Русский' }
 const STYLE: Record<string, string> = {
