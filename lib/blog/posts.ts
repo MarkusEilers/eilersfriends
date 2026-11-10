@@ -139,7 +139,10 @@ export async function relatedPosts(post: Post, limit = 3): Promise<Post[]> {
            (SELECT COUNT(*) FROM jsonb_array_elements_text(COALESCE(tags,'[]'::jsonb)) t
               WHERE t IN (SELECT jsonb_array_elements_text(${JSON.stringify(post.tags ?? [])}::jsonb))) AS shared
     FROM blog_posts
-    WHERE status = 'published' AND slug <> ${post.slug}
+    -- Nur dieselbe Sprache, und keine andere Sprachfassung desselben Beitrags
+    WHERE status = 'published' AND slug <> ${post.slug} AND locale = ${post.locale ?? 'de'}
+      AND id <> ${post.translation_of ?? post.id}
+      AND COALESCE(translation_of, id) <> ${post.translation_of ?? post.id}
     ORDER BY shared DESC, (author_slug = ${post.author_slug}) DESC, published_at DESC NULLS LAST
     LIMIT ${limit}`)
   return rows as unknown as Post[]
