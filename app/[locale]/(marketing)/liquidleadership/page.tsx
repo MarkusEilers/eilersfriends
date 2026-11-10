@@ -13,7 +13,7 @@ const META: Record<string, { title: string; description: string }> = {
   en: { title: 'Liquid Leadership · Leadership programme by Aljona Eilers · Eilers+Friends', description: 'Twelve sessions after which teams gladly follow their leaders. Group coaching, 1:1 with shadowing and three quality gates. For CEOs and their leadership teams.' },
   es: { title: 'Liquid Leadership · Programa de liderazgo de Aljona Eilers · Eilers+Friends', description: 'Doce sesiones tras las cuales los equipos siguen con gusto a sus líderes. Group coaching, 1:1 con shadowing y tres quality gates. Para CEOs y sus equipos directivos.' },
 }
-const IMG = `${SITE}/heroes/liquid-leadership.jpg`
+const IMG = `${SITE}/heroes/liquid-leadership-2.jpg`
 const url = (l: string) => `${SITE}${l === 'de' ? '' : `/${l}`}/liquidleadership`
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {

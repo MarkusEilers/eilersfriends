@@ -775,7 +775,7 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
                 const [key, title] = c[0].split('|').map((x) => x.trim())
                 return (
                   <div key={k} className="flex flex-col gap-1.5 rounded-xl bg-white p-4">
-                    <span className="flex items-baseline gap-2"><b className="text-[26px] leading-none" style={{ color: BLUE }}>{key}</b><span className="text-[14px] font-bold" style={{ color: INK }}>{title}</span></span>
+                    <span className="flex flex-col gap-1"><span className="text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: BLUE }}>{key}</span><span className="text-[15px] font-bold leading-snug" style={{ color: INK }}>{title}</span></span>
                     {c.slice(1).map((st, j) => { const [n, t] = st.split('|').map((x) => x.trim()); return <span key={j} className="text-[13px] text-[#605D5D]"><b className="mr-1.5 text-[#9A9796]">{n}</b>{t}</span> })}
                   </div>
                 )
