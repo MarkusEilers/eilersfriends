@@ -93,7 +93,8 @@ Lies den Beitrag und gib strukturiert zurück, worüber er spricht. Nur was wör
 - insights: 3–6 Kernaussagen als kurze, eigenständige Sätze
 - topics: 3–8 Themen-Schlagworte
 - frameworks: genannte Methoden/Frameworks (z. B. „Instant Influence“, „Neugier-Formel“)
-- sources: genannte Studien/Quellen (name, url wenn genannt)`
+- sources: genannte Studien/Quellen (name, url wenn genannt)
+Antworte ausschließlich als JSON-Objekt mit genau diesen Feldern: companies, people, metrics, quotes, insights, topics, frameworks, sources.`
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
