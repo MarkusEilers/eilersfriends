@@ -659,6 +659,7 @@ const BLOCKS: Array<{ label: string; hint: string; snippet: string }> = [
   { label: 'Aufstieg', hint: 'Stationen als Gipfel, ! = Ampel', snippet: ':::gipfel Dachzeile · Stationen\nStation 1\nStation 2\n! Station mit Ampel\nZiel\n^ Bildunterschrift\n:::' },
   { label: 'Ja/Nein', hint: 'Zwei Ausgänge', snippet: ':::janein\nJA | Was ein Ja bedeutet.\nNEIN | Was ein Nein bedeutet.\n:::' },
   { label: 'Dreieck', hint: 'Drei Ecken mit Mitte', snippet: ':::dreieck Mitte\nEcke 1 | Satz\nEcke 2 | Satz\nEcke 3 | Satz\n^ Bildunterschrift\n:::' },
+  { label: 'Video', hint: 'YouTube-Video, lädt erst nach Klick', snippet: ':::video YOUTUBE-ID | Dachzeile\nbild /pfad/vorschau.jpg\nTitel des Videos\nUnterzeile\nhinweis Lädt erst nach dem Klick von YouTube.\n:::' },
   { label: 'Bild', hint: 'Bild mit Unterschrift', snippet: '![Bildunterschrift](/pfad/zum/bild.jpg)' },
   { label: 'Nächster Beitrag', hint: 'Teaser auf den Folgebeitrag', snippet: ':::weiter Nächster Beitrag · Serie 2 von 3 | /blog/slug\nTitel des nächsten Beitrags\nEin Satz, warum es sich lohnt.\n:::' },
 ]

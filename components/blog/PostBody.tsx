@@ -30,10 +30,12 @@
  *   :::gipfel Dachzeile … :::          Stationen als Aufstieg, „! Station“ mit Ampel
  *   :::janein … :::                    Zwei Ausgänge: „JA | Text“, „NEIN | Text“
  *   :::dreieck Mitte … :::             Drei Ecken „Name | Text“
+ *   :::video ID | Dachzeile … :::      YouTube erst nach Klick: „bild /pfad.jpg“, Titel, Unterzeile, „hinweis …“
  *   „^ Text“ in einem Baustein = Bildunterschrift darunter.
  * Inline: **fett**, ==blau hervorgehoben==, *kursiv*, [Link](url), ((Pille)), {{Begriff}}, %Platzhalter% (nur im Chat).
  */
 import { Fragment, type ReactNode } from 'react'
+import { VideoEmbed } from './VideoEmbed'
 
 const INK = '#0D0D0B'
 const BLUE = '#1A5FD4'
@@ -576,6 +578,19 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
               })}
             </svg>
           </div>
+          <Caption text={caption} />
+        </figure>
+      )
+    }
+    case 'video': {
+      // „:::video <YouTube-ID> | Dachzeile“, Zeilen: „bild /pfad.jpg“, Titel, Unterzeile; lädt YouTube erst nach Klick
+      const [id, eb] = b.arg.split('|').map((x) => x.trim())
+      const img = nonEmpty.find((l) => l.startsWith('bild '))?.slice(5).trim()
+      const [title, ...sub] = nonEmpty.filter((l) => !l.startsWith('bild ') && !l.startsWith('hinweis '))
+      const hint = nonEmpty.find((l) => l.startsWith('hinweis '))?.slice(8).trim()
+      return (
+        <figure className="m-0">
+          <VideoEmbed id={id} eyebrow={eb} title={title} sub={sub.join(' ') || undefined} image={img} note={hint} />
           <Caption text={caption} />
         </figure>
       )
