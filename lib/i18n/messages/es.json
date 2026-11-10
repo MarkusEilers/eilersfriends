@@ -2397,7 +2397,8 @@
         "label": "Agentes de IA preentrenados · gratis",
         "title": "Llévate nuestros frameworks. Incluye agentes de IA.",
         "desc": "Cada framework incluye el esquema y el agente que hemos entrenado para ello.",
-        "cta": "Obtener acceso"
+        "cta": "Obtener acceso",
+        "ctaLink": "Ver los frameworks"
       },
       "more": "Cargar más",
       "newsletter": {

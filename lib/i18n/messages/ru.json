@@ -2287,7 +2287,8 @@
         "label": "Pretrained AI-Agenten · gratis",
         "title": "Klau Dir unsere Frameworks. Inklusive AI-Agenten.",
         "desc": "Jedes Framework kommt mit Bauplan und dem Agenten, den wir dafür trainiert haben.",
-        "cta": "Zugang holen"
+        "cta": "Zugang holen",
+        "ctaLink": "Frameworks ansehen"
       },
       "more": "Weitere laden",
       "newsletter": {

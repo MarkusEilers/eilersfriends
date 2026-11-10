@@ -2397,7 +2397,8 @@
         "label": "Pretrained AI agents · free",
         "title": "Steal our frameworks. Including AI agents.",
         "desc": "Each framework comes with a blueprint and the agent we trained for it.",
-        "cta": "Get access"
+        "cta": "Get access",
+        "ctaLink": "Browse the frameworks"
       },
       "more": "Load more",
       "newsletter": {

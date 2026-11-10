@@ -53,8 +53,10 @@ function hrefWith(f: HubFilter, patch: Partial<HubFilter>) {
 
 const discLabel = (a: Author, t: any) => (a.discipline === 'leadership' ? t('discipline.leadership') : a.discipline === 'revenue' ? t('discipline.revenue') : t('discipline.both'))
 
-export async function StoriesHub({ items, filter, tags, preview, hasMore }: {
+export async function StoriesHub({ items, filter, tags, preview, hasMore, formats }: {
   items: HubItem[]; filter: HubFilter; tags: string[]; preview?: boolean; hasMore?: boolean
+  /** Formate, zu denen es Inhalte gibt — nur diese bekommen einen Filter-Tab */
+  formats?: string[]
 }) {
   const t = await getTranslations('blogUi.hub')
   const locale = await getLocale()
@@ -83,7 +85,7 @@ export async function StoriesHub({ items, filter, tags, preview, hasMore }: {
           <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
               <Tab href={hrefWith(filter, { format: null })} active={!filter.format}>{t('tabs.all')}</Tab>
-              {formatTabs(locale).filter((f) => f.key !== 'artikel').map((f) => (
+              {formatTabs(locale).filter((f) => f.key !== 'artikel' && (!formats || formats.includes(f.key) || filter.format === f.key)).map((f) => (
                 <Tab key={f.key} href={hrefWith(filter, { format: f.key })} active={filter.format === f.key}>{f.label}</Tab>
               ))}
             </div>
@@ -168,7 +170,8 @@ export async function StoriesHub({ items, filter, tags, preview, hasMore }: {
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-[1.7rem]">{t('frameworks.title')}</h2>
             <p className="mt-2 text-sm text-gray-600">{t('frameworks.desc')}</p>
           </div>
-          <EmailCapture source="hub:frameworks" button={t('frameworks.cta')} buttonClass="bg-gray-900 text-white" />
+          {/* Keine E-Mail hier: die Adresse gibt man auf der Seite des Frameworks, das man sich aussucht */}
+          <Link href={'/frameworks' as '/'} className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-gray-900 px-7 text-sm font-bold text-white hover:bg-[#124293] md:justify-self-end">{t('frameworks.ctaLink')} →</Link>
         </div>
       </section>
 

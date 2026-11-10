@@ -1,3 +1,5 @@
+import { db } from '@/lib/db'
+import { sql } from 'drizzle-orm'
 import type { Metadata } from 'next'
 import { auth } from '@/lib/auth'
 import { StoriesHub, postToItem, type HubItem } from '@/components/blog/StoriesHub'
@@ -45,7 +47,10 @@ export default async function BlogIndexPage({
       author: AUTHORS.markus, format: 'framework', date: null, minutes: null, tags: [], agent: true,
     })
   }
-  return <StoriesHub items={items} filter={filter} tags={tags} preview={preview} hasMore={hasMore} />
+  // Filter-Tabs nur für Formate mit Inhalt (Beiträge dieser Sprache + Frameworks)
+  const fmtRows = (await db.execute(sql`SELECT DISTINCT format FROM blog_posts WHERE status = 'published' AND locale = ${locale} AND format IS NOT NULL`).catch(() => [])) as unknown as Array<{ format: string }>
+  const formats = [...fmtRows.map((r) => r.format), ...((await frameworkCards(1)).length ? ['framework'] : [])]
+  return <StoriesHub items={items} filter={filter} tags={tags} preview={preview} hasMore={hasMore} formats={formats} />
 }
 
 /** Entwürfe nur für Admin und Coach — sonst wäre ?preview=1 eine offene Tür. */
