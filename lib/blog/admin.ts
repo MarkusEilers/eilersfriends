@@ -135,11 +135,11 @@ async function savePostInner(input: SaveInput): Promise<AdminPost> {
     : status === 'scheduled' ? input.publishedAt
     : input.publishedAt ?? null
 
+  // Beim Bearbeiten bleibt die Adresse (slug) stabil: Links, Google und Serien hängen daran.
   if (input.id) {
     const rows = await db.execute(sql`
       UPDATE blog_posts SET
         title = ${input.title},
-        slug = ${await uniqueSlug(input.title, input.id)},
         subtitle = ${input.subtitle ?? null},
         excerpt = ${input.excerpt ?? null},
         content = ${input.content ?? null},
