@@ -28,4 +28,8 @@ export interface StoryData {
   framework_slug?: string
   /** Audiofassung zum Anhören */
   audio_url?: string
+  /** Serie: Kasten unter dem Kopf (Teile mit Label, Titel, optional Link) */
+  series?: { name: string; parts: Array<{ label: string; title: string; href?: string; current?: boolean }> }
+  /** Eigener Abschluss-Aufruf statt „Gemeinsam: Gewinner-Teams“ */
+  cta?: { eyebrow?: string; title?: string; button?: string; href?: string }
 }
