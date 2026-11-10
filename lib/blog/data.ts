@@ -108,6 +108,7 @@ Lies den Beitrag und gib strukturiert zurück, worüber er spricht. Nur was wör
 - topics: 3–8 Themen-Schlagworte
 - frameworks: genannte Methoden/Frameworks (z. B. „Instant Influence“, „Neugier-Formel“)
 - sources: genannte Studien/Quellen (name, url wenn genannt)
+Alle Texte (Rollen, Labels, Kernaussagen, Themen) in der Sprache des Beitrags.
 Antworte ausschließlich als JSON-Objekt mit genau diesen Feldern: companies, people, metrics, quotes, insights, topics, frameworks, sources.`
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
