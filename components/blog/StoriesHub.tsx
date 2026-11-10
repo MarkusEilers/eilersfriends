@@ -23,13 +23,13 @@ export interface HubItem {
   badge?: string | null; agent?: boolean
 }
 
-export interface HubFilter { format: string | null; d: string | null; thema: string | null; coach: string | null; n: number }
+export interface HubFilter { format: string | null; d: string | null; thema: string | null; coach: string | null; n: number; q?: string | null }
 
 const BLUE = '#1A5FD4'
 const INK = '#0D0D0B'
 
 export function postToItem(p: Post): HubItem {
-  const m = p.story?.metrics?.find((x) => x.value)
+  const m = p.story?.metrics?.find((x) => x.value) ?? p.story?.data?.metrics?.find((x) => x.value)
   return {
     key: p.slug, href: `/blog/${p.slug}`, title: p.title, excerpt: p.excerpt ?? p.subtitle,
     image: p.hero_image ?? p.og_image, author: authorOf(p.author_slug), format: p.format ?? 'artikel',
@@ -45,6 +45,7 @@ function hrefWith(f: HubFilter, patch: Partial<HubFilter>) {
   if (n.d) q.set('d', n.d)
   if (n.thema) q.set('thema', n.thema)
   if (n.coach) q.set('coach', n.coach)
+  if (n.q) q.set('q', n.q)
   if (n.n) q.set('n', String(n.n))
   const s = q.toString()
   return `/blog${s ? `?${s}` : ''}`
@@ -57,7 +58,7 @@ export async function StoriesHub({ items, filter, tags, preview, hasMore }: {
 }) {
   const t = await getTranslations('blogUi.hub')
   const locale = await getLocale()
-  const filtered = !!(filter.format || filter.d || filter.thema || filter.coach)
+  const filtered = !!(filter.format || filter.d || filter.thema || filter.coach || filter.q)
   const [lead, ...rest] = items
   const side = filtered ? [] : rest.slice(0, 3)
   const grid = filtered ? items : rest.slice(3)
@@ -85,7 +86,12 @@ export async function StoriesHub({ items, filter, tags, preview, hasMore }: {
                 <Tab key={f.key} href={hrefWith(filter, { format: f.key })} active={filter.format === f.key}>{f.label}</Tab>
               ))}
             </div>
-            <div className="flex items-center gap-5 text-sm text-gray-700">
+            <div className="flex flex-wrap items-center gap-5 text-sm text-gray-700">
+              <form action={locale === 'de' ? '/blog' : `/${locale}/blog`} method="get" role="search" className="flex items-center">
+                <input type="search" name="q" defaultValue={filter.q ?? ''} placeholder={locale === 'en' ? 'Search stories, companies, numbers …' : locale === 'es' ? 'Buscar historias, empresas, cifras …' : 'Stories, Firmen, Zahlen suchen …'}
+                  aria-label={locale === 'en' ? 'Search' : locale === 'es' ? 'Buscar' : 'Suchen'}
+                  className="w-56 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm outline-none focus:border-gray-400" />
+              </form>
               <Dropdown label={t('dropdowns.discipline.label')} value={filter.d === 'revenue' ? t('discipline.revenue') : filter.d === 'leadership' ? t('discipline.leadership') : null} options={[
                 { label: t('dropdowns.discipline.both'), href: hrefWith(filter, { d: null }) },
                 { label: t('discipline.revenue'), href: hrefWith(filter, { d: 'revenue' }) },

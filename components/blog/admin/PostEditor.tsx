@@ -375,9 +375,10 @@ export function PostEditor({
           </label>
         </div>
 
-        {(
+        {(<>
           <StoryFields story={post.story ?? {}} onChange={(s) => set('story', s)} />
-        )}
+          <DataFields story={post.story ?? {}} onChange={(s) => set('story', s)} source={{ title: post.title, subtitle: post.subtitle ?? '', content: post.content }} />
+        </>)}
 
         <div className="rounded-xl border border-gray-200 bg-white p-4">
           <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Titelbild</div>
@@ -650,3 +651,74 @@ const BLOCKS: Array<{ label: string; hint: string; snippet: string }> = [
   { label: 'Bild', hint: 'Bild mit Unterschrift', snippet: '![Bildunterschrift](/pfad/zum/bild.jpg)' },
   { label: 'Nächster Beitrag', hint: 'Teaser auf den Folgebeitrag', snippet: ':::weiter Nächster Beitrag · Serie 2 von 3 | /blog/slug\nTitel des nächsten Beitrags\nEin Satz, warum es sich lohnt.\n:::' },
 ]
+
+/**
+ * Datenschicht: was der Beitrag strukturiert enthält (Firmen, Personen, Kennzahlen, …).
+ * Eine Zeile je Eintrag, Felder mit „|“ getrennt. „Aus dem Text füllen“ schlägt alles vor.
+ */
+function DataFields({ story, onChange, source }: { story: StoryData; onChange: (s: StoryData) => void; source: { title: string; subtitle: string; content: string } }) {
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+  const d = story.data ?? {}
+  const inp = 'w-full rounded-lg border border-gray-200 px-2 py-1.5 text-[11px] font-mono leading-snug'
+  const setData = (patch: Partial<NonNullable<StoryData['data']>>) => onChange({ ...story, data: { ...d, ...patch } })
+  const lines = (v: string) => v.split('\n').map((l) => l.trim()).filter(Boolean)
+  const cols = (l: string) => l.split('|').map((x) => x.trim())
+  const fields: Array<{ key: keyof NonNullable<StoryData['data']>; label: string; ph: string; get: () => string; put: (v: string) => void }> = [
+    { key: 'companies', label: 'Firmen (Name | Rolle | Domain)', ph: 'smapOne | Kunde | smapone.com',
+      get: () => (d.companies ?? []).map((c) => [c.name, c.role, c.domain].filter((x) => x !== undefined).join(' | ')).join('\n'),
+      put: (v) => setData({ companies: lines(v).map((l) => { const [name, role, domain] = cols(l); return { name, role: role || undefined, domain: domain || undefined } }) }) },
+    { key: 'people', label: 'Personen & Figuren (Name | Rolle | real/figur)', ph: 'Olli | CEO, Investor | real',
+      get: () => (d.people ?? []).map((p) => [p.name, p.role ?? '', p.kind ?? ''].join(' | ')).join('\n'),
+      put: (v) => setData({ people: lines(v).map((l) => { const [name, role, kind] = cols(l); return { name, role: role || undefined, kind: kind === 'figur' ? 'figur' : kind === 'real' ? 'real' : undefined } }) }) },
+    { key: 'metrics', label: 'Kennzahlen (Wert | Bedeutung | Quelle)', ph: '24 % | der Verkäufer erreichen ihre Ziele',
+      get: () => (d.metrics ?? []).map((m) => [m.value, m.label, m.source ?? ''].join(' | ')).join('\n'),
+      put: (v) => setData({ metrics: lines(v).map((l) => { const [value, label, src] = cols(l); return { value, label: label ?? '', source: src || undefined } }) }) },
+    { key: 'quotes', label: 'Zitate (Text | von | eigen)', ph: '„Kaffee, jemand?“ | Olli',
+      get: () => (d.quotes ?? []).map((q) => [q.text, q.by ?? '', q.own ? 'eigen' : ''].join(' | ')).join('\n'),
+      put: (v) => setData({ quotes: lines(v).map((l) => { const [text, by, own] = cols(l); return { text, by: by || undefined, own: own === 'eigen' } }) }) },
+    { key: 'insights', label: 'Kernaussagen (eine je Zeile)', ph: 'Relevanz schlägt Frequenz.',
+      get: () => (d.insights ?? []).join('\n'), put: (v) => setData({ insights: lines(v) }) },
+    { key: 'topics', label: 'Themen (eine je Zeile)', ph: 'Kaltakquise',
+      get: () => (d.topics ?? []).join('\n'), put: (v) => setData({ topics: lines(v) }) },
+    { key: 'frameworks', label: 'Frameworks & Methoden', ph: 'Instant Influence',
+      get: () => (d.frameworks ?? []).join('\n'), put: (v) => setData({ frameworks: lines(v) }) },
+    { key: 'sources', label: 'Quellen (Name | URL)', ph: 'Studie XY | https://…',
+      get: () => (d.sources ?? []).map((x) => [x.name, x.url ?? ''].join(' | ')).join('\n'),
+      put: (v) => setData({ sources: lines(v).map((l) => { const [name, url] = cols(l); return { name, url: url || undefined } }) }) },
+  ]
+  async function fill() {
+    setBusy(true); setErr(null)
+    try {
+      const r = await fetch('/api/admin/blog/extract', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(source) })
+      const j = await r.json()
+      if (!r.ok) throw new Error(j.error ?? 'Fehler')
+      onChange({ ...story, data: j.data })
+    } catch (e) { setErr(e instanceof Error ? e.message : 'Fehler') } finally { setBusy(false) }
+  }
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-4">
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Datenschicht</div>
+        <button type="button" onClick={fill} disabled={busy || !source.content.trim()} className="rounded-lg border border-gray-200 px-2 py-1 text-[11px] font-semibold text-gray-700 hover:border-gray-400 disabled:opacity-50">
+          {busy ? 'Liest …' : 'Aus dem Text füllen'}
+        </button>
+      </div>
+      <p className="mt-1 text-[11px] leading-snug text-gray-400">Wird mit dem Beitrag gespeichert und speist Startseite, Übersicht und Suche.</p>
+      {err && <p className="mt-1 text-[11px] text-red-600">{err}</p>}
+      {fields.map((f) => <DataArea key={f.key} label={f.label} ph={f.ph} value={f.get()} onCommit={f.put} cls={inp} />)}
+    </div>
+  )
+}
+
+/** Textfeld, das erst beim Verlassen übernimmt — sonst würden halbe Zeilen beim Tippen zerlegt */
+function DataArea({ label, ph, value, onCommit, cls }: { label: string; ph: string; value: string; onCommit: (v: string) => void; cls: string }) {
+  const [v, setV] = useState(value)
+  useEffect(() => { setV(value) }, [value])
+  return (
+    <>
+      <div className="mt-3 text-[10px] font-semibold text-gray-400">{label}</div>
+      <textarea className={`${cls} mt-1.5`} rows={Math.min(8, Math.max(2, v.split('\n').length + 1))} placeholder={ph} value={v} onChange={(e) => setV(e.target.value)} onBlur={() => onCommit(v)} />
+    </>
+  )
+}

@@ -11,6 +11,17 @@ import { AcademyInit } from './AcademyInit'
 import { HOME_CSS } from './home-assets'
 import { HomeInit } from './HomeInit'
 import { HeroBackdrop, HeroStyles } from './HeroBackdrop'
+import { listPosts } from '@/lib/blog/posts'
+import { formatLabel } from '@/lib/blog/i18n-data'
+
+/** String.replace mit asynchronem Ersetzer */
+async function replaceAsync(str: string, re: RegExp, fn: (...a: string[]) => Promise<string>) {
+  const parts: Promise<string>[] = []
+  str.replace(re, (...args) => { parts.push(fn(...(args as string[]))); return '' })
+  const done = await Promise.all(parts)
+  let i = 0
+  return str.replace(re, () => done[i++])
+}
 import { getLocale } from 'next-intl/server'
 import { ST, storyLang, quarterLabel, type StoryLang } from '@/lib/lp/story-i18n'
 
@@ -368,6 +379,34 @@ export async function StoryHtml({ c }: { c: C }) {
   if (html.includes('{{ms.')) {
     const a = await getAvailability().catch(() => null)
     html = html.replace(/\{\{ms\.free\}\}/g, String(a?.free ?? '')).replace(/\{\{ms\.capacity\}\}/g, String(a?.capacity ?? ''))
+  }
+  // Neueste Beiträge aus dem Blog: <!--hub:latest:3--> statische Karten <!--/hub--> → die statischen Karten werden
+  // der Reihe nach durch veröffentlichte Beiträge ersetzt (erste Karte groß). Ohne Beiträge bleibt alles wie es ist.
+  if (html.includes('<!--hub:')) {
+    const loc = storyLang(await getLocale().catch(() => 'de'))
+    html = await replaceAsync(html, /<!--hub:latest:(\d+)-->([\s\S]*?)<!--\/hub-->/g, async (_m, nRaw: string, inner: string) => {
+      const posts = await listPosts({ limit: Number(nRaw) || 3, locale: loc }).catch(() => [])
+      if (!posts.length) return inner
+      const cards = inner.match(/<a [\s\S]*?<\/a>/g) ?? []
+      return cards.map((card, k) => {
+        const p = posts[k]
+        if (!p) return card
+        const esc = (x: string) => x.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
+        const href = `${loc === 'de' ? '' : `/${loc}`}/blog/${p.slug}`
+        const meta = `${esc(formatLabel(p.format ?? 'artikel', loc) ?? 'Artikel')}${p.reading_minutes ? ` · ${p.reading_minutes} Min.` : ''}`
+        const m = p.story?.metrics?.find((x) => x.value) ?? p.story?.data?.metrics?.find((x) => x.value)
+        const img = p.hero_image ?? p.og_image
+        if (k === 0) {
+          return `<a href="${href}" style="grid-column:span 2;grid-row:span 2;background:#0D0D0B;color:#fff;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none">`
+            + `<div class="ph" style="border-radius:0;flex:1;min-height:260px;position:relative">${img ? `<img src="${esc(img)}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;filter:grayscale(1)">` : ''}`
+            + `${m ? `<span class="chip" style="position:absolute;top:14px;left:14px;background:#1A5FD4;color:#fff;font-size:13px;padding:6px 12px">${esc(`${m.value} ${m.label}`.slice(0, 48))}</span>` : ''}</div>`
+            + `<div style="padding:24px;display:flex;flex-direction:column;gap:10px"><span class="mono" style="color:#8FB0EC">${meta}</span><span style="font-size:22px;font-weight:600;letter-spacing:-.01em;line-height:1.25">${esc(p.title)}</span></div></a>`
+        }
+        return `<a href="${href}" class="card" style="padding:22px;display:flex;flex-direction:column;gap:12px;text-decoration:none;color:#0D0D0B">`
+          + `<span class="mono">${meta}</span><span style="font-size:18px;font-weight:600;line-height:1.3">${esc(p.title)}</span>`
+          + `${p.excerpt ?? p.subtitle ? `<span style="font-size:14px;line-height:1.5;color:#7A746E">${esc(String(p.excerpt ?? p.subtitle).slice(0, 140))}</span>` : ''}</a>`
+      }).join('\n')
+    })
   }
   // Logo-Raster aus dem Backend: {{logos:<kategorie>:<spalten>}} → Kacheln aller sichtbaren Logos dieser Seite,
   // sortiert wie in /admin/logos; leere Kacheln füllen die letzte Reihe auf

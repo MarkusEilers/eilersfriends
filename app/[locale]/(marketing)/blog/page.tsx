@@ -19,20 +19,21 @@ const DISCIPLINE: Record<string, string[]> = { revenue: ['markus', 'team'], lead
 
 export default async function BlogIndexPage({
   params, searchParams,
-}: { params: Promise<{ locale: string }>; searchParams: Promise<{ preview?: string; format?: string; d?: string; thema?: string; coach?: string; n?: string }> }) {
+}: { params: Promise<{ locale: string }>; searchParams: Promise<{ preview?: string; format?: string; d?: string; thema?: string; coach?: string; n?: string; q?: string }> }) {
   const [{ locale }, sp] = await Promise.all([params, searchParams])
   const preview = (sp.preview === '1' && await isEditor())
   const coach = sp.coach === 'markus' || sp.coach === 'aljona' ? sp.coach : null
   const filter = {
     format: sp.format || null, d: sp.d && DISCIPLINE[sp.d] ? sp.d : null, thema: sp.thema || null, coach,
     n: Math.min(200, Math.max(0, Number(sp.n) || 0)),
+    q: (sp.q ?? '').trim().slice(0, 80) || null,
   }
   const limit = filter.n || 24
   const authors = coach ? [coach] : filter.d ? DISCIPLINE[filter.d] : null
 
-  const wantFrameworks = (!filter.format || filter.format === 'framework') && filter.d !== 'leadership' && coach !== 'aljona' && !filter.thema
+  const wantFrameworks = (!filter.format || filter.format === 'framework') && filter.d !== 'leadership' && coach !== 'aljona' && !filter.thema && !filter.q
   const [posts, tags, fws] = await Promise.all([
-    listPosts({ limit: limit + 1, includeDrafts: preview, locale, format: filter.format, authors, tag: filter.thema }),
+    listPosts({ limit: limit + 1, includeDrafts: preview, locale, format: filter.format, authors, tag: filter.thema, q: filter.q }),
     topTags(10),
     wantFrameworks ? frameworkCards(8) : Promise.resolve([]),
   ])

@@ -30,6 +30,20 @@ export interface StoryData {
   audio_url?: string
   /** Serie: Kasten unter dem Kopf (Teile mit Label, Titel, optional Link) */
   series?: { name: string; parts: Array<{ label: string; title: string; href?: string; current?: boolean }> }
+  /** Datenschicht: Firmen, Personen, Kennzahlen, Zitate, Kernaussagen, Themen, Frameworks, Quellen (siehe lib/blog/data.ts) */
+  data?: PostData
   /** Eigener Abschluss-Aufruf statt „Gemeinsam: Gewinner-Teams“ */
   cta?: { eyebrow?: string; title?: string; button?: string; href?: string }
+}
+
+/** Datenschicht eines Beitrags (gespiegelt in blog_entities, siehe lib/blog/data.ts) */
+export interface PostData {
+  companies?: Array<{ name: string; role?: string; domain?: string }>
+  people?: Array<{ name: string; role?: string; kind?: 'real' | 'figur' }>
+  metrics?: Array<{ value: string; label: string; source?: string }>
+  quotes?: Array<{ text: string; by?: string; own?: boolean }>
+  insights?: string[]
+  topics?: string[]
+  frameworks?: string[]
+  sources?: Array<{ name: string; url?: string }>
 }

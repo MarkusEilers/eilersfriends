@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { listAll, getById, savePost, deletePost, knownTags } from '@/lib/blog/admin'
+import { syncPostData } from '@/lib/blog/data'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -34,6 +35,8 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => null)
   if (!body?.title?.trim()) return NextResponse.json({ error: 'Ein Titel ist Pflicht' }, { status: 400 })
   const post = await savePost({ ...body, userId: s.user?.id ?? null })
+  // Datenschicht spiegeln (Einträge + Suchtext) — darf das Speichern nie aufhalten
+  await syncPostData(post as unknown as Parameters<typeof syncPostData>[0]).catch((e) => console.error('blog data sync', e))
   return NextResponse.json({ ok: true, post })
 }
 

@@ -1,3 +1,4 @@
+import { ensureDataSchema } from './data'
 import { sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import type { AuthorSlug } from './authors'
@@ -79,8 +80,11 @@ export async function listPosts(opts?: {
   locale?: string
   /** Hub-Filter */
   format?: string | null; authors?: string[] | null; tag?: string | null
+  /** Volltextsuche über Titel, Text, Schlagworte und Datenschicht */
+  q?: string | null
 }): Promise<Post[]> {
   await ensureBlogSchema()
+  if (opts?.q) await ensureDataSchema()
   const locale = opts?.locale ?? 'de'
   const rows = await db.execute(sql`
     SELECT p.id, p.slug, p.title, p.subtitle, p.excerpt, p.hero_image, p.og_image, p.author_slug,
@@ -93,13 +97,15 @@ export async function listPosts(opts?: {
       ${opts?.format ? sql`AND p.format = ${opts.format}` : sql``}
       ${opts?.authors?.length ? sql`AND p.author_slug IN (${sql.join(opts.authors.map((a) => sql`${a}`), sql`, `)})` : sql``}
       ${opts?.tag ? sql`AND COALESCE(p.tags, '[]'::jsonb) ? ${opts.tag}` : sql``}
+      ${opts?.q ? sql`AND (to_tsvector('german', coalesce(p.search_text, p.title || ' ' || coalesce(p.excerpt, '') || ' ' || coalesce(p.content, ''))) @@ websearch_to_tsquery('german', ${opts.q})
+                       OR p.title ILIKE ${'%' + opts.q + '%'} OR coalesce(p.search_text, p.content, '') ILIKE ${'%' + opts.q + '%'})` : sql``}
       AND (
         p.locale = ${locale}
         OR (p.locale = 'de' AND NOT EXISTS (
               SELECT 1 FROM blog_posts t
               WHERE t.translation_of = p.id AND t.locale = ${locale} AND t.status = 'published'))
       )
-    ORDER BY p.published_at DESC NULLS LAST, p.created_at DESC
+    ORDER BY ${opts?.q ? sql`ts_rank(to_tsvector('german', coalesce(p.search_text, p.title)), websearch_to_tsquery('german', ${opts.q})) DESC,` : sql``} p.published_at DESC NULLS LAST, p.created_at DESC
     LIMIT ${opts?.limit ?? 30}`)
   return rows as unknown as Post[]
 }
