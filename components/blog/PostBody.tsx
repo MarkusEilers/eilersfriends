@@ -763,9 +763,9 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
     case 'fahrplan': {
       // Spalten mit „---“ getrennt: erste Zeile „A | Titel“, dann „01 | Schritt“; danach „vorher | …“ und „nachher | …“
       const cols: string[][] = [[]]
-      for (const l of nonEmpty.filter((x) => !/^(vorher|nachher) \|/i.test(x))) { if (l === '---') cols.push([]); else cols[cols.length - 1].push(l) }
-      const before = nonEmpty.find((l) => /^vorher \|/i.test(l))?.split('|')[1]?.trim()
-      const after = nonEmpty.find((l) => /^nachher \|/i.test(l))?.split('|')[1]?.trim()
+      for (const l of nonEmpty.filter((x) => !/^(vorher|nachher|before|after|antes|después) \|/i.test(x))) { if (l === '---') cols.push([]); else cols[cols.length - 1].push(l) }
+      const bl = nonEmpty.find((l) => /^(vorher|before|antes) \|/i.test(l)); const before = bl?.split('|')[1]?.trim(); const beforeLabel = { vorher: 'Vorher', before: 'Before', antes: 'Antes' }[bl?.split('|')[0].trim().toLowerCase() ?? 'vorher'] ?? 'Vorher'
+      const al = nonEmpty.find((l) => /^(nachher|after|después) \|/i.test(l)); const after = al?.split('|')[1]?.trim(); const afterLabel = { nachher: 'Nachher', after: 'After', 'después': 'Después' }[al?.split('|')[0].trim().toLowerCase() ?? 'nachher'] ?? 'Nachher'
       return (
         <figure className="m-0">
           <div className="flex flex-col gap-4 rounded-2xl bg-[#F6F3EE] p-5 sm:p-7">
@@ -783,9 +783,9 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
             </div>
             {(before || after) && (
               <div className="grid items-center gap-2 sm:grid-cols-[1fr_auto_1fr]">
-                <div className="rounded-xl border border-dashed border-[#C9C2B8] bg-white px-4 py-3 text-[14px] text-[#605D5D]"><span className="block text-[11px] font-bold uppercase tracking-[0.12em]">Vorher</span>{before}</div>
+                <div className="rounded-xl border border-dashed border-[#C9C2B8] bg-white px-4 py-3 text-[14px] text-[#605D5D]"><span className="block text-[11px] font-bold uppercase tracking-[0.12em]">{beforeLabel}</span>{before}</div>
                 <span className="hidden text-[22px] sm:block" style={{ color: BLUE }}>⟶</span>
-                <div className="rounded-xl px-4 py-3 text-[14px] font-semibold text-white" style={{ background: BLUE }}><span className="block text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: LIGHT }}>Nachher</span>{after}</div>
+                <div className="rounded-xl px-4 py-3 text-[14px] font-semibold text-white" style={{ background: BLUE }}><span className="block text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: LIGHT }}>{afterLabel}</span>{after}</div>
               </div>
             )}
           </div>
