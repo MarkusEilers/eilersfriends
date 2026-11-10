@@ -2,6 +2,7 @@
 export const LOGO_CATEGORIES = [
   { key: 'startseite', label: 'Startseite' },
   { key: 'markus', label: 'Markus-Seite' },
+  { key: 'frameworks', label: 'Frameworks' },
   { key: 'academy', label: 'Academy / Sales-Training' },
   { key: 'mystery', label: 'Mystery Shopping' },
   { key: 'beratung', label: 'GTM-Beratung' },

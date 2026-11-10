@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { StoryBlockAuto } from '@/components/lp/story/StoryBlocks'
 import type { Metadata } from 'next'
 import { db } from '@/lib/db'
 import { landingPages, landingPageSections } from '@/lib/db/schema'
@@ -88,6 +89,7 @@ export default async function FrameworkDetailPage({ params, searchParams }: Page
         accent={accent}
         emailList={page!.emailList ?? `framework-${page!.slug}`}
         theme="ef"
+        storyRenderer={(t, c, id) => <StoryBlockAuto key={id} type={t} c={c as Record<string, any>} />}
       />
     </div>
   )
