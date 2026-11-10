@@ -2220,6 +2220,7 @@
     "share": {
       "listen": "Escuchar",
       "listenWithMinutes": "Escuchar · {minutes} min",
+      "aiVoice": "voz de IA",
       "readingTime": "{minutes} min de lectura",
       "videoTime": "Vídeo de {minutes} min",
       "linkedin": "LinkedIn",

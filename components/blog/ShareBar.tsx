@@ -21,6 +21,7 @@ export function ShareBar({ audio, minutes, video }: { audio?: string | null; min
         <button onClick={toggle} className="inline-flex items-center gap-2 font-semibold text-gray-800">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white">{playing ? <Pause size={13} /> : <Play size={13} />}</span>
           {minutes ? t('listenWithMinutes', { minutes }) : t('listen')}
+          <span className="font-normal text-gray-400">· {t('aiVoice')}</span>
         </button>
       ) : <span>{minutes ? t(video ? 'videoTime' : 'readingTime', { minutes }) : ''}</span>}
       <span className="flex items-center gap-2">

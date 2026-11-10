@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, after } from 'next/server'
 import { auth } from '@/lib/auth'
 import { listAll, getById, savePost, deletePost, knownTags } from '@/lib/blog/admin'
 import { syncPostData } from '@/lib/blog/data'
+import { generatePostAudio } from '@/lib/blog/audio'
 
 export const runtime = 'nodejs'
-export const maxDuration = 60
+export const maxDuration = 300
 
 async function guard() {
   const s = await auth()
@@ -37,6 +38,9 @@ export async function POST(req: Request) {
   const post = await savePost({ ...body, userId: s.user?.id ?? null })
   // Datenschicht spiegeln (Einträge + Suchtext) — darf das Speichern nie aufhalten
   await syncPostData(post as unknown as Parameters<typeof syncPostData>[0]).catch((e) => console.error('blog data sync', e))
+  // Vorlesefassung nach der Antwort erzeugen (nur veröffentlichte Beiträge, nur wenn sich der Text geändert hat)
+  const pid = (post as { id?: string }).id
+  if (pid) after(() => generatePostAudio(pid).then(() => undefined).catch((e) => console.error('blog audio', e)))
   return NextResponse.json({ ok: true, post })
 }
 

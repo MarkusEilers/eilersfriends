@@ -2110,6 +2110,7 @@
     "share": {
       "listen": "Anhören",
       "listenWithMinutes": "Anhören · {minutes} Min.",
+      "aiVoice": "ИИ-голос",
       "readingTime": "{minutes} Min. Lesezeit",
       "videoTime": "{minutes} Min. Video",
       "linkedin": "LinkedIn",
