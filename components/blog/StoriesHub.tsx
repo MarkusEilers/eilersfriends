@@ -83,7 +83,7 @@ export async function StoriesHub({ items, filter, tags, preview, hasMore }: {
           <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
               <Tab href={hrefWith(filter, { format: null })} active={!filter.format}>{t('tabs.all')}</Tab>
-              {formatTabs(locale).filter((f) => !['artikel', 'video'].includes(f.key)).map((f) => (
+              {formatTabs(locale).filter((f) => f.key !== 'artikel').map((f) => (
                 <Tab key={f.key} href={hrefWith(filter, { format: f.key })} active={filter.format === f.key}>{f.label}</Tab>
               ))}
             </div>
