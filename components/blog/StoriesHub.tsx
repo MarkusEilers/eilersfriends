@@ -123,7 +123,7 @@ export async function StoriesHub({ items, filter, tags, preview, hasMore }: {
           <div className="grid gap-8 lg:grid-cols-[1.75fr_1fr]">
             <LeadCard item={lead} t={t} />
             <div className="flex flex-col gap-6">
-              {side.map((it, i) => <SideCard key={it.key} item={it} withImage={i < 2} t={t} />)}
+              {side.map((it, i) => <SideCard key={it.key} item={it} withImage t={t} />)}
             </div>
           </div>
         ) : null}
@@ -249,11 +249,7 @@ function Visual({ it, className, t }: { it: HubItem; className: string; t: any }
   return (
     <div className={`relative overflow-hidden rounded-2xl ${className}`} style={{ background: it.image ? '#D9D7D4' : `linear-gradient(135deg, ${a.deep}, ${a.accent})` }}>
       {it.image ? <Image src={it.image} alt="" fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" /> : null}
-      {it.badge ? (
-        <span className="absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold text-white" style={{ background: a.accent }}>{it.badge}</span>
-      ) : it.agent ? (
-        <span className="absolute left-3 top-3 rounded-full bg-[#EBF1FF] px-2.5 py-1 text-[11px] font-bold" style={{ color: BLUE }}>{t('meta.agentBadge')}</span>
-      ) : null}
+      {/* Keine Pillen auf den Bildern — Kennzahl und AI-Agent stehen in der Meta-Zeile */}
     </div>
   )
 }
