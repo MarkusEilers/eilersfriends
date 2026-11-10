@@ -100,7 +100,7 @@ export default async function ProgrammePage({ params }: { params: Promise<{ loca
       <style href="home-css" precedence="default">{HOME_CSS}</style>
 
       <section className="efh" style={{ padding: 'clamp(56px,7vw,96px) clamp(20px,6vw,96px)' }}>
-        <HeroBackdrop src="/heroes/programme.jpg" label={t.alt} />
+        <HeroBackdrop src="/heroes/programme-2.jpg" label={t.alt} />
         <div className="wrap">
           <div className="efh-copy" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <span className="mono">{t.eyebrow}</span>
