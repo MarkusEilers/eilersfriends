@@ -56,6 +56,18 @@ export function PostEditor({
   const [siblings, setSiblings] = useState<Sibling[]>(initialSiblings ?? [])
   const fileRef = useRef<HTMLInputElement>(null)
   const imgRef = useRef<HTMLInputElement>(null)
+  const textRef = useRef<HTMLTextAreaElement>(null)
+  /** Baustein an der Cursorposition einfügen */
+  function insertBlock(snippet: string) {
+    const el = textRef.current
+    const cur = post.content
+    const at = el ? el.selectionStart : cur.length
+    const before = cur.slice(0, at).replace(/\n*$/, '')
+    const after = cur.slice(at).replace(/^\n*/, '')
+    const next = `${before}${before ? '\n\n' : ''}${snippet}\n\n${after}`
+    set('content', next)
+    requestAnimationFrame(() => { if (el) { el.focus(); const pos = (before ? before.length + 2 : 0) + snippet.length; el.setSelectionRange(pos, pos) } })
+  }
 
   const set = <K extends keyof EditorPost>(k: K, v: EditorPost[K]) => setPost((p) => ({ ...p, [k]: v }))
   const a = AUTHORS[post.author_slug]
@@ -209,9 +221,18 @@ export function PostEditor({
           placeholder="Untertitel — schärft den Titel, wiederholt ihn nicht"
           className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-gray-400"
         />
+        <div className="flex flex-wrap gap-1.5">
+          {BLOCKS.map((b) => (
+            <button key={b.label} type="button" onClick={() => insertBlock(b.snippet)} title={b.hint}
+              className="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-gray-700 hover:border-gray-400">
+              {b.label}
+            </button>
+          ))}
+        </div>
         <textarea
+          ref={textRef}
           value={post.content} onChange={(e) => set('content', e.target.value)}
-          placeholder="Text in Markdown. Zwischenüberschrift mit zwei Rauten, Zitat mit spitzer Klammer, Liste mit Strich."
+          placeholder="Text mit Bausteinen. ## Zwischenüberschrift, - Liste, 1. Nummerierung, @Name: Dialog, ~ Handschrift, :::kurz … ::: usw. — Knöpfe oben fügen Vorlagen ein."
           className="h-[560px] w-full resize-y rounded-xl border border-gray-200 bg-white p-4 font-mono text-[13px] leading-relaxed outline-none focus:border-gray-400"
         />
         <div className="flex items-center gap-3 text-xs text-gray-400">
@@ -594,9 +615,38 @@ function StoryFields({ story, onChange }: { story: StoryData; onChange: (s: Stor
       <div className="mt-3 text-[10px] font-semibold text-gray-400">Framework dahinter (Slug) · Audio-URL</div>
       <input className={`${inp} mt-1.5`} placeholder="instant-influence" value={story.framework_slug ?? ''} onChange={(e) => onChange({ ...story, framework_slug: e.target.value })} />
       <input className={`${inp} mt-1.5`} placeholder="https://…/audio.mp3" value={story.audio_url ?? ''} onChange={(e) => onChange({ ...story, audio_url: e.target.value })} />
+      <div className="mt-3 text-[10px] font-semibold text-gray-400">Serie · Name und Teile (eine Zeile je Teil: Label | Titel | /blog/slug | *=aktuell)</div>
+      <input className={`${inp} mt-1.5`} placeholder="Serie · Instant Influence" value={story.series?.name ?? ''} onChange={(e) => onChange({ ...story, series: { name: e.target.value, parts: story.series?.parts ?? [] } })} />
+      <textarea className={`${inp} mt-1.5 font-mono`} rows={3} placeholder={'1 · Du liest gerade | Neugier schlägt Produktinformation | | *\n2 · folgt | Was ein Erstgespräch magisch macht'}
+        value={(story.series?.parts ?? []).map((p) => [p.label, p.title, p.href ?? '', p.current ? '*' : ''].join(' | ').replace(/( \| )+$/, '')).join('\n')}
+        onChange={(e) => onChange({ ...story, series: { name: story.series?.name ?? '', parts: e.target.value.split('\n').filter((l) => l.trim()).map((l) => { const [label, title, href, cur] = l.split('|').map((x) => x.trim()); return { label: label ?? '', title: title ?? '', href: href || undefined, current: cur === '*' } }) } })} />
+      <div className="mt-3 text-[10px] font-semibold text-gray-400">Abschluss-Aufruf (statt „Gemeinsam: Gewinner-Teams“)</div>
+      <input className={`${inp} mt-1.5`} placeholder="Dachzeile" value={story.cta?.eyebrow ?? ''} onChange={(e) => onChange({ ...story, cta: { ...story.cta, eyebrow: e.target.value } })} />
+      <input className={`${inp} mt-1.5`} placeholder="Satz" value={story.cta?.title ?? ''} onChange={(e) => onChange({ ...story, cta: { ...story.cta, title: e.target.value } })} />
+      <div className="mt-1.5 grid grid-cols-2 gap-1.5">
+        <input className={inp} placeholder="Knopf" value={story.cta?.button ?? ''} onChange={(e) => onChange({ ...story, cta: { ...story.cta, button: e.target.value } })} />
+        <input className={inp} placeholder="/schedule" value={story.cta?.href ?? ''} onChange={(e) => onChange({ ...story, cta: { ...story.cta, href: e.target.value } })} />
+      </div>
       <div className="mt-3 text-[10px] font-semibold text-gray-400">Zitat</div>
       <textarea className={`${inp} mt-1.5`} rows={2} placeholder="Zitat des Kunden" value={story.quote ?? ''} onChange={(e) => onChange({ ...story, quote: e.target.value })} />
       <input className={`${inp} mt-1.5`} placeholder="Name, Rolle, Firma" value={story.quote_by ?? ''} onChange={(e) => onChange({ ...story, quote_by: e.target.value })} />
     </div>
   )
 }
+
+/** Vorlagen für die Text-Bausteine (siehe components/blog/PostBody.tsx) */
+const BLOCKS: Array<{ label: string; hint: string; snippet: string }> = [
+  { label: 'Kurz gesagt', hint: 'Kasten mit der Kernaussage', snippet: ':::kurz\nDie Kernaussage in zwei, drei Sätzen.\n:::' },
+  { label: 'Dialog', hint: 'Gesprochene Zeile mit Namen', snippet: '@Name: „Was gesagt wurde.“' },
+  { label: 'Handschrift', hint: 'Eigene Randnotiz in Marker-Schrift', snippet: '~ Kurze Notiz von uns' },
+  { label: 'Gegenbeispiel', hint: 'Orange Box mit Handschrift-Notiz', snippet: ':::fehler\n„So klingt es falsch.“\n~ Kurzer Kommentar\n:::' },
+  { label: 'Großer Satz', hint: 'Satz groß mit Handschrift-Notiz', snippet: ':::zitat\n„Der eine Satz.“\n~ ← was er bewirkt hat\n:::' },
+  { label: 'Chat-Nachbau', hint: 'LinkedIn/Mail-Nachrichten nachgebaut', snippet: ':::chat Absender | Rolle · Nachricht Nr.\n- Alte Nachricht …\n> Die eine Nachricht mit %Firstname%\n^ Bildunterschrift\n:::' },
+  { label: 'Große Zahl', hint: 'Zahl, optional Kästchenraster und Kennzahlen', snippet: ':::zahl 3.000 | Wofür die Zahl steht\nraster 3000 1\n24 % | Kennzahl\n!1 | hervorgehoben\n^ Bildunterschrift\n:::' },
+  { label: 'Vergleich', hint: 'Zwei Spalten, rechte blau', snippet: ':::vergleich\nDachzeile | Name links\nBeschreibung.\n- Beispiel\n= Ergebnis\n---\nDachzeile | Name rechts\nBeschreibung.\n- Beispiel\n= Ergebnis\n:::' },
+  { label: 'Tabelle', hint: 'Erste Zeile ist der Kopf', snippet: '| Spalte A | Spalte B |\n| Wert | Wert |' },
+  { label: 'Merkkasten', hint: 'Blaue Formel zum Speichern', snippet: ':::formel Dachzeile · zum Speichern\n[Teil 1] + [Teil 2] + [?]\n1. Erste Regel\n2. Zweite Regel\n3. Dritte Regel\n^ Bildunterschrift\n:::' },
+  { label: 'To-do', hint: 'Nummerierte Checkliste', snippet: ':::todo\n1. Erster Schritt\n2. Zweiter Schritt\n3. Dritter Schritt\n:::' },
+  { label: 'Bild', hint: 'Bild mit Unterschrift', snippet: '![Bildunterschrift](/pfad/zum/bild.jpg)' },
+  { label: 'Nächster Beitrag', hint: 'Teaser auf den Folgebeitrag', snippet: ':::weiter Nächster Beitrag · Serie 2 von 3 | /blog/slug\nTitel des nächsten Beitrags\nEin Satz, warum es sich lohnt.\n:::' },
+]
