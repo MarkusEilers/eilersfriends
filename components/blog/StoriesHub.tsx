@@ -60,7 +60,7 @@ export async function StoriesHub({ items, filter, tags, preview, hasMore }: {
   const locale = await getLocale()
   const filtered = !!(filter.format || filter.d || filter.thema || filter.coach || filter.q)
   const [lead, ...rest] = items
-  const side = filtered ? [] : rest.slice(0, 3)
+  const side = filtered ? [] : rest.slice(0, 2)
   // „Neu“ zeigt immer alles chronologisch (neueste Beiträge zuerst, dann Frameworks) — auch was oben schon als Aufmacher steht
   const grid = items
   const grid1 = grid.slice(0, 4), grid2 = grid.slice(4)
