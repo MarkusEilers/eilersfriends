@@ -19,8 +19,19 @@
  *   :::formel Dachzeile … :::          Blauer Merkkasten: „[Teil] + [Teil]“ und „1. Punkt“
  *   :::todo … :::                      Checkliste mit Nummern
  *   :::weiter Dachzeile | /link … :::  Teaser auf den nächsten Beitrag (Titel, Text)
+ *   :::glossar … :::                  Randnotiz „Begriff | Erklärung“ (ab xl rechts neben dem vorigen Absatz); {{Begriff}} im Text verweist darauf
+ *   :::treppe Dachzeile … :::          Fragen als Treppe: „Ebene | „Frage“ | Notiz“
+ *   :::schritte Dachzeile | Zusatz … ::: Blaue nummerierte Karte: „Titel | Text“
+ *   :::balken … :::                    Balkenvergleich: „Name | Anzeige | von-bis | *“ (* = blau)
+ *   :::kreise … :::                    100er-Punkte: „Anzahl | blau/grau/hell/orange | Legende“, „= 88 % | Text“
+ *   :::crm Titel | Meta … :::          CRM-Liste: „| Spalte | … |“, ((Status)) als Pille, „+ Fußzeile“
+ *   :::folie Titel | Fuß | 50 / 50 :::  Folienstapel, „~ Notiz“
+ *   :::hud 77 % | Quelle … :::         Dunkles Display: Titel, Unterzeile, Zitat
+ *   :::gipfel Dachzeile … :::          Stationen als Aufstieg, „! Station“ mit Ampel
+ *   :::janein … :::                    Zwei Ausgänge: „JA | Text“, „NEIN | Text“
+ *   :::dreieck Mitte … :::             Drei Ecken „Name | Text“
  *   „^ Text“ in einem Baustein = Bildunterschrift darunter.
- * Inline: **fett**, ==blau hervorgehoben==, *kursiv*, [Link](url), %Platzhalter% (nur im Chat).
+ * Inline: **fett**, ==blau hervorgehoben==, *kursiv*, [Link](url), ((Pille)), {{Begriff}}, %Platzhalter% (nur im Chat).
  */
 import { Fragment, type ReactNode } from 'react'
 
@@ -42,6 +53,8 @@ export function inline(s: string, opts?: { placeholders?: boolean }) {
     .replace(/==(.+?)==/g, `<b style="color:${DEEP};font-weight:700">$1</b>`)
     .replace(/\*\*(.+?)\*\*/g, `<strong style="color:${INK};font-weight:600">$1</strong>`)
     .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>')
+    .replace(/\(\((.+?)\)\)/g, '<span style="background:#E8EFFB;color:#124293;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;white-space:nowrap">$1</span>')
+    .replace(/\{\{([^}|]+)\|([^}]*)\}\}/g, (_m, t: string, d: string) => `<span class="ef-term"${d ? ` title="${d.replace(/"/g, '&quot;')}"` : ''} style="color:${DEEP};font-weight:600;border-bottom:1px dotted ${BLUE};cursor:help">${t}</span>`)
   if (opts?.placeholders) h = h.replace(/%([A-Za-z_]+)%/g, '<span style="background:#FFE3D3;color:#C2410C;padding:0 4px;border-radius:4px;font-family:ui-monospace,monospace">%$1%</span>')
   return h
 }
@@ -298,15 +311,300 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
       const cls = 'mt-1.5 flex items-center gap-5 rounded-2xl px-7 py-6 text-white no-underline'
       return href ? <a href={href} className={cls} style={{ background: INK }}>{inner}</a> : <div className={cls} style={{ background: INK }}>{inner}</div>
     }
+    case 'glossar': {
+      // Randnotiz: ab xl rechts neben dem vorigen Absatz, darunter als kleiner Kasten im Fluss
+      const items = nonEmpty.map((l) => l.split('|').map((x) => x.trim())).filter((x) => x[0])
+      return (
+        <div className="relative xl:-mt-[22px] xl:h-0">
+          <aside className="flex flex-col gap-3 border-l-2 border-[#E8EFFB] pl-3.5 xl:absolute xl:bottom-0 xl:left-[calc(100%+32px)] xl:w-[180px]">
+            <Eyebrow>{b.arg || 'Glossar'}</Eyebrow>
+            {items.map(([term, def], k) => (
+              <div key={k} className="flex flex-col gap-0.5">
+                <span className="text-[13px] font-bold" style={{ color: DEEP }}>{term}</span>
+                <H s={def ?? ''} className="text-[13px] leading-[1.45] text-[#605D5D]" />
+              </div>
+            ))}
+          </aside>
+        </div>
+      )
+    }
+    case 'treppe': {
+      const steps = nonEmpty.map((l) => l.replace(/^\d+[.)] |^- /, '').split('|').map((x) => x.trim()))
+      return (
+        <figure className="m-0">
+          <div className="flex flex-col gap-2.5 rounded-2xl bg-[#E8EFFB] p-5 sm:p-7">
+            {b.arg && <Eyebrow color={DEEP}>{b.arg}</Eyebrow>}
+            {steps.map(([label, q, note], k) => (
+              <div key={k} className="grid grid-cols-[40px_1fr] items-start gap-3 rounded-xl border-l-4 bg-white px-4 py-3.5 sm:grid-cols-[44px_1fr] sm:gap-3.5" style={{ borderColor: BLUE, marginLeft: `min(${k * 22}px, ${k * 3}vw)` }}>
+                <span className="flex h-9 w-9 items-center justify-center rounded-full font-bold text-white" style={{ background: BLUE }}>{k + 1}</span>
+                <div className="flex flex-col gap-1">
+                  <Eyebrow>{label}</Eyebrow>
+                  {q && <H s={q} className="text-[16px] font-semibold leading-[1.45]" style={{ color: INK }} />}
+                  {note && <H s={note} className="text-[14px] leading-[1.45] text-[#605D5D]" />}
+                </div>
+              </div>
+            ))}
+          </div>
+          <Caption text={caption} />
+        </figure>
+      )
+    }
+    case 'schritte': {
+      const [eb, sub] = b.arg.split('|').map((x) => x.trim())
+      const steps = nonEmpty.map((l) => l.replace(/^\d+[.)] |^- /, '').split('|').map((x) => x.trim()))
+      return (
+        <figure className="m-0">
+          <div className="flex flex-col gap-3.5 rounded-2xl p-5 text-white sm:p-[30px]" style={{ background: BLUE }}>
+            {(eb || sub) && (
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                {eb && <Eyebrow color="#CFE0FF">{eb}</Eyebrow>}
+                {sub && <span className="text-[13px] text-[#CFE0FF]">{sub}</span>}
+              </div>
+            )}
+            {steps.map(([title, txt], k) => (
+              <div key={k} className="grid grid-cols-[40px_1fr] items-start gap-3.5 rounded-xl bg-white/10 px-4 py-3.5 sm:grid-cols-[44px_1fr]">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white font-bold" style={{ color: DEEP }}>{k + 1}</span>
+                <div className="flex flex-col gap-1">
+                  <H s={title} className="text-[17px] font-bold" />
+                  {txt && <H s={txt} className="text-[15px] leading-[1.45] text-white/90" />}
+                </div>
+              </div>
+            ))}
+          </div>
+          <Caption text={caption} />
+        </figure>
+      )
+    }
+    case 'balken': {
+      // „Name | Anzeige | von-bis | *“ — Balkenlänge = bis, kräftiger Teil = von; * = hervorgehoben (blau)
+      const rows = nonEmpty.map((l) => l.split('|').map((x) => x.trim()))
+      const max = Math.max(100, ...rows.map((r) => Number((r[2] ?? '').split('-')[1] ?? (r[2] ?? '').split('-')[0]) || 0))
+      return (
+        <figure className="m-0">
+          <div className="flex flex-col gap-4 rounded-2xl bg-[#F3F2F2] p-5 sm:p-7">
+            {rows.map(([name, shown, range, hot], k) => {
+              const [lo, hi] = (range ?? '').split('-').map(Number)
+              const top = hi || lo || 0
+              const solid = top ? Math.round(((lo || top) / top) * 100) : 100
+              const [c1, c2] = hot ? [BLUE, '#A9C2F0'] : ['#8E8B89', '#D9D7D6']
+              return (
+                <div key={k} className="grid grid-cols-[84px_1fr] items-center gap-3 sm:grid-cols-[120px_1fr] sm:gap-4">
+                  <span className="text-[16px] font-bold" style={{ color: INK }}>{name}</span>
+                  <div className="flex h-11 items-center gap-3.5">
+                    <div className="h-11 rounded-[10px]" style={{ width: `${(top / max) * 82}%`, minWidth: 8, background: `linear-gradient(90deg,${c1} 0 ${solid}%,${c2} ${solid}% 100%)` }} />
+                    <span className="whitespace-nowrap text-[18px] font-bold sm:text-[20px]" style={{ color: hot ? BLUE : '#8E8B89' }}>{shown}</span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          <Caption text={caption} />
+        </figure>
+      )
+    }
+    case 'kreise': {
+      // „Anzahl | Farbe | Legende“ (Farbe: blau, grau, hell, orange); „= 88 % | Verlust“ große Zahl
+      const COL: Record<string, string> = { blau: BLUE, grau: '#C9C6C3', hell: '#E6E4E2', orange: ORANGE, schwarz: INK }
+      const groups = nonEmpty.filter((l) => !l.startsWith('= ')).map((l) => l.split('|').map((x) => x.trim()))
+      const big = nonEmpty.find((l) => l.startsWith('= '))?.slice(2).split('|').map((x) => x.trim())
+      const dots = groups.flatMap(([n, c]) => Array.from({ length: Math.min(Number(n) || 0, 400) }, () => COL[c] ?? c))
+      return (
+        <figure className="m-0">
+          <div className="flex flex-col gap-6 rounded-2xl bg-[#F3F2F2] p-5 sm:flex-row sm:items-center sm:gap-7 sm:p-7">
+            <div className="grid flex-none grid-cols-[repeat(10,minmax(0,22px))] gap-1.5 sm:grid-cols-[repeat(10,26px)] sm:gap-2" role="img" aria-label={groups.map((g) => `${g[0]} ${g[2] ?? ''}`).join(', ')}>
+              {dots.map((c, k) => <span key={k} className="aspect-square rounded-full" style={{ background: c }} />)}
+            </div>
+            <div className="flex flex-col gap-3.5 text-[15px] leading-[1.4]" style={{ color: INK }}>
+              {groups.filter((g) => g[2]).map(([, c, label], k) => (
+                <span key={k} className="flex items-start gap-2.5"><span className="mt-0.5 h-4 w-4 flex-none rounded-full border border-[#D9D7D6]" style={{ background: COL[c] ?? c }} /><H s={label} /></span>
+              ))}
+              {big && <><span className="mt-1.5 text-[44px] font-bold leading-none tracking-[-0.03em]">{big[0]}</span>{big[1] && <span className="-mt-1.5 text-[#605D5D]">{big[1]}</span>}</>}
+            </div>
+          </div>
+          <Caption text={caption} />
+        </figure>
+      )
+    }
+    case 'crm': {
+      // Nachbau einer CRM-Liste: „| Kopf | … |“ Zeilen, ((Status)) als Pille, „+ Fußzeile“
+      const [title, meta] = b.arg.split('|').map((x) => x.trim())
+      const rows = nonEmpty.filter((l) => l.trim().startsWith('|')).map((l) => l.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim()))
+      const foot = nonEmpty.find((l) => l.startsWith('+ '))?.slice(2)
+      const [head, ...body] = rows
+      const cols = head?.length ?? 1
+      const tpl = cols === 4 ? '1.6fr 1.3fr .7fr 1fr' : `repeat(${cols},1fr)`
+      return (
+        <figure className="m-0">
+          <div className="overflow-hidden rounded-2xl border border-[#E6E4E2] bg-white shadow-[0_10px_30px_rgba(0,0,0,.05)]">
+            {(title || meta) && (
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#EFEDEC] px-4 py-4 sm:px-5">
+                <span className="text-[15px] font-bold" style={{ color: INK }}>{title}</span>
+                {meta && <span className="text-[13px] text-[#605D5D]">{meta}</span>}
+              </div>
+            )}
+            <div className="overflow-x-auto">
+              <div className="min-w-[520px]">
+                {head && (
+                  <div className="grid bg-[#F3F2F2] px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[#605D5D] sm:px-5" style={{ gridTemplateColumns: tpl }}>
+                    {head.map((c, k) => <span key={k}>{c}</span>)}
+                  </div>
+                )}
+                {body.map((r, k) => (
+                  <div key={k} className="grid items-center border-t border-[#F3F2F2] px-4 py-[11px] text-[14px] sm:px-5" style={{ gridTemplateColumns: tpl, color: INK }}>
+                    {r.map((c, j) => <H key={j} s={c} style={j > 1 ? { color: '#605D5D' } : undefined} />)}
+                  </div>
+                ))}
+              </div>
+            </div>
+            {foot && <div className="border-t border-[#F3F2F2] px-4 py-3 text-[13px] italic text-[#605D5D] sm:px-5">{foot}</div>}
+          </div>
+          <Caption text={caption} />
+        </figure>
+      )
+    }
+    case 'folie': {
+      // Folienstapel: „:::folie Titel | Fußzeile | 50 / 50“
+      const [title, foot, count] = b.arg.split('|').map((x) => x.trim())
+      const widths = [92, 86, 95, 70, 88, 60]
+      return (
+        <figure className="m-0">
+          <div className="flex justify-center rounded-2xl bg-[#F3F2F2] px-6 pb-8 pt-10 sm:p-9">
+            <div className="relative aspect-[44/25] w-full max-w-[440px]">
+              <div className="absolute inset-0 translate-x-6 -translate-y-[18px] rotate-[4deg] rounded-lg bg-white shadow-[0_6px_18px_rgba(0,0,0,.06)]" />
+              <div className="absolute inset-0 translate-x-3 -translate-y-[9px] rotate-2 rounded-lg bg-white shadow-[0_6px_18px_rgba(0,0,0,.06)]" />
+              <div className="absolute inset-0 flex flex-col gap-2 rounded-lg bg-white p-4 shadow-[0_12px_30px_rgba(0,0,0,.10)] sm:gap-2.5 sm:p-[22px]">
+                <span className="text-[15px] font-bold sm:text-[18px]" style={{ color: INK }}>{title}</span>
+                {widths.map((w, k) => <span key={k} className="h-1.5 rounded bg-[#E6E4E2] sm:h-2" style={{ width: `${w}%` }} />)}
+                <div className="flex-1" />
+                <div className="flex items-center justify-between text-[12px] text-[#605D5D] sm:text-[13px]">
+                  <span>{foot}</span>{count && <span className="text-[18px] font-bold sm:text-[22px]" style={{ color: ORANGE }}>{count}</span>}
+                </div>
+              </div>
+            </div>
+          </div>
+          {notes.map((n, k) => <div key={k} className="ml-7 mt-3"><Note text={n} /></div>)}
+          <Caption text={caption} />
+        </figure>
+      )
+    }
+    case 'hud': {
+      // Dunkles Display: „:::hud 77 % | GARTNER“, Zeilen: Titel, Unterzeile, Zitat
+      const [value, label] = b.arg.split('|').map((x) => x.trim())
+      const [title, sub, ...more] = nonEmpty
+      return (
+        <figure className="m-0">
+          <div className="relative flex flex-col items-center gap-7 overflow-hidden rounded-2xl p-7 sm:flex-row sm:gap-9 sm:p-9" style={{ background: INK }}>
+            <div className="absolute inset-0" style={{ background: 'repeating-linear-gradient(0deg,rgba(143,176,236,.05) 0 2px,transparent 2px 6px)' }} />
+            <div className="relative flex h-[170px] w-[170px] flex-none flex-col items-center justify-center rounded-full border-[3px] sm:h-[200px] sm:w-[200px]" style={{ borderColor: BLUE, boxShadow: '0 0 40px rgba(26,95,212,.45)' }}>
+              <span className="text-[52px] font-bold tracking-[-0.04em] text-white sm:text-[64px]">{value}</span>
+              {label && <span className="text-[12px] tracking-[0.14em] text-[#8FB0EC]">{label}</span>}
+            </div>
+            <div className="relative flex flex-col gap-3">
+              {title && <span className="font-mono text-[28px] font-bold tracking-[0.08em] text-[#8FB0EC] sm:text-[34px]">{title}</span>}
+              {sub && <H s={sub} className="text-[18px] text-white" />}
+              {more.length > 0 && <H s={textOf(more)} className="max-w-[300px] text-[15px] leading-[1.5] text-[#C9C6C3]" />}
+            </div>
+          </div>
+          <Caption text={caption} />
+        </figure>
+      )
+    }
+    case 'gipfel': {
+      // Stationen als Aufstieg: eine Zeile je Station, „! Station“ = mit Ampel
+      const st = nonEmpty.map((l) => ({ amp: l.startsWith('! '), label: l.replace(/^! /, '').trim() }))
+      const n = st.length
+      return (
+        <figure className="m-0">
+          <div className="flex flex-col gap-3 rounded-2xl bg-[#F3F2F2] px-4 pb-5 pt-6 sm:px-7 sm:pt-7">
+            {b.arg && <Eyebrow color={DEEP}>{b.arg}</Eyebrow>}
+            <div className="grid items-end gap-1.5 sm:gap-2" style={{ gridTemplateColumns: `repeat(${n},minmax(0,1fr))`, height: 300 }}>
+              {st.map((s, k) => (
+                <div key={k} className="flex h-full flex-col items-center justify-end gap-2">
+                  {s.amp && (
+                    <span className="inline-flex flex-col gap-[3px] rounded-lg p-1" style={{ background: INK }}>
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#444]" /><span className="h-2.5 w-2.5 rounded-full bg-[#444]" /><span className="h-2.5 w-2.5 rounded-full bg-[#22C55E] shadow-[0_0_8px_#22C55E]" />
+                    </span>
+                  )}
+                  <span className="text-center text-[10px] font-semibold leading-[1.25] sm:text-[12px]" style={{ color: INK, hyphens: 'auto' }}>{s.label}</span>
+                  <div className="flex w-full justify-center rounded-t-lg pt-2 font-bold text-white" style={{ height: 44 + k * Math.round(156 / Math.max(1, n - 1)), background: k === n - 1 ? BLUE : '#BFD1F2' }}>{k + 1}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          {notes.map((nt, k) => <div key={k} className="ml-7 mt-3"><Note text={nt} /></div>)}
+          <Caption text={caption} />
+        </figure>
+      )
+    }
+    case 'janein': {
+      const opts = nonEmpty.map((l) => l.split('|').map((x) => x.trim()))
+      return (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {opts.map(([lab, txt], k) => (
+            <div key={k} className="flex flex-col gap-1.5 rounded-[14px] border-2 px-[18px] py-4" style={k === 0 ? { background: '#ECFDF3', borderColor: '#22C55E' } : { background: '#fff', borderColor: '#9A9796', borderStyle: 'dashed' }}>
+              <span className="text-[12px] font-bold tracking-[0.1em]" style={{ color: k === 0 ? '#15803D' : '#605D5D' }}>{lab}</span>
+              <H s={txt ?? ''} className="text-[15px] leading-[1.45]" style={{ color: INK }} />
+            </div>
+          ))}
+        </div>
+      )
+    }
+    case 'dreieck': {
+      // Drei Ecken: „Name | Text“ je Zeile (oben, links, rechts); Argument = Text in der Mitte
+      const c = nonEmpty.slice(0, 3).map((l) => l.split('|').map((x) => x.trim()))
+      const pts = [[280, 124], [96, 350], [464, 350]]
+      return (
+        <figure className="m-0">
+          <div className="flex justify-center rounded-2xl px-3 pb-3 pt-6 sm:px-9" style={{ background: 'linear-gradient(180deg,#F5F8FE 0%,#E8EFFB 100%)' }}>
+            <svg viewBox="0 0 560 460" className="h-auto w-full max-w-[560px]" role="img" aria-label={c.map((x) => x[0]).join(', ')}>
+              <defs><linearGradient id="efTri" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8FB0EC" /><stop offset="1" stopColor={BLUE} /></linearGradient></defs>
+              <polygon points="280,124 96,350 464,350" fill="#fff" fillOpacity=".7" stroke="url(#efTri)" strokeWidth="5" strokeLinejoin="round" />
+              {b.arg && <text x="280" y="285" textAnchor="middle" fontSize="13" fontWeight="700" letterSpacing="2.5" fill="#605D5D">{b.arg.toUpperCase()}</text>}
+              {c.map(([name, txt], k) => {
+                const [x, y] = pts[k]
+                const anchor = k === 0 ? 'middle' : k === 1 ? 'start' : 'end'
+                const tx = k === 0 ? 280 : k === 1 ? 40 : 520
+                const ty = k === 0 ? 40 : 418
+                return (
+                  <g key={k}>
+                    <circle cx={x} cy={y} r="44" fill={BLUE} fillOpacity=".14" /><circle cx={x} cy={y} r="30" fill={BLUE} />
+                    <text x={x} y={y + 8} textAnchor="middle" fontSize="22" fontWeight="700" fill="#fff">{k + 1}</text>
+                    <text x={tx} y={ty} textAnchor={anchor} fontSize="22" fontWeight="700" fill={INK}>{name}</text>
+                    {txt && <text x={tx} y={ty + 22} textAnchor={anchor} fontSize="15" fill="#605D5D">{txt}</text>}
+                  </g>
+                )
+              })}
+            </svg>
+          </div>
+          <Caption text={caption} />
+        </figure>
+      )
+    }
     default:
       return <p className="text-[18px] leading-[1.7] text-[#605D5D]">{textOf(nonEmpty)}</p>
   }
 }
 
+/** {{Begriff}} → {{Begriff|Erklärung}} aus den :::glossar-Kästen des Beitrags (Tooltip) */
+export function glossaryOf(content: string) {
+  const out: Array<{ term: string; def: string }> = []
+  for (const b of parseBlocks(content)) {
+    if (b.t === 'box' && b.kind === 'glossar') for (const l of b.lines) {
+      const [term, def] = l.split('|').map((x) => x.trim())
+      if (term && def) out.push({ term, def })
+    }
+  }
+  return out
+}
+function withGlossary(content: string) {
+  const map = new Map(glossaryOf(content).map((g) => [g.term.toLowerCase(), g.def]))
+  return content.replace(/\{\{([^}|]+)\}\}/g, (_m, t: string) => `{{${t}|${(map.get(t.trim().toLowerCase()) ?? '').replace(/[{}|]/g, '')}}}`)
+}
+
 /** Der Beitragstext */
 export function PostBody({ content, emptyText }: { content: string | null; emptyText?: string }) {
   if (!content?.trim()) return <p className="text-gray-400">{emptyText}</p>
-  const blocks = parseBlocks(content)
+  const blocks = parseBlocks(withGlossary(content))
   return (
     <div className="flex flex-col gap-[22px]">
       <style href="ef-marker-font" precedence="default">{"@font-face{font-family:'Permanent Marker';font-style:normal;font-weight:400;font-display:swap;src:url(/academy/fonts/5190bac999.woff2) format('woff2')}"}</style>

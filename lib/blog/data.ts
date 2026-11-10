@@ -12,7 +12,7 @@ import { db } from '@/lib/db'
 import type { PostData } from './formats'
 export type { PostData }
 
-export const DATA_KINDS = ['company', 'person', 'metric', 'quote', 'insight', 'topic', 'framework', 'source'] as const
+export const DATA_KINDS = ['company', 'person', 'metric', 'quote', 'insight', 'topic', 'framework', 'source', 'term'] as const
 
 let ready = false
 export async function ensureDataSchema() {
@@ -41,7 +41,19 @@ export function plainText(content: string | null) {
     .replace(/^:::\w*\s*/gm, '').replace(/^:::$/gm, '')
     .replace(/^#{2,3} /gm, '').replace(/^[-*>~^=] /gm, '').replace(/^\d+[.)] /gm, '')
     .replace(/^@([^:]+):/gm, '$1:').replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-    .replace(/\*\*|==|\|/g, ' ').replace(/[ \t]+/g, ' ').trim()
+    .replace(/\{\{|\}\}|\(\(|\)\)/g, '').replace(/\*\*|==|\|/g, ' ').replace(/[ \t]+/g, ' ').trim()
+}
+
+/** Begriffe aus den :::glossar-Kästen des Texts */
+export function glossaryFromText(content: string) {
+  const out: Array<{ term: string; def: string }> = []
+  for (const m of content.replace(/\r\n/g, '\n').matchAll(/^:::glossar[^\n]*\n([\s\S]*?)^:::\s*$/gm)) {
+    for (const l of m[1].split('\n')) {
+      const [term, def] = l.split('|').map((x) => x.trim())
+      if (term && def) out.push({ term, def })
+    }
+  }
+  return out
 }
 
 /** Datenschicht eines Beitrags speichern: Einträge spiegeln + Suchtext aktualisieren */
@@ -57,6 +69,8 @@ export async function syncPostData(post: { id: string; title: string; subtitle?:
     ...(d.topics ?? []).map((t) => ['topic', t, null, null] as [string, string, string | null, string | null]),
     ...(d.frameworks ?? []).map((t) => ['framework', t, null, null] as [string, string, string | null, string | null]),
     ...(d.sources ?? []).map((s) => ['source', s.name, s.url ?? null, null] as [string, string, string | null, string | null]),
+    // Glossar-Begriffe stehen im Text (:::glossar „Begriff | Erklärung“) und werden mitgespiegelt
+    ...glossaryFromText(post.content ?? '').map((g) => ['term', g.term, null, g.def] as [string, string, string | null, string | null]),
   ].filter((r) => r[1]?.trim())
   await db.execute(sql`DELETE FROM blog_entities WHERE post_id = ${post.id}`)
   for (const [i, r] of rows.entries()) {
