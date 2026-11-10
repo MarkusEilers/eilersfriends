@@ -54,7 +54,7 @@ export function inline(s: string, opts?: { placeholders?: boolean }) {
     .replace(/\*\*(.+?)\*\*/g, `<strong style="color:${INK};font-weight:600">$1</strong>`)
     .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>')
     .replace(/\(\((.+?)\)\)/g, '<span style="background:#E8EFFB;color:#124293;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;white-space:nowrap">$1</span>')
-    .replace(/\{\{([^}¦]+)¦([^}]*)\}\}/g, (_m, t: string, d: string) => `<span class="ef-term"${d ? ` title="${d.replace(/"/g, '&quot;')}"` : ''} style="color:${DEEP};font-weight:600;border-bottom:1px dotted ${BLUE};cursor:help">${t}</span>`)
+    .replace(/\{\{([^}¦]+)¦([^}]*)\}\}/g, (_m, t: string, d: string) => `<span class="ef-term"${d ? ` title="${d.replace(/"/g, '&quot;')}"` : ''}>${t}</span>`)
   if (opts?.placeholders) h = h.replace(/%([A-Za-z_]+)%/g, '<span style="background:#FFE3D3;color:#C2410C;padding:0 4px;border-radius:4px;font-family:ui-monospace,monospace">%$1%</span>')
   return h
 }
@@ -193,7 +193,7 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
       const hitAt = new Set(Array.from({ length: Math.min(hits || 0, cells) }, (_, k) => Math.floor((cells * (0.59 + k * 0.13)) % cells)))
       return (
         <figure className="m-0">
-          <div className="flex flex-col gap-5 rounded-2xl p-6 text-white sm:p-8" style={{ background: INK }}>
+          <div className="ef-dark flex flex-col gap-5 rounded-2xl p-6 text-white sm:p-8" style={{ background: INK }}>
             <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
               <span className="text-[64px] font-bold leading-[.9] tracking-[-0.05em] sm:text-[96px]">{value}</span>
               {label && <span className="max-w-[280px] text-[17px] leading-[1.4] text-[#C9C6C3]">{label}</span>}
@@ -261,7 +261,7 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
       const tokens = parts ? parts.split(/(\[[^\]]+\])/).map((x) => x.trim()).filter(Boolean) : []
       return (
         <figure className="m-0">
-          <div className="flex flex-col gap-4 rounded-2xl p-6 text-white sm:p-8" style={{ background: BLUE }}>
+          <div className="ef-dark flex flex-col gap-4 rounded-2xl p-6 text-white sm:p-8" style={{ background: BLUE }}>
             {b.arg && <Eyebrow color="#CFE0FF">{b.arg}</Eyebrow>}
             {tokens.length > 0 && (
               <div className="flex flex-wrap items-center gap-3 text-[20px] font-bold tracking-[-0.02em] sm:text-[24px]">
@@ -354,7 +354,7 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
       const steps = nonEmpty.map((l) => l.replace(/^\d+[.)] |^- /, '').split('|').map((x) => x.trim()))
       return (
         <figure className="m-0">
-          <div className="flex flex-col gap-3.5 rounded-2xl p-5 text-white sm:p-[30px]" style={{ background: BLUE }}>
+          <div className="ef-dark flex flex-col gap-3.5 rounded-2xl p-5 text-white sm:p-[30px]" style={{ background: BLUE }}>
             {(eb || sub) && (
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 {eb && <Eyebrow color="#CFE0FF">{eb}</Eyebrow>}
@@ -493,7 +493,7 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
       const [title, sub, ...more] = nonEmpty
       return (
         <figure className="m-0">
-          <div className="relative flex flex-col items-center gap-7 overflow-hidden rounded-2xl p-7 sm:flex-row sm:gap-9 sm:p-9" style={{ background: INK }}>
+          <div className="ef-dark relative flex flex-col items-center gap-7 overflow-hidden rounded-2xl p-7 sm:flex-row sm:gap-9 sm:p-9" style={{ background: INK }}>
             <div className="absolute inset-0" style={{ background: 'repeating-linear-gradient(0deg,rgba(143,176,236,.05) 0 2px,transparent 2px 6px)' }} />
             <div className="relative flex h-[170px] w-[170px] flex-none flex-col items-center justify-center rounded-full border-[3px] sm:h-[200px] sm:w-[200px]" style={{ borderColor: BLUE, boxShadow: '0 0 40px rgba(26,95,212,.45)' }}>
               <span className="text-[52px] font-bold tracking-[-0.04em] text-white sm:text-[64px]">{value}</span>
@@ -608,7 +608,7 @@ export function PostBody({ content, emptyText }: { content: string | null; empty
   const blocks = parseBlocks(withGlossary(content))
   return (
     <div className="flex flex-col gap-[22px]">
-      <style href="ef-marker-font" precedence="default">{"@font-face{font-family:'Permanent Marker';font-style:normal;font-weight:400;font-display:swap;src:url(/academy/fonts/5190bac999.woff2) format('woff2')}"}</style>
+      <style href="ef-marker-font" precedence="default">{"@font-face{font-family:'Permanent Marker';font-style:normal;font-weight:400;font-display:swap;src:url(/academy/fonts/5190bac999.woff2) format('woff2')}.ef-term{color:#124293;font-weight:600;border-bottom:1px dotted #1A5FD4;cursor:help}.ef-dark .ef-term{color:inherit;border-bottom-color:currentColor}"}</style>
       {blocks.map((b, i) => {
         switch (b.t) {
           case 'h2': return <h2 key={i} id={slugifyHeading(b.text)} className="mt-[30px] scroll-mt-28 text-[24px] font-bold leading-[1.2] tracking-[-0.02em] sm:text-[30px]" style={{ color: INK, textWrap: 'balance' } as React.CSSProperties}>{b.text}</h2>
