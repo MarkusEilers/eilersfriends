@@ -98,8 +98,8 @@ export default async function PostPage({
     <article className="min-h-screen bg-white">
       {/* Kopf: Text links, Bild rechts */}
       <header className="px-6 pt-10 sm:pt-14">
-        <div className={`mx-auto grid max-w-6xl items-center gap-10 ${hero ? 'lg:grid-cols-[1.1fr_1fr]' : ''}`}> 
-          <div className={hero ? '' : 'max-w-3xl'}>
+        <div className={`mx-auto grid max-w-6xl items-center gap-10 ${hero ? 'lg:grid-cols-[1.1fr_1fr]' : 'lg:grid-cols-[180px_640px] lg:justify-center lg:gap-14 xl:grid-cols-[180px_640px_200px]'}`}> 
+          <div className={hero ? '' : 'lg:col-start-2'}>
             <p className="text-xs text-gray-600">
               <Link href={'/blog' as '/'} className="underline">{t('breadcrumbs.stories')}</Link>
               {' / '}
@@ -178,13 +178,13 @@ export default async function PostPage({
 
         {post.format === 'newsletter' && <div className="mx-auto mt-10 max-w-6xl lg:hidden"><GrowthLetterBox locale={locale} badge={st.issue ? `#${st.issue}` : undefined} /></div>}
 
-        <div className="mx-auto mt-8 max-w-[640px]">
-          <ShareBar audio={(post as { audio_url?: string | null }).audio_url ?? st.audio_url} minutes={post.reading_minutes} video={post.format === 'video'} ownVoice={(post as { audio_hash?: string | null }).audio_hash ? ({ markus: 'Markus', aljona: 'Aljona' } as Record<string, string>)[post.author_slug] : undefined} />
+        <div className="mx-auto mt-8 grid max-w-6xl lg:grid-cols-[180px_640px] lg:justify-center lg:gap-14 xl:grid-cols-[180px_640px_200px]">
+          <div className="lg:col-start-2"><ShareBar audio={(post as { audio_url?: string | null }).audio_url ?? st.audio_url} minutes={post.reading_minutes} video={post.format === 'video'} ownVoice={(post as { audio_hash?: string | null }).audio_hash ? ({ markus: 'Markus', aljona: 'Aljona' } as Record<string, string>)[post.author_slug] : undefined} /></div>
         </div>
       </header>
 
       {/* Inhalt mit Seitenleiste */}
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-12 lg:grid-cols-[180px_640px] lg:justify-center lg:gap-14">
+      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-12 lg:grid-cols-[180px_640px] lg:justify-center lg:gap-14 xl:grid-cols-[180px_640px_200px]">
         <aside className="hidden lg:block">
           <div className="sticky top-28 space-y-6">
             {heads.length > 0 && (
