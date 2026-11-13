@@ -98,8 +98,8 @@ export default async function PostPage({
     <article className="min-h-screen bg-white">
       {/* Kopf: Text links, Bild rechts */}
       <header className="px-6 pt-10 sm:pt-14">
-        <div className={`mx-auto grid max-w-6xl items-center gap-10 ${hero ? 'lg:grid-cols-[1.1fr_1fr]' : ''}`}> 
-          <div className={hero ? '' : 'max-w-3xl'}>
+        <div className={`mx-auto grid max-w-6xl items-center gap-10 ${hero || post.status !== 'published' ? 'lg:grid-cols-[1.1fr_1fr]' : ''}`}> 
+          <div className={hero || post.status !== 'published' ? '' : 'max-w-3xl'}>
             <p className="text-xs text-gray-600">
               <Link href={'/blog' as '/'} className="underline">{t('breadcrumbs.stories')}</Link>
               {' / '}
@@ -121,6 +121,9 @@ export default async function PostPage({
               </span>
             </div>
           </div>
+          {!hero && post.status !== 'published' && (
+            <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border-2 border-dashed border-[#D9D7D4] bg-[#F6F5F3] text-sm font-semibold text-gray-500">Titelbild folgt</div>
+          )}
           {hero && (
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#D9D7D4]">
               <Image src={hero} alt={(post as { hero_alt?: string }).hero_alt ?? ''} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" priority />
