@@ -98,8 +98,8 @@ export default async function PostPage({
     <article className="min-h-screen bg-white">
       {/* Kopf: Text links, Bild rechts */}
       <header className="px-6 pt-10 sm:pt-14">
-        <div className={`mx-auto grid max-w-6xl items-center gap-10 ${hero ? 'lg:grid-cols-[1.1fr_1fr]' : 'lg:grid-cols-[180px_640px] lg:justify-center lg:gap-14 xl:grid-cols-[180px_640px_200px]'}`}> 
-          <div className={hero ? '' : 'lg:col-start-2'}>
+        <div className={`mx-auto grid max-w-6xl items-center gap-10 ${hero ? 'lg:grid-cols-[1.1fr_1fr]' : ''}`}> 
+          <div className={hero ? '' : 'max-w-3xl'}>
             <p className="text-xs text-gray-600">
               <Link href={'/blog' as '/'} className="underline">{t('breadcrumbs.stories')}</Link>
               {' / '}
