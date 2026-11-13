@@ -38,6 +38,10 @@ export interface AdminPost extends Post {
   updated_at: string
   comment_count?: number
   open_comments?: number
+  /** Aufrufe aus page_views (alle Sprachpräfixe), eindeutige Besucher und Aufrufe der letzten 7 Tage */
+  views?: number
+  visitors?: number
+  views_7d?: number
 }
 
 export async function listAll(filter?: { author?: string | null; status?: string | null }) {
@@ -45,8 +49,14 @@ export async function listAll(filter?: { author?: string | null; status?: string
   const rows = await db.execute(sql`
     SELECT p.*, COALESCE(p.tags,'[]'::jsonb) AS tags,
            (SELECT COUNT(*)::int FROM blog_comments c WHERE c.post_id = p.id AND c.status = 'freigegeben') AS comment_count,
-           (SELECT COUNT(*)::int FROM blog_comments c WHERE c.post_id = p.id AND c.status IN ('neu','zurueckgehalten')) AS open_comments
+           (SELECT COUNT(*)::int FROM blog_comments c WHERE c.post_id = p.id AND c.status IN ('neu','zurueckgehalten')) AS open_comments,
+           v.views, v.visitors, v.views_7d
     FROM blog_posts p
+    LEFT JOIN LATERAL (
+      SELECT COUNT(*)::int AS views, COUNT(DISTINCT pv.session_hash)::int AS visitors,
+             COUNT(*) FILTER (WHERE pv.created_at > now() - interval '7 days')::int AS views_7d
+      FROM page_views pv WHERE pv.path ~ ('^(/[a-z]{2})?/blog/' || p.slug || '/?$')
+    ) v ON TRUE
     WHERE TRUE
       ${filter?.author ? sql`AND p.author_slug = ${filter.author}` : sql``}
       ${filter?.status ? sql`AND p.status = ${filter.status}` : sql``}

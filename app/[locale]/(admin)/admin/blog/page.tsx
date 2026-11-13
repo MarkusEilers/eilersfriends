@@ -59,6 +59,7 @@ export default async function AdminBlogPage() {
                 <th className="px-3 py-3 font-bold">Sprache</th>
                 <th className="px-3 py-3 font-bold">Status</th>
                 <th className="px-3 py-3 font-bold">Datum</th>
+                <th className="px-3 py-3 font-bold">Aufrufe</th>
                 <th className="px-3 py-3 font-bold">Kommentare</th>
               </tr>
             </thead>
@@ -92,6 +93,11 @@ export default async function AdminBlogPage() {
                           {new Date(p.published_at).toLocaleDateString('de-DE')}
                         </span>
                       ) : '—'}
+                    </td>
+                    <td className="px-3 py-3 text-xs text-gray-500" title={`${p.visitors ?? 0} Besucher · ${p.views_7d ?? 0} Aufrufe in den letzten 7 Tagen`}>
+                      <span className="font-bold text-gray-800">{p.views ?? 0}</span>
+                      {(p.views_7d ?? 0) > 0 && <span className="ml-1.5 text-[10px] text-emerald-700">+{p.views_7d} / 7 T.</span>}
+                      <span className="block text-[10px] text-gray-400">{p.visitors ?? 0} Besucher</span>
                     </td>
                     <td className="px-3 py-3 text-xs text-gray-500">
                       {p.comment_count ?? 0}
