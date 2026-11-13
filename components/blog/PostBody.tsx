@@ -874,18 +874,22 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
       return (
         <div className="flex flex-col gap-4 rounded-2xl bg-[#F6F3EE] p-5 sm:p-7">
           {b.arg && <H s={b.arg} className="text-[18px] font-semibold" style={{ color: INK }} />}
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="flex flex-col gap-3">
             {cards.filter((c) => c.length).map((c, k) => {
               const [title, q] = c[0].split('|').map((x) => x.trim())
               const link = c.find((l) => l.startsWith('/') || l.startsWith('http'))
               const [href, label] = (link ?? '').split('|').map((x) => x.trim())
               const txt = c.slice(1).filter((l) => l !== link)
               return (
-                <a key={k} href={href || '#'} className="flex flex-col gap-2 rounded-xl bg-white p-5 no-underline ring-1 ring-[#EFEDEC] transition-shadow hover:shadow-[0_8px_24px_rgba(0,0,0,.08)]">
-                  <span className="text-[17px] font-bold" style={{ color: INK }}>{title}</span>
-                  {q && <H s={q} className="text-[14px] font-semibold" style={{ color: DEEP }} />}
-                  {txt.length > 0 && <H s={textOf(txt)} className="text-[14px] leading-[1.5] text-[#605D5D]" />}
-                  {label && <span className="mt-auto pt-2 text-[13px] font-bold" style={{ color: BLUE }}>{label} →</span>}
+                <a key={k} href={href || '#'} className="grid gap-2 rounded-xl bg-white p-5 no-underline ring-1 ring-[#EFEDEC] transition-shadow hover:shadow-[0_8px_24px_rgba(0,0,0,.08)] sm:grid-cols-[200px_1fr] sm:gap-6">
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[17px] font-bold" style={{ color: INK }}>{title}</span>
+                    {q && <H s={q} className="text-[14px] font-semibold leading-snug" style={{ color: DEEP }} />}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {txt.length > 0 && <H s={textOf(txt)} className="text-[15px] leading-[1.55] text-[#605D5D]" />}
+                    {label && <span className="text-[13px] font-bold" style={{ color: BLUE }}>{label} →</span>}
+                  </div>
                 </a>
               )
             })}
