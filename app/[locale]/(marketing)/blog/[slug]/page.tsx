@@ -243,8 +243,8 @@ export default async function PostPage({
         </figure>
       )}
 
-      {/* Zusammen: Winning Teams */}
-      <section className="mx-auto max-w-6xl px-6 pt-14">
+      {/* Zusammen: Winning Teams — im Newsletter nicht, dort führen die drei Wege am Ende */}
+      {post.format !== 'newsletter' && <section className="mx-auto max-w-6xl px-6 pt-14">
         <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl px-8 py-9 sm:px-10" style={{ background: st.cta ? '#1A5FD4' : INK }}>
           <div className="max-w-xl">
             <p className={`text-[11px] font-bold uppercase tracking-[0.15em] ${st.cta ? 'text-[#CFE0FF]' : 'text-[#8FB4FF]'}`}>{st.cta?.eyebrow ?? t('together.title')}</p>
@@ -254,7 +254,7 @@ export default async function PostPage({
             {st.cta?.button ?? t('bookStrategy')} <ArrowRight size={15} />
           </Link>
         </div>
-      </section>
+      </section>}
 
       {/* Autorenkarte: schlichte Kurzbio unter dem letzten Aufruf, weißer Grund, ohne eigenen Knopf */}
       <section className="mx-auto max-w-6xl px-6 pt-10">
