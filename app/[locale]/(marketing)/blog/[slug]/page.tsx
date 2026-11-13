@@ -176,7 +176,7 @@ export default async function PostPage({
           </div>
         )}
 
-        {post.format === 'newsletter' && <div className="mx-auto mt-10 max-w-6xl"><GrowthLetterBox locale={locale} badge={st.issue ? `#${st.issue}` : undefined} /></div>}
+        {post.format === 'newsletter' && <div className="mx-auto mt-10 max-w-6xl lg:hidden"><GrowthLetterBox locale={locale} badge={st.issue ? `#${st.issue}` : undefined} /></div>}
 
         <div className="mx-auto mt-8 max-w-[640px]">
           <ShareBar audio={(post as { audio_url?: string | null }).audio_url ?? st.audio_url} minutes={post.reading_minutes} video={post.format === 'video'} ownVoice={(post as { audio_hash?: string | null }).audio_hash ? ({ markus: 'Markus', aljona: 'Aljona' } as Record<string, string>)[post.author_slug] : undefined} />
@@ -203,6 +203,7 @@ export default async function PostPage({
                 <p className="mt-2 text-[13px] leading-snug text-gray-700">{st.for_whom}</p>
               </div>
             )}
+            {post.format === 'newsletter' && <GrowthLetterBox locale={locale} badge={st.issue ? `#${st.issue}` : undefined} compact />}
           </div>
         </aside>
 
@@ -323,12 +324,20 @@ async function isEditor() {
 }
 
 /** Anmeldebox für den GrowthLetter (oben mit Ausgabe-Nummer, unten mit „Nächste Ausgabe“) */
-function GrowthLetterBox({ locale, badge, next }: { locale: string; badge?: string; next?: boolean }) {
+function GrowthLetterBox({ locale, badge, next, compact }: { locale: string; badge?: string; next?: boolean; compact?: boolean }) {
   const T = {
     de: { desc: 'Jede Woche eine Überzeugung zu Sales, Marketing und Führung. Für CEOs und Founder im B2B.', next: 'Nächste Ausgabe: Dienstag', cta: 'Abonnieren', all: 'Alle Ausgaben' },
     en: { desc: 'One conviction on sales, marketing and leadership, every week. For B2B CEOs and founders.', next: 'Next issue: Tuesday', cta: 'Subscribe', all: 'All issues' },
     es: { desc: 'Cada semana, una convicción sobre ventas, marketing y liderazgo. Para CEOs y fundadores B2B.', next: 'Próximo número: martes', cta: 'Suscribirse', all: 'Todos los números' },
   }[locale] ?? { desc: 'Jede Woche eine Überzeugung zu Sales, Marketing und Führung. Für CEOs und Founder im B2B.', next: 'Nächste Ausgabe: Dienstag', cta: 'Abonnieren', all: 'Alle Ausgaben' }
+  if (compact) return (
+    <div className="flex flex-col gap-3 rounded-xl bg-[#0D0D0B] p-4 text-white">
+      <span className="flex items-baseline gap-1.5"><b className="text-[15px] tracking-tight">GrowthLetter</b>{badge && <span className="text-[12px] font-bold text-[#8FB0EC]">{badge}</span>}</span>
+      <span className="text-[12px] leading-snug text-white/75">{T.desc}</span>
+      <EmailCapture source="growthletter" button={T.cta} buttonClass="bg-[#1A5FD4] text-white" layout="stack" tone="dark" />
+      <Link href={'/blog?format=newsletter' as '/'} className="text-[12px] font-semibold text-[#8FB0EC] underline-offset-2 hover:underline">{T.all} →</Link>
+    </div>
+  )
   return (
     <div className="grid items-center gap-6 rounded-2xl bg-[#0D0D0B] px-6 py-6 text-white sm:px-8 md:grid-cols-[1.3fr_1fr]">
       <div className="flex flex-col gap-2">
