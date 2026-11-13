@@ -5,9 +5,10 @@ import { Loader2, CheckCircle2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 /** E-Mail-Feld mit Label und Knopf — läuft über die normale Newsletter-Anmeldung mit Double-Opt-in. */
-export function EmailCapture({ source, button, buttonClass, layout = 'stack' }: {
-  source: string; button: string; buttonClass: string; layout?: 'stack' | 'row'
+export function EmailCapture({ source, button, buttonClass, layout = 'stack', tone = 'light' }: {
+  source: string; button: string; buttonClass: string; layout?: 'stack' | 'row'; tone?: 'light' | 'dark'
 }) {
+  const dark = tone === 'dark'
   const t = useTranslations('blogUi.emailCapture')
   const [email, setEmail] = useState('')
   const [state, setState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
@@ -24,11 +25,11 @@ export function EmailCapture({ source, button, buttonClass, layout = 'stack' }: 
     } catch { setState('error') }
   }
   if (state === 'done') {
-    return <p className="flex items-center gap-2 text-sm font-semibold text-gray-800"><CheckCircle2 size={16} className="text-emerald-600" />{t('confirmation')}</p>
+    return <p className={`flex items-center gap-2 text-sm font-semibold ${dark ? 'text-white' : 'text-gray-800'}`}><CheckCircle2 size={16} className="text-emerald-600" />{t('confirmation')}</p>
   }
   return (
     <form onSubmit={submit} className="w-full">
-      <label className="mb-1.5 block text-xs text-gray-600">{t('label')}</label>
+      <label className={`mb-1.5 block text-xs ${dark ? 'text-white/70' : 'text-gray-600'}`}>{t('label')}</label>
       <div className={layout === 'row' ? 'flex gap-2' : 'space-y-2'}>
         <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t('placeholder')}
           className="w-full min-w-0 flex-1 rounded-full border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-gray-400" />
@@ -37,7 +38,7 @@ export function EmailCapture({ source, button, buttonClass, layout = 'stack' }: 
           {state === 'loading' ? <Loader2 size={14} className="animate-spin" /> : null}{button}
         </button>
       </div>
-      {state === 'error' && <p className="mt-2 text-xs text-red-600">{t('error')}</p>}
+      {state === 'error' && <p className={`mt-2 text-xs ${dark ? 'text-red-300' : 'text-red-600'}`}>{t('error')}</p>}
     </form>
   )
 }

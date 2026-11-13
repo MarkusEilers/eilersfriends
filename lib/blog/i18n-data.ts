@@ -4,12 +4,12 @@ import { FORMATS, FORMAT_LABEL } from './formats'
 /** Übersetzungen der Blog-Stammdaten (Format-Namen, Autoren-Texte). Deutsch steht in formats.ts / authors.ts. */
 type L = 'en' | 'es'
 const TABS: Record<L, Record<string, string>> = {
-  en: { kundenstory: 'Customer stories', serie: 'Tipped at minute …', framework: 'Frameworks', podcast: 'Podcast', sparring: 'Sparring notes', video: 'Videos', artikel: 'Articles' },
-  es: { kundenstory: 'Historias de clientes', serie: 'Se torció en el minuto …', framework: 'Frameworks', podcast: 'Podcast', sparring: 'Notas de sparring', video: 'Vídeos', artikel: 'Artículos' },
+  en: { kundenstory: 'Customer stories', serie: 'Tipped at minute …', framework: 'Frameworks', podcast: 'Podcast', sparring: 'Sparring notes', video: 'Videos', artikel: 'Articles', newsletter: 'GrowthLetter' },
+  es: { kundenstory: 'Historias de clientes', serie: 'Se torció en el minuto …', framework: 'Frameworks', podcast: 'Podcast', sparring: 'Notas de sparring', video: 'Vídeos', artikel: 'Artículos', newsletter: 'GrowthLetter' },
 }
 const SINGULAR: Record<L, Record<string, string>> = {
-  en: { kundenstory: 'Customer story', serie: 'Series', framework: 'Framework', podcast: 'Podcast', sparring: 'Sparring note', video: 'Video', artikel: 'Article' },
-  es: { kundenstory: 'Historia de cliente', serie: 'Serie', framework: 'Framework', podcast: 'Podcast', sparring: 'Nota de sparring', video: 'Vídeo', artikel: 'Artículo' },
+  en: { kundenstory: 'Customer story', serie: 'Series', framework: 'Framework', podcast: 'Podcast', sparring: 'Sparring note', video: 'Video', artikel: 'Article', newsletter: 'Newsletter' },
+  es: { kundenstory: 'Historia de cliente', serie: 'Serie', framework: 'Framework', podcast: 'Podcast', sparring: 'Nota de sparring', video: 'Vídeo', artikel: 'Artículo', newsletter: 'Newsletter' },
 }
 const AUTHOR: Record<L, Record<string, Pick<Author, 'role' | 'tagline' | 'bio'>>> = {
   en: {

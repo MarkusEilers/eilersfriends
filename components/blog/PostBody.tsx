@@ -37,6 +37,10 @@
  *   :::anteil Dachzeile … :::          Gestapelter Balken „50 | grau/schraffiert/akzent | Text“, „klammer 75 | Text“
  *   :::notiz Dachzeile … :::           Übung: Text, „- Chip“, „? Frage“ = Eingabefeld (bleibt im Browser)
  *   :::fahrplan Dachzeile … :::        Spalten „A | Titel“, „01 | Schritt“, „---“, „vorher | …“, „nachher | …“
+ *   :::stationen … :::               Zeitstrahl „icon | Dachzeile | Titel | Frage | Chip“ (icon: suche, hoeren, angebot, stern)
+ *   :::live Titel … :::              Gesprächsverlauf „Kunde | …“, „Seller | …“, „! Hinweis“
+ *   :::kette … :::                   Satzpaare „Wenn … | dann …“
+ *   :::wege Einleitung … :::         Link-Karten „Titel | Frage“, Text, „/link | Linktext“, getrennt mit „---“
  *   :::video ID | Dachzeile … :::      YouTube erst nach Klick: „bild /pfad.jpg“, Titel, Unterzeile, „hinweis …“
  *   „^ Text“ in einem Baustein = Bildunterschrift darunter.
  * Inline: **fett**, ==blau hervorgehoben==, *kursiv*, [Link](url), ((Pille)), {{Begriff}}, %Platzhalter% (nur im Chat).
@@ -792,6 +796,101 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
           {notes.map((nt, k) => <div key={k} className="ml-7 mb-1 mt-6"><Note text={nt} /></div>)}
           <Caption text={caption} />
         </figure>
+      )
+    }
+    case 'stationen': {
+      // Zeitstrahl: „icon | Dachzeile | Titel | Frage | Chip“ je Station. Linie nur zwischen erstem und letztem Punkt, Zeilen auf gleicher Höhe.
+      const ICON: Record<string, ReactNode> = {
+        suche: <><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></>,
+        hoeren: <><path d="M4 14v-2a8 8 0 0 1 16 0v2" /><rect x="3" y="14" width="4" height="6" rx="1.5" /><rect x="17" y="14" width="4" height="6" rx="1.5" /></>,
+        angebot: <><path d="M7 3h7l4 4v14H7z" /><path d="M14 3v4h4M10 12h5M10 16h5" /></>,
+        stern: <path d="M12 3l2.6 5.8 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.4 20l1.4-6.3L3 9.4l6.4-.6z" />,
+      }
+      const items = nonEmpty.map((l) => l.split('|').map((x) => x.trim()))
+      const n = items.length
+      return (
+        <figure className="m-0">
+          <div className="relative rounded-2xl bg-[#F3F2F2] px-5 py-7 sm:px-7">
+            {/* gestrichelte Linie: Mitte des ersten bis Mitte des letzten Punkts */}
+            <div className="absolute top-[60px] hidden h-0.5 sm:block" style={{ left: `calc(28px + (100% - 56px - ${(n - 1) * 20}px) / ${2 * n})`, right: `calc(28px + (100% - 56px - ${(n - 1) * 20}px) / ${2 * n})`, background: `repeating-linear-gradient(90deg,${BLUE} 0 8px,transparent 8px 14px)` }} />
+            <div className="grid gap-8 sm:grid-cols-[repeat(var(--n),minmax(0,1fr))] sm:gap-x-5 sm:gap-y-2.5" style={{ ['--n' as string]: n } as React.CSSProperties}>
+              {items.map(([icon, eb, title, q, chip], k) => (
+                <div key={k} className="relative z-[1] grid justify-items-center gap-2.5 text-center sm:row-span-5 sm:grid-rows-subgrid">
+                  <span className="flex h-16 w-16 items-center justify-center rounded-full text-white" style={{ background: BLUE, boxShadow: '0 0 0 8px #F3F2F2' }}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{ICON[icon] ?? ICON.stern}</svg>
+                  </span>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: DEEP }}>{eb}</span>
+                  <span className="text-[22px] font-bold leading-tight tracking-[-0.01em]" style={{ color: INK }}>{title}</span>
+                  {q ? <H s={q} className="text-[15px] leading-[1.45] text-[#3A3836]" /> : <span />}
+                  {chip ? <span className="self-start justify-self-center rounded-full bg-white px-3 py-1.5 text-[13px] font-semibold" style={{ color: INK }}>{chip}</span> : <span />}
+                </div>
+              ))}
+            </div>
+          </div>
+          <Caption text={caption} />
+        </figure>
+      )
+    }
+    case 'live': {
+      // Gesprächsverlauf mit Hinweisen: „Kunde | Satz“, „Seller | Satz“, „! Hinweis“
+      return (
+        <figure className="m-0">
+          <div className="flex flex-col gap-3 rounded-2xl bg-white p-5 shadow-[0_10px_30px_rgba(0,0,0,.06)] ring-1 ring-[#EFEDEC] sm:p-7">
+            {b.arg && <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#605D5D]"><span className="h-2 w-2 animate-pulse rounded-full bg-[#E5484D]" />{b.arg}</span>}
+            {nonEmpty.map((l, k) => {
+              if (l.startsWith('! ')) return <span key={k} className="self-center rounded-full px-3 py-1 text-[12px] font-bold" style={{ background: TINT, color: DEEP }}>{l.slice(2)}</span>
+              const [who, said] = l.split('|').map((x) => x.trim())
+              const seller = /^(seller|verkäufer|vendedor)/i.test(who)
+              return (
+                <div key={k} className={`flex flex-col gap-1 ${seller ? 'items-end' : 'items-start'}`}>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#9A9796]">{who}</span>
+                  <H s={said ?? ''} className="max-w-[85%] rounded-2xl px-4 py-2.5 text-[15px] leading-[1.45]" style={seller ? { background: BLUE, color: '#fff' } : { background: '#F3F2F2', color: INK }} />
+                </div>
+              )
+            })}
+          </div>
+          {notes.map((nt, k) => <div key={k} className="ml-7 mb-1 mt-6"><Note text={nt} /></div>)}
+          <Caption text={caption} />
+        </figure>
+      )
+    }
+    case 'kette': {
+      // Satzpaare „Wenn … | … dann“; zweiter Teil kräftig in Akzentfarbe
+      const rows = nonEmpty.map((l) => l.split('|').map((x) => x.trim()))
+      return (
+        <div className="flex flex-col gap-3 py-2">
+          {rows.map(([a, z], k) => (
+            <p key={k} className="m-0 text-[20px] leading-[1.35] sm:text-[24px]" style={{ color: INK }}>
+              <H s={a} /> <H s={z ?? ''} className="font-bold" style={{ color: BLUE }} />
+            </p>
+          ))}
+        </div>
+      )
+    }
+    case 'wege': {
+      // Karten mit Link: „Titel | Frage“, Text, „/link | Linktext“; Karten mit „---“ trennen; Argument = Einleitung
+      const cards: string[][] = [[]]
+      for (const l of nonEmpty) { if (l === '---') cards.push([]); else cards[cards.length - 1].push(l) }
+      return (
+        <div className="flex flex-col gap-4 rounded-2xl bg-[#F6F3EE] p-5 sm:p-7">
+          {b.arg && <H s={b.arg} className="text-[18px] font-semibold" style={{ color: INK }} />}
+          <div className="grid gap-3 sm:grid-cols-3">
+            {cards.filter((c) => c.length).map((c, k) => {
+              const [title, q] = c[0].split('|').map((x) => x.trim())
+              const link = c.find((l) => l.startsWith('/') || l.startsWith('http'))
+              const [href, label] = (link ?? '').split('|').map((x) => x.trim())
+              const txt = c.slice(1).filter((l) => l !== link)
+              return (
+                <a key={k} href={href || '#'} className="flex flex-col gap-2 rounded-xl bg-white p-5 no-underline ring-1 ring-[#EFEDEC] transition-shadow hover:shadow-[0_8px_24px_rgba(0,0,0,.08)]">
+                  <span className="text-[17px] font-bold" style={{ color: INK }}>{title}</span>
+                  {q && <H s={q} className="text-[14px] font-semibold" style={{ color: DEEP }} />}
+                  {txt.length > 0 && <H s={textOf(txt)} className="text-[14px] leading-[1.5] text-[#605D5D]" />}
+                  {label && <span className="mt-auto pt-2 text-[13px] font-bold" style={{ color: BLUE }}>{label} →</span>}
+                </a>
+              )
+            })}
+          </div>
+        </div>
       )
     }
     default:

@@ -8,12 +8,13 @@ export const FORMATS = [
   { key: 'podcast', label: 'Podcast' },
   { key: 'sparring', label: 'Sparring-Notizen' },
   { key: 'video', label: 'Videos' },
+  { key: 'newsletter', label: 'GrowthLetter' },
   { key: 'artikel', label: 'Artikel' },
 ] as const
 export type FormatKey = (typeof FORMATS)[number]['key']
 export const FORMAT_LABEL: Record<string, string> = {
   kundenstory: 'Kundenstory', serie: 'Serie', framework: 'Framework', podcast: 'Podcast',
-  sparring: 'Sparring-Notiz', video: 'Video', artikel: 'Artikel',
+  sparring: 'Sparring-Notiz', video: 'Video', artikel: 'Artikel', newsletter: 'Newsletter',
 }
 
 /** Die Bausteine einer Kundenstory — alle optional. */
@@ -26,6 +27,8 @@ export interface StoryData {
   for_whom?: string
   /** Framework, das hinter der Story steht (Slug der Framework-Seite) */
   framework_slug?: string
+  /** Newsletter: Nummer der Ausgabe (GrowthLetter #n) */
+  issue?: number
   /** Audiofassung zum Anhören */
   audio_url?: string
   /** Serie: Kasten unter dem Kopf (Teile mit Label, Titel, optional Link) */
