@@ -29,12 +29,16 @@ export default async function MysteryShoppingSqueeze({ params, searchParams }: {
   const lp = await loadLpSections('mystery-shopping', locale, preview).catch(() => null)
   if (!lp) notFound()
   const ctx = await loadStoryCtx()
+  // Kopf kommt aus dem Seiten-Layout (Topbar + Navbar ohne Navigation); der eigene Kopf der Landingpage entfällt
+  const topnav = lp.sections.find((s) => s.type === 'story_topnav')
+  const sections = lp.sections.filter((s) => s.type !== 'story_topnav')
+  const cta = topnav ? { label: String(topnav.content.cta ?? 'Mystery Shopping buchen'), href: String(topnav.content.ctaHref ?? '#optin') } : undefined
   return (
     <>
       {lp.status !== 'published' && <PreviewBanner status={lp.status} editHref={`/admin/landing-pages/${lp.pageId}`} slug="mystery-shopping" locale={locale} />}
       <Topbar variant="mystery" />
-      <Navbar landing />
-      <StoryPage sections={lp.sections} ctx={ctx} />
+      <Navbar landing landingCta={cta} />
+      <StoryPage sections={sections} ctx={ctx} />
       <FooterSlim />
       <CookieBanner />
     </>

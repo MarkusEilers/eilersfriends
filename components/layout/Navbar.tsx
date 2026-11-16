@@ -120,7 +120,7 @@ const NAV_ITEMS: NavItem[] = [
 ]
 
 /** landing: Landingpage-Modus — nur Logo und Sprachwahl, keine Navigation */
-export function Navbar({ landing = false }: { landing?: boolean } = {}) {
+export function Navbar({ landing = false, landingCta }: { landing?: boolean; landingCta?: { label: string; href: string } } = {}) {
   const t = useTranslations('nav')
   const locale = useLocale()
   const pathname = usePathname()
@@ -260,6 +260,14 @@ export function Navbar({ landing = false }: { landing?: boolean } = {}) {
               style={{ backgroundColor: '#1A5FD4' }}>
               {t('cta')}
             </Link>
+
+            {landing && landingCta && (
+              <a href={landingCta.href}
+                className="inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                style={{ backgroundColor: '#1A5FD4' }}>
+                {landingCta.label}
+              </a>
+            )}
 
             <button onClick={() => setMobileOpen(true)}
               className={landing ? "hidden" : "lg:hidden p-2 -mr-2 text-gray-700"} aria-label="Menü öffnen">
