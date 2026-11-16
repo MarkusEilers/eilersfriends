@@ -119,7 +119,8 @@ const NAV_ITEMS: NavItem[] = [
   { kind: 'link', key: 'contact', href: '/kontakt' },
 ]
 
-export function Navbar() {
+/** landing: Landingpage-Modus — nur Logo und Sprachwahl, keine Navigation */
+export function Navbar({ landing = false }: { landing?: boolean } = {}) {
   const t = useTranslations('nav')
   const locale = useLocale()
   const pathname = usePathname()
@@ -188,7 +189,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-1" aria-label="Hauptnavigation">
+          <nav className={landing ? "hidden" : "hidden lg:flex items-center gap-1"} aria-label="Hauptnavigation">
             {NAV_ITEMS.map((item) => {
               if (item.kind === 'link') {
                 return (
@@ -250,18 +251,18 @@ export function Navbar() {
               </div>
             )}
 
-            <Link href="/clients" className="hidden lg:inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-50">
+            <Link href="/clients" className={landing ? "hidden" : "hidden lg:inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-50"}>
               <User size={13} /> {t('clients')}
             </Link>
 
             <Link href={bookingHref as '/'}
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              className={landing ? "hidden" : "hidden sm:inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"}
               style={{ backgroundColor: '#1A5FD4' }}>
               {t('cta')}
             </Link>
 
             <button onClick={() => setMobileOpen(true)}
-              className="lg:hidden p-2 -mr-2 text-gray-700" aria-label="Menü öffnen">
+              className={landing ? "hidden" : "lg:hidden p-2 -mr-2 text-gray-700"} aria-label="Menü öffnen">
               <Menu size={22} />
             </button>
           </div>
@@ -269,7 +270,7 @@ export function Navbar() {
 
         {/* ─── Mega-menu panels (one shared overlay area) ─── */}
         <div
-          className="hidden lg:block absolute inset-x-0 top-full"
+          className={landing ? "hidden" : "hidden lg:block absolute inset-x-0 top-full"}
           onMouseEnter={() => { if (openMega) handleMegaEnter(openMega) }}
           onMouseLeave={handleMegaLeave}
         >

@@ -4,6 +4,8 @@ import { loadLpSections, canPreview } from '@/lib/lp/story-loader'
 import { StoryPage, loadStoryCtx } from '@/components/lp/story/StoryBlocks'
 import { PreviewBanner } from '@/components/lp/PreviewBanner'
 import { FooterSlim } from '@/components/layout/FooterSlim'
+import { Topbar } from '@/components/layout/Topbar'
+import { Navbar } from '@/components/layout/Navbar'
 import { CookieBanner } from '@/components/layout/CookieBanner'
 
 export const dynamic = 'force-dynamic'
@@ -30,6 +32,8 @@ export default async function MysteryShoppingSqueeze({ params, searchParams }: {
   return (
     <>
       {lp.status !== 'published' && <PreviewBanner status={lp.status} editHref={`/admin/landing-pages/${lp.pageId}`} slug="mystery-shopping" locale={locale} />}
+      <Topbar variant="mystery" />
+      <Navbar landing />
       <StoryPage sections={lp.sections} ctx={ctx} />
       <FooterSlim />
       <CookieBanner />
