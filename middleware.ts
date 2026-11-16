@@ -25,6 +25,11 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Event-Seiten (/events, /events/<slug>): eigene Seiten ohne Navigation und Footer
+  if (pathname === '/events' || pathname.startsWith('/events/')) {
+    return NextResponse.next()
+  }
+
   // Voice/Telefonie-Endpunkte: server-to-server JSON, keine Lokalisierung
   if (pathname === '/voice' || pathname.startsWith('/voice/')) {
     return NextResponse.next()
