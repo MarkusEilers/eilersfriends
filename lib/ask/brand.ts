@@ -19,9 +19,9 @@ export async function resolveBrand(submissionId: string, domain: string, company
     if (!pick) { await save(submissionId, null, null, 'none'); return }
     let buf: Buffer, type = ''
     if (pick.url.startsWith('data:')) {
-      const m = /^data:([^;]+);base64,(.*)$/.exec(pick.url)
+      const m = /^data:([^;,]+)(;base64)?,([\s\S]*)$/.exec(pick.url)
       if (!m) throw new Error('bad data url')
-      type = m[1]; buf = Buffer.from(m[2], 'base64')
+      type = m[1]; buf = m[2] ? Buffer.from(m[3], 'base64') : Buffer.from(decodeURIComponent(m[3]))
     } else {
       const r = await fetch(pick.url, { headers: { 'user-agent': UA }, cache: 'no-store', signal: AbortSignal.timeout(8000) })
       if (!r.ok) throw new Error(`logo ${r.status}`)
