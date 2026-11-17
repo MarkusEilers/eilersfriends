@@ -43,7 +43,7 @@ export const ASK_CSS = `
 /* Reise-Visual */
 .ask .journey{display:flex;flex-direction:column;gap:6px}
 .ask .seg{display:flex;align-items:center;gap:12px;margin:0 auto;width:100%}
-.ask .seg .bar{height:30px;border-radius:8px;background:var(--panel);display:flex;align-items:center;padding:0 12px;font-size:13px;font-weight:600;color:var(--g7);white-space:nowrap;overflow:hidden;transition:background .3s,color .3s}
+.ask .seg .bar{height:30px;border-radius:8px;background:#E4E3DF;display:flex;align-items:center;justify-content:center;padding:0 12px;font-size:13px;font-weight:600;color:var(--g7);white-space:nowrap;overflow:hidden;transition:background .3s,color .3s}
 .ask .seg .bar.red{background:var(--red);color:#fff}.ask .seg .bar.yellow{background:#FFE7A3;color:#5C4300}.ask .seg .bar.green{background:#D5F2E1;color:#0F5A31}
 .ask .seg .bar.on{background:var(--blue);color:#fff}
 .ask .seg .bar.first{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--red)}
@@ -100,3 +100,5 @@ export const ASK_CSS = `
   .ask .track .fill,.ask .seg .bar{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 `
+
+.ask .card.line .seg .bar:not(.red):not(.yellow):not(.green):not(.on){background:var(--panel)}

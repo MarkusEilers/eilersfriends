@@ -10,7 +10,7 @@ import { PrintButton } from '@/components/ask/PrintButton'
 import type { AskCta, Lang } from '@/lib/ask/types'
 
 export const dynamic = 'force-dynamic'
-export const metadata: Metadata = { robots: { index: false, follow: false } }
+export const metadata: Metadata = { title: 'Report · Umsatz-Engpass-Diagnose', robots: { index: false, follow: false } }
 
 type P = { params: Promise<{ locale: string; slug: string; token: string }> }
 
