@@ -51,7 +51,7 @@ export async function notifyLead(def: AskFunnelDef, s: Submission) {
   const c = s.contact
   const ampel = r.stages.map((x) => `${x.status === 'red' ? '🔴' : x.status === 'yellow' ? '🟡' : '🟢'} ${esc(st(x.key))} ${x.score}`).join('<br>')
   await sendReport(`Neuer Lead aus ${def.kicker.de}: ${c?.company ?? ''}`, `
-<p><b>${esc(c?.company ?? '')}</b> · ${esc(c?.email ?? '')}${c?.phone ? ` · ${esc(c.phone)}` : ''}${c?.firstName ? ` · ${esc(c.firstName)}` : ''}</p>
+${s.brand.logo ? `<p><img src="${s.brand.logo}" alt="" style="max-height:48px;max-width:180px"></p>` : ''}<p><b>${esc(c?.company ?? '')}</b> · ${esc(c?.email ?? '')}${c?.phone ? ` · ${esc(c.phone)}` : ''}${c?.firstName ? ` · ${esc(c.firstName)}` : ''}</p>
 <p>Engpass Nr. 1: <b>${esc(st(r.first))}</b> · rote Stufen: ${r.redCount} · Empfehlung: ${esc(def.ctas[r.cta]?.title.de ?? r.cta)}</p>
 <p>${ampel}</p>
 <p><a href="${SITE}/admin/ask">Alle Teilnahmen im Admin</a> · <a href="${SITE}/de/check/${def.slug}/report/${reportToken(s.id)}">Report ansehen</a></p>`)

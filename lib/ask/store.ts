@@ -34,6 +34,10 @@ export async function ensureAsk() {
       report_views  INT NOT NULL DEFAULT 0,
       created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
     )`)
+  // Marke des Teilnehmers (Logo, Akzentfarbe) — nach dem Formular im Hintergrund ermittelt
+  await db.execute(sql`ALTER TABLE ask_submissions ADD COLUMN IF NOT EXISTS brand_logo TEXT`)
+  await db.execute(sql`ALTER TABLE ask_submissions ADD COLUMN IF NOT EXISTS brand_color TEXT`)
+  await db.execute(sql`ALTER TABLE ask_submissions ADD COLUMN IF NOT EXISTS brand_source TEXT`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS ask_sub_funnel ON ask_submissions (funnel, created_at DESC)`)
   await db.execute(sql`CREATE INDEX IF NOT EXISTS ask_sub_ip ON ask_submissions (ip_hash, created_at DESC)`)
   await db.execute(sql`
@@ -85,6 +89,7 @@ export interface Submission {
   id: string; funnel: string; lang: Lang; answers: Record<string, number>; result: AskResult
   vid: string | null; source: string | null; company: string | null; contact: AskContact | null
   consentAt: string | null; confirmedAt: string | null; doiSent: number; reportViews: number; createdAt: string
+  brand: { logo: string | null; color: string | null; done: boolean }
 }
 function toSub(r: Row): Submission {
   let contact: AskContact | null = null
@@ -95,6 +100,7 @@ function toSub(r: Row): Submission {
     company: (r.company as string) ?? null, contact,
     consentAt: r.consent_at ? String(r.consent_at) : null, confirmedAt: r.confirmed_at ? String(r.confirmed_at) : null,
     doiSent: Number(r.doi_sent ?? 0), reportViews: Number(r.report_views ?? 0), createdAt: String(r.created_at),
+    brand: { logo: (r.brand_logo as string) ?? null, color: (r.brand_color as string) ?? null, done: !!r.brand_source },
   }
 }
 

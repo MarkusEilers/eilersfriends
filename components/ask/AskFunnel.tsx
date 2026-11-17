@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { PublicDef, ShortResult } from '@/lib/ask/engine'
 import type { Lang } from '@/lib/ask/types'
-import { UI, localePrefix } from '@/lib/ask/ui'
+import { UI, UI2, localePrefix } from '@/lib/ask/ui'
 import { efTrack, getVid, rememberContext } from '@/components/analytics/visitor'
 import { Journey } from './Journey'
 
@@ -78,6 +78,8 @@ export function AskFunnel({ def, lang, source }: { def: PublicDef; lang: Lang; s
 
   const answeredStages = new Set(flat.filter((q) => answers[q.id] !== undefined && q.last).map((q) => q.stage.key))
 
+  if (phase === 'short' && res) return <div className="ask"><ShortView def={def} lang={lang} res={res} onRestart={restart} /></div>
+
   return (
     <div className="ask">
       <div className="wrap">
@@ -144,27 +146,48 @@ export function AskFunnel({ def, lang, source }: { def: PublicDef; lang: Lang; s
           </div>
         )}
 
-        {phase === 'short' && res && <ShortView def={def} lang={lang} res={res} onRestart={restart} />}
       </div>
     </div>
   )
 }
 
 function ShortView({ def, lang, res, onRestart }: { def: PublicDef; lang: Lang; res: { id: string; claim: string; short: ShortResult }; onRestart: () => void }) {
-  const T = UI[lang]
+  const T = UI[lang], U = UI2[lang]
   const s = res.short
+  const sentKey = `${storeKey(def.slug)}:sent`
   const [f, setF] = useState({ email: '', company: '', phone: '', firstName: '', consent: false })
   const [state, setState] = useState<'form' | 'sending' | 'sent'>('form')
   const [err, setErr] = useState('')
   const [resent, setResent] = useState(false)
+  const [brand, setBrand] = useState<{ logo: string | null; color: string | null } | null>(null)
+  const counts = { red: 0, yellow: 0, green: 0 }
+  for (const x of s.stages) counts[x.status]++
 
   useEffect(() => {
     try {
       const c = JSON.parse(sessionStorage.getItem('ef_ctx') || '{}')
-      setF((x) => ({ ...x, email: c.email || x.email, firstName: c.firstName || x.firstName }))
-      if (sessionStorage.getItem(`${storeKey(def.slug)}:sent`)) setState('sent')
+      const sent = JSON.parse(sessionStorage.getItem(sentKey) || 'null')
+      setF((x) => ({ ...x, email: sent?.email || c.email || x.email, firstName: c.firstName || x.firstName, company: sent?.company || x.company }))
+      if (sent) setState('sent')
     } catch { /* privat */ }
-  }, [def.slug])
+  }, [sentKey])
+
+  // Logo und Farbe nachladen, sobald das Formular raus ist (Server sucht im Hintergrund)
+  useEffect(() => {
+    if (state !== 'sent' || brand?.logo) return
+    let n = 0, stop = false
+    const tick = async () => {
+      if (stop || n++ > 12) return
+      try {
+        const r = await fetch(`/api/ask/${def.slug}/brand?id=${res.id}&claim=${encodeURIComponent(res.claim)}`, { cache: 'no-store' })
+        const j = await r.json()
+        if (j.ok && (j.logo || j.done)) { setBrand({ logo: j.logo, color: j.color }); if (j.company) setF((x) => ({ ...x, company: x.company || j.company })); return }
+      } catch { /* weiter */ }
+      setTimeout(tick, 1500)
+    }
+    tick()
+    return () => { stop = true }
+  }, [state, brand?.logo, def.slug, res.id, res.claim])
 
   async function send(e?: React.FormEvent) {
     e?.preventDefault()
@@ -180,7 +203,7 @@ function ShortView({ def, lang, res, onRestart }: { def: PublicDef; lang: Lang; 
         body: JSON.stringify({ id: res.id, claim: res.claim, email: f.email.trim(), company: f.company.trim(), phone: f.phone.trim(), firstName: f.firstName.trim(), consent: true, vid: getVid().vid }),
       })
       if (!r.ok) throw new Error(String(r.status))
-      try { sessionStorage.setItem(`${storeKey(def.slug)}:sent`, f.email.trim()) } catch { /* privat */ }
+      try { sessionStorage.setItem(sentKey, JSON.stringify({ email: f.email.trim(), company: f.company.trim() })) } catch { /* privat */ }
       rememberContext({ email: f.email.trim(), firstName: f.firstName.trim() || undefined })
       setState('sent')
     } catch {
@@ -188,62 +211,105 @@ function ShortView({ def, lang, res, onRestart }: { def: PublicDef; lang: Lang; 
     }
   }
 
-  const sentTo = (() => { try { return sessionStorage.getItem(`${storeKey(def.slug)}:sent`) || f.email } catch { return f.email } })()
   const headline = s.first ? (s.first.kind === 'red' ? T.firstRed : T.firstYellow) : T.allGreen
+  const statusColor = { red: 'linear-gradient(90deg,#C80022,#FF3B5C)', yellow: 'linear-gradient(90deg,#E09E00,#FFC83D)', green: 'linear-gradient(90deg,#16955C,#2BD083)' }
+  const widths = { red: 22, yellow: 52, green: 86 }
 
   return (
-    <div className="grid">
-      <div>
-        <span className="eb">{T.resultEyebrow}</span>
-        <p style={{ marginTop: 14, fontWeight: 700, color: 'var(--g6)' }}>{headline}</p>
-        <div className="first">{s.first ? s.first.name : T.allGreen}</div>
-        <p className="lead" style={{ marginTop: 14 }}>{s.first ? s.first.diagnosis : T.allGreenText}</p>
-        {s.redCount > 0 && <p style={{ marginTop: 10, fontWeight: 600, color: 'var(--ink)' }}>{T.redCount(s.redCount)}</p>}
-        <div className="card line" style={{ marginTop: 26 }}>
-          <span className="eb" style={{ marginBottom: 14 }}>{T.journey}</span>
-          <Journey stages={s.stages.map((x) => ({ key: x.key, name: x.name, state: x.status }))} first={s.first?.key} />
-          <div className="legend">
-            <span><i style={{ background: 'var(--red)' }} />{T.legendRed}</span>
-            <span><i style={{ background: '#FFE7A3' }} />{T.legendYellow}</span>
-            <span><i style={{ background: '#D5F2E1' }} />{T.legendGreen}</span>
+    <>
+      {/* Bühne: Ergebnis */}
+      <section className="stage">
+        <img className="wing" src="/wing-white.png" alt="" aria-hidden />
+        <div className="in hero2">
+          <div>
+            <span className="eb rise"><i className="live" />{T.resultEyebrow}</span>
+            <p className="kick rise d1">{headline}</p>
+            <div className="big rise d2">{s.first ? <span className="mark">{s.first.name}</span> : T.allGreen}</div>
+            <p className="lead rise d3" style={{ marginTop: 22 }}>{s.first ? s.first.diagnosis : T.allGreenText}</p>
+            <div className="trio rise d4">
+              <div className="r"><b>{counts.red}</b><span>{U.trio[0]}</span></div>
+              <div className="y"><b>{counts.yellow}</b><span>{U.trio[1]}</span></div>
+              <div className="g"><b>{counts.green}</b><span>{U.trio[2]}</span></div>
+            </div>
+            <div className="rise d5" style={{ display: 'flex', gap: 18, alignItems: 'center', marginTop: 34, flexWrap: 'wrap' }}>
+              <a className="btn go" href="#report" onClick={(e) => { e.preventDefault(); document.getElementById('report')?.scrollIntoView({ behavior: 'smooth' }) }}>{U.toReport}</a>
+              <button className="link no-print" style={{ color: 'rgba(255,255,255,.6)' }} onClick={onRestart}>{T.restart}</button>
+            </div>
+          </div>
+          <div className="glassp rise d2">
+            <span className="eb" style={{ marginBottom: 18 }}>{T.journey}</span>
+            <Journey dark anim stages={s.stages.map((x) => ({ key: x.key, name: x.name, state: x.status }))} first={s.first?.key} firstTag={s.first?.kind === 'red' ? 'Nr. 1' : undefined} />
+            <div className="legend">
+              <span><i style={{ background: 'var(--red-s)' }} />{T.legendRed}</span>
+              <span><i style={{ background: 'var(--amber)' }} />{T.legendYellow}</span>
+              <span><i style={{ background: 'var(--green)' }} />{T.legendGreen}</span>
+            </div>
           </div>
         </div>
-        <button className="link no-print" style={{ marginTop: 14 }} onClick={onRestart}>{T.restart}</button>
-      </div>
+      </section>
 
-      <div className="card blue">
-        {state === 'sent' ? (
-          <>
-            <span className="eb">{T.lockedTitle}</span>
-            <h2 style={{ color: '#fff' }}>{T.sentTitle}</h2>
-            <p style={{ marginTop: 12 }}>{T.sentText(sentTo)}</p>
-            <button className="link" style={{ color: '#fff', marginTop: 16, textDecoration: 'underline' }} disabled={resent || !f.email || !f.consent}
-              onClick={async () => { if (!f.email) return; await send(); setResent(true) }}>{resent ? T.resent : T.resend}</button>
-          </>
-        ) : (
-          <>
-            <span className="eb">{T.lockedTitle}</span>
-            <ul className="locked">{T.locked.map((x) => <li key={x}>{x}</li>)}</ul>
-            <form className="contact" onSubmit={send} noValidate>
-              <label className="f"><span>{T.email}</span><input className="in" type="email" autoComplete="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></label>
-              <label className="f"><span>{T.company}</span><input className="in" autoComplete="organization" value={f.company} onChange={(e) => setF({ ...f, company: e.target.value })} /></label>
-              <div className="two">
-                <label className="f"><span>{T.firstName} <small>· {T.firstNameOpt}</small></span><input className="in" autoComplete="given-name" value={f.firstName} onChange={(e) => setF({ ...f, firstName: e.target.value })} /></label>
-                {def.phone !== 'off' && (
-                  <label className="f"><span>{T.phone} {def.phone === 'optional' && <small>· optional</small>}</span><input className="in" type="tel" autoComplete="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></label>
-                )}
+      {/* Report freischalten */}
+      <section className="unlock" id="report">
+        <div className="in cols">
+          <div className="paper-stack" aria-hidden>
+            <div className="paper back" />
+            <div className="paper">
+              <div className="ph">
+                <div style={{ minWidth: 0 }}>
+                  <div className="ttl">{U.coverTitle}</div>
+                  <div className={`for${f.company.trim() ? '' : ' empty'}`}>{U.coverFor} {f.company.trim() || U.coverEmpty}</div>
+                  {brand?.color && <span style={{ display: 'block', width: 48, height: 4, borderRadius: 2, marginTop: 10, background: brand.color }} />}
+                </div>
+                <div className={`logo-slot${brand?.logo ? ' has' : ''}`}>{brand?.logo ? <img src={brand.logo} alt="" /> : U.logoSlot}</div>
               </div>
-              {def.phone === 'optional' && <p style={{ fontSize: 12, marginTop: -4 }}>{T.phoneOpt}</p>}
-              <label className="terms">
-                <input type="checkbox" checked={f.consent} onChange={(e) => setF({ ...f, consent: e.target.checked })} />
-                <span>{T.consent} <a href={`${localePrefix(lang)}/datenschutz`} target="_blank" rel="noopener">{T.privacy}</a></span>
-              </label>
-              <div className="err" role="alert">{err}</div>
-              <button className="btn white" type="submit" disabled={state === 'sending'}>{state === 'sending' ? T.sending : T.submit}</button>
-            </form>
-          </>
-        )}
-      </div>
-    </div>
+              <div className="mini">
+                {s.stages.map((x) => (
+                  <div key={x.key}><span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{x.name}</span>
+                    <i style={{ ['--w' as string]: `${widths[x.status]}%`, ['--c' as string]: statusColor[x.status] } as React.CSSProperties} /><em /></div>
+                ))}
+              </div>
+              <div className="blurred"><span /><span /><span /></div>
+              <div style={{ height: 34 }} />
+              <span className={`lockchip${state === 'sent' ? ' ok' : ''}`}>{state === 'sent' ? '✓ ' + U.okChip : '🔒 ' + U.lockChip}</span>
+            </div>
+          </div>
+
+          <div className="form-card">
+            {state === 'sent' ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
+                <div className="done-ic"><svg width="30" height="30" viewBox="0 0 30 30"><path d="M8 15.5l5 5 9-11" fill="none" stroke="#16955C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg></div>
+                <h2 style={{ marginTop: 0 }}>{T.sentTitle}</h2>
+                <p>{T.sentText(f.email || '…')}</p>
+                <button className="link" style={{ textDecoration: 'underline' }} disabled={resent || !f.email || !f.consent}
+                  onClick={async () => { await send(); setResent(true) }}>{resent ? T.resent : T.resend}</button>
+              </div>
+            ) : (
+              <>
+                <span className="eb">{T.lockedTitle}</span>
+                <h2>{U.formTitle}</h2>
+                <p style={{ marginTop: 6 }}>{U.formSub}</p>
+                <ul className="ticks">{T.locked.map((x) => <li key={x}>{x}</li>)}</ul>
+                <form className="contact" onSubmit={send} noValidate>
+                  <label className="f"><span>{T.email}</span><input className="inp" type="email" autoComplete="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></label>
+                  <label className="f"><span>{T.company}</span><input className="inp" autoComplete="organization" value={f.company} onChange={(e) => setF({ ...f, company: e.target.value })} /></label>
+                  <div className="two">
+                    <label className="f"><span>{T.firstName} <small>· {T.firstNameOpt}</small></span><input className="inp" autoComplete="given-name" value={f.firstName} onChange={(e) => setF({ ...f, firstName: e.target.value })} /></label>
+                    {def.phone !== 'off' && (
+                      <label className="f"><span>{T.phone} {def.phone === 'optional' && <small>· {T.firstNameOpt}</small>}</span><input className="inp" type="tel" autoComplete="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></label>
+                    )}
+                  </div>
+                  <label className="terms">
+                    <input type="checkbox" checked={f.consent} onChange={(e) => setF({ ...f, consent: e.target.checked })} />
+                    <span>{T.consent} <a href={`${localePrefix(lang)}/datenschutz`} target="_blank" rel="noopener">{T.privacy}</a></span>
+                  </label>
+                  <div className="err" role="alert">{err}</div>
+                  <button className="btn blue full" type="submit" disabled={state === 'sending'}>{state === 'sending' ? T.sending : T.submit}</button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+    </>
   )
 }

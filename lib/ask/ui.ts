@@ -96,3 +96,32 @@ export const UI: Record<Lang, {
 }
 
 export const localePrefix = (l: Lang) => (l === 'de' ? '' : `/${l}`)
+
+/** Texte der neu gestalteten Ergebnis- und Report-Ansicht. */
+export const UI2: Record<Lang, {
+  toReport: string; coverTitle: string; coverFor: string; coverEmpty: string; logoSlot: string; lockChip: string; okChip: string
+  formTitle: string; formSub: string; trio: [string, string, string]; score: string; scoreOf: string; bottleneck: string; lever: string
+  stagesTitle: string; recBy: string; madeFor: string; target: string
+}> = {
+  de: {
+    toReport: 'Vollen Report holen ↓', coverTitle: 'Umsatz-Engpass-Diagnose · Report', coverFor: 'Für', coverEmpty: 'Eure Firma', logoSlot: 'Euer Logo',
+    lockChip: 'Wird nach Bestätigung freigeschaltet', okChip: 'Unterwegs in Euer Postfach',
+    formTitle: 'Euer voller Report.', formSub: 'Kostenlos, mit Eurem Logo, in zwei Minuten im Postfach.',
+    trio: ['rot · Engpass', 'gelb · Luft', 'grün · läuft'], score: 'Reise-Score', scoreOf: 'von 100', bottleneck: 'Engpass Nr. 1', lever: 'Größter Hebel',
+    stagesTitle: 'Wo Ihr steht', recBy: 'Markus Eilers · Eilers+Friends', madeFor: 'Erstellt für', target: 'Ziel',
+  },
+  en: {
+    toReport: 'Get the full report ↓', coverTitle: 'Revenue Bottleneck Diagnostic · Report', coverFor: 'For', coverEmpty: 'Your company', logoSlot: 'Your logo',
+    lockChip: 'Unlocks after confirmation', okChip: 'On its way to your inbox',
+    formTitle: 'Your full report.', formSub: 'Free, with your logo, in your inbox in two minutes.',
+    trio: ['red · bottleneck', 'yellow · room', 'green · working'], score: 'Journey score', scoreOf: 'of 100', bottleneck: 'Bottleneck no. 1', lever: 'Biggest lever',
+    stagesTitle: 'Where you stand', recBy: 'Markus Eilers · Eilers+Friends', madeFor: 'Prepared for', target: 'target',
+  },
+  es: {
+    toReport: 'Pedir el informe completo ↓', coverTitle: 'Diagnóstico de cuellos de botella · Informe', coverFor: 'Para', coverEmpty: 'Vuestra empresa', logoSlot: 'Vuestro logo',
+    lockChip: 'Se desbloquea tras confirmar', okChip: 'En camino a vuestro email',
+    formTitle: 'Vuestro informe completo.', formSub: 'Gratis, con vuestro logo, en vuestro email en dos minutos.',
+    trio: ['rojo · cuello', 'amarillo · margen', 'verde · funciona'], score: 'Puntuación', scoreOf: 'de 100', bottleneck: 'Cuello de botella n.º 1', lever: 'Mayor palanca',
+    stagesTitle: 'Dónde estáis', recBy: 'Markus Eilers · Eilers+Friends', madeFor: 'Preparado para', target: 'objetivo',
+  },
+}

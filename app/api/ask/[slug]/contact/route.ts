@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, after } from 'next/server'
+import { resolveBrand } from '@/lib/ask/brand'
 import { z } from 'zod'
 import { getFunnel } from '@/lib/ask/registry'
 import { attachContact, getSubmission } from '@/lib/ask/store'
@@ -51,5 +52,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
     console.error('[ask] DOI mail failed', e)
     return NextResponse.json({ ok: false, error: 'mail' }, { status: 502 })
   }
+  // Logo und Farbe für den Report suchen, ohne die Antwort aufzuhalten
+  after(() => resolveBrand(s.id, workDomain(email), b.company))
   return NextResponse.json({ ok: true })
 }
