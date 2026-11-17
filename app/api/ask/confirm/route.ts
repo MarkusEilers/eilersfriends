@@ -22,7 +22,7 @@ export async function GET(req: Request) {
   const tok = url.searchParams.get('t') ?? ''
   const id = readReportToken(tok)
   const s = id ? await getSubmission(id) : null
-  if (!s || !s.contact) return NextResponse.redirect(`${url.origin}/check/engpass?invalid=1`)
+  if (!s || !s.contact) return NextResponse.redirect(`${url.origin}/check/bottleneck?invalid=1`)
   const f = getFunnel(s.funnel)
   const prefix = s.lang === 'de' ? '' : `/${s.lang}`
   const target = `${url.origin}${prefix}/check/${s.funnel}/report/${tok}`

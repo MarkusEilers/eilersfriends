@@ -13,7 +13,7 @@ const ROUTES: { path: string; priority: number; freq: MetadataRoute.Sitemap[numb
   { path: 'frameworks', priority: 0.9, freq: 'weekly' },
   { path: 'mystery-shopping', priority: 0.85, freq: 'weekly' },
   { path: 'gespraechs-check', priority: 0.8, freq: 'monthly' },
-  { path: 'check/engpass', priority: 0.8, freq: 'monthly' },
+  { path: 'check/bottleneck', priority: 0.8, freq: 'monthly' },
   { path: 'blog', priority: 0.7, freq: 'weekly' },
   { path: 'liquidleadership', priority: 0.85, freq: 'monthly' },
   { path: 'markus', priority: 0.6, freq: 'monthly' },

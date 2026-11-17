@@ -17,7 +17,7 @@ Ein Rechenkern, jeder Funnel ist Konfiguration.
 Token: 32 Hex (ID) + 24 Zeichen HMAC, ohne Punkt (Pfade mit Punkt umgehen die Middleware).
 
 ## Einbinden
-Landingpage-Baustein `story_ask_teaser`, Inhalt `{ "funnel": "engpass" }` (optional `headline`, `sub`, `button`).
+Landingpage-Baustein `story_ask_teaser`, Inhalt `{ "funnel": "bottleneck" }` (optional `headline`, `sub`, `button`).
 Antworten aus dem Teaser wandern in den vollen Funnel mit. Vorschau-Seite: LP `ask-demo` (Entwurf).
 
 ## Offen (Welle 2)

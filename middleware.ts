@@ -25,6 +25,14 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // ASK-Funnels: alte deutsche Slugs auf englische umleiten (/check/engpass → /check/bottleneck)
+  const ask = pathname.match(/^(\/(?:en|es))?\/check\/engpass(\/.*)?$/)
+  if (ask) {
+    const url = request.nextUrl.clone()
+    url.pathname = `${ask[1] ?? ''}/check/bottleneck${ask[2] ?? ''}`
+    return NextResponse.redirect(url, 308)
+  }
+
   // Event-Seiten (/events, /events/<slug>): eigene Seiten ohne Navigation und Footer
   if (pathname === '/events' || pathname.startsWith('/events/')) {
     return NextResponse.next()

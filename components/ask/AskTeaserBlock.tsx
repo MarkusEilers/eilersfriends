@@ -1,11 +1,12 @@
-import { getFunnel } from '@/lib/ask/registry'
+import { getFunnel, FUNNEL_ALIASES } from '@/lib/ask/registry'
 import type { Lang } from '@/lib/ask/types'
 import { ASK_CSS } from './ask-css'
 import { AskTeaser } from './AskTeaser'
 
 /** Landingpage-Baustein „story_ask_teaser“. Inhalt: { funnel, headline?, sub?, button? } — leere Felder nehmen die Texte des Funnels. */
 export function AskTeaserBlock({ c, lang }: { c: Record<string, unknown>; lang: Lang }) {
-  const f = getFunnel(String(c.funnel || 'engpass'))
+  const raw = String(c.funnel || 'bottleneck')
+  const f = getFunnel(FUNNEL_ALIASES[raw] ?? raw)
   if (!f) return null
   const d = f.def, str = (k: string) => (typeof c[k] === 'string' && (c[k] as string).trim() ? (c[k] as string) : null)
   const questions = d.teaser.questionIds.map((id) => {

@@ -13,8 +13,8 @@ function opts(de: string[], en: string[], es: string[]): AskOption[] {
 }
 const q = (id: string, prompt: L3, options: AskOption[], hint?: L3): AskQuestion => ({ id, prompt, options, hint })
 
-export const ENGPASS: AskFunnelDef = {
-  slug: 'engpass',
+export const BOTTLENECK: AskFunnelDef = {
+  slug: 'bottleneck',
   template: 'constraint',
   title: t(
     'Wo bremst Euer Umsatz?',
@@ -269,7 +269,7 @@ export const ENGPASS: AskFunnelDef = {
 }
 
 /** Default-Benchmarks aus der Spezifikation (B2B). Überschreibbar im Admin. */
-export const ENGPASS_BENCHMARKS: Record<string, { red: number; green: number }> = {
+export const BOTTLENECK_BENCHMARKS: Record<string, { red: number; green: number }> = {
   visibility: { red: 40, green: 66 },
   curiosity: { red: 40, green: 66 },
   demand: { red: 33, green: 66 },
