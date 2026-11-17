@@ -13,6 +13,7 @@ import { HomeInit } from './HomeInit'
 import { HeroBackdrop, HeroStyles } from './HeroBackdrop'
 import { listPosts } from '@/lib/blog/posts'
 import { formatLabel } from '@/lib/blog/i18n-data'
+import { AskTeaserBlock } from '@/components/ask/AskTeaserBlock'
 
 /** String.replace mit asynchronem Ersetzer */
 async function replaceAsync(str: string, re: RegExp, fn: (...a: string[]) => Promise<string>) {
@@ -547,6 +548,7 @@ export function StoryBlock({ type, c, ctx }: { type: string; c: C; ctx: StoryCtx
     case 'story_mobile_cta': return <StoryMobileCta c={c} ctx={ctx} />
     case 'story_html': return <StoryHtml c={c} />
     case 'story_system': return <StoryProgramSystem c={c} />
+    case 'story_ask_teaser': return <AskTeaserBlock c={c} lang={ctx.lang ?? 'de'} />
     default: return null
   }
 }

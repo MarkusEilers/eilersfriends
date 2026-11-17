@@ -88,6 +88,7 @@ const SECTION_TYPES = [
   { value: 'story_faq', label: '◼︎ Story · FAQ' },
   { value: 'story_mobile_cta', label: '◼︎ Story · Mobile CTA-Leiste' },
   { value: 'story_system', label: '◼︎ Story · Programm-System (dunkel)' },
+  { value: 'story_ask_teaser', label: '◼︎ Story · ASK-Teaser (Quiz-Einstieg mit Visual)' },
   { value: 'story_html', label: '◼︎ Story · Freies HTML (Design-Import)' },
 ]
 

@@ -22,6 +22,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Landing Pages', href: '/admin/landing-pages',  icon: LayoutTemplate },
       { label: 'Frameworks',    href: '/admin/frameworks',     icon: BookOpen },
       { label: 'Lead-Scoring',  href: '/admin/leadscoring',    icon: Target },
+      { label: 'ASK-Funnels',   href: '/admin/ask',            icon: Target },
       { label: 'Blog',          href: '/admin/blog',           icon: PenLine },
       { label: 'Meetings',      href: '/admin/meetings',       icon: CalendarDays },
       { label: 'Agenten',       href: '/admin/agents',         icon: Cpu },
