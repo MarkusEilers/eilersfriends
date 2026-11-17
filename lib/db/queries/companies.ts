@@ -14,14 +14,14 @@ export async function ensureOrgColumns() {
   } catch (e) { console.error('[ensureOrgColumns]', e) }
 }
 
-/** Org über Domain finden-oder-anlegen (kanonisch, keine Duplikate). */
+/** Org über Domain finden-oder-anlegen (kanonisch, keine Duplikate). Der Unique-Index ist partiell, deshalb das WHERE im ON CONFLICT. */
 export async function upsertCompanyByDomain(domain: string, name?: string, website?: string): Promise<string | null> {
   if (!domain) return null
   await ensureOrgColumns()
   const rows = await db.execute(sql`
     INSERT INTO companies (name, domain, website)
     VALUES (${name || domain}, ${domain}, ${website || null})
-    ON CONFLICT (domain) DO UPDATE SET
+    ON CONFLICT (domain) WHERE domain IS NOT NULL DO UPDATE SET
       name = COALESCE(NULLIF(companies.name, ''), EXCLUDED.name),
       website = COALESCE(companies.website, EXCLUDED.website)
     RETURNING id`)

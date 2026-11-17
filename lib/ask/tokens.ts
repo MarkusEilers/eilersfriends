@@ -10,12 +10,15 @@ const mac = (purpose: string, id: string) => crypto.createHmac('sha256', key()).
 
 /** Darf diese Browser-Sitzung Kontaktdaten an die Teilnahme hängen? */
 export const claimToken = (id: string) => mac('claim', id)
-/** Report-Link: id.mac — wer ihn hat, sieht den Report (nach Bestätigung). */
-export const reportToken = (id: string) => `${id.replace(/-/g, '')}.${mac('report', id)}`
+/**
+ * Report-Link: 32 Hex-Zeichen ID + 24 Zeichen MAC, ohne Punkt — Pfade mit Punkt
+ * hält die Middleware für Dateien und lässt sie an der Lokalisierung vorbei.
+ */
+export const reportToken = (id: string) => `${id.replace(/-/g, '')}${mac('report', id)}`
 
 export function readReportToken(tok: string): string | null {
-  const [hex, m] = tok.split('.')
-  if (!hex || !m || !/^[0-9a-f]{32}$/.test(hex)) return null
+  const hex = tok.slice(0, 32), m = tok.slice(32)
+  if (tok.length !== 56 || !/^[0-9a-f]{32}$/.test(hex)) return null
   const id = `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
   const exp = mac('report', id)
   const a = Buffer.from(m), b = Buffer.from(exp)
