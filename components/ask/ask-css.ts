@@ -94,11 +94,10 @@ export const ASK_CSS = `
 @media(max-width:900px){.ask .grid,.ask.teaser .tz{grid-template-columns:1fr}.ask .steps{grid-template-columns:1fr}.ask .alt{grid-template-columns:1fr}}
 @media(max-width:640px){.ask .wrap{padding:32px 20px 72px}.ask h1{font-size:36px}.ask h2{font-size:26px}.ask .qcard{padding:22px;border-radius:18px}.ask .qt{font-size:22px}
   .ask .two{grid-template-columns:1fr}.ask .card{padding:22px}.ask .row{grid-template-columns:1fr 48px}.ask .row .nm{grid-column:span 2}.ask .first{font-size:30px}.ask.teaser .tz{padding:22px}}
+.ask .card.line .seg .bar:not(.red):not(.yellow):not(.green):not(.on){background:var(--panel)}
 @media print{
   header,footer,nav,.no-print,[data-cookie-banner]{display:none!important}
   .ask .wrap{padding:0}.ask .card,.ask .step{break-inside:avoid}.ask .card.blue,.ask .card.ink{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .ask .track .fill,.ask .seg .bar{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 `
-
-.ask .card.line .seg .bar:not(.red):not(.yellow):not(.green):not(.on){background:var(--panel)}
