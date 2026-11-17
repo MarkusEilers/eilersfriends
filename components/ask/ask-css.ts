@@ -166,7 +166,7 @@ export const ASK_CSS = `
 .ask .shead{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:28px}
 .ask .shead p{max-width:420px}
 .ask .rows{display:grid;gap:4px}
-.ask .row{display:grid;grid-template-columns:34px 200px 1fr 64px 92px;gap:16px;align-items:center;padding:12px 6px;border-bottom:1px solid #F0F0EE;animation:askIn .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 60ms)}
+.ask .row{display:grid;grid-template-columns:34px 190px 1fr 56px 124px;gap:16px;align-items:center;padding:12px 6px;border-bottom:1px solid #F0F0EE;animation:askIn .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 60ms)}
 .ask .row:last-child{border-bottom:0}
 .ask .row .ix{width:28px;height:28px;border-radius:8px;background:var(--panel);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--g6)}
 .ask .row.red .ix{background:var(--red);color:#fff}
@@ -177,9 +177,9 @@ export const ASK_CSS = `
 .ask .track .tick{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--ink);border-radius:1px}
 .ask .track .tick:after{content:attr(data-l);position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--g5);white-space:nowrap}
 .ask .row .v{font-size:22px;font-weight:700;letter-spacing:-.02em;text-align:right;font-variant-numeric:tabular-nums}
-.ask .st{justify-self:end;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:5px 10px}
+.ask .st{justify-self:end;white-space:nowrap;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:5px 10px}
 .ask .st.red{background:#FFE3E8;color:#B0001F}.ask .st.yellow{background:#FFF1C7;color:#7A5600}.ask .st.green{background:#DDF5E8;color:#0F6B3B}
-.ask .navycard{background:var(--navy);border-radius:24px;padding:28px;position:relative;overflow:hidden}
+.ask .navycard{background:var(--navy);border-radius:24px;padding:28px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:4px}
 .ask .navycard:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(111,163,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(111,163,255,.07) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
 .ask .navycard>*{position:relative}
 .ask .navycard .eb{color:var(--eb-l)}
