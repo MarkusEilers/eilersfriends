@@ -100,7 +100,7 @@ function useDwell(pathname: string) {
   return current
 }
 
-function renderRich(text: string): ReactNode {
+export function renderRich(text: string): ReactNode {
   const nodes: ReactNode[] = []
   // Reihenfolge: [Text](href) | **fett** | https-URL | E-Mail | interner /pfad
   const re = /\[([^\]]+)\]\(([^)]+)\)|\*\*(.+?)\*\*|(https?:\/\/[^\s)]+)|([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})|(\/[A-Za-z0-9][A-Za-z0-9/_-]*)/g
@@ -129,7 +129,7 @@ function renderRich(text: string): ReactNode {
 /* ── Karten, die der Assistent mit [[card:…]] ausspielen kann ─────────────── */
 const CARD_RE = /\[\[card:([^\]]+)\]\]/g
 
-function splitCards(text: string): { text: string; cards: string[] } {
+export function splitCards(text: string): { text: string; cards: string[] } {
   const cards: string[] = []
   const clean = text.replace(CARD_RE, (_, c: string) => { cards.push(c.trim()); return '' }).trim()
   return { text: clean, cards: cards.slice(0, 1) }
@@ -172,7 +172,7 @@ function SimpleCard({ href, eyebrow, title, text, cta, bg, fg = '#0D0D0B', accen
   )
 }
 
-function ChatCard({ spec }: { spec: string }) {
+export function ChatCard({ spec }: { spec: string }) {
   const [kind, ...args] = spec.split('|').map((x) => x.trim())
   switch (kind) {
     case 'mystery-shopping': return <MysteryCard />
@@ -200,6 +200,8 @@ export function ChatWidget() {
   const nudgeRef = useRef<{ variant: string; text: string } | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const section = useDwell(pathname)
+  const [on404, setOn404] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setOn404(!!document.getElementById('ef-404')), 50); return () => clearTimeout(t) }, [pathname])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
@@ -279,6 +281,8 @@ export function ChatWidget() {
       setLoading(false)
     }
   }
+
+  if (on404) return null
 
   return (
     <>
