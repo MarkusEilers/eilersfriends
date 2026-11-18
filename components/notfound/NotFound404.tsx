@@ -29,7 +29,7 @@ const TX: Record<Lang, {
     ctxRef: (f) => ` Du kamst von ${f}.`,
     ctxNone: 'die Adresse gibt es so nicht. Sag mir, was Du suchst, dann bringe ich Dich hin.',
     ask: 'Frag Eily', placeholder: 'Was suchst Du? Frag mich alles zu Vertrieb, Academy, Mystery Shopping …', send: 'Senden',
-    chips: ['Was kostet die SalesMade Academy?', 'Wie läuft Mystery Shopping ab?', 'Ich möchte mit Markus sprechen', 'Welches Framework hilft bei Angeboten?', 'Wo bremst unser Umsatz?', 'Wie komme ich in den Kundenbereich?'],
+    chips: ['Was bringt die SalesMade Academy unserem Team?', 'Wie läuft Mystery Shopping ab?', 'Ich möchte mit Markus sprechen', 'Welches Framework hilft bei Angeboten?', 'Wo bremst unser Umsatz?', 'Wie komme ich in den Kundenbereich?'],
     chipSearch: (w) => `Ich suche „${w}“`,
     meant: 'Meintest Du', results: 'Passt wahrscheinlich', resultsFor: (q) => `Passt zu „${q}“`,
     kinds: { page: 'Seite', framework: 'Framework', blog: 'Blog' }, thinking: 'Eily schaut nach …', error: 'Da ging gerade etwas schief. Versuch es nochmal oder schreib uns: team@eilersfriends.com', home: 'Zur Startseite', open: 'Ansehen',
@@ -43,7 +43,7 @@ const TX: Record<Lang, {
     ctxRef: (f) => ` You came from ${f}.`,
     ctxNone: "that address doesn't exist. Tell me what you're looking for and I'll take you there.",
     ask: 'Ask Eily', placeholder: 'What are you looking for? Ask me anything about sales, the Academy, Mystery Shopping …', send: 'Send',
-    chips: ['What does the SalesMade Academy cost?', 'How does Mystery Shopping work?', "I'd like to talk to Markus", 'Which framework helps with offers?', 'Where is our revenue stuck?', 'How do I get to the member area?'],
+    chips: ['What does the SalesMade Academy do for our team?', 'How does Mystery Shopping work?', "I'd like to talk to Markus", 'Which framework helps with offers?', 'Where is our revenue stuck?', 'How do I get to the member area?'],
     chipSearch: (w) => `I'm looking for “${w}”`,
     meant: 'Did you mean', results: 'Probably a match', resultsFor: (q) => `Matches for “${q}”`,
     kinds: { page: 'Page', framework: 'Framework', blog: 'Blog' }, thinking: 'Eily is looking …', error: 'Something went wrong. Try again or write to us: team@eilersfriends.com', home: 'Home', open: 'Open',
@@ -57,7 +57,7 @@ const TX: Record<Lang, {
     ctxRef: (f) => ` Venías de ${f}.`,
     ctxNone: 'esa dirección no existe. Dime qué buscas y te llevo.',
     ask: 'Pregunta a Eily', placeholder: '¿Qué buscas? Pregúntame sobre ventas, la Academy, Mystery Shopping …', send: 'Enviar',
-    chips: ['¿Cuánto cuesta la SalesMade Academy?', '¿Cómo funciona Mystery Shopping?', 'Quiero hablar con Markus', '¿Qué framework ayuda con las ofertas?', '¿Dónde se frena nuestra facturación?', '¿Cómo entro al área de clientes?'],
+    chips: ['¿Qué aporta la SalesMade Academy a nuestro equipo?', '¿Cómo funciona Mystery Shopping?', 'Quiero hablar con Markus', '¿Qué framework ayuda con las ofertas?', '¿Dónde se frena nuestra facturación?', '¿Cómo entro al área de clientes?'],
     chipSearch: (w) => `Busco «${w}»`,
     meant: '¿Querías decir', results: 'Probablemente encaja', resultsFor: (q) => `Resultados para «${q}»`,
     kinds: { page: 'Página', framework: 'Framework', blog: 'Blog' }, thinking: 'Eily está buscando …', error: 'Algo ha fallado. Inténtalo de nuevo o escríbenos: team@eilersfriends.com', home: 'Inicio', open: 'Ver',
@@ -104,7 +104,7 @@ export function NotFound404() {
     try {
       if (document.referrer) {
         const r = new URL(document.referrer)
-        from = r.host === window.location.host ? r.pathname : r.host.replace(/^www\./, '')
+        from = r.host === window.location.host ? (r.pathname === p ? null : r.pathname) : r.host.replace(/^www\./, '')
       }
     } catch { /* kein Referrer */ }
     setRef(from)
