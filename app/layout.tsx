@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import '@/app/globals.css'
 import { StructuredData } from '@/components/seo/StructuredData'
+import { getLocale } from 'next-intl/server'
 
 export const metadata: Metadata = {
   // Seitentitel tragen die Marke selbst (Sprachen und Texte: app/[locale]/layout.tsx)
@@ -9,9 +10,12 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.eilersfriends.com'),
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Sprache der Seite im <html lang>: wichtig für Google und Screenreader (vorher immer „de“)
+  const raw = await getLocale().catch(() => 'de')
+  const lang = raw === 'en' || raw === 'es' ? raw : 'de'
   return (
-    <html lang="de" suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
