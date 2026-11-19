@@ -245,6 +245,22 @@ export function ChatWidget() {
     return () => { clearTimeout(timer); document.removeEventListener('click', onClick, true) }
   }, [pathname, open, lang, T, section])
 
+  // Suche in der Member-Section: öffnet Eily und stellt die Frage direkt
+  const pendingAsk = useRef<string | null>(null)
+  useEffect(() => {
+    const h = (e: Event) => {
+      const t = ((e as CustomEvent).detail?.text as string | undefined)?.trim()
+      setNudge(null); setOpen(true)
+      if (t) { pendingAsk.current = t; setInput(t) }
+    }
+    window.addEventListener('ef:chat', h)
+    return () => window.removeEventListener('ef:chat', h)
+  }, [])
+  useEffect(() => {
+    if (open && pendingAsk.current && input === pendingAsk.current && !loading) { pendingAsk.current = null; send() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, input])
+
   function openChat(fromNudge = false) {
     if (fromNudge && nudgeRef.current) {
       setMessages((m) => (m.length <= 1 ? [{ role: 'assistant', content: nudgeRef.current!.text }] : m))
