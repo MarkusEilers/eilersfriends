@@ -28,6 +28,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Agenten',       href: '/admin/agents',         icon: Cpu },
       { label: 'Messaging-Audit', href: '/admin/services/messageaudit', icon: Radar },
       { label: 'Programme',     href: '/admin/programs',       icon: FileText },
+      { label: 'Kurse & Homework', href: '/admin/courses',     icon: BookOpen },
     ],
   },
   {

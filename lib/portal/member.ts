@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { auth } from '@/lib/auth'
 import { getViewAs } from '@/lib/view-as'
 import { loadGuide } from '@/lib/rollouts/guide'
+import { myCourses } from '@/lib/courses/member'
 
 /**
  * Daten für die Member-Section (Stufe 1: Rahmen, Start, Profil, Score).
@@ -158,6 +159,16 @@ export async function startData(m: Member, platformRole: string): Promise<StartD
         }
       }
     }
+  }
+
+  // Kurse: nächste Lektion, offene Homework
+  const courses = await myCourses(m.id, m.companyId, platformRole).catch(() => [])
+  for (const cv of courses) {
+    if (!cv.next) continue
+    const href = `/dashboard/programs/${cv.course.slug}/${cv.next.slug}`
+    if (!next) next = { eyebrow: cv.done ? 'Weiter mit' : 'Starte mit', title: cv.next.title, sub: `${cv.course.title} · Lektion ${cv.next.index} von ${cv.total}`, progress: cv.percent, href }
+    const hw = cv.lessons.find((l) => l.kind === 'homework' && l.gate.open && !l.submitted)
+    if (hw) todos.unshift({ id: `hw-${hw.id}`, kind: 'output', title: `Homework: ${hw.title}`, sub: `${cv.course.title} · Lektion ${hw.index}`, href: `/dashboard/programs/${cv.course.slug}/${hw.slug}`, cta: 'Einreichen', due: null })
   }
 
   // Transkript-Rhythmus: alle 4 Wochen ein neues Gespräch auswerten
