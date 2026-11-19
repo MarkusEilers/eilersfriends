@@ -26,6 +26,7 @@ export async function ensureMemberSchema() {
       phone       TEXT,
       updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
     )`)
+  await db.execute(sql`ALTER TABLE member_profiles ADD COLUMN IF NOT EXISTS belt TEXT`)
   ready = true
 }
 
@@ -44,7 +45,7 @@ export interface Plan { label: string; kind: 'corporate' | 'program' | 'personal
 export interface Member {
   id: string; name: string; firstName: string; initials: string; email: string; avatarUrl: string | null
   companyId: string | null; companyName: string | null; teamName: string | null; teamKey: string | null
-  orgRole: string | null; title: string | null; headline: string | null; linkedin: string | null; bio: string | null; phone: string | null
+  orgRole: string | null; title: string | null; headline: string | null; linkedin: string | null; bio: string | null; phone: string | null; belt: string | null
   plans: Plan[]
 }
 
@@ -53,7 +54,7 @@ export async function getMember(userId: string): Promise<Member | null> {
   const [u] = rows(await db.execute(sql`
     SELECT u.id, u.email, u.name, u.avatar_url, u.company_id,
            m.company_id AS m_company, m.org_role, m.title, t.name AS team_name, t.program_role_key AS team_key,
-           c.name AS company_name, p.headline, p.linkedin, p.bio, p.phone
+           c.name AS company_name, p.headline, p.linkedin, p.bio, p.phone, p.belt
     FROM users u
     LEFT JOIN LATERAL (SELECT * FROM org_memberships WHERE user_id = u.id ORDER BY is_primary DESC NULLS LAST, created_at LIMIT 1) m ON true
     LEFT JOIN org_teams t ON t.id = m.team_id
@@ -81,7 +82,7 @@ export async function getMember(userId: string): Promise<Member | null> {
     email: String(u.email), avatarUrl: (u.avatar_url as string) ?? null,
     companyId, companyName: (u.company_name as string) ?? null, teamName: (u.team_name as string) ?? null, teamKey: (u.team_key as string) ?? null,
     orgRole: (u.org_role as string) ?? null, title: (u.title as string) ?? null,
-    headline: (u.headline as string) ?? null, linkedin: (u.linkedin as string) ?? null, bio: (u.bio as string) ?? null, phone: (u.phone as string) ?? null,
+    headline: (u.headline as string) ?? null, linkedin: (u.linkedin as string) ?? null, bio: (u.bio as string) ?? null, phone: (u.phone as string) ?? null, belt: (u.belt as string) ?? null,
     plans: dedupe(plans),
   }
 }

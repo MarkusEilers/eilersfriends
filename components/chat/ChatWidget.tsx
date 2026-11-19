@@ -14,11 +14,12 @@ const AVATAR = '/eili/eili.jpg'
 
 /** Eily — die KI-Assistentin von Eilers+Friends. Texte je Sprache. */
 const TX: Record<Lang, {
-  greeting: string; role: string; open: string; close: string; placeholder: string; human: string; send: string
+  greeting: string; memberGreeting: string; role: string; open: string; close: string; placeholder: string; human: string; send: string
   error: string; offline: string; nudges: Record<string, string>; nudgeCtx: (s: string) => string; dismiss: string
 }> = {
   de: {
     greeting: 'Hey, ich bin Eily, die KI-Assistentin von Eilers+Friends. Frag mich alles zum Mystery Shopping, zur SalesMade Academy oder dazu, wie Vertrieb planbar wird. Oder ich verbinde Dich direkt mit Markus und dem Team. Was beschäftigt Dich gerade?',
+    memberGreeting: 'Hey, ich bin Eily. Ich kenne Deine Kurse und Programme und weiß, was als Nächstes dran ist. Frag mich zu einer Lektion, einem Framework, Deiner Homework oder wo Du etwas findest.',
     role: 'KI-Assistentin · Eilers+Friends', open: 'Chat mit Eily öffnen', close: 'Chat schließen', placeholder: 'Schreib Eily…',
     human: 'Lieber direkt mit dem Team sprechen? →', send: 'Senden',
     error: 'Hm, da ging gerade etwas schief. Magst Du es nochmal versuchen?', offline: 'Verbindung gerade nicht möglich. Schreib uns sonst direkt: team@eilersfriends.com',
@@ -31,6 +32,7 @@ const TX: Record<Lang, {
   },
   en: {
     greeting: "Hey, I'm Eily, the AI assistant at Eilers+Friends. Ask me anything about Mystery Shopping, the SalesMade Academy or how to make sales predictable. Or I'll connect you straight to Markus and the team. What's on your mind?",
+    memberGreeting: "Hey, I'm Eily. I know your courses and programs and what's next for you. Ask me about a lesson, a framework, your homework or where to find something.",
     role: 'AI assistant · Eilers+Friends', open: 'Open chat with Eily', close: 'Close chat', placeholder: 'Write to Eily…',
     human: 'Rather talk to the team directly? →', send: 'Send',
     error: 'Hm, something went wrong. Would you try again?', offline: "Can't connect right now. Write to us directly: team@eilersfriends.com",
@@ -43,6 +45,7 @@ const TX: Record<Lang, {
   },
   es: {
     greeting: 'Hola, soy Eily, la asistente de IA de Eilers+Friends. Pregúntame lo que quieras sobre Mystery Shopping, la SalesMade Academy o cómo hacer las ventas previsibles. O te pongo en contacto directamente con Markus y el equipo. ¿Qué te preocupa ahora mismo?',
+    memberGreeting: 'Hola, soy Eily. Conozco tus cursos y programas y sé qué te toca ahora. Pregúntame por una lección, un framework, tus deberes o dónde encontrar algo.',
     role: 'Asistente de IA · Eilers+Friends', open: 'Abrir chat con Eily', close: 'Cerrar chat', placeholder: 'Escribe a Eily…',
     human: '¿Prefieres hablar directamente con el equipo? →', send: 'Enviar',
     error: 'Vaya, algo ha fallado. ¿Lo intentas otra vez?', offline: 'Ahora mismo no hay conexión. Escríbenos directamente: team@eilersfriends.com',
@@ -191,7 +194,9 @@ export function ChatWidget() {
   const pathname = usePathname() || '/'
   const lang: Lang = (pathname.match(/^\/(en|es)(\/|$)/)?.[1] as Lang) ?? 'de'
   const T = TX[lang]
-  const greeting: Msg = { role: 'assistant', content: T.greeting }
+  const inMember = /^\/(?:(?:en|es)\/)?(dashboard|clients)(\/|$)/.test(pathname)
+  const greetText = inMember ? T.memberGreeting : T.greeting
+  const greeting: Msg = { role: 'assistant', content: greetText }
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Msg[]>([greeting])
   const [input, setInput] = useState('')
@@ -209,8 +214,8 @@ export function ChatWidget() {
 
   // Begrüßung in der Sprache der Seite, solange noch nichts geschrieben wurde
   useEffect(() => {
-    setMessages((m) => (m.length === 1 && m[0].role === 'assistant' && !nudgeRef.current ? [{ role: 'assistant', content: T.greeting }] : m))
-  }, [T.greeting])
+    setMessages((m) => (m.length === 1 && m[0].role === 'assistant' && !nudgeRef.current ? [{ role: 'assistant', content: greetText }] : m))
+  }, [greetText])
 
   // Proaktiver Hinweis: nach 30 oder 40 Sekunden ohne Klick, einmal pro Sitzung, Variante je Besucher fest
   useEffect(() => {

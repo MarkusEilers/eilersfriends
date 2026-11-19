@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { runBrainClaude, buildSystem, type Msg } from '@/lib/brain/core'
+import { runBrainClaude, buildSystem, type Msg, type PageCtx } from '@/lib/brain/core'
+import { memberContext } from '@/lib/brain/member-context'
 
 export const runtime = 'nodejs'
 export const maxDuration = 30
@@ -18,12 +19,14 @@ export async function POST(req: Request) {
 
   if (messages.length === 0) return NextResponse.json({ error: 'no messages' }, { status: 400 })
   const c = ((body as { context?: Record<string, unknown> }).context ?? {}) as Record<string, unknown>
-  const page = {
+  const page: PageCtx = {
     path: typeof c.path === 'string' ? c.path.slice(0, 200) : undefined,
     section: typeof c.section === 'string' ? c.section.slice(0, 120) : null,
     lang: typeof c.lang === 'string' ? c.lang.slice(0, 5) : undefined,
     opener: typeof c.opener === 'string' ? c.opener.slice(0, 400) : null,
   }
+  // Angemeldet? Dann weiß Eily, wer schreibt und wo die Person im Kundenbereich steht.
+  page.member = await memberContext(page.path).catch(() => null)
 
   // Zentrales Brain (Claude, gleiches Regelwerk + Wissen + Tools wie Voice)
   const r = await runBrainClaude({ channel: 'chat', messages, ctx: { page } }).catch(() => null)

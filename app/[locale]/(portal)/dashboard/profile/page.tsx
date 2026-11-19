@@ -18,6 +18,7 @@ export default async function ProfilePage() {
   if (!m) redirect('/auth/login')
   const meta = [m.title, m.companyName, m.teamName ? `Team ${m.teamName}` : null, m.orgRole ? ROLE[m.orgRole] : null].filter(Boolean).join(' · ')
   const academy = m.plans.some((p) => /academy/i.test(p.label))
+  const here = m.belt ? BELTS.findIndex((b) => b.key === m.belt) : academy ? 0 : -1
 
   return (
     <div className="flex flex-col gap-7">
@@ -49,13 +50,13 @@ export default async function ProfilePage() {
             <ol className="m-0 mt-4 flex list-none flex-col gap-2 p-0">
               {BELTS.map((b, i) => (
                 <li key={b.key} className="flex items-center gap-3">
-                  <img src={`/academy/belts/${b.belt}.png`} alt="" className="h-6 w-16 flex-none object-contain" style={{ opacity: academy && i === 0 ? 1 : 0.45 }} />
+                  <img src={`/academy/belts/${b.belt}.png`} alt="" className="h-6 w-16 flex-none object-contain" style={{ opacity: i === here ? 1 : 0.45 }} />
                   <span className="min-w-0 flex-1"><span className="text-[14px] font-semibold">{b.name}</span> <span className="text-[12px]" style={{ color: muted }}>· {b.months}</span></span>
-                  {academy && i === 0 && <span className="rounded-full bg-[#EBF1FF] px-2.5 py-0.5 text-[12px] font-bold text-[#124293]">Du bist hier</span>}
+                  {i === here && <span className="rounded-full bg-[#EBF1FF] px-2.5 py-0.5 text-[12px] font-bold text-[#124293]">Du bist hier</span>}
                 </li>
               ))}
             </ol>
-            {!academy && <p className="mb-0 mt-3 text-[13px]" style={{ color: muted }}>Die Einstufung beginnt mit der SalesMade Academy.</p>}
+            {here < 0 && <p className="mb-0 mt-3 text-[13px]" style={{ color: muted }}>Die Einstufung beginnt mit der SalesMade Academy.</p>}
           </div>
         </div>
       </div>

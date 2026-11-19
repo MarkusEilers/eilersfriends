@@ -14,7 +14,7 @@ import { logActivity } from '@/lib/voice/store'
 export type Msg = { role: 'user' | 'assistant'; content: string }
 export type Channel = 'voice' | 'chat'
 export type Assistant = { name?: string; gender?: 'f' | 'm' }
-export type PageCtx = { path?: string; section?: string | null; lang?: string; opener?: string | null }
+export type PageCtx = { path?: string; section?: string | null; lang?: string; opener?: string | null; member?: string | null }
 export type BrainCtx = { callerId?: string; source?: string; assistant?: Assistant; page?: PageCtx }
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.eilersfriends.com'
@@ -134,6 +134,7 @@ export async function buildSystem(channel: Channel, opts: { dw?: number; assista
 - Du bist eine KI, kein Mensch. Wenn jemand fragt, sag das offen und freundlich — und biete an, mit Markus oder dem Team zu verbinden.
 - Antworte in der Sprache, in der Dir geschrieben wird (Deutsch, Englisch oder Spanisch).`)
     const pg = opts.page
+    if (pg?.member) parts.push(pg.member)
     if (pg?.path) {
       parts.push(`KONTEXT DER SEITE (nur zur Orientierung, nicht vorlesen)
 - Der Besucher ist gerade auf ${pg.path}${pg.section ? ` und sieht sich den Abschnitt „${String(pg.section).slice(0, 120)}“ an` : ''}.
