@@ -84,9 +84,8 @@ export function AdminSidebar({ userName, userRole }: AdminSidebarProps) {
       {/* Logo */}
       <div className="px-6 py-6">
         <Link href="/admin" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-          <p className="text-base font-bold text-gray-900 tracking-tight">
-            Eilers<span style={{ color: '#1A5FD4' }}>+</span>Friends
-          </p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/ef-logo.png" alt="Eilers+Friends" className="h-11 w-auto" />
         </Link>
         <p className="mt-0.5 text-[11px] uppercase tracking-widest text-gray-400">Coach Backend</p>
       </div>
@@ -166,8 +165,9 @@ export function AdminSidebar({ userName, userRole }: AdminSidebarProps) {
     <>
       {/* Mobile top bar */}
       <div className="sticky top-0 z-40 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 lg:hidden">
-        <Link href="/admin" className="text-sm font-bold text-gray-900">
-          Eilers<span style={{ color: '#1A5FD4' }}>+</span>Friends
+        <Link href="/admin" aria-label="Eilers+Friends">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/ef-logo.png" alt="Eilers+Friends" className="h-8 w-auto" />
         </Link>
         <button
           type="button"

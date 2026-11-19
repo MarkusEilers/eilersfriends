@@ -61,8 +61,7 @@ export function MemberShell({ member, notices, nav, score, children }: { member:
     <div className="flex h-full flex-col">
       <Link href={'/dashboard' as '/'} className={`flex items-end gap-1.5 ${iconsOnly ? 'justify-center px-0' : 'px-3'} pb-6`} aria-label="Eilers+Friends">
         {iconsOnly ? <svg width="28" height="18" viewBox="0 0 22 14" aria-hidden="true"><path d="M2 12C8 12 16 9 20 2" fill="none" stroke={ink} strokeWidth="2.4" strokeLinecap="round" /></svg> : (<>
-          <span className="text-[16px] font-bold leading-[1.05] tracking-[.02em]" style={{ color: ink }}>EILERS<br />FRIENDS</span>
-          <svg width="22" height="14" viewBox="0 0 22 14" aria-hidden="true"><path d="M2 12C8 12 16 9 20 2" fill="none" stroke={ink} strokeWidth="2.4" strokeLinecap="round" /></svg>
+          <img src="/ef-logo.png" alt="Eilers+Friends" className="h-12 w-auto" />
         </>)}
       </Link>
       <nav className="flex flex-col gap-0.5">
