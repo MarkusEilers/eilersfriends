@@ -28,7 +28,7 @@ export interface Lesson {
 export interface Module { id: string; pos: number; title: string; subtitle: string | null; bonus: boolean; unlock: Unlock; lessons: Lesson[] }
 export interface Course {
   id: string; slug: string; title: string; subtitle: string | null; description: string | null; kind: string; label: string | null
-  coach: string | null; cover: string | null; deckUrl: string | null; modules: Module[]
+  coach: string | null; cover: string | null; deckUrl: string | null; programId: string | null; programName: string | null; modules: Module[]
 }
 
 let ready = false
@@ -50,6 +50,7 @@ export async function ensureCourseSchema() {
       pos INT NOT NULL DEFAULT 0,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )`)
+  await db.execute(sql`ALTER TABLE courses ADD COLUMN IF NOT EXISTS program_id UUID`)
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS course_modules (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -118,8 +119,16 @@ export async function accessibleCourseIds(userId: string, companyId: string | nu
   const r = isEf
     ? rows(await db.execute(sql`SELECT id FROM courses WHERE status <> 'archived'`))
     : rows(await db.execute(sql`
-        SELECT DISTINCT c.id FROM courses c JOIN course_access a ON a.course_id = c.id
-        WHERE c.status = 'live' AND (a.user_id = ${userId} OR (${companyId}::uuid IS NOT NULL AND a.company_id = ${companyId}::uuid))`))
+        SELECT c.id FROM courses c
+        WHERE c.status = 'live' AND (
+          EXISTS (SELECT 1 FROM course_access a WHERE a.course_id = c.id AND (a.user_id = ${userId} OR (${companyId}::uuid IS NOT NULL AND a.company_id = ${companyId}::uuid)))
+          OR (c.program_id IS NOT NULL AND ${companyId}::uuid IS NOT NULL AND EXISTS (
+            SELECT 1 FROM rollouts r WHERE r.company_id = ${companyId}::uuid AND r.program_id = c.program_id AND r.status IN ('active','planned')))
+          OR (c.program_id IS NOT NULL AND EXISTS (
+            SELECT 1 FROM billing_subscriptions b WHERE b.program_id = c.program_id AND b.status IN ('active','trialing')
+              AND (b.user_id = ${userId} OR b.company_id = ${companyId}::uuid
+                   OR lower(b.customer_email) = (SELECT lower(email) FROM users WHERE id = ${userId}))))
+        )`))
   return new Set(r.map((x) => String(x.id)))
 }
 
@@ -137,14 +146,14 @@ export async function listCourses(): Promise<{ id: string; slug: string; title: 
 
 export async function loadCourse(slug: string): Promise<Course | null> {
   await ensureCourseSchema()
-  const [c] = rows(await db.execute(sql`SELECT * FROM courses WHERE slug = ${slug}`))
+  const [c] = rows(await db.execute(sql`SELECT c.*, p.name AS program_name FROM courses c LEFT JOIN programs p ON p.id = c.program_id WHERE c.slug = ${slug}`))
   if (!c) return null
   const mods = rows(await db.execute(sql`SELECT * FROM course_modules WHERE course_id = ${String(c.id)} ORDER BY pos`))
   const les = rows(await db.execute(sql`
     SELECT l.* FROM course_lessons l JOIN course_modules m ON m.id = l.module_id WHERE m.course_id = ${String(c.id)} ORDER BY m.pos, l.pos`))
   return {
     id: String(c.id), slug: String(c.slug), title: String(c.title), subtitle: (c.subtitle as string) ?? null, description: (c.description as string) ?? null,
-    kind: String(c.kind), label: (c.label as string) ?? null, coach: (c.coach as string) ?? null, cover: (c.cover as string) ?? null, deckUrl: (c.deck_url as string) ?? null,
+    kind: String(c.kind), label: (c.label as string) ?? null, coach: (c.coach as string) ?? null, cover: (c.cover as string) ?? null, deckUrl: (c.deck_url as string) ?? null, programId: (c.program_id as string) ?? null, programName: (c.program_name as string) ?? null,
     modules: mods.map((m) => ({
       id: String(m.id), pos: Number(m.pos), title: String(m.title), subtitle: (m.subtitle as string) ?? null, bonus: !!m.bonus, unlock: j<Unlock>(m.unlock, { type: 'none' }),
       lessons: les.filter((l) => l.module_id === m.id).map((l) => ({

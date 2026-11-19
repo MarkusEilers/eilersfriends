@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowRight, Lock } from 'lucide-react'
 import { viewer, getMember } from '@/lib/portal/member'
+import { sql } from 'drizzle-orm'
+import { db } from '@/lib/db'
 import { myCourses } from '@/lib/courses/member'
 
 export const dynamic = 'force-dynamic'
@@ -16,7 +18,14 @@ export default async function ProgramsPage() {
   const m = await getMember(v.userId)
   if (!m) redirect('/auth/login')
   const courses = await myCourses(m.id, m.companyId, v.role).catch(() => [])
-  const teamPrograms = m.plans.filter((p) => p.kind === 'program')
+  // Programme der Firma (Programm Guide). Hat ein Programm einen Kurs, zeigt die Kurskarte beides.
+  const linked = new Set(courses.map((c) => c.course.programId).filter(Boolean) as string[])
+  const ro = m.companyId ? ((await db.execute(sql`
+    SELECT r.title, r.program_id, p.slug FROM rollouts r LEFT JOIN programs p ON p.id = r.program_id
+    WHERE r.company_id = ${m.companyId} AND r.status IN ('active','planned') ORDER BY r.start_date`).catch(() => [])) as unknown as { title: string; program_id: string | null; slug: string | null }[]) : []
+  const teamPrograms = ro.filter((r) => !r.program_id || !linked.has(r.program_id)).map((r) => ({ label: r.title }))
+  const guideFor = new Set(ro.map((r) => r.program_id).filter(Boolean) as string[])
+  const hasAcademy = courses.some((c) => c.course.label?.toLowerCase().includes('academy')) || ro.some((r) => r.slug?.includes('academy'))
 
   return (
     <div className="flex flex-col gap-10">
@@ -40,6 +49,7 @@ export default async function ProgramsPage() {
                   <span className="text-[13px] font-semibold tabular-nums">{cv.percent} %</span>
                 </div>
                 <span className="inline-flex items-center gap-1.5 text-[14px] font-bold text-[#1A5FD4]">{cv.done ? 'Weiter' : 'Starten'}<ArrowRight size={15} /></span>
+                {c.programId && guideFor.has(c.programId) && <span className="text-[13px]" style={{ color: muted }}>Termine und Team-Schritte im Programm Guide</span>}
               </Link>
             )
           })}
@@ -61,7 +71,7 @@ export default async function ProgramsPage() {
         <h2 className="m-0 text-[13px] font-bold uppercase tracking-[.14em]" style={{ color: muted }}>Weitere Programme</h2>
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {[
-            { label: 'Programm · Academy', title: 'SalesMade Academy', sub: '19 Skills, Sparrings und Gesprächs-Checks', href: '/academy' },
+            ...(hasAcademy ? [] : [{ label: 'Programm · Academy', title: 'SalesMade Academy', sub: 'Gesprächsführung live mit Markus, 19 Skills, Sparrings und Gesprächs-Checks', href: '/academy' }]),
             { label: 'Programm · Aljona Eilers', title: 'Liquid Leadership', sub: 'Group Coaching und 1:1 für Führungskräfte', href: '/liquidleadership' },
           ].map((p) => (
             <div key={p.title} className="flex min-h-[200px] flex-col gap-3 rounded-[24px] border border-[#E6E3E1] bg-[#FAFAF8] p-7">

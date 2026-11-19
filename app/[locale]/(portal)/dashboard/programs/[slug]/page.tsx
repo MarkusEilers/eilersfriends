@@ -67,6 +67,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
           <span className="text-[12px] font-bold uppercase tracking-[.12em] text-[#1A5FD4]">{c.label ?? 'Kurs'}</span>
           <h1 className="m-0 text-[36px] font-bold leading-[1.08] tracking-[-.025em]">{c.title}</h1>
           {c.subtitle && <p className="m-0 max-w-[620px] text-[17px] leading-relaxed" style={{ color: muted }}>{c.subtitle}</p>}
+          {c.programName && <p className="m-0 text-[14px]" style={{ color: muted }}>Teil der {c.label ?? c.programName}{m.companyId ? <> · <Link href={'/dashboard/guide' as '/'} className="font-semibold text-[#1A5FD4] no-underline">Termine im Programm Guide</Link></> : null}</p>}
           <p className="m-0 text-[14px]" style={{ color: muted }}>{cv.total} Bausteine · {cv.modules.filter((x) => !x.bonus).length} Module{c.coach ? ` · Coach: ${c.coach}` : ''}</p>
         </div>
         <div className="flex items-center gap-6">
