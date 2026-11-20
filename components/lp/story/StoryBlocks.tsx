@@ -34,6 +34,15 @@ import { ST, storyLang, quarterLabel, type StoryLang } from '@/lib/lp/story-i18n
 
 type C = Record<string, any>
 
+
+// Logos liegen teils als große PNGs im Blob; über den Next-Bildoptimierer kommen sie verkleinert
+// (384 px Breite reicht für 30 px Höhe auch auf Retina) und als WebP/AVIF — gleiche Darstellung, ein Bruchteil der Bytes.
+function logoSrc(src: string): string {
+  return /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\//.test(src) && !/\.svg(\?|$)/i.test(src)
+    ? `/_next/image?url=${encodeURIComponent(src)}&w=384&q=80`
+    : src
+}
+
 export interface StoryCtx {
   slots: { capacity: number; free: number; nextOpens: string } | null
   lang?: StoryLang
@@ -420,7 +429,7 @@ export async function StoryHtml({ c }: { c: C }) {
       const tiles = list.map((l) => {
         const src = l.srcBw || l.src
         return src
-          ? `<div class="tlogo"><img src="${esc(src)}" alt="${esc(l.name)}" style="max-height:30px;max-width:70%;object-fit:contain;filter:grayscale(1);opacity:.75;transform:scale(${(l.displayScale ?? 100) / 100})"></div>`
+          ? `<div class="tlogo"><img src="${esc(logoSrc(src))}" alt="${esc(l.name)}" loading="lazy" decoding="async" style="max-height:30px;max-width:70%;object-fit:contain;filter:grayscale(1);opacity:.75;transform:scale(${(l.displayScale ?? 100) / 100})"></div>`
           : `<div class="tlogo"><span>${esc(l.name)}</span></div>`
       })
       const fill = (cols - (tiles.length % cols)) % cols
@@ -436,7 +445,7 @@ export async function StoryHtml({ c }: { c: C }) {
       const l = logos.find((x) => x.src && (norm(x.name) === norm(name) || (!!x.domain && norm(x.domain.split('.')[0]) === norm(name))))
       if (!l) return m
       const src = l.srcBw || l.src
-      return `<div class="tlogo"><img src="${src}" alt="${name}" style="max-height:30px;max-width:70%;object-fit:contain;filter:grayscale(1);opacity:.75;transform:scale(${(l.displayScale ?? 100) / 100})"></div>`
+      return `<div class="tlogo"><img src="${logoSrc(src ?? "")}" alt="${name}" loading="lazy" decoding="async" style="max-height:30px;max-width:70%;object-fit:contain;filter:grayscale(1);opacity:.75;transform:scale(${(l.displayScale ?? 100) / 100})"></div>`
     })
   }
   const efh = html.includes('efh') ? <HeroStyles /> : null
