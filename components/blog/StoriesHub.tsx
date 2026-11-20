@@ -247,11 +247,11 @@ function Meta({ it, long, t }: { it: HubItem; long?: boolean; t: any }) {
   )
 }
 
-function Visual({ it, className, t }: { it: HubItem; className: string; t: any }) {
+function Visual({ it, className, t, priority }: { it: HubItem; className: string; t: any; priority?: boolean }) {
   const a = it.author
   return (
     <div className={`relative overflow-hidden rounded-2xl ${className}`} style={{ background: it.image ? '#D9D7D4' : `linear-gradient(135deg, ${a.deep}, ${a.accent})` }}>
-      {it.image ? <Image src={it.image} alt="" fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" /> : null}
+      {it.image ? <Image src={it.image} alt="" fill priority={priority} sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" /> : null}
       {/* Keine Pillen auf den Bildern — Kennzahl und AI-Agent stehen in der Meta-Zeile */}
     </div>
   )
@@ -260,7 +260,7 @@ function Visual({ it, className, t }: { it: HubItem; className: string; t: any }
 function LeadCard({ item, t }: { item: HubItem; t: any }) {
   return (
     <Link href={item.href as '/'} className="group block">
-      <Visual it={item} className="aspect-[16/9]" t={t} />
+      <Visual it={item} className="aspect-[16/9]" t={t} priority />
       <h2 className="mt-5 max-w-xl text-3xl font-bold leading-[1.15] tracking-tight text-gray-900 sm:text-[2rem]">{item.title}</h2>
       <div className="mt-3"><Meta it={item} long t={t} /></div>
     </Link>
