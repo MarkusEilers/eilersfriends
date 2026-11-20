@@ -40,7 +40,7 @@ export default async function MysteryShoppingSqueeze({ params, searchParams }: {
       {lp.status !== 'published' && <PreviewBanner status={lp.status} editHref={`/admin/landing-pages/${lp.pageId}`} slug="mystery-shopping" locale={locale} />}
       <Topbar variant="mystery" />
       <Navbar landing landingCta={cta} />
-      <StoryPage sections={sections} ctx={ctx} />
+      <main><StoryPage sections={sections} ctx={ctx} /></main>
       <FooterSlim />
       <CookieBanner />
     </>

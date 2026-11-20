@@ -31,7 +31,7 @@ export default async function MysteryShoppingCheckout({ params, searchParams }: 
       <>
         {lp.status !== 'published' && <PreviewBanner status={lp.status} editHref={`/admin/landing-pages/${lp.pageId}`} slug="mystery-shopping-checkout" locale={locale} />}
         {sp.cancelled && <div className="bg-amber-50 px-6 py-3 text-center text-sm text-amber-900">Die Zahlung wurde abgebrochen. Euer Platz ist noch kurz reserviert, Ihr könnt es direkt noch einmal versuchen.</div>}
-        <StoryPage sections={lp.sections} ctx={ctx} />
+        <main><StoryPage sections={lp.sections} ctx={ctx} /></main>
         <FooterSlim />
       </>
     )
