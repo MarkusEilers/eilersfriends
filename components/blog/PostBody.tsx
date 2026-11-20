@@ -207,7 +207,7 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
               <div className="flex flex-col gap-2 p-4">
                 {nonEmpty.map((l, k) => l.startsWith('> ')
                   ? <H key={k} s={l.slice(2)} ph className="self-start rounded-xl bg-[var(--ef-t,#E8EFFB)] px-3.5 py-2.5 text-[15px]" style={{ color: INK }} />
-                  : <H key={k} s={l.replace(/^- /, '')} ph className="self-start rounded-xl bg-[#F3F2F2] px-3 py-2 text-[13px] text-[#9A9796]" />)}
+                  : <H key={k} s={l.replace(/^- /, '')} ph className="self-start rounded-xl bg-[#F3F2F2] px-3 py-2 text-[13px] text-[#6E6C6B]" />)}
               </div>
             </div>
           </div>
@@ -572,7 +572,7 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
       return (
         <div className="grid gap-3 sm:grid-cols-2">
           {opts.map(([lab, txt], k) => (
-            <div key={k} className="flex flex-col gap-1.5 rounded-[14px] border-2 px-[18px] py-4" style={k === 0 ? { background: '#ECFDF3', borderColor: '#22C55E' } : { background: '#fff', borderColor: '#9A9796', borderStyle: 'dashed' }}>
+            <div key={k} className="flex flex-col gap-1.5 rounded-[14px] border-2 px-[18px] py-4" style={k === 0 ? { background: '#ECFDF3', borderColor: '#22C55E' } : { background: '#fff', borderColor: '#6E6C6B', borderStyle: 'dashed' }}>
               <span className="text-[12px] font-bold tracking-[0.1em]" style={{ color: k === 0 ? '#15803D' : '#605D5D' }}>{lab}</span>
               <H s={txt ?? ''} className="text-[15px] leading-[1.45]" style={{ color: INK }} />
             </div>
@@ -703,10 +703,10 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
       return (
         <figure className="m-0">
           <div className="flex flex-col gap-3 rounded-2xl p-6 text-white sm:p-8" style={{ background: INK }}>
-            {b.arg && <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A9796]"><span className="h-2 w-2 animate-pulse rounded-full" style={{ background: BLUE }} />{b.arg}</span>}
+            {b.arg && <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6E6C6B]"><span className="h-2 w-2 animate-pulse rounded-full" style={{ background: BLUE }} />{b.arg}</span>}
             {items.map(([n, said], k) => (
               <div key={k} className="grid grid-cols-[36px_1fr] items-baseline gap-3 border-t border-white/10 pt-3">
-                <span className="font-mono text-[12px] text-[#9A9796]">{n}</span>
+                <span className="font-mono text-[12px] text-[#6E6C6B]">{n}</span>
                 <H s={said ?? ''} className="font-mono text-[18px] sm:text-[20px]" />
               </div>
             ))}
@@ -729,7 +729,7 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
               <div className="mt-2 flex text-[12px] font-bold sm:text-[13px]">
                 {braces.map(([w, t], k) => (
                   <div key={k} className="flex flex-col gap-1.5 pr-1.5" style={{ width: `${w}%`, color: k === braces.length - 1 ? BLUE : '#3A3836' }}>
-                    <span>{t}</span><div className="h-2.5 rounded-t border-2 border-b-0" style={{ borderColor: k === braces.length - 1 ? BLUE : '#9A9796' }} />
+                    <span>{t}</span><div className="h-2.5 rounded-t border-2 border-b-0" style={{ borderColor: k === braces.length - 1 ? BLUE : '#6E6C6B' }} />
                   </div>
                 ))}
               </div>
@@ -780,7 +780,7 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
                 return (
                   <div key={k} className="flex flex-col gap-1.5 rounded-xl bg-white p-4">
                     <span className="flex flex-col gap-1"><span className="text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: BLUE }}>{key}</span><span className="text-[15px] font-bold leading-snug" style={{ color: INK }}>{title}</span></span>
-                    {c.slice(1).map((st, j) => { const [n, t] = st.split('|').map((x) => x.trim()); return <span key={j} className="text-[13px] text-[#605D5D]"><b className="mr-1.5 text-[#9A9796]">{n}</b>{t}</span> })}
+                    {c.slice(1).map((st, j) => { const [n, t] = st.split('|').map((x) => x.trim()); return <span key={j} className="text-[13px] text-[#605D5D]"><b className="mr-1.5 text-[#6E6C6B]">{n}</b>{t}</span> })}
                   </div>
                 )
               })}
@@ -843,7 +843,7 @@ function Box({ b }: { b: Extract<Block, { t: 'box' }> }) {
               const seller = /^(seller|verkäufer|vendedor)/i.test(who)
               return (
                 <div key={k} className={`flex flex-col gap-1 ${seller ? 'items-end' : 'items-start'}`}>
-                  <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#9A9796]">{who}</span>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6E6C6B]">{who}</span>
                   <H s={said ?? ''} className="max-w-[85%] rounded-2xl px-4 py-2.5 text-[15px] leading-[1.45]" style={seller ? { background: BLUE, color: '#fff' } : { background: '#F3F2F2', color: INK }} />
                 </div>
               )

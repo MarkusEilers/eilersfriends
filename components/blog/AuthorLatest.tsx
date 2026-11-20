@@ -48,7 +48,7 @@ export async function AuthorLatest({ slug }: { slug: Author['slug'] }) {
               href={`/blog/${p.slug}` as '/'}
               className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#6F757F]">
                 {dt(p.published_at)}
                 {p.reading_minutes ? <span>· {p.reading_minutes} Min</span> : null}
               </div>
@@ -58,7 +58,7 @@ export async function AuthorLatest({ slug }: { slug: Author['slug'] }) {
               {p.excerpt && <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-600">{p.excerpt}</p>}
               <div className="mt-auto flex items-center gap-2 pt-4">
                 {(p.tags ?? []).slice(0, 2).map((t) => (
-                  <span key={t} className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">{t}</span>
+                  <span key={t} className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-[#666E7E]">{t}</span>
                 ))}
                 <ArrowUpRight
                   size={15}

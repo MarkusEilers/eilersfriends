@@ -8,7 +8,7 @@ export const LPX_CSS = `
 .lpx .max-w-3xl,.lpx .max-w-5xl,.lpx .max-w-6xl,.lpx .max-w-7xl{max-width:1200px!important}
 .lpx section h2{font-size:clamp(34px,4.4vw,60px)!important;font-weight:600!important;letter-spacing:-.035em!important;line-height:1.05!important;text-wrap:balance;color:#0D0D0B}
 .lpx section h3{font-weight:600!important;letter-spacing:-.015em}
-.lpx .uppercase.tracking-widest{font-family:'DM Mono',ui-monospace,monospace!important;font-weight:400!important;letter-spacing:.06em!important;color:#7A746E!important;font-size:12px!important;background:none!important;padding:0!important;border:0!important}
+.lpx .uppercase.tracking-widest{font-family:'DM Mono',ui-monospace,monospace!important;font-weight:400!important;letter-spacing:.06em!important;color:#726D67!important;font-size:12px!important;background:none!important;padding:0!important;border:0!important}
 .lpx section:not(.lpx-c) .text-center{text-align:left!important}
 .lpx section:not(.lpx-c) .mx-auto.max-w-2xl,.lpx section:not(.lpx-c) .mx-auto.max-w-3xl > p{margin-left:0!important}
 .lpx section:not(.lpx-c) h2 + p,.lpx section:not(.lpx-c) h2 ~ p.text-base{font-size:clamp(18px,1.5vw,21px)!important;line-height:1.5!important;color:#3A3633!important;max-width:720px}

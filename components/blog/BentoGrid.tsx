@@ -60,9 +60,9 @@ function Card({
           <span className="rounded-full px-2 py-0.5" style={{ background: a.tint, color: accent }}>
             {a.name.split(' ')[0]}
           </span>
-          <span className="text-gray-400">{dt(post.published_at, t)}</span>
+          <span className="text-[#6F757F]">{dt(post.published_at, t)}</span>
           {post.reading_minutes ? (
-            <span className="ml-auto inline-flex items-center gap-1 text-gray-400">
+            <span className="ml-auto inline-flex items-center gap-1 text-[#6F757F]">
               <Clock size={10} /> {t('card.readingMinutes', { count: post.reading_minutes })}
             </span>
           ) : null}
@@ -85,7 +85,7 @@ function Card({
 
         <div className="mt-auto flex items-center gap-2 pt-4">
           {(post.tags ?? []).slice(0, lead ? 3 : 2).map((tTag) => (
-            <span key={tTag} className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
+            <span key={tTag} className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-[#666E7E]">
               {tTag}
             </span>
           ))}

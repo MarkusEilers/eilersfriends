@@ -415,7 +415,7 @@ export async function StoryHtml({ c }: { c: C }) {
         }
         return `<a href="${href}" class="card" style="padding:22px;display:flex;flex-direction:column;gap:12px;text-decoration:none;color:#0D0D0B">`
           + `<span class="mono">${meta}</span><span style="font-size:18px;font-weight:600;line-height:1.3">${esc(p.title)}</span>`
-          + `${p.excerpt ?? p.subtitle ? `<span style="font-size:14px;line-height:1.5;color:#7A746E">${esc(String(p.excerpt ?? p.subtitle).slice(0, 140))}</span>` : ''}</a>`
+          + `${p.excerpt ?? p.subtitle ? `<span style="font-size:14px;line-height:1.5;color:#726D67">${esc(String(p.excerpt ?? p.subtitle).slice(0, 140))}</span>` : ''}</a>`
       }).join('\n')
     })
   }

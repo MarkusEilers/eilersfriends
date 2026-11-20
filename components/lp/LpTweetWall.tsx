@@ -44,7 +44,7 @@ export function LpTweetWall({
                 <blockquote className="hand" style={{ margin: 0, fontSize: 26, lineHeight: 1.15, color: '#124293' }}>„{q.text}“</blockquote>
                 <figcaption style={{ marginTop: 'auto', fontSize: 14, lineHeight: 1.45, color: '#3A3633' }}>
                   {q.author && <b style={{ display: 'block', fontWeight: 600 }}>{q.author}</b>}
-                  {q.context && <span style={{ color: '#7A746E' }}>{q.context}</span>}
+                  {q.context && <span style={{ color: '#726D67' }}>{q.context}</span>}
                 </figcaption>
               </figure>
             ))}
