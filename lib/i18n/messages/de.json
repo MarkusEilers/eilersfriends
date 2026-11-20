@@ -2199,7 +2199,43 @@
       "S17": "Fesselnd präsentieren",
       "S18": "Audience einbinden",
       "S19": "Beziehungen ökologisch"
-    }
+    },
+    "how": {
+      "headline": "So funktioniert es",
+      "steps": [
+        {
+          "title": "Transkript einfügen",
+          "body": "Aus Teams, Zoom, Meet oder Granola. Kopieren oder als Datei hochladen."
+        },
+        {
+          "title": "Auswertung in unter fünf Minuten",
+          "body": "Nach dem Raster aus unserem Mystery Shopping: jede Frage, jeder Einwand, die Stelle, an der es kippt."
+        },
+        {
+          "title": "Drei Sätze für das nächste Gespräch",
+          "body": "Die drei Hebel mit der größten Wirkung, jeweils mit einem Satz, den Du genau so sagen kannst."
+        }
+      ]
+    },
+    "sample": {
+      "chain": [
+        "offen · Schmerz",
+        "geschlossen",
+        "offen · Beleg",
+        "Hypothese",
+        "offen · Folge"
+      ],
+      "broken": "Kette reißt ab",
+      "sentence": "„Was kostet Euch das heute, wenn es so bleibt?“",
+      "sentenceLabel": "Satz für das nächste Gespräch"
+    },
+    "related": {
+      "eyebrow": "Passendes Framework · Instant Influence",
+      "headline": "Vor dem Gespräch: der Discovery Call Script Generator",
+      "body": "Der Gesprächs-Check zeigt, was im letzten Gespräch passiert ist. Der Generator bereitet das nächste vor: ein Leitfaden in 8 Schritten für genau diesen Kunden.",
+      "cta": "Zum Generator"
+    },
+    "again": "Gespräch jetzt auswerten"
   },
   "blogUi": {
     "authorAljona": {

@@ -2199,7 +2199,43 @@
       "S17": "Presentar de forma cautivadora",
       "S18": "Involucrar a la audiencia",
       "S19": "Relaciones sostenibles"
-    }
+    },
+    "how": {
+      "headline": "Cómo funciona",
+      "steps": [
+        {
+          "title": "Pega la transcripción",
+          "body": "De Teams, Zoom, Meet o Granola. Cópiala o sube un archivo."
+        },
+        {
+          "title": "Evaluación en menos de cinco minutos",
+          "body": "Con la rejilla de nuestro mystery shopping: cada pregunta, cada objeción, el punto en el que se tuerce."
+        },
+        {
+          "title": "Tres frases para la próxima llamada",
+          "body": "Las tres palancas con mayor efecto, cada una con una frase que puedes decir tal cual."
+        }
+      ]
+    },
+    "sample": {
+      "chain": [
+        "abierta · dolor",
+        "cerrada",
+        "abierta · prueba",
+        "hipótesis",
+        "abierta · impacto"
+      ],
+      "broken": "La cadena se rompe",
+      "sentence": "«¿Cuánto os cuesta hoy si todo sigue así?»",
+      "sentenceLabel": "Frase para la próxima llamada"
+    },
+    "related": {
+      "eyebrow": "Framework relacionado · Instant Influence",
+      "headline": "Antes de la llamada: el Discovery Call Script Generator",
+      "body": "El análisis muestra lo que pasó en tu última conversación. El generador prepara la siguiente: una guía de 8 pasos para este cliente concreto.",
+      "cta": "Ir al generador"
+    },
+    "again": "Analizar mi llamada ahora"
   },
   "blogUi": {
     "authorAljona": {

@@ -2199,7 +2199,43 @@
       "S17": "Present compellingly",
       "S18": "Engage the audience",
       "S19": "Relationships, sustainably"
-    }
+    },
+    "how": {
+      "headline": "How it works",
+      "steps": [
+        {
+          "title": "Paste the transcript",
+          "body": "From Teams, Zoom, Meet or Granola. Copy it in or upload a file."
+        },
+        {
+          "title": "Evaluation in under five minutes",
+          "body": "On the grid from our mystery shopping: every question, every objection, the point where it tips."
+        },
+        {
+          "title": "Three sentences for the next call",
+          "body": "The three levers with the biggest effect, each with a sentence you can say exactly like that."
+        }
+      ]
+    },
+    "sample": {
+      "chain": [
+        "open · pain",
+        "closed",
+        "open · evidence",
+        "hypothetical",
+        "open · impact"
+      ],
+      "broken": "Chain breaks",
+      "sentence": "“What does it cost you today if it stays like this?”",
+      "sentenceLabel": "Sentence for the next call"
+    },
+    "related": {
+      "eyebrow": "Related framework · Instant Influence",
+      "headline": "Before the call: the Discovery Call Script Generator",
+      "body": "The call check shows what happened in your last conversation. The generator prepares the next one: an 8-step guide for exactly this customer.",
+      "cta": "Open the generator"
+    },
+    "again": "Analyse my call now"
   },
   "blogUi": {
     "authorAljona": {
