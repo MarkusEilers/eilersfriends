@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     '/api/admin/agents': ['./lib/agents/material/**'],
   },
+  // Metadaten (title, description, og) immer im <head> ausliefern statt nachgestreamt im <body> —
+  // sonst sehen Crawler ohne JS und Audits auf langsameren Seiten (z. B. /programme) keine Description.
+  htmlLimitedBots: /.*/,
   images: {
     remotePatterns: [
       { hostname: 'eilersfriends.com' },
