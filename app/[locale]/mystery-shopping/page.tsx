@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { loadLpSections, canPreview } from '@/lib/lp/story-loader'
+import { loadLpSections, canPreview, shareMeta } from '@/lib/lp/story-loader'
 import { StoryPage, loadStoryCtx } from '@/components/lp/story/StoryBlocks'
 import { PreviewBanner } from '@/components/lp/PreviewBanner'
 import { FooterSlim } from '@/components/layout/FooterSlim'
@@ -20,7 +20,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const lp = await loadLpSections('mystery-shopping', locale).catch(() => null)
   const m = locale === 'en' || locale === 'es' ? META[locale] : null
-  return { title: m?.title ?? lp?.title ?? 'Mystery Shopping · Eilers+Friends', description: m?.description ?? lp?.description ?? undefined }
+  const title = m?.title ?? lp?.title ?? 'Mystery Shopping · Eilers+Friends'
+  const description = m?.description ?? lp?.description ?? undefined
+  return { title, description, ...shareMeta(title, description, lp?.ogImage ?? '/mystery/hero.jpg') }
 }
 
 export default async function MysteryShoppingSqueeze({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ preview?: string }> }) {

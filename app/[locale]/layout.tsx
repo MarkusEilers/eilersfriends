@@ -39,7 +39,9 @@ export async function generateMetadata({
     // Seitentitel tragen die Marke selbst — kein „| Eilers+Friends“ doppelt anhängen
     title: { template: '%s', default: meta.default },
     description: meta.description,
-    openGraph: { siteName: 'Eilers+Friends', locale, type: 'website' },
+    // Vorschaubild für alle Seiten ohne eigenes Bild, damit LinkedIn nicht irgendein Logo von der Seite nimmt
+    openGraph: { siteName: 'Eilers+Friends', locale, type: 'website', images: [{ url: '/home/hero-wide.jpg', width: 1200, height: 630, alt: 'Eilers+Friends' }] },
+    twitter: { card: 'summary_large_image', images: ['/home/hero-wide.jpg'] },
   }
 }
 

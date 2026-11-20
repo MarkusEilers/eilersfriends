@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { loadLpSections, canPreview } from '@/lib/lp/story-loader'
+import { loadLpSections, canPreview, shareMeta } from '@/lib/lp/story-loader'
 import { StoryBlock, loadStoryCtx } from '@/components/lp/story/StoryBlocks'
 import { STORY_CSS } from '@/components/lp/story/story-css'
 import { PreviewBanner } from '@/components/lp/PreviewBanner'
@@ -18,7 +18,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const lp = await loadLpSections('academy', locale).catch(() => null)
   const m = META[locale]
-  return { title: m?.title ?? 'SalesMade Academy: Sales-Training für B2B-Teams · Eilers+Friends', description: m?.description ?? lp?.description ?? undefined }
+  const title = m?.title ?? 'SalesMade Academy: Sales-Training für B2B-Teams · Eilers+Friends'
+  const description = m?.description ?? lp?.description ?? undefined
+  return { title, description, ...shareMeta(title, description, lp?.ogImage ?? '/heroes/academy.jpg') }
 }
 
 export default async function AcademyPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ preview?: string }> }) {

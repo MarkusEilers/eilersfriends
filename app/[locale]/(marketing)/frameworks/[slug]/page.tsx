@@ -1,3 +1,4 @@
+import { shareMeta, heroImage } from '@/lib/lp/story-loader'
 import { notFound } from 'next/navigation'
 import { StoryBlockAuto } from '@/components/lp/story/StoryBlocks'
 import type { Metadata } from 'next'
@@ -29,10 +30,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       )
       .limit(1)
     if (!page) return {}
-    return {
-      title: `${page.title} — Eilers+Friends Frameworks`,
-      description: page.metaDescription ?? undefined,
-    }
+    const secs = await db.select().from(landingPageSections).where(eq(landingPageSections.landingPageId, page.id)).orderBy(asc(landingPageSections.order)).limit(3)
+    const title = `${page.title} — Eilers+Friends Frameworks`
+    const description = page.metaDescription ?? undefined
+    return { title, description, ...shareMeta(title, description, page.ogImageUrl || heroImage(secs.map((x) => ({ type: x.type, content: (x.content ?? {}) as Record<string, any> })))) }
   } catch { return {} }
 }
 
