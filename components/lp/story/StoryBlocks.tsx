@@ -285,6 +285,7 @@ export function StoryCheckoutVsl({ c, ctx }: { c: C; ctx: StoryCtx }) {
       <div className="wrap co" style={{ marginTop: 40 }} id="checkout">
         <div className="g12" style={{ alignItems: 'start' }}>
           <div className="c8">
+            {!embed && c.poster && <link rel="preload" as="image" href={String(c.poster)} fetchPriority="high" />}
             <div className="player" style={{ backgroundImage: embed ? undefined : `url(${c.poster})` }}>
               {embed ? <iframe src={embed} title={c.caption ?? 'Video'} allow="autoplay; fullscreen; picture-in-picture" allowFullScreen />
                 : c.videoUrl ? <video src={c.videoUrl} poster={c.poster} controls playsInline />
@@ -448,7 +449,10 @@ export async function StoryHtml({ c }: { c: C }) {
       return `<div class="tlogo"><img src="${logoSrc(src ?? "")}" alt="${name}" loading="lazy" decoding="async" style="max-height:30px;max-width:70%;object-fit:contain;filter:grayscale(1);opacity:.75;transform:scale(${(l.displayScale ?? 100) / 100})"></div>`
     })
   }
-  const efh = html.includes('efh') ? <HeroStyles /> : null
+  // Hero-Bild steckt als CSS-Hintergrund im HTML und wird sonst erst nach dem CSS entdeckt (LCP) — früh vorladen
+  const heroBg = /class="(?:efh-img|player)"[^>]*background-image:\s*url\(([^)"']+)\)/.exec(html)?.[1]
+  const preload = heroBg ? <link rel="preload" as="image" href={heroBg} fetchPriority="high" /> : null
+  const efh = html.includes('efh') || preload ? <>{html.includes('efh') && <HeroStyles />}{preload}</> : null
   if (c.theme === 'academy') {
     return (
       <div className="acd">

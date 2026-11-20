@@ -30,6 +30,7 @@ export function HeroBackdrop({ src, label, glow }: { src: string; label?: string
   return (
     <>
       <HeroStyles />
+      <link rel="preload" as="image" href={src} fetchPriority="high" />
       <div className="efh-img" role="img" aria-label={label} style={{ backgroundImage: `url(${src})` }} />
       <div className="efh-fade" style={glow ? ({ ['--efh-glow' as string]: glow } as CSSProperties) : undefined} />
     </>
