@@ -39,7 +39,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
         to: s.email,
         subject: `Zur Unterschrift: Angebot ${offer.offer_number}`,
         html: `
-          <div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;color:#0D0D0B">
+          <div style="font-family:Arial,Helvetica,sans-serif;color:#0D0D0B">
             <p>Hallo ${s.name},</p>
             <p>für <strong>${forWhom}</strong> liegt das Angebot <strong>${offer.offer_number}</strong> zur Unterschrift bereit.</p>
             ${others.length ? `<p style="font-size:14px;color:#4B5563">Mitzeichnend: ${others.join(', ')}. Das Angebot gilt als angenommen, sobald alle unterschrieben haben.</p>` : ''}

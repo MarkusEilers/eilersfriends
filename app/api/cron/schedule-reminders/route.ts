@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { dueBookingsForReminders, markReminderSent } from '@/lib/schedule/bookings-store'
 import { sendMailAs } from '@/lib/schedule/graph'
 import { entityFor } from '@/lib/schedule/config'
+import { emailLayout } from '@/lib/email/layout'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest) {
       if (now < fireAt || now >= startMs) continue // noch nicht fällig / schon vorbei
       const ent = entityFor(b.ownerSlug)
       const manageUrl = `${SITE}/termin/${b.manageToken}`
-      const html = `<div style="font-family:Arial,sans-serif;color:#0D0D0B">
+      const html = `<div>
         <p>Hallo ${b.customerName},</p>
         <p>kurze Erinnerung an Deinen Termin${ent ? ` mit ${ent.name}` : ''}:</p>
         <p style="font-size:16px;font-weight:700">${fullWhen(b.startUtc)} Uhr</p>
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
         <p>Musst Du verschieben oder absagen? <a href="${manageUrl}">Hier verwalten</a>.</p>
         <p>Bis gleich!<br>Eilers+Friends</p>
       </div>`
-      const r = await sendMailAs(b.ownerSlug, b.customerEmail, `Erinnerung: Dein Termin ${fullWhen(b.startUtc)} Uhr`, html)
+      const r = await sendMailAs(b.ownerSlug, b.customerEmail, `Erinnerung: Dein Termin ${fullWhen(b.startUtc)} Uhr`, emailLayout(html))
       if (r.ok) { await markReminderSent(b.id, h); sent++ }
       else if (r.error && /Mail\.Send|scope|AADSTS/i.test(r.error)) { skipped++ } // Scope fehlt (Host neu verbinden)
       else { failed++ }

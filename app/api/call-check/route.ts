@@ -114,6 +114,7 @@ export async function POST(req: Request) {
   const confirm = verified ? null : confirmLine(base, b.email, b.locale)
   // Awaited: a serverless function is frozen after the response, a pending mail would never leave.
   await sendEmail({
+    lang: (['en', 'es'].includes(b.locale) ? b.locale : 'de') as 'de' | 'en' | 'es',
     to: b.email, subject,
     text: confirm ? `${line}\n\n${confirm.text}` : line,
     html: `<p>${line.replace(link, `<a href="${link}">${link}</a>`)}</p>${confirm ? `<p>${confirm.html}</p>` : ''}<p>Markus Eilers</p>`,
@@ -147,7 +148,7 @@ async function sendVerifyMail(origin: string, email: string, firstName: string |
   const subject = locale === 'en' ? 'Confirm your address' : locale === 'es' ? 'Confirma tu dirección' : 'Bitte bestätige Deine Adresse'
   const hello = firstName ? `${firstName}, ` : ''
   try {
-    await sendEmail({ to: email, subject, text: `${hello}${c.text}`, html: `<p>${hello}${c.html}</p><p>Markus Eilers</p>` })
+    await sendEmail({ to: email, subject, lang: (['en', 'es'].includes(locale) ? locale : 'de') as 'de' | 'en' | 'es', text: `${hello}${c.text}`, html: `<p>${hello}${c.html}</p><p>Markus Eilers</p>` })
     return true
   } catch (e) {
     console.error('[call-check] verify mail failed:', e)

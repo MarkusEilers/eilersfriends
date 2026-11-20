@@ -73,10 +73,10 @@ export async function POST(req: Request, ctx: { params: Promise<{ secret: string
       await sendEmail({
         to: signer.email,
         subject: `Bitte bestätigen: Unterschrift Angebot ${offer.offer_number}`,
-        html: `<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;color:#0D0D0B">
+        html: `<div style="font-family:Arial,Helvetica,sans-serif;color:#0D0D0B">
             <p>Hallo ${signer.name},</p>
             <p>bitte bestätige Deine Unterschrift unter dem Angebot <strong>${offer.offer_number}</strong> mit einem Klick:</p>
-            <p style="margin:28px 0"><a href="${confirmUrl}" style="background:#0F1E3A;color:#fff;text-decoration:none;padding:14px 28px;border-radius:999px;font-weight:bold">Unterschrift bestätigen</a></p>
+            <p style="margin:28px 0"><a href="${confirmUrl}" style="background:#1A5FD4;color:#fff;text-decoration:none;padding:14px 28px;border-radius:999px;font-weight:bold">Unterschrift bestätigen</a></p>
             <p style="font-size:13px;color:#6B7280">Nachweis: ${tsS} · Referenz ${hashS}</p>
           </div>`,
         text: `Bitte bestätige Deine Unterschrift unter Angebot ${offer.offer_number}: ${confirmUrl}\nNachweis: ${tsS} · Referenz ${hashS}`,
@@ -117,11 +117,11 @@ export async function POST(req: Request, ctx: { params: Promise<{ secret: string
           to: signedByEmail,
           subject: `Bitte bestätigen: Annahme Angebot ${offer.offer_number}`,
           html: `
-            <div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;color:#0D0D0B">
+            <div style="font-family:Arial,Helvetica,sans-serif;color:#0D0D0B">
               <p>Hallo ${signedByName},</p>
               <p>bitte bestätige die verbindliche Annahme des Angebots <strong>${offer.offer_number}</strong> mit einem Klick:</p>
               <p style="margin:28px 0">
-                <a href="${confirmUrl}" style="background:#0F1E3A;color:#fff;text-decoration:none;padding:14px 28px;border-radius:999px;font-weight:bold">Annahme bestätigen</a>
+                <a href="${confirmUrl}" style="background:#1A5FD4;color:#fff;text-decoration:none;padding:14px 28px;border-radius:999px;font-weight:bold">Annahme bestätigen</a>
               </p>
               <p style="font-size:13px;color:#6B7280">
                 Zahlweise: ${rhythm === 'monthly' ? 'monatlich' : 'Einmalzahlung'} · Gesamt ${eur(amount)} · per Rechnung.<br/>

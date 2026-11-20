@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { sendMailAs } from '@/lib/schedule/graph'
+import { emailLayout, isFullDocument, type MailLang } from '@/lib/email/layout'
 
 export const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -10,6 +11,11 @@ export interface SendEmailOptions {
   text?: string
   fromName?: string
   fromEmail?: string
+  /** Sprache für Fußzeile und Links (Standard: de) */
+  lang?: MailLang
+  /** 'none' = HTML unverändert senden (z. B. fertige Newsletter) */
+  layout?: 'brand' | 'none'
+  preheader?: string
 }
 
 /**
@@ -32,7 +38,12 @@ export async function sendEmail({
   text,
   fromName = 'Eilers+Friends',
   fromEmail = 'hallo@eilersfriends.com',
+  lang = 'de',
+  layout = 'brand',
+  preheader,
 }: SendEmailOptions) {
+  // Alle Mails im gleichen ruhigen Layout: Inhalt plus Logo, Termin, Datenschutz, Impressum
+  if (layout === 'brand' && !isFullDocument(html)) html = emailLayout(html, { lang, preheader })
   if (process.env.MAIL_VIA_GRAPH !== 'off' && /@eilersfriends\.com$/i.test(fromEmail)) {
     const g = await sendMailAs(GRAPH_SLUG, to, subject, html).catch((e: unknown) => ({ ok: false, error: String(e) }))
     if (g.ok) return { id: 'graph', via: 'graph' as const }

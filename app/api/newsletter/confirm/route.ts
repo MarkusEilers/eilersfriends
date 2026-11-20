@@ -224,53 +224,10 @@ function getDefaultWelcomeHtml(variables: {
   const { firstName, year } = variables
   const greeting = firstName ? `Hey ${firstName}!` : 'Hey!'
 
-  return `<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Willkommen bei Eilers+Friends</title>
-  <style>
-    body { margin: 0; padding: 0; background: #FAFAF8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-    .wrapper { max-width: 560px; margin: 40px auto; background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb; }
-    .header { background: #0A0D14; padding: 32px 40px; text-align: center; }
-    .logo { color: #ffffff; font-size: 20px; font-weight: 700; }
-    .logo span { color: #1A5FD4; }
-    .body { padding: 40px; }
-    .body h1 { margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0D0D0B; }
-    .body p { margin: 0 0 20px; font-size: 15px; line-height: 1.7; color: #4b5563; }
-    .signature { margin-top: 32px; font-size: 15px; color: #0D0D0B; font-weight: 600; }
-    .footer { background: #f9fafb; padding: 20px 40px; text-align: center; font-size: 12px; color: #9ca3af; }
-  </style>
-</head>
-<body>
-  <div class="wrapper">
-    <div class="header">
-      <div class="logo">Eilers<span>+</span>Friends</div>
-    </div>
-    <div class="body">
-      <h1>${greeting} Du bist dabei!🎉</h1>
-      <p>
-        Deine Email-Adresse ist bestätigt — willkommen in unserer Community
-        für ambitionierte Gründer:innen und Führungskräfte.
-      </p>
-      <p>
-        In den nächsten Tagen bekommst du von uns wertvolle Einblicke zu den
-        Themen planbare Umsätze, Teamführung und skalierbares Wachstum.
-      </p>
-      <p>
-        Wenn du Fragen hast oder einfach Hallo sagen willst — antworte einfach
-        auf diese Email. Wir freuen uns!
-      </p>
-      <div class="signature">
-        Markus & Aljona<br />
-        <span style="font-weight:400;color:#6b7280">Eilers+Friends</span>
-      </div>
-    </div>
-    <div class="footer">
-      &copy; ${year} Eilers+Friends &middot; <a href="https://eilersfriends.com/datenschutz" style="color:#9ca3af">Datenschutz</a>
-    </div>
-  </div>
-</body>
-</html>`
+  void year
+  return `<p style="margin:0 0 18px">${greeting}</p>
+<p style="margin:0 0 18px">Deine E-Mail-Adresse ist bestätigt. Willkommen in unserer Community für Gründerinnen, Gründer und Führungskräfte, die Vertrieb planbar machen wollen.</p>
+<p style="margin:0 0 18px">In den nächsten Tagen bekommst Du von uns Einblicke zu planbaren Umsätzen, Teamführung und Wachstum, das trägt.</p>
+<p style="margin:0 0 18px">Du hast eine Frage oder willst einfach Hallo sagen? Antworte auf diese Mail. Wir lesen jede.</p>
+<p style="margin:28px 0 0">Markus und Aljona<br><span style="color:#605D5D">Eilers+Friends</span></p>`
 }

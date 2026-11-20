@@ -36,13 +36,13 @@ const COPY: Record<Lang, { subject: (t: string) => string; hello: (n: string | n
 /** Double-Opt-In: der Bestätigungslink ist zugleich der Report-Link. Awaited, sonst friert Vercel die Mail ein. */
 export async function sendDoiMail(def: AskFunnelDef, id: string, lang: Lang, email: string, firstName: string | null) {
   const c = COPY[lang], url = confirmUrl(id)
-  const html = `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#0D0D0B;max-width:560px">
+  const html = `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#0D0D0B">
 <p>${esc(c.hello(firstName))}</p><p>${esc(c.body)}</p>
 <p style="margin:28px 0"><a href="${url}" style="background:#1A5FD4;color:#fff;text-decoration:none;font-weight:700;padding:14px 22px;border-radius:999px;display:inline-block">${esc(c.button)}</a></p>
 <p style="font-size:13px;color:#605D5D">${esc(url)}</p>
 <p>Markus Eilers<br><span style="color:#605D5D">Eilers+Friends</span></p>
 <p style="font-size:12px;color:#888">${esc(c.small)}</p></div>`
-  await sendEmail({ to: email, subject: c.subject(def.title[lang]), html, text: `${c.hello(firstName)}\n\n${c.body}\n\n${url}\n\nMarkus Eilers` })
+  await sendEmail({ to: email, subject: c.subject(def.title[lang]), html, lang, text: `${c.hello(firstName)}\n\n${c.body}\n\n${url}\n\nMarkus Eilers` })
 }
 
 /** Kurze Nachricht an Markus, sobald jemand bestätigt hat. */

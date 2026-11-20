@@ -90,7 +90,7 @@ export async function finalizeOffer(offerId: string, baseUrl: string): Promise<{
       await sendEmail({
         to: s.email,
         subject: `Angenommen: Angebot ${String(o.offer_number)}`,
-        html: `<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;color:#0D0D0B">
+        html: `<div style="font-family:Arial,Helvetica,sans-serif;color:#0D0D0B">
             <p>Hallo ${s.name},</p>
             <p>alle Unterschriften liegen vor — das Angebot <strong>${String(o.offer_number)}</strong> ist damit verbindlich angenommen.</p>
             <p style="font-size:13px;color:#6B7280">Unterzeichnet von: ${names}<br/>

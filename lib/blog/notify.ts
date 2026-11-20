@@ -46,37 +46,16 @@ export function moderationMail(input: {
       }</ul>`
     : '<p style="margin:8px 0 0;color:#6B7280;font-size:13px">Keine Regel hat angeschlagen — zurueckgehalten wegen der Summe.</p>'
 
-  const html = `<!DOCTYPE html><html lang="de"><body style="margin:0;background:#FAFAF8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
-  <div style="max-width:560px;margin:32px auto;background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden">
-    <div style="background:${input.author.deep};padding:22px 28px">
-      <div style="color:rgba(255,255,255,.6);font-size:11px;letter-spacing:.16em;text-transform:uppercase">Kommentar wartet</div>
-      <div style="color:#fff;font-size:17px;font-weight:700;margin-top:4px">${esc(input.postTitle)}</div>
-    </div>
-    <div style="padding:26px 28px">
-      <div style="font-size:13px;color:#6B7280">
-        <strong style="color:#111827">${esc(input.name)}</strong> &lt;${esc(input.email)}&gt;
-      </div>
-      <div style="margin-top:12px;padding:14px 16px;background:#F9FAFB;border-left:3px solid ${input.author.accent};border-radius:0 8px 8px 0;font-size:15px;line-height:1.6;color:#374151;white-space:pre-wrap">${esc(input.body.slice(0, 1200))}</div>
-
-      <div style="margin-top:18px;padding:12px 14px;background:#FFFBEB;border-radius:8px">
-        <div style="font-size:12px;font-weight:700;color:#92400E">Verdachtswert ${input.score} von 100</div>
-        ${flagList}
-      </div>
-
-      <div style="margin-top:24px">
-        <a href="${link('freigeben')}" style="display:inline-block;background:${input.author.accent};color:#fff;text-decoration:none;padding:12px 22px;border-radius:999px;font-size:14px;font-weight:700">Freigeben</a>
-        <a href="${link('ablehnen')}" style="display:inline-block;margin-left:8px;border:1px solid #E5E7EB;color:#6B7280;text-decoration:none;padding:11px 20px;border-radius:999px;font-size:14px;font-weight:600">Ablehnen</a>
-      </div>
-      <p style="margin-top:14px;font-size:12px;color:#9CA3AF">
-        Der Knopf oeffnet eine Seite mit einer letzten Bestaetigung — sonst wuerde der erste Virenscanner,
-        der diese Mail liest, den Kommentar freischalten.
-      </p>
-      <p style="margin-top:18px;font-size:12px;color:#9CA3AF">
-        <a href="${input.baseUrl}/admin/blog/kommentare" style="color:#6B7280">Alle wartenden Kommentare</a> ·
-        <a href="${input.baseUrl}/blog/${input.postSlug}" style="color:#6B7280">Beitrag ansehen</a>
-      </p>
-    </div>
-  </div></body></html>`
+  const html = `<p style="margin:0 0 4px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#605D5D">Kommentar wartet</p>
+<p style="margin:0 0 20px;font-size:20px;font-weight:bold">${esc(input.postTitle)}</p>
+<p style="margin:0 0 10px;font-size:14px;color:#605D5D"><strong style="color:#201E1D">${esc(input.name)}</strong> &lt;${esc(input.email)}&gt;</p>
+<p style="margin:0 0 20px;padding-left:14px;border-left:3px solid ${input.author.accent};white-space:pre-wrap">${esc(input.body.slice(0, 1200))}</p>
+<p style="margin:0;font-size:14px"><strong>Verdachtswert ${input.score} von 100</strong></p>
+${flagList}
+<p style="margin:26px 0 10px"><a href="${link('freigeben')}" style="display:inline-block;background:${input.author.accent};color:#fff;text-decoration:none;padding:12px 22px;border-radius:999px;font-size:14px;font-weight:bold">Freigeben</a>
+<a href="${link('ablehnen')}" style="display:inline-block;margin-left:8px;color:#605D5D;text-decoration:underline;padding:12px 8px;font-size:14px">Ablehnen</a></p>
+<p style="margin:0 0 14px;font-size:12px;color:#605D5D">Der Knopf öffnet eine Seite mit einer letzten Bestätigung. Sonst würde der erste Virenscanner, der diese Mail liest, den Kommentar freischalten.</p>
+<p style="margin:0;font-size:13px;color:#605D5D"><a href="${input.baseUrl}/admin/blog/kommentare" style="color:#605D5D">Alle wartenden Kommentare</a> · <a href="${input.baseUrl}/blog/${input.postSlug}" style="color:#605D5D">Beitrag ansehen</a></p>`
 
   return { subject: `Kommentar wartet: ${input.postTitle}`, html }
 }
