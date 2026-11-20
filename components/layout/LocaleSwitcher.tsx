@@ -28,7 +28,7 @@ export function LocaleSwitcher({ className = '' }: { className?: string }) {
     <div className={`relative ${className}`}>
       <button type="button" onClick={() => setOpen((v) => !v)}
         className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-2.5 py-1.5 text-sm hover:bg-gray-50"
-        aria-label="Sprache wählen">
+        aria-label={`${current.label} – Sprache wählen / Language`} aria-expanded={open}>
         <span className="text-base leading-none">{current.flag}</span>
         <span className="text-xs font-semibold text-gray-600">{current.label}</span>
         <ChevronDown size={13} className={`text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />
