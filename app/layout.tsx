@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import '@/app/globals.css'
 import { StructuredData } from '@/components/seo/StructuredData'
 import { getLocale } from 'next-intl/server'
+import { ROOT_FONTS_CSS, ROOT_FONT_PRELOAD } from '@/lib/fonts/google-local'
 
 export const metadata: Metadata = {
   // Seitentitel tragen die Marke selbst (Sprachen und Texte: app/[locale]/layout.tsx)
@@ -17,12 +18,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={lang} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap"
-          rel="stylesheet"
-        />
+        <link rel="preload" href={ROOT_FONT_PRELOAD} as="font" type="font/woff2" crossOrigin="anonymous" />
+        <style dangerouslySetInnerHTML={{ __html: ROOT_FONTS_CSS }} />
         <meta name="theme-color" content="#1A5FD4" />
         <StructuredData />
       </head>
