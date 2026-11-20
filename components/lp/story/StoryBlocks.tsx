@@ -279,9 +279,9 @@ export function StoryCheckoutVsl({ c, ctx }: { c: C; ctx: StoryCtx }) {
             <div className="player" style={{ backgroundImage: embed ? undefined : `url(${c.poster})` }}>
               {embed ? <iframe src={embed} title={c.caption ?? 'Video'} allow="autoplay; fullscreen; picture-in-picture" allowFullScreen />
                 : c.videoUrl ? <video src={c.videoUrl} poster={c.poster} controls playsInline />
-                  : <><div className="play" /><div className="cap">{c.captionSmall}<b>{c.caption}</b></div></>}
+                  : (c.caption || c.captionSmall) ? <div className="cap">{c.captionSmall}<b>{c.caption}</b></div> : null}
             </div>
-            {chapters.length > 0 && <div className="chap">{chapters.map((t, i) => <div key={i} className={i < (c.chaptersDone ?? 0) ? 'on' : ''}>{t}</div>)}</div>}
+            {chapters.length > 0 && c.videoUrl && <div className="chap">{chapters.map((t, i) => <div key={i} className={i < (c.chaptersDone ?? 0) ? 'on' : ''}>{t}</div>)}</div>}
             {facts.length > 0 && <dl className="facts" style={{ marginTop: 32 }}>{facts.map((f, i) => <div key={i}><dt>{f.k}</dt><dd>{f.v}</dd></div>)}</dl>}
           </div>
           <div className="c4 card line checkout">
