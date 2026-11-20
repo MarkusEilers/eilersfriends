@@ -2504,8 +2504,8 @@
           "title": "6. Drittanbieter",
           "vercelTitle": "Vercel",
           "vercelText": "Diese Website wird auf der Plattform Vercel (Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA) gehostet. Beim Aufruf dieser Website werden automatisch Verbindungsdaten an Vercel übermittelt. Weitere Informationen: <a>vercel.com/legal/privacy-policy</a>",
-          "googleFontsTitle": "Google Fonts",
-          "googleFontsText": "Diese Seite nutzt zur einheitlichen Darstellung von Schriftarten Google Fonts (Anbieter: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA). Beim Aufruf einer Seite lädt Ihr Browser die benötigten Fonts in Ihren Browsercache, um Texte und Schriftarten korrekt anzuzeigen."
+          "googleFontsTitle": "Schriftarten",
+          "googleFontsText": "Die Schriftarten dieser Website werden lokal von unserem eigenen Server geladen. Dabei findet keine Verbindung zu Servern von Google oder anderen Drittanbietern statt, und es werden keine Daten an Dritte übermittelt."
         },
         {
           "title": "7. Kontakt bei Datenschutzfragen",

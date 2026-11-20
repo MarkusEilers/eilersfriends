@@ -2550,8 +2550,8 @@
           "title": "6. Proveedores externos",
           "vercelTitle": "Vercel",
           "vercelText": "Este sitio web está alojado en la plataforma Vercel (Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA). Al acceder a este sitio web, los datos de conexión se transmiten automáticamente a Vercel. Más información: <a>vercel.com/legal/privacy-policy</a>",
-          "googleFontsTitle": "Google Fonts",
-          "googleFontsText": "Esta página utiliza Google Fonts para la presentación uniforme de tipografías (proveedor: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA). Al acceder a una página, su navegador carga las fuentes necesarias en la caché de su navegador para mostrar correctamente los textos y las fuentes."
+          "googleFontsTitle": "Tipografías",
+          "googleFontsText": "Las tipografías de este sitio web se cargan localmente desde nuestro propio servidor. No se establece ninguna conexión con servidores de Google ni de otros terceros, y no se transmite ningún dato a terceros."
         },
         {
           "title": "7. Contacto para cuestiones de protección de datos",

@@ -2550,8 +2550,8 @@
           "title": "6. Third-Party Providers",
           "vercelTitle": "Vercel",
           "vercelText": "This website is hosted on the Vercel platform (Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA). When you access this website, connection data is automatically transmitted to Vercel. Further information: <a>vercel.com/legal/privacy-policy</a>",
-          "googleFontsTitle": "Google Fonts",
-          "googleFontsText": "This site uses Google Fonts (provider: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) for the uniform display of fonts. When you access a page, your browser loads the required fonts into your browser cache to display texts and fonts correctly."
+          "googleFontsTitle": "Fonts",
+          "googleFontsText": "The fonts on this website are loaded locally from our own server. No connection is made to servers operated by Google or any other third party, and no data is transferred to third parties."
         },
         {
           "title": "7. Contact for Data Protection Matters",
